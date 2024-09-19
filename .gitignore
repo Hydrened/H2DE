@@ -1,0 +1,9 @@
+.vscode/
+assets/
+data/
+src/
+
+bin/*.exe
+
+todo.md
+Makefile
