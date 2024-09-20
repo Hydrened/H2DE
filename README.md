@@ -18,3 +18,6 @@ H2DE is a graphic engine for rendering images, polygons, circles and text. Sound
 - graphic object scale
 - image / text flip
 - repeat x / y graphic objects
+### H2DE-1.0.1
+#### FIXED
+- engine loading errors
