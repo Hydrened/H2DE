@@ -43,23 +43,11 @@ public:
      * \param end the ending point
      * \param steps the length of the vector
      * 
-     * \return a vector
-     * 
-     * \since H2DE-1.0.0
-     */
-    static std::vector<float> linear(float start, float end, int steps);
-    /**
-     * Get a color linear effect from a point a to b
-     * 
-     * \param start the starting point
-     * \param end the ending point
-     * \param steps the length of the vector
-     * 
      * \return a vector with the transition from the point a to b
      * 
      * \since H2DE-1.0.0
      */
-    static std::vector<H2DE_Color*> linear(H2DE_Color* start, H2DE_Color* end, int steps);
+    static std::vector<float> linear(float start, float end, int steps);
     /**
      * Get a float ease in out effect from a point a to b
      * 

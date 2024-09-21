@@ -10,7 +10,6 @@
 #include <H2DE/H2DE_effect.h>
 #include <H2DE/H2DE_json.h>
 #include <algorithm>
-#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <string>
