@@ -180,6 +180,23 @@ public:
     void addGraphicObject(H2DE_GraphicObject* g);
 
     /**
+     * Get the size of the engine
+     * 
+     * \return the size of the engine
+     * 
+     * \since H2DE-1.0.4
+     */
+    H2DE_Size getSize();
+    /**
+     * Set a new size for the engine
+     * 
+     * \param size the new size
+     * 
+     * \since H2DE-1.0.4
+     */
+    void setSize(H2DE_Size size);
+
+    /**
      * Set the song volume
      * 
      * \param volume the volume (0-100)
