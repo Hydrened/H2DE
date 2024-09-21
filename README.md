@@ -1,11 +1,6 @@
 # H2DE - Hydren 2D Engine
 H2DE is a graphic engine for rendering images, polygons, circles and text. Sounds can also be played.
 
-## HOW TO USE IT
-```cpp
-#include <H2DE/H2DE.h>
-```
-
 ## VERSIONS
 ### H2DE-1.0.0
 #### ADDED
@@ -25,4 +20,7 @@ H2DE is a graphic engine for rendering images, polygons, circles and text. Sound
 - repeat x / y graphic objects
 ### H2DE-1.0.1
 #### FIXED
-- engine loading errors
+- engine loading assets errors
+### H2DE-1.0.2
+#### FIXED
+- engine creation errors
