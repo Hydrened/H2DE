@@ -34,5 +34,10 @@ H2DE is a graphic engine for rendering images, polygons, circles and text. Sound
 - linear color effect
 ### H2DE-1.0.4
 #### ADDED
-- getter for engine's width and height
-- setter for engine's width and height
+- getter and setter for engine's size
+### H2DE-1.0.5
+#### ADDED
+- engine max size
+- getter and setter for engine's max size
+#### FIXED
+- getter and setter fonctions names for engine's size

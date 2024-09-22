@@ -10,6 +10,7 @@
 #include <H2DE/H2DE_effect.h>
 #include <H2DE/H2DE_json.h>
 #include <algorithm>
+#include <climits>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -26,7 +27,8 @@ namespace fs = std::filesystem;
 class H2DE_Engine {
 private:
     int fps;
-    H2DE_Size winSize;
+    H2DE_Size size;
+    H2DE_Size maxSize = { -1, -1 };
     bool isRunning = true;
     SDL_Renderer* renderer;
     int dataToLoad, loadedData = 0;
@@ -153,7 +155,7 @@ private:
     void renderText(H2DE_GraphicObject* g);
 
 public:
-    H2DE_Engine(SDL_Renderer* renderer, int winWidth, int winHeight, int fps);
+    H2DE_Engine(SDL_Renderer* renderer, int w, int h, int fps);
     ~H2DE_Engine();
 
     /**
@@ -180,24 +182,47 @@ public:
     void addGraphicObject(H2DE_GraphicObject* g);
 
     /**
-     * Get the size of the engine
+     * Gets the size of the engine
+     * 
+     * \param engine pointer to the engine
      * 
      * \return the size of the engine
      * 
      * \since H2DE-1.0.4
      */
-    H2DE_Size getSize();
+    friend H2DE_Size H2DE_GetEngineSize(H2DE_Engine* engine);
     /**
-     * Set a new size for the engine
+     * Sets a new size for the engine
      * 
+     * \param engine pointer to the engine
      * \param size the new size
      * 
      * \since H2DE-1.0.4
      */
-    void setSize(H2DE_Size size);
+    friend void H2DE_SetEngineSize(H2DE_Engine* engine, int w, int h);
+    /**
+     * Sets the maximum size for the specified engine
+     * 
+     * \param engine pointer to the engine
+     * \param w maxmum width for the engine
+     * \param h maxmum height for the engine
+     * 
+     * \since H2DE-1.0.5
+     */
+    friend void H2DE_SetEngineMaximumSize(H2DE_Engine* engine, int w, int h);
+    /**
+     * Gets the maximum size for the specified engine
+     * 
+     * \param engine pointer to the engine
+     * 
+     * \return the maximum size of the engine
+     * 
+     * \since H2DE-1.0.5
+     */
+    friend H2DE_Size H2DE_GetEngineMaximumSize(H2DE_Engine* engine);
 
     /**
-     * Set the song volume
+     * Sets the song volume
      * 
      * \param volume the volume (0-100)
      * 
@@ -227,7 +252,7 @@ public:
     void resumeSong();
 
     /**
-     * Set the volume for a specific sfx
+     * Sets the volume for a specific sfx
      * 
      * \param volume the volume (0-100)
      * 
@@ -267,15 +292,15 @@ public:
  * Creates an engine
  * 
  * \param renderer a pointer to the renderer
- * \param winWidth the width of the window
- * \param winHeight this heigth of the window
- * \param fps the fps the window is running 
+ * \param w the width of the engine
+ * \param h this heigth of the engine
+ * \param fps the fps the window is running at
  * 
  * \return a pointer to an engine
  * 
  * \since H2DE-1.0.0
  */
-extern H2DE_Engine* H2DE_CreateEngine(SDL_Renderer* renderer, int winWidth, int winHeight, int fps);
+extern H2DE_Engine* H2DE_CreateEngine(SDL_Renderer* renderer, int w, int h, int fps);
 /**
  * Destroys an engine
  * 
