@@ -44,3 +44,6 @@ H2DE is a graphic engine for rendering images, polygons, circles and text. Sound
 ### H2DE-1.0.6
 #### FIXED
 - errors for reading and writing jsons
+### H2DE-1.0.7
+#### FIXED
+- repeat x and y images disappearing
