@@ -24,18 +24,18 @@ public:
      * 
      * \since H2DE-1.0.0
      */
-    static json read(std::string file);
+    static json* read(std::string file);
     /**
      * Write data in a json file
      * 
      * \param file the name of the file
-     * \param j the json data
+     * \param j a pointer to the json data
      * 
      * \return true on sucess and false otherwise
      * 
      * \since H2DE-1.0.0
      */
-    static bool write(std::string file, json j);
+    static bool write(std::string file, json* j);
 };
 
 #endif
