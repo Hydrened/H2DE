@@ -7,7 +7,7 @@
 #include <H2DE/H2DE_calculator.h>
 #include <H2DE/H2DE_types.h>
 #include <H2DE/H2DE_graphic.h>
-#include <H2DE/H2DE_effect.h>
+#include <H2DE/H2DE_timeline.h>
 #include <H2DE/H2DE_json.h>
 #include <algorithm>
 #include <climits>
@@ -16,6 +16,8 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+class H2DE_Timeline;
 
 namespace fs = std::filesystem;
 
@@ -37,6 +39,7 @@ private:
     std::unordered_map<std::string, Mix_Chunk*> sfxs;
     std::unordered_map<std::string, TTF_Font*> fonts;
     std::vector<H2DE_GraphicObject*> graphicObjects;
+    std::vector<H2DE_Timeline*> timelines;
     
     /**
      * Counts the number of file to be loaded from a parent directory
@@ -49,7 +52,7 @@ private:
      */
     static int countFiles(const fs::path& dir);
     /**
-     * Import the files
+     * Imports the files
      * 
      * \param dir parent directory
      * 
@@ -57,7 +60,7 @@ private:
      */
     void importFiles(const fs::path& dir);
     /**
-     * Import a texture from a png file
+     * Imports a texture from a png file
      * 
      * \param img png file
      * 
@@ -65,7 +68,7 @@ private:
      */
     void importTexture(const fs::path& img);
     /**
-     * Import a song from a mp3 file
+     * Imports a song from a mp3 file
      * 
      * \param song mp3 file
      * 
@@ -73,7 +76,7 @@ private:
      */
     void importSong(const fs::path& song);
     /**
-     * Import a SFX from a wav file
+     * Imports a SFX from a wav file
      * 
      * \param sfx wav file
      * 
@@ -81,7 +84,7 @@ private:
      */
     void importSFX(const fs::path& sfx);
     /**
-     * Import a font from a ttf file
+     * Imports a font from a ttf file
      * 
      * \param font ttf file
      * 
@@ -89,14 +92,14 @@ private:
      */
     void importFont(const fs::path& font);
     /**
-     * Indicate that an asset has been loaded
+     * Indicates that an asset has been loaded
      * 
      * \since H2DE-1.0.0
      */
     void assetImported();
     
     /**
-     * Duplicate `H2DE_GraphicObject` which have the `repeatX` property
+     * Duplicates `H2DE_GraphicObject` which have the `repeatX` property
      * 
      * \return a graphic object vector of the duplicated graphic objects
      * 
@@ -104,7 +107,7 @@ private:
      */
     std::vector<H2DE_GraphicObject*> getRepeatXGraphicObjects();
     /**
-     * Duplicate `H2DE_GraphicObject` which have the `repeatY` property
+     * Duplicates `H2DE_GraphicObject` which have the `repeatY` property
      * 
      * \return a graphic object vector of the duplicated graphic objects
      * 
@@ -159,7 +162,7 @@ public:
     ~H2DE_Engine();
 
     /**
-     * Render all graphic objects added during this frame
+     * Renders all graphic objects added during this frame
      * 
      * \since H2DE-1.0.0
      */
@@ -173,9 +176,9 @@ public:
      */
     void loadAssets(const fs::path& dir);
     /**
-     * Add a graphic object to be rendered this frame
+     * Adds a graphic object to be rendered this frame
      * 
-     * \param g the graphic object
+     * \param g a pointer the graphic object
      * 
      * \since H2DE-1.0.0
      */
@@ -220,6 +223,29 @@ public:
      * \since H2DE-1.0.5
      */
     friend H2DE_Size H2DE_GetEngineMaximumSize(H2DE_Engine* engine);
+    /**
+     * Gets the FPS on an engine
+     * 
+     * \return fps
+     * 
+     * \since H2DE-1.0.9
+     */
+    friend int H2DE_GetEngineFPS(H2DE_Engine* engine);
+    /**
+     * Creates a timeline
+     * 
+     * \param start starting value
+     * \param end ending value
+     * \param duration time in ms
+     * \param effect timeline effect
+     * \param update function called every frame
+     * \param completed function called once the timeline is finished (`NULL` not to call)
+     * 
+     * \return a pointer to a timeline
+     * 
+     * \since H2DE-1.0.9
+     */
+    friend void H2DE_CreateTimeline(H2DE_Engine* engine, float start, float end, int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed);
 
     /**
      * Sets the song volume

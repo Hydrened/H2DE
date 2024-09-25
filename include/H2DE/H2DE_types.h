@@ -16,6 +16,18 @@ enum H2DE_GraphicObjectType {
 };
 
 /**
+ * `H2DE_Timeline` effects
+ * 
+ * \since H2DE-1.0.9
+ */
+enum H2DE_TimelineEffect {
+    LINEAR,
+    EASE_IN_OUT,
+    EASE_IN,
+    EASE_OUT,
+};
+
+/**
  * H2DE position
  * 
  * \since H2DE-1.0.0

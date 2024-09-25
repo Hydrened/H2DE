@@ -1,3 +1,11 @@
+### H2DE-1.0.9
+#### ADDED
+- timelines
+- getter for engine's fps
+- added ease in and ease out timeline effects
+#### FIXED
+- effects are now included in timelines
+
 ### H2DE-1.0.8
 #### FIXED
 - json read method now returns a json pointer
