@@ -164,30 +164,34 @@ public:
     /**
      * Renders all graphic objects added during this frame
      * 
+     * \param engine a pointer to an engine
+     * 
      * \since H2DE-1.0.0
      */
-    void render();
+    friend void H2DE_RenderEngine(H2DE_Engine* engine);
     /**
      * Loads every assets from a parent directory
      * 
+     * \param engine a pointer to an engine
      * \param dir parent directory
      * 
      * \since H2DE-1.0.0
      */
-    void loadAssets(const fs::path& dir);
+    friend void H2DE_LoadAssets(H2DE_Engine* engine, const fs::path& dir);
     /**
      * Adds a graphic object to be rendered this frame
      * 
+     * \param engine a pointer to an engine
      * \param g a pointer the graphic object
      * 
      * \since H2DE-1.0.0
      */
-    void addGraphicObject(H2DE_GraphicObject* g);
+    friend void H2DE_AddGraphicObject(H2DE_Engine* engine, H2DE_GraphicObject* g);
 
     /**
      * Gets the size of the engine
      * 
-     * \param engine pointer to the engine
+     * \param engine a pointer to the engine
      * 
      * \return the size of the engine
      * 
@@ -197,7 +201,7 @@ public:
     /**
      * Sets a new size for the engine
      * 
-     * \param engine pointer to the engine
+     * \param engine a pointer to an engine
      * \param size the new size
      * 
      * \since H2DE-1.0.4
@@ -206,7 +210,7 @@ public:
     /**
      * Sets the maximum size for the specified engine
      * 
-     * \param engine pointer to the engine
+     * \param engine a pointer to an engine
      * \param w maxmum width for the engine
      * \param h maxmum height for the engine
      * 
@@ -216,7 +220,7 @@ public:
     /**
      * Gets the maximum size for the specified engine
      * 
-     * \param engine pointer to the engine
+     * \param engine a pointer to an engine
      * 
      * \return the maximum size of the engine
      * 
@@ -226,6 +230,8 @@ public:
     /**
      * Gets the FPS on an engine
      * 
+     * \param engine a pointer to an engine
+     * 
      * \return fps
      * 
      * \since H2DE-1.0.9
@@ -234,6 +240,7 @@ public:
     /**
      * Creates a timeline
      * 
+     * \param engine a pointer to an engine
      * \param start starting value
      * \param end ending value
      * \param duration time in ms
@@ -254,64 +261,67 @@ public:
      * 
      * \since H2DE-1.0.0
      */
-    void setSongVolume(int volume);
+    friend void H2DE_SetSongVolume(int volume);
     /**
      * Plays a song
      * 
+     * \param engine a pointer to an engine
      * \param song the name of the loaded song
      * \param loop number of loop (-1 = infinite)
      * 
      * \since H2DE-1.0.0
      */
-    void playSong(std::string song, int loop);
+    friend void H2DE_PlaySong(H2DE_Engine* engine, std::string song, int loop);
     /**
      * Pauses the current song
      * 
      * \since H2DE-1.0.0
      */
-    void pauseSong();
+    friend void H2DE_PauseSong();
     /**
      * Resumes the current song
      * 
      * \since H2DE-1.0.0
      */
-    void resumeSong();
+    friend void H2DE_ResumeSong();
 
     /**
      * Sets the volume for a specific sfx
      * 
+     * \param channel the channel of the target (-1 for all)
      * \param volume the volume (0-100)
      * 
      * \since H2DE-1.0.0
      */
-    void setSFXVolume(int channel, int volume);
+    friend void H2DE_SetSFXVolume(int channel, int volume);
     /**
      * Plays a sfx
      * 
-     * \param song the name of the loaded sfx
+     * \param engine a pointer to an engine
+     * \param song the name of the loaded sfx (-1 for all)
      * \param loop number of loop (-1 = infinite)
      * 
-     * \return the channel of the sfx
+     * \return the channel of the target
      * 
      * \since H2DE-1.0.0
      */
-    int playSFX(std::string sfx, int loop);
+    friend int H2DE_PlaySFX(H2DE_Engine* engine, std::string sfx, int loop);
     /**
      * Pauses a sfx
      * 
-     * \param channel the channel of the target
+     * \param channel the channel of the target (-1 for all)
      * 
      * \since H2DE-1.0.0
      */
-    void pauseSFX(int channel);
+    friend void H2DE_PauseSFX(int channel);
     /**
      * Resumes a sfx
      * 
-     * \param channel the channel of the target
+     * \param channel the channel of the target (-1 for all)
      * 
      * \since H2DE-1.0.0
      */
-    void resumeSFX(int channel);
+    friend void H2DE_ResumeSFX(int channel);
 };
 
 /**

@@ -1,3 +1,7 @@
+### H2DE-1.0.10
+#### FIXED
+- updated public engine methods to friend
+
 ### H2DE-1.0.9
 #### ADDED
 - timelines
