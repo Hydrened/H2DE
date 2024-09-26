@@ -1,4 +1,9 @@
-### H2DE-1.0.10
+### H2DE-1.0.11
+#### FIXED
+- double deleting pointer
+- `H2DE_Calculator` class is now friend of `H2DE_Engine`
+
+### H2DE-1.0.10 (BUGGED)
 #### FIXED
 - updated public engine methods to friend
 

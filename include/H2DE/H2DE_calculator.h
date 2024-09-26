@@ -4,7 +4,6 @@
 #include <H2DE/H2DE_types.h>
 #include <H2DE/H2DE_graphic.h>
 #include <cmath>
-#include <iostream>
 
 /**
  * Contains the methods required by the engine to calculate positions or rotations
@@ -23,7 +22,7 @@ public:
      * 
      * \since H2DE-1.0.0
      */
-    static bool isIndexGreater(H2DE_GraphicObject* s1, H2DE_GraphicObject* s2);
+    static bool isIndexGreater(const H2DE_GraphicObject* s1, const H2DE_GraphicObject* s2);
     /**
      * Convert a rotation in degress into radians 
      * 

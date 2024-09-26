@@ -157,6 +157,8 @@ private:
      */
     void renderText(H2DE_GraphicObject* g);
 
+    friend class H2DE_Calculator;
+
 public:
     H2DE_Engine(SDL_Renderer* renderer, int w, int h, int fps);
     ~H2DE_Engine();
@@ -257,11 +259,12 @@ public:
     /**
      * Sets the song volume
      * 
+     * \param engine a pointer to an engine
      * \param volume the volume (0-100)
      * 
      * \since H2DE-1.0.0
      */
-    friend void H2DE_SetSongVolume(int volume);
+    friend void H2DE_SetSongVolume(H2DE_Engine* engine, int volume);
     /**
      * Plays a song
      * 
@@ -275,25 +278,30 @@ public:
     /**
      * Pauses the current song
      * 
-     * \since H2DE-1.0.0
-     */
-    friend void H2DE_PauseSong();
-    /**
-     * Resumes the current song
+     * \param engine a pointer to an engine
      * 
      * \since H2DE-1.0.0
      */
-    friend void H2DE_ResumeSong();
+    friend void H2DE_PauseSong(H2DE_Engine* engine);
+    /**
+     * Resumes the current song
+     * 
+     * \param engine a pointer to an engine
+     * 
+     * \since H2DE-1.0.0
+     */
+    friend void H2DE_ResumeSong(H2DE_Engine* engine);
 
     /**
      * Sets the volume for a specific sfx
      * 
+     * \param engine a pointer to an engine
      * \param channel the channel of the target (-1 for all)
      * \param volume the volume (0-100)
      * 
      * \since H2DE-1.0.0
      */
-    friend void H2DE_SetSFXVolume(int channel, int volume);
+    friend void H2DE_SetSFXVolume(H2DE_Engine* engine, int channel, int volume);
     /**
      * Plays a sfx
      * 
@@ -309,19 +317,21 @@ public:
     /**
      * Pauses a sfx
      * 
+     * \param engine a pointer to an engine
      * \param channel the channel of the target (-1 for all)
      * 
      * \since H2DE-1.0.0
      */
-    friend void H2DE_PauseSFX(int channel);
+    friend void H2DE_PauseSFX(H2DE_Engine* engine, int channel);
     /**
      * Resumes a sfx
      * 
+     * \param engine a pointer to an engine
      * \param channel the channel of the target (-1 for all)
      * 
      * \since H2DE-1.0.0
      */
-    friend void H2DE_ResumeSFX(int channel);
+    friend void H2DE_ResumeSFX(H2DE_Engine* engine, int channel);
 };
 
 /**
