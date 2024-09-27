@@ -243,18 +243,14 @@ public:
      * Creates a timeline
      * 
      * \param engine a pointer to an engine
-     * \param start starting value
-     * \param end ending value
      * \param duration time in ms
      * \param effect timeline effect
      * \param update function called every frame
      * \param completed function called once the timeline is finished (`NULL` not to call)
      * 
-     * \return a pointer to a timeline
-     * 
      * \since H2DE-1.0.9
      */
-    friend void H2DE_CreateTimeline(H2DE_Engine* engine, float start, float end, int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed);
+    friend void H2DE_CreateTimeline(H2DE_Engine* engine, int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed);
 
     /**
      * Sets the song volume

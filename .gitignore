@@ -2,6 +2,7 @@
 assets/
 data/
 src/
+temp/
 
 bin/*.exe
 

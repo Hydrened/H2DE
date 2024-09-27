@@ -15,26 +15,12 @@ class H2DE_Engine;
 class H2DE_Timeline {
 private:
     H2DE_Engine* engine;
-    float start;
-    float end;
     int duration;
     H2DE_TimelineEffect effect;
     std::function<void(float)> update;
     std::function<void()> completed;
     int index = 0;
 
-    /**
-     * Gets a value betwwen two values from a blend value
-     * 
-     * \param a the minimum value
-     * \param b the maximum value
-     * \param blend a value between 0 and 1
-     * 
-     * \return a value between `a` and `b`
-     * 
-     * \since H2DE-1.0.9
-     */
-    static float lerp(float a, float b, float blend);
     /**
      * Obtains the number of steps required for a given duration
      * 
@@ -47,7 +33,7 @@ private:
     int getSteps(int ms);
 
 public:
-    H2DE_Timeline(H2DE_Engine* engine, float start, float end, int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed);
+    H2DE_Timeline(H2DE_Engine* engine, int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed);
     ~H2DE_Timeline();
 
     /**
