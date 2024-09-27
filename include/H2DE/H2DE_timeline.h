@@ -46,4 +46,37 @@ public:
     bool tick();
 };
 
+/**
+ * The type used to identify a timeline manager
+ * 
+ * \since H2DE-1.0.14
+ */
+class H2DE_TimelineManager {
+private:
+    std::vector<H2DE_Timeline*> timelines;
+
+public:
+    H2DE_TimelineManager();
+    H2DE_TimelineManager(std::vector<H2DE_Timeline*> timelines);
+
+    /**
+     * Adds a timeline to a manager
+     * 
+     * \param manager a pointer to a manager
+     * \param timeline a pointer to a timeline
+     * 
+     * \since H2DE-1.0.14
+     */
+    friend void H2DE_AddTimelineToManager(H2DE_TimelineManager* manager, H2DE_Timeline* timeline);
+
+    /**
+     * Ticks each timelines of a manager 
+     * 
+     * \param manager a pointer to a manager
+     * 
+     * \since H2DE-1.0.14
+     */
+    friend void H2DE_TickTimelineManager(H2DE_TimelineManager* manager);
+};
+
 #endif

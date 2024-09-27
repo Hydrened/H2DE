@@ -1,3 +1,7 @@
+## H2DE-1.0.14
+### ADDED
+- timeline manager
+
 ## H2DE-1.0.13
 ### ADDED
 - `H2DE_Timeline::tick()` must now be called manually
