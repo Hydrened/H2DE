@@ -39,7 +39,6 @@ private:
     std::unordered_map<std::string, Mix_Chunk*> sfxs;
     std::unordered_map<std::string, TTF_Font*> fonts;
     std::vector<H2DE_GraphicObject*> graphicObjects;
-    std::vector<H2DE_Timeline*> timelines;
     
     /**
      * Counts the number of file to be loaded from a parent directory
@@ -250,7 +249,7 @@ public:
      * 
      * \since H2DE-1.0.9
      */
-    friend void H2DE_CreateTimeline(H2DE_Engine* engine, int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed);
+    friend H2DE_Timeline* H2DE_CreateTimeline(H2DE_Engine* engine, int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed);
 
     /**
      * Sets the song volume

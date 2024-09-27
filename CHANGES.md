@@ -1,3 +1,7 @@
+## H2DE-1.0.13
+### ADDED
+- `H2DE_Timeline::tick()` must now be called manually
+
 ## H2DE-1.0.12
 ### FIXED
 - removed start & end from timeline parameters

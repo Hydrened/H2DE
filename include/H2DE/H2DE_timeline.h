@@ -37,8 +37,7 @@ public:
     ~H2DE_Timeline();
 
     /**
-     * Calls the update function with the next value from the timeline as parameter
-     * Notes: Ticks one time when the `H2DE_Engine::render()` method is called
+     * Calls the update function with the next value from the timeline as a float parameter
      * 
      * \return true if it ticks
      * 
