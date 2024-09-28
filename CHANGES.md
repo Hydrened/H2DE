@@ -1,3 +1,7 @@
+## H2DE-1.0.16
+### FIXED
+- volume does not work if diffrent from 100
+
 ## H2DE-1.0.15
 ### ADDED
 - clear timeline manager method
