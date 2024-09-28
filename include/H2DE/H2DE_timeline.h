@@ -77,6 +77,15 @@ public:
      * \since H2DE-1.0.14
      */
     friend void H2DE_TickTimelineManager(H2DE_TimelineManager* manager);
+
+    /**
+     * Clears each timeline of a manager
+     * 
+     * \param manager a pointer to a manager
+     * 
+     * \since H2DE-1.0.15
+     */
+    friend void H2DE_ClearTimelineManager(H2DE_TimelineManager* manager);
 };
 
 #endif

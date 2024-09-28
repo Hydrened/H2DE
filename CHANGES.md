@@ -1,3 +1,7 @@
+## H2DE-1.0.15
+### ADDED
+- clear timeline manager method
+
 ## H2DE-1.0.14
 ### ADDED
 - timeline manager
