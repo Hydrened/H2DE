@@ -1,3 +1,7 @@
+## H2DE-1.0.18
+### FIXED
+- timeline memory usage
+
 ## H2DE-1.0.17
 ### ADDED
 - remove timeline from timeline manager
