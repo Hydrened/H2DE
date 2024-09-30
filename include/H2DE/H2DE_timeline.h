@@ -70,6 +70,16 @@ public:
     friend void H2DE_AddTimelineToManager(H2DE_TimelineManager* manager, H2DE_Timeline* timeline);
 
     /**
+     * Removes a timeline from a manager
+     * 
+     * \param manager a pointer to a manager
+     * \param timeline a reference to a timeline
+     * 
+     * \since H2DE-1.0.17
+     */
+    friend void H2DE_RemoveTimelineFromManager(H2DE_TimelineManager* manager, H2DE_Timeline* timeline);
+
+    /**
      * Ticks each timelines of a manager 
      * 
      * \param manager a pointer to a manager
@@ -86,6 +96,7 @@ public:
      * \since H2DE-1.0.15
      */
     friend void H2DE_ClearTimelineManager(H2DE_TimelineManager* manager);
+
 };
 
 #endif

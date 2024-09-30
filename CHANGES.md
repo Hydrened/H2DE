@@ -1,3 +1,7 @@
+## H2DE-1.0.17
+### ADDED
+- remove timeline from timeline manager
+
 ## H2DE-1.0.16
 ### FIXED
 - volume does not work if diffrent from 100
