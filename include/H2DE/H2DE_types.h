@@ -5,7 +5,6 @@
 
 /**
  * `H2DE_GraphicObject` types
- * 
  * \since H2DE-1.0.0
  */
 enum H2DE_GraphicObjectType {
@@ -17,7 +16,6 @@ enum H2DE_GraphicObjectType {
 
 /**
  * `H2DE_Timeline` effects
- * 
  * \since H2DE-1.0.9
  */
 enum H2DE_TimelineEffect {
@@ -29,7 +27,6 @@ enum H2DE_TimelineEffect {
 
 /**
  * H2DE position
- * 
  * \since H2DE-1.0.0
  */
 struct H2DE_Pos {
@@ -43,7 +40,6 @@ struct H2DE_Pos {
 
 /**
  * H2DE size
- * 
  * \since H2DE-1.0.0
  */
 struct H2DE_Size {
@@ -53,7 +49,6 @@ struct H2DE_Size {
 
 /**
  * H2DE color
- * 
  * \since H2DE-1.0.0
  */
 struct H2DE_Color {
@@ -73,7 +68,6 @@ struct H2DE_Color {
 
 /**
  * H2DE scale
- * 
  * \since H2DE-1.0.0
  */
 struct H2DE_Scale {

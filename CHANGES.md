@@ -1,3 +1,9 @@
+## H2DE-1.0.19
+### ADDED
+- timeline loops
+### FIXED
+- durations are now unsigned ints
+
 ## H2DE-1.0.18
 ### FIXED
 - timeline memory usage

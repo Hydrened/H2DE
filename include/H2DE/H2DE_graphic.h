@@ -8,7 +8,6 @@
 
 /**
  * Type used to store the data for a graphic object
- * 
  * \since H2DE-1.0.0
  */
 struct H2DE_GraphicObject {
@@ -42,9 +41,7 @@ struct H2DE_GraphicObject {
 
 /**
  * Destroy a graphic object
- * 
  * \param g the graphic object to destroy
- * 
  * \since H2DE-1.0.0
  */
 extern void H2DE_DestroyGraphicObject(H2DE_GraphicObject* g);
