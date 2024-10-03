@@ -75,4 +75,13 @@ struct H2DE_Scale {
     float y;
 };
 
+/**
+ * H2DE click
+ * \since H2DE-1.1.0
+ */
+struct H2DE_SClick {
+    int x;
+    int y;
+};
+
 #endif

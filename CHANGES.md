@@ -1,93 +1,97 @@
+## H2DE-1.1.0
+#### ADDED
+- onclick function on graphic objects
+
 ## H2DE-1.0.19
-### ADDED
+#### ADDED
 - timeline loops
-### FIXED
+#### FIXED
 - durations are now unsigned ints
 
 ## H2DE-1.0.18
-### FIXED
+#### FIXED
 - timeline memory usage
 
 ## H2DE-1.0.17
-### ADDED
+#### ADDED
 - remove timeline from timeline manager
 
 ## H2DE-1.0.16
-### FIXED
+#### FIXED
 - volume does not work if diffrent from 100
 
 ## H2DE-1.0.15
-### ADDED
+#### ADDED
 - clear timeline manager method
 
 ## H2DE-1.0.14
-### ADDED
+#### ADDED
 - timeline manager
 
 ## H2DE-1.0.13
-### ADDED
+#### ADDED
 - `H2DE_Timeline::tick()` must now be called manually
 
 ## H2DE-1.0.12
-### FIXED
+#### FIXED
 - removed start & end from timeline parameters
 - timelines calling completed paramter many times
 
 ## H2DE-1.0.11
-### FIXED
+#### FIXED
 - double deleting pointer
 - `H2DE_Calculator` class is now friend of `H2DE_Engine`
 
 ## H2DE-1.0.10 (BUGGED)
-### FIXED
+#### FIXED
 - updated public engine methods to friend
 
 ## H2DE-1.0.9
-### ADDED
+#### ADDED
 - timelines
 - getter for engine's fps
 - added ease in and ease out timeline effects
-### FIXED
+#### FIXED
 - effects are now included in timelines
 
 ## H2DE-1.0.8
-### FIXED
+#### FIXED
 - json read method now returns a json pointer
 - json write method now needs a json pointer
 
 ## H2DE-1.0.7
-### FIXED
+#### FIXED
 - repeat x and y images disappearing
 
 ## H2DE-1.0.6
-### FIXED
+#### FIXED
 - errors for reading and writing jsons
 
 ## H2DE-1.0.5
-### ADDED
+#### ADDED
 - engine max size
 - getter and setter for engine's max size
-### FIXED
+#### FIXED
 - getter and setter functions names for engine's size
 
 ## H2DE-1.0.4
-### ADDED
+#### ADDED
 - getter and setter for engine's size
 
 ## H2DE-1.0.3
-### REMOVED
+#### REMOVED
 - linear color effect
 
 ## H2DE-1.0.2
-### FIXED
+#### FIXED
 - engine creation errors
 
 ## H2DE-1.0.1
-### FIXED
+#### FIXED
 - engine loading assets errors
 
 ## H2DE-1.0.0
-### ADDED
+#### ADDED
 - load png, mp3, wav and ttf files
 - render images
 - render polygons

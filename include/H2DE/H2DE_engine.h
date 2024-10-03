@@ -11,6 +11,7 @@
 #include <H2DE/H2DE_json.h>
 #include <algorithm>
 #include <climits>
+#include <optional>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -33,11 +34,14 @@ private:
     bool isRunning = true;
     SDL_Renderer* renderer;
     int dataToLoad, loadedData = 0;
+
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, Mix_Music*> songs;
     std::unordered_map<std::string, Mix_Chunk*> sfxs;
     std::unordered_map<std::string, TTF_Font*> fonts;
+
     std::vector<H2DE_GraphicObject*> graphicObjects;
+    std::optional<H2DE_SClick*> click = std::nullopt;
     
     /**
      * Counts the number of file to be loaded from a parent directory
@@ -127,6 +131,13 @@ private:
      */
     void renderText(H2DE_GraphicObject* g);
 
+    /**
+     * Simulates a click on a graphic element
+     * \param g a pointer to a graphic element
+     * \since H2DE-1.1.0
+     */
+    void simulateClick(H2DE_GraphicObject* g);
+
     friend class H2DE_Calculator;
 
 public:
@@ -153,6 +164,15 @@ public:
      * \since H2DE-1.0.0
      */
     friend void H2DE_AddGraphicObject(H2DE_Engine* engine, H2DE_GraphicObject* g);
+
+    /**
+     * Clicks on a specified point on an engine
+     * \param engine a pointer to an engine
+     * \param x x position of the click
+     * \param y y position of the click
+     * \since H2DE-1.1.0
+     */
+    friend void H2DE_Click(H2DE_Engine* engine, int x, int y);
 
     /**
      * Gets the size of the engine
