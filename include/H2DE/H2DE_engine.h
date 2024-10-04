@@ -220,7 +220,7 @@ public:
      * \param loop number of loops (-1 = infinite)
      * \since H2DE-1.0.9
      */
-    friend H2DE_Timeline* H2DE_CreateTimeline(H2DE_Engine* engine, int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed, int loop);
+    friend H2DE_Timeline* H2DE_CreateTimeline(H2DE_Engine* engine, unsigned int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed, int loop);
 
     /**
      * Sets the song volume

@@ -1,3 +1,7 @@
+## H2DE-1.1.1
+#### FIXED
+- timeline with null duration instantly call completed function parameter
+
 ## H2DE-1.1.0
 #### ADDED
 - onclick function on graphic objects
