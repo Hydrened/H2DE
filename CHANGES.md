@@ -1,3 +1,8 @@
+## H2DE-1.1.2
+#### FIXED
+- sfx are now ogg files
+- timeline with null duration call update fonction with blend at 1.0f
+
 ## H2DE-1.1.1
 #### FIXED
 - timeline with null duration instantly call completed function parameter
