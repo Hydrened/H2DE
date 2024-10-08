@@ -134,9 +134,10 @@ private:
     /**
      * Simulates a click on a graphic element
      * \param g a pointer to a graphic element
+     * \return a boolean
      * \since H2DE-1.1.0
      */
-    void simulateClick(H2DE_GraphicObject* g);
+    bool isElementClicked(H2DE_GraphicObject* g);
 
     friend class H2DE_Calculator;
 

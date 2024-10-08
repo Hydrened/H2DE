@@ -1,3 +1,7 @@
+## H2DE-1.1.3
+#### FIXED
+- click only call the onclick function on the element with the highest index
+
 ## H2DE-1.1.2
 #### FIXED
 - sfx are now ogg files
