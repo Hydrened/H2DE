@@ -44,7 +44,18 @@ struct H2DE_GraphicObject {
 };
 
 /**
- * Destroy a graphic object
+ * Creates a graphic object
+ * \since H2DE-1.1.4
+ */
+extern H2DE_GraphicObject* H2DE_CreateGraphicObject();
+/**
+ * Creates a copy of a graphic object
+ * \param g a graphic object
+ * \since H2DE-1.1.4
+ */
+extern H2DE_GraphicObject* H2DE_CreateGraphicObject(H2DE_GraphicObject g);
+/**
+ * Destroys a graphic object
  * \param g the graphic object to destroy
  * \since H2DE-1.0.0
  */

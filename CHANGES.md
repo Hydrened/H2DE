@@ -1,3 +1,9 @@
+## H2DE-1.1.4
+#### ADDED
+- `H2DE_CreateTimelineManager` function
+- `H2DE_DestroyTimelineManager` function
+- `H2DE_CreateGraphicObject` function
+
 ## H2DE-1.1.3
 #### FIXED
 - click only call the onclick function on the element with the highest index

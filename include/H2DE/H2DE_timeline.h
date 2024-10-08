@@ -51,7 +51,6 @@ private:
 
 public:
     H2DE_TimelineManager();
-    H2DE_TimelineManager(std::vector<H2DE_Timeline*> timelines);
 
     /**
      * Adds a timeline to a manager
@@ -82,6 +81,20 @@ public:
      * \since H2DE-1.0.15
      */
     friend void H2DE_ClearTimelineManager(H2DE_TimelineManager* manager);
+
+    /**
+     * Destroys a timeline manager
+     * \param timelineManager a pointer to a timeline manager
+     * \since H2DE-1.1.4
+     */
+    friend void H2DE_DestroyTimelineManager(H2DE_TimelineManager* timelineManager);
 };
+
+/**
+ * Creates a timeline manager
+ * \return a pointer to a timeline manager
+ * \since H2DE-1.1.4
+ */
+extern H2DE_TimelineManager* H2DE_CreateTimelineManager();
 
 #endif
