@@ -2,6 +2,8 @@
 #define H2DE_UTILS_H
 
 #include <SDL2/SDL.h>
+#include <algorithm>
+#include <cmath>
 
 /**
  * `H2DE_GraphicObject` types
@@ -33,9 +35,7 @@ struct H2DE_Pos {
     int x;
     int y;
 
-    explicit operator SDL_Point() const {
-        return SDL_Point{ x, y };
-    }
+    explicit operator SDL_Point() const;
 };
 
 /**
@@ -47,23 +47,33 @@ struct H2DE_Size {
     int h;
 };
 
+struct H2DE_HSV;
 /**
- * H2DE color
+ * H2DE rgb color
  * \since H2DE-1.0.0
  */
-struct H2DE_Color {
+struct H2DE_RGB {
     Uint8 r;
     Uint8 g;
     Uint8 b;
     Uint8 a;
 
-    explicit operator Uint32() const {
-        return (a << 24) | (b << 16) | (g << 8) | r;
-    }
+    explicit operator Uint32() const;
+    operator SDL_Color() const;
+    explicit operator H2DE_HSV() const;
+};
 
-    operator SDL_Color() const {
-        return { r, g, b, a };
-    }
+/**
+ * H2DE rgb hsv
+ * \since H2DE-1.2.0
+ */
+struct H2DE_HSV {
+    float h;
+    float s;
+    float v;
+    float a;
+
+    explicit operator H2DE_RGB() const;
 };
 
 /**

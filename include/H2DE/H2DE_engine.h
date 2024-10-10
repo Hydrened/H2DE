@@ -6,6 +6,7 @@
 #include <H2DE/H2DE_loader.h>
 #include <H2DE/H2DE_calculator.h>
 #include <H2DE/H2DE_types.h>
+#include <H2DE/H2DE_color.h>
 #include <H2DE/H2DE_graphic.h>
 #include <H2DE/H2DE_timeline.h>
 #include <H2DE/H2DE_json.h>
@@ -106,7 +107,7 @@ private:
      * \param color color of the pixel
      * \since H2DE-1.0.0
      */
-    void renderPixel(H2DE_Pos pos, H2DE_Color color);
+    void renderPixel(H2DE_Pos pos, H2DE_RGB rgb);
     /**
      * Renders an image on the renderer
      * \param g the image to render

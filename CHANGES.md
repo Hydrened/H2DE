@@ -1,3 +1,8 @@
+## H2DE-1.2.0
+#### ADDED
+- rgb and hsv colors
+- added add, substract, multiply and divide functions for rgb colors
+
 ## H2DE-1.1.5
 #### ADDED
 - dump parameter on write json method
