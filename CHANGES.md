@@ -1,3 +1,8 @@
+## H2DE-1.1.5
+#### ADDED
+- dump parameter on write json method
+- debug for engine rendering (only rotation origins)
+
 ## H2DE-1.1.4
 #### ADDED
 - `H2DE_CreateTimelineManager` function

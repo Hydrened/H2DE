@@ -34,6 +34,7 @@ private:
     bool isRunning = true;
     SDL_Renderer* renderer;
     int dataToLoad, loadedData = 0;
+    bool debug = false;
 
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, Mix_Music*> songs;
@@ -282,6 +283,14 @@ public:
      * \since H2DE-1.0.0
      */
     friend void H2DE_ResumeSFX(H2DE_Engine* engine, int channel);
+
+    /**
+     * Debugs engine rendering
+     * \param engine a pointer to an engine
+     * \param active state of the debug
+     * \since H2DE-1.1.5
+     */
+    friend void H2DE_DebugEngineRendering(H2DE_Engine* engine, bool active);
 };
 
 /**
