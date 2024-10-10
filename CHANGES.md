@@ -1,3 +1,8 @@
+## H2DE-1.2.1
+#### ADDED
+- timeline reset
+-  timaline manager reset
+
 ## H2DE-1.2.0
 #### ADDED
 - rgb and hsv colors

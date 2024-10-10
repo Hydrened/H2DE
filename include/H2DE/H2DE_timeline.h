@@ -35,10 +35,17 @@ public:
 
     /**
      * Calls the update function with the next value from the timeline as a float parameter
+     * \param timeline a pointer to a timeline
      * \return true if it ticks
      * \since H2DE-1.0.9
      */
-    bool tick();
+    friend bool H2DE_TickTimeline(H2DE_Timeline* timeline);
+    /**
+     * Restarts the current loop
+     * \param timeline a pointer to a timeline
+     * \since H2DE-1.2.1
+     */
+    friend void H2DE_ResetTimeline(H2DE_Timeline* timeline);
 };
 
 /**
@@ -81,6 +88,13 @@ public:
      * \since H2DE-1.0.15
      */
     friend void H2DE_ClearTimelineManager(H2DE_TimelineManager* manager);
+
+    /**
+     * Resets each timeline of a manager
+     * \param manager a pointer to a manager
+     * \since H2DE-1.2.1
+     */
+    friend void H2DE_ResetTimelineManager(H2DE_TimelineManager* manager);
 
     /**
      * Destroys a timeline manager
