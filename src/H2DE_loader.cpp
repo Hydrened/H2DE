@@ -1,0 +1,20 @@
+#include <H2DE/H2DE_loader.h>
+
+SDL_Texture* H2DE_Loader::loadTexture(SDL_Renderer* renderer, const char* file) {
+    SDL_Surface* surface = IMG_Load(file);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+    return texture;
+}
+
+Mix_Music* H2DE_Loader::loadSong(const char* file) {
+    return Mix_LoadMUS(file);
+}
+
+Mix_Chunk* H2DE_Loader::loadSFX(const char* file) {
+    return Mix_LoadWAV(file);
+}
+
+TTF_Font* H2DE_Loader::loadFont(const char* file) {
+    return TTF_OpenFont(file, 24);
+}
