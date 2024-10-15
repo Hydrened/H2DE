@@ -7,11 +7,7 @@ SDL_Texture* H2DE_Loader::loadTexture(SDL_Renderer* renderer, const char* file) 
     return texture;
 }
 
-Mix_Music* H2DE_Loader::loadSong(const char* file) {
-    return Mix_LoadMUS(file);
-}
-
-Mix_Chunk* H2DE_Loader::loadSFX(const char* file) {
+Mix_Chunk* H2DE_Loader::loadSound(const char* file) {
     return Mix_LoadWAV(file);
 }
 

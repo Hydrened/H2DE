@@ -13,10 +13,8 @@ H2DE_Engine::H2DE_Engine(SDL_Renderer* r, int w, int h, int f) : renderer(r), si
 H2DE_Engine::~H2DE_Engine() {
     for (const auto& pair : textures) if (pair.second != nullptr) SDL_DestroyTexture(pair.second);
     textures.clear();
-    for (const auto& pair : songs) if (pair.second != nullptr) Mix_FreeMusic(pair.second);
-    songs.clear();
-    for (const auto& pair : sfxs) if (pair.second != nullptr) Mix_FreeChunk(pair.second);
-    sfxs.clear();
+    for (const auto& pair : sounds) if (pair.second != nullptr) Mix_FreeChunk(pair.second);
+    sounds.clear();
     for (const auto& pair : fonts) if (pair.second != nullptr) TTF_CloseFont(pair.second);
     fonts.clear();
     for (H2DE_GraphicObject* g : graphicObjects) H2DE_DestroyGraphicObject(g);
@@ -67,8 +65,7 @@ void H2DE_Engine::importFiles(const fs::path& parentDir) {
         else if (fs::is_regular_file(entry.status())) {
             fs::path extension = entry.path().extension();
             if (extension == ".png") importTexture(entry.path());
-            else if (extension == ".mp3") importSong(entry.path());
-            else if (extension == ".ogg") importSFX(entry.path());
+            else if (extension == ".mp3" || extension == ".ogg") importSound(entry.path());
             else if (extension == ".ttf") importFont(entry.path());
         }
     }
@@ -85,25 +82,14 @@ void H2DE_Engine::importTexture(const fs::path& img) {
     assetImported();
 }
 
-void H2DE_Engine::importSong(const fs::path& song) {
+void H2DE_Engine::importSound(const fs::path& song) {
     size_t startNameIndex = song.string().rfind('\\');
     startNameIndex = (startNameIndex != std::string::npos) ? startNameIndex + 1 : 0;
     std::string file = song.string().substr(startNameIndex);
     std::replace(file.begin(), file.end(), '\\', '/');
-    Mix_Music* music = H2DE_Loader::loadSong(song.string().c_str());
-    if (music != nullptr) songs[file] = music;
+    Mix_Chunk* music = H2DE_Loader::loadSound(song.string().c_str());
+    if (music != nullptr) sounds[file] = music;
     else std::cerr << "ENGINE => Mix_LoadMUS failed: " << Mix_GetError() << std::endl;
-    assetImported();
-}
-
-void H2DE_Engine::importSFX(const fs::path& sfx) {
-    size_t startNameIndex = sfx.string().rfind('\\');
-    startNameIndex = (startNameIndex != std::string::npos) ? startNameIndex + 1 : 0;
-    std::string file = sfx.string().substr(startNameIndex);
-    std::replace(file.begin(), file.end(), '\\', '/');
-    Mix_Chunk* sound = H2DE_Loader::loadSFX(sfx.string().c_str());
-    if (sound != nullptr) sfxs[file] = sound;
-    else std::cerr << "ENGINE => Mix_LoadWAV failed: " << Mix_GetError() << std::endl;
     assetImported();
 }
 
@@ -358,52 +344,29 @@ void H2DE_Engine::renderText(H2DE_GraphicObject* g) {
     }
 }
 
-// SONG
-void H2DE_SetSongVolume(H2DE_Engine* engine, int volume) {
-    int songVolume = std::clamp(volume, 0, 100);
-    Mix_VolumeMusic(static_cast<int>((songVolume / 100.0f) * 128));
+// SOUND
+void H2DE_SetSoundVolume(H2DE_Engine* engine, int channel, int volume) {
+    volume = std::clamp(volume, 0, 100);
+    Mix_Volume(channel, static_cast<int>((volume / 100.0f) * 128));
 }
 
-void H2DE_PlaySong(H2DE_Engine* engine, std::string song, int loop) {
-    std::unordered_map<std::string, Mix_Music*> songs = engine->songs;
+int H2DE_PlaySound(H2DE_Engine* engine, std::string song, int loop) {
+    std::unordered_map<std::string, Mix_Chunk*> songs = engine->sounds;
 
     if (songs.find(song) != songs.end()) {
         Mix_HaltMusic();
-        if (Mix_PlayMusic(songs[song], loop) == -1) std::cerr << "ENGINE => Mix_PlayMusic failed: " << Mix_GetError() << std::endl;
-    } else std::cerr << "ENGINE => Song '" << song << "' not found" << std::endl;
-}
-
-void H2DE_PauseSong(H2DE_Engine* engine) {
-    Mix_PauseMusic();
-}
-
-void H2DE_ResumeSong(H2DE_Engine* engine) {
-    Mix_ResumeMusic();
-}
-
-// SFX
-void H2DE_SetSFXVolume(H2DE_Engine* engine, int channel, int volume) {
-    int songVolume = std::max(std::min(volume, 100), 0);
-    Mix_Volume(channel, static_cast<int>((songVolume / 100.0f) * 128));
-}
-
-int H2DE_PlaySFX(H2DE_Engine* engine, std::string sfx, int loop) {
-    std::unordered_map<std::string, Mix_Chunk*> sfxs = engine->sfxs;
-
-    if (sfxs.find(sfx) != sfxs.end()) {
-        Mix_HaltMusic();
-        int channel =Mix_PlayChannel(-1, sfxs[sfx], loop);
-        if (channel == -1)std::cerr << "ENGINE => Mix_PlayChannel failed: " << Mix_GetError() << std::endl;
+        int channel = Mix_PlayChannel(-1, songs[song], loop);
+        if (channel == -1) std::cerr << "ENGINE => Mix_PlayChannel failed: " << Mix_GetError() << std::endl;
         return channel;
-    } else std::cerr << "ENGINE => SFX '" << sfx << "' not found" << std::endl;
+    } else std::cerr << "ENGINE => Song '" << song << "' not found" << std::endl;
     return -1;
 }
 
-void H2DE_PauseSFX(H2DE_Engine* engine, int channel) {
+void H2DE_PauseSound(H2DE_Engine* engine, int channel) {
     Mix_Pause(channel);
 }
 
-void H2DE_ResumeSFX(H2DE_Engine* engine, int channel) {
+void H2DE_ResumeSound(H2DE_Engine* engine, int channel) {
     Mix_Resume(channel);
 }
 

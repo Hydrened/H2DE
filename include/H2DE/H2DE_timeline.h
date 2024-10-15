@@ -8,7 +8,7 @@
 class H2DE_Engine;
 
 /**
- * The type used to identify a timeline
+ * The type used for a timeline
  * \since H2DE-1.0.9
  */
 class H2DE_Timeline {

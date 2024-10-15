@@ -1,7 +1,11 @@
+## H2DE-1.2.2
+#### REPLACED
+- songs and sfxs per sound
+
 ## H2DE-1.2.1
 #### ADDED
 - timeline reset
--  timaline manager reset
+- timeline manager reset
 
 ## H2DE-1.2.0
 #### ADDED

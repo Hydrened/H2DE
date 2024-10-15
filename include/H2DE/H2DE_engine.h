@@ -38,8 +38,7 @@ private:
     bool debug = false;
 
     std::unordered_map<std::string, SDL_Texture*> textures;
-    std::unordered_map<std::string, Mix_Music*> songs;
-    std::unordered_map<std::string, Mix_Chunk*> sfxs;
+    std::unordered_map<std::string, Mix_Chunk*> sounds;
     std::unordered_map<std::string, TTF_Font*> fonts;
 
     std::vector<H2DE_GraphicObject*> graphicObjects;
@@ -65,17 +64,11 @@ private:
      */
     void importTexture(const fs::path& img);
     /**
-     * Imports a song from a mp3 file
-     * \param song mp3 file
+     * Imports a sound from a mp3 or ogg file
+     * \param sound mp3 file
      * \since H2DE-1.0.0
      */
-    void importSong(const fs::path& song);
-    /**
-     * Imports a SFX from a wav file
-     * \param sfx wav file
-     * \since H2DE-1.0.0
-     */
-    void importSFX(const fs::path& sfx);
+    void importSound(const fs::path& sound);
     /**
      * Imports a font from a ttf file
      * \param font ttf file
@@ -219,71 +212,43 @@ public:
      * \param duration time in ms
      * \param effect timeline effect
      * \param update function called every frame
-     * \param completed function called once the timeline is finished (`NULL` not to call)
+     * \param completed function called once the timeline is finished
      * \param loop number of loops (-1 = infinite)
      * \since H2DE-1.0.9
      */
     friend H2DE_Timeline* H2DE_CreateTimeline(H2DE_Engine* engine, unsigned int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed, int loop);
 
     /**
-     * Sets the song volume
+     * Sets sounds volume
      * \param engine a pointer to an engine
      * \param volume the volume (0-100)
+     * \param channel the channel of the target (-1 for all)
      * \since H2DE-1.0.0
      */
-    friend void H2DE_SetSongVolume(H2DE_Engine* engine, int volume);
+    friend void H2DE_SetSoundVolume(H2DE_Engine* engine, int channel, int volume);
     /**
-     * Plays a song
+     * Plays a sound
      * \param engine a pointer to an engine
-     * \param song the name of the loaded song
+     * \param sound the name of the loaded sound
      * \param loop number of loop (-1 = infinite)
+     * \return the channel of the sound
      * \since H2DE-1.0.0
      */
-    friend void H2DE_PlaySong(H2DE_Engine* engine, std::string song, int loop);
+    friend int H2DE_PlaySound(H2DE_Engine* engine, std::string sound, int loop);
     /**
-     * Pauses the current song
-     * \param engine a pointer to an engine
-     * \since H2DE-1.0.0
-     */
-    friend void H2DE_PauseSong(H2DE_Engine* engine);
-    /**
-     * Resumes the current song
-     * \param engine a pointer to an engine
-     * \since H2DE-1.0.0
-     */
-    friend void H2DE_ResumeSong(H2DE_Engine* engine);
-
-    /**
-     * Sets the volume for a specific sfx
-     * \param engine a pointer to an engine
-     * \param channel the channel of the target (-1 for all)
-     * \param volume the volume (0-100)
-     * \since H2DE-1.0.0
-     */
-    friend void H2DE_SetSFXVolume(H2DE_Engine* engine, int channel, int volume);
-    /**
-     * Plays a sfx
-     * \param engine a pointer to an engine
-     * \param song the name of the loaded sfx (-1 for all)
-     * \param loop number of loop (-1 = infinite)
-     * \return the channel of the target
-     * \since H2DE-1.0.0
-     */
-    friend int H2DE_PlaySFX(H2DE_Engine* engine, std::string sfx, int loop);
-    /**
-     * Pauses a sfx
+     * Pauses a sound
      * \param engine a pointer to an engine
      * \param channel the channel of the target (-1 for all)
      * \since H2DE-1.0.0
      */
-    friend void H2DE_PauseSFX(H2DE_Engine* engine, int channel);
+    friend void H2DE_PauseSound(H2DE_Engine* engine, int channel);
     /**
-     * Resumes a sfx
+     * Resumes a sound
      * \param engine a pointer to an engine
      * \param channel the channel of the target (-1 for all)
      * \since H2DE-1.0.0
      */
-    friend void H2DE_ResumeSFX(H2DE_Engine* engine, int channel);
+    friend void H2DE_ResumeSound(H2DE_Engine* engine, int channel);
 
     /**
      * Debugs engine rendering

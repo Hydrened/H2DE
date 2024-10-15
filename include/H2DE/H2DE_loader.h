@@ -10,7 +10,7 @@
  * Contains the methods required by the engine to load files such as:
  * - png
  * - mp3
- * - wav
+ * - ogg
  * - ttf
  * \since H2DE-1.0.0
  */
@@ -25,19 +25,12 @@ public:
      */
     static SDL_Texture* loadTexture(SDL_Renderer* renderer, const char* file);
     /**
-     * Loads a music from a mp3 file
-     * \param file the name of the file
-     * \return a music
-     * \since H2DE-1.0.0
-     */
-    static Mix_Music* loadSong(const char* file);
-    /**
-     * Loads a sfx from a wav file
+     * Loads a sound from a mp3 or ogg file
      * \param file the name of the file
      * \return a chunk
      * \since H2DE-1.0.0
      */
-    static Mix_Chunk* loadSFX(const char* file);
+    static Mix_Chunk* loadSound(const char* file);
     /**
      * Loads a font from a ttf file
      * \param file the name of the file
