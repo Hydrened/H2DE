@@ -230,6 +230,7 @@ void H2DE_RenderEngine(H2DE_Engine* engine) {
     graphicObjects.insert(graphicObjects.end(), repeatYGraphicObjects.begin(), repeatYGraphicObjects.end());
 
     sort(graphicObjects.begin(), graphicObjects.end(), &H2DE_Calculator::isIndexGreater);
+    if (engine->debug) std::cout << "ENGINE => rendering " << graphicObjects.size() << " object(s)" << std::endl; 
 
     H2DE_GraphicObject* clickedElement = nullptr;
     for (H2DE_GraphicObject* g : graphicObjects) {
@@ -350,16 +351,12 @@ void H2DE_SetSoundVolume(H2DE_Engine* engine, int channel, int volume) {
     Mix_Volume(channel, static_cast<int>((volume / 100.0f) * 128));
 }
 
-int H2DE_PlaySound(H2DE_Engine* engine, std::string song, int loop) {
-    std::unordered_map<std::string, Mix_Chunk*> songs = engine->sounds;
+void H2DE_PlaySound(H2DE_Engine* engine, int channel, std::string sound, int loop) {
+    std::unordered_map<std::string, Mix_Chunk*> sounds = engine->sounds;
 
-    if (songs.find(song) != songs.end()) {
-        Mix_HaltMusic();
-        int channel = Mix_PlayChannel(-1, songs[song], loop);
-        if (channel == -1) std::cerr << "ENGINE => Mix_PlayChannel failed: " << Mix_GetError() << std::endl;
-        return channel;
-    } else std::cerr << "ENGINE => Song '" << song << "' not found" << std::endl;
-    return -1;
+    if (sounds.find(sound) != sounds.end()) {
+        if ( Mix_PlayChannel(channel, sounds[sound], loop) == -1) std::cerr << "ENGINE => Mix_PlayChannel failed: " << Mix_GetError() << std::endl;
+    } else std::cerr << "ENGINE => Sound '" << sound << "' not found" << std::endl;
 }
 
 void H2DE_PauseSound(H2DE_Engine* engine, int channel) {

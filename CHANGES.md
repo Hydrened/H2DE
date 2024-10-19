@@ -1,3 +1,7 @@
+## H2DE-1.2.3
+#### ADDED
+- debug: number of graphic object rendered
+
 ## H2DE-1.2.2
 #### REPLACED
 - songs and sfxs per sound

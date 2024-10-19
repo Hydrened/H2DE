@@ -43,7 +43,7 @@ private:
 
     std::vector<H2DE_GraphicObject*> graphicObjects;
     std::optional<H2DE_SClick*> click = std::nullopt;
-    
+
     /**
      * Counts the number of file to be loaded from a parent directory
      * \param dir parent directory
@@ -229,12 +229,12 @@ public:
     /**
      * Plays a sound
      * \param engine a pointer to an engine
+     * \param channel the channel of the target (-1 for all)
      * \param sound the name of the loaded sound
      * \param loop number of loop (-1 = infinite)
-     * \return the channel of the sound
      * \since H2DE-1.0.0
      */
-    friend int H2DE_PlaySound(H2DE_Engine* engine, std::string sound, int loop);
+    friend void H2DE_PlaySound(H2DE_Engine* engine, int channel, std::string sound, int loop);
     /**
      * Pauses a sound
      * \param engine a pointer to an engine
