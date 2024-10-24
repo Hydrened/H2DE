@@ -39,6 +39,7 @@ struct H2DE_GraphicObject {
 
     SDL_RendererFlip flip = SDL_FLIP_NONE;                          /**< To flip the object (only for `H2DE_GraphicObjectType::IMAGE` and `H2DE_GraphicObjectType::TEXT`) */
 
+    H2DE_GraphicObject* parent = nullptr;                           /**< Parent of the object */
     unsigned int index = 0;                                         /**< The order of the object */
 
     std::optional<std::function<void()>> onclick = std::nullopt;    /**< Function that'll be triggered when clicked */

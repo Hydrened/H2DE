@@ -1,3 +1,7 @@
+## H2DE-1.3.0
+#### ADDED
+- parent system (translates only)
+
 ## H2DE-1.2.4
 #### ADDED
 - src rect for images

@@ -36,6 +36,13 @@ public:
     static H2DE_Size getPolygonSize(std::vector<SDL_Point> points);
 
     /**
+     * Calculates the position of a point according to the object's parents
+     * \param g a pointer to a `H2DE_GraphicObject`
+     * \return the position
+     * \since H2DE-1.3.0
+     */
+    static H2DE_Pos getPosFromParents(H2DE_GraphicObject* g);
+    /**
      * Calculates the position of a point according to a scale and a scale origin
      * \param pos default position
      * \param size element size

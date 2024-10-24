@@ -273,7 +273,8 @@ void H2DE_Engine::renderImage(H2DE_GraphicObject* g) {
     std::unordered_map<std::string, SDL_Texture*>::iterator textureIterator = textures.find(g->texture);
     if (textureIterator != textures.end()) {
 
-        H2DE_Pos pos = H2DE_Calculator::getRescaledPos(g->pos, g->size, g->scaleOrigin, g->scale);
+        H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
+        pos = H2DE_Calculator::getRescaledPos(pos, g->size, g->scaleOrigin, g->scale);
         H2DE_Size size = H2DE_Calculator::getRescaledSize(g->size, g->scale);
         SDL_Rect destRect = { pos.x, pos.y, size.w, size.h };
 
@@ -298,8 +299,9 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
     std::vector<Sint16> vx(nbPoints);
     std::vector<Sint16> vy(nbPoints);
 
+    H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
     H2DE_Size size = H2DE_Calculator::getPolygonSize(g->points);
-    H2DE_Pos pos = H2DE_Calculator::getRescaledPos(g->pos, size, g->scaleOrigin, g->scale);
+    pos = H2DE_Calculator::getRescaledPos(pos, size, g->scaleOrigin, g->scale);
 
     H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
     rotationOrigin = { rotationOrigin.x + pos.x, rotationOrigin.y + pos.y };
@@ -316,7 +318,8 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
 }
 
 void H2DE_Engine::renderCircle(H2DE_GraphicObject* g) {
-    H2DE_Pos pos = H2DE_Calculator::getRescaledPos(g->pos, { static_cast<int>(g->radius) * 2, static_cast<int>(g->radius) * 2 }, g->scaleOrigin, g->scale);
+    H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
+    pos = H2DE_Calculator::getRescaledPos(pos, { static_cast<int>(g->radius) * 2, static_cast<int>(g->radius) * 2 }, g->scaleOrigin, g->scale);
     
     H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
     rotationOrigin = { rotationOrigin.x + pos.x, rotationOrigin.y + pos.y };
@@ -331,7 +334,8 @@ void H2DE_Engine::renderText(H2DE_GraphicObject* g) {
     std::unordered_map<std::string, TTF_Font*>::iterator fontIterator = fonts.find(g->font);
     if (fontIterator != fonts.end()) {
 
-        H2DE_Pos pos = H2DE_Calculator::getRescaledPos(g->pos, g->size, g->scaleOrigin, g->scale);
+        H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
+        pos = H2DE_Calculator::getRescaledPos(pos, g->size, g->scaleOrigin, g->scale);
         H2DE_Size size = H2DE_Calculator::getRescaledSize(g->size, g->scale);
         SDL_Rect destRect = { pos.x, pos.y, size.w, size.h };
 

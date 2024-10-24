@@ -23,6 +23,17 @@ H2DE_Size H2DE_Calculator::getPolygonSize(std::vector<SDL_Point> points) {
     return { min.x + max.x, min.y + max.y };
 }
 
+H2DE_Pos H2DE_Calculator::getPosFromParents(H2DE_GraphicObject* g) {
+    H2DE_Pos pos = g->pos;
+    H2DE_GraphicObject* parent = g->parent;
+    while (parent) {
+        pos.x += parent->pos.x;
+        pos.y += parent->pos.y;
+        parent = parent->parent;
+    }
+    return pos;
+}
+
 H2DE_Pos H2DE_Calculator::getRescaledPos(H2DE_Pos pos, H2DE_Size size, H2DE_Pos scaleOrigin, H2DE_Scale scale) {
     if (scale.x != 1.0f || scale.y != 1.0f) {
         int xOffset = ((size.w * scale.x - size.w) * (static_cast<float>(scaleOrigin.x) / static_cast<float>(size.w))) * -1;
