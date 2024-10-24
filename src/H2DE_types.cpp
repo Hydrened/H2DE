@@ -4,6 +4,10 @@ H2DE_Pos::operator SDL_Point() const {
     return SDL_Point{ x, y };
 }
 
+H2DE_Rect::operator SDL_Rect() const {
+    return { pos.x, pos.y, size.w, size.h };
+}
+
 H2DE_RGB::operator Uint32() const {
     return (a << 24) | (b << 16) | (g << 8) | r;
 }

@@ -19,6 +19,7 @@ struct H2DE_GraphicObject {
     H2DE_Size size = { 0, 0 };                                      /**< Size of the object (only for `H2DE_GraphicObjectType::IMAGE` and `H2DE_GraphicObjectType::TEXT`) */
     std::vector<SDL_Point> points;                                  /**< Points of the polygon (only for `H2DE_GraphicObjectType::POLYGON`) */
     unsigned int radius = 0;                                        /**< Radius of the circle (only for `H2DE_GraphicObjectType::CIRCLE`) */
+    std::optional<H2DE_Rect> srcRect = std::nullopt;                /**< Part of the image to display (only for `H2DE_GraphicObjectType::IMAGE`) */
 
     std::string texture = "";                                       /**< Texture of the object (only for `H2DE_GraphicObjectType::IMAGE`) */
     const char* text = "";                                          /**< Text of the object (only for `H2DE_GraphicObjectType::TEXT`) */

@@ -1,3 +1,7 @@
+## H2DE-1.2.4
+#### ADDED
+- src rect for images
+
 ## H2DE-1.2.3
 #### ADDED
 - debug: number of graphic object rendered

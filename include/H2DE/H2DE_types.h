@@ -47,6 +47,17 @@ struct H2DE_Size {
     int h;
 };
 
+/**
+ * H2DE rect
+ * \since H2DE-1.2.4
+ */
+struct H2DE_Rect {
+    H2DE_Pos pos;
+    H2DE_Size size;
+
+    operator SDL_Rect() const;
+};
+
 struct H2DE_HSV;
 /**
  * H2DE rgb color

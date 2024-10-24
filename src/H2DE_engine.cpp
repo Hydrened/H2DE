@@ -285,7 +285,11 @@ void H2DE_Engine::renderImage(H2DE_GraphicObject* g) {
         SDL_SetTextureColorMod(texture, g->rgb.r, g->rgb.g, g->rgb.b);
         SDL_SetTextureAlphaMod(texture, g->rgb.a);
         SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
-        SDL_RenderCopyEx(renderer, texture, NULL, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
+
+        if (g->srcRect.has_value()) {
+            SDL_Rect srcRect = (SDL_Rect)g->srcRect.value();
+            SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
+        } else SDL_RenderCopyEx(renderer, texture, NULL, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
     }
 }
 
