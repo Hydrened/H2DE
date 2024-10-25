@@ -16,3 +16,6 @@ engine:
 test:
 	$(CC) $(VERSION) -m64 -o $(BIN_DIR)/test $(SRC_DIR)/test.cpp -I$(INCLUDE_DIR) -L$(LIB_DIR) -lmingw32 -lSDL2main $(SDL_TAGS) -lH2DE
 	./$(BIN_DIR)/test.exe
+
+run:
+	./$(BIN_DIR)/test.exe

@@ -1,3 +1,7 @@
+## H2DE-1.3.1
+#### ADDED
+- scale for parents and child (only for polygons) (but not scaled parent in scaled parent)
+
 ## H2DE-1.3.0
 #### ADDED
 - parent system (translates only)
