@@ -35,7 +35,6 @@ private:
     bool isRunning = true;
     SDL_Renderer* renderer;
     int dataToLoad, loadedData = 0;
-    bool debug = false;
 
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, Mix_Chunk*> sounds;
@@ -43,6 +42,18 @@ private:
 
     std::vector<H2DE_GraphicObject*> graphicObjects;
     std::optional<H2DE_SClick*> click = std::nullopt;
+
+    /**
+     * Type used to store debugs
+     * \since H2DE-1.3.4
+     */
+    struct H2DE_Debug {
+        bool graphicObjects = false;
+        bool scaleOrigins = false;
+        bool rotationOrigins = false;
+    };
+
+    H2DE_Debug* debug = new H2DE_Debug();
 
     /**
      * Counts the number of file to be loaded from a parent directory
@@ -251,12 +262,26 @@ public:
     friend void H2DE_ResumeSound(H2DE_Engine* engine, int channel);
 
     /**
-     * Debugs engine rendering
+     * Tells the number of graphic objects that are rendered
      * \param engine a pointer to an engine
      * \param active state of the debug
-     * \since H2DE-1.1.5
+     * \since H2DE-1.3.4
      */
-    friend void H2DE_DebugEngineRendering(H2DE_Engine* engine, bool active);
+    friend void H2DE_DebugGraphicObjects(H2DE_Engine* engine, bool active);
+    /**
+     * Debugs scale origins
+     * \param engine a pointer to an engine
+     * \param active state of the debug
+     * \since H2DE-1.3.4
+     */
+    friend void H2DE_DebugScaleOrigins(H2DE_Engine* engine, bool active);
+    /**
+     * Debugs rotation origins
+     * \param engine a pointer to an engine
+     * \param active state of the debug
+     * \since H2DE-1.3.4
+     */
+    friend void H2DE_DebugRotationOrigins(H2DE_Engine* engine, bool active);
 };
 
 /**

@@ -1,3 +1,11 @@
+## H2DE-1.3.4
+#### ADDED
+- debug for number of graphic objects
+- debug for scale origins
+- debug for rotation origins
+#### FIXED
+- child rotation when parent is rotated
+
 ## H2DE-1.3.3
 #### ADDED
 - parent rotations for polygons

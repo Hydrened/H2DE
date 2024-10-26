@@ -1,6 +1,6 @@
 #include <H2DE/H2DE_engine.h>
 
-// CONSTRUCTOR AND DECONSTRUCTOR
+// INIT
 H2DE_Engine::H2DE_Engine(SDL_Renderer* r, int w, int h, int f) : renderer(r), size({ w, h }), fps(f) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) throw std::runtime_error("SDL_Init  failed: " + std::string(SDL_GetError()));
     else if (SDL_Init(SDL_INIT_AUDIO) != 0) throw std::runtime_error("ENGINE => SDL_Init failed: " + std::string(SDL_GetError()));
@@ -10,6 +10,11 @@ H2DE_Engine::H2DE_Engine(SDL_Renderer* r, int w, int h, int f) : renderer(r), si
     else if (TTF_Init() == -1) throw std::runtime_error("TTF_Init  failed: " + std::string(TTF_GetError()));
 }
 
+H2DE_Engine* H2DE_CreateEngine(SDL_Renderer* renderer, int w, int h, int fps) {
+    return new H2DE_Engine(renderer, w, h, fps);
+};
+
+// CLEANUP
 H2DE_Engine::~H2DE_Engine() {
     for (const auto& pair : textures) if (pair.second != nullptr) SDL_DestroyTexture(pair.second);
     textures.clear();
@@ -24,18 +29,21 @@ H2DE_Engine::~H2DE_Engine() {
     TTF_Quit();
 }
 
-// INIT
-H2DE_Engine* H2DE_CreateEngine(SDL_Renderer* renderer, int w, int h, int fps) {
-    return new H2DE_Engine(renderer, w, h, fps);
-};
-
-void H2DE_DebugEngineRendering(H2DE_Engine* engine, bool active) {
-    engine->debug = active;
-}
-
-// CLEANUP
 void H2DE_DestroyEngine(H2DE_Engine* engine) {
     delete engine;
+}
+
+// DEBUG
+void H2DE_DebugGraphicObjects(H2DE_Engine* engine, bool active) {
+    engine->debug->graphicObjects = active;
+}
+
+void H2DE_DebugScaleOrigins(H2DE_Engine* engine, bool active) {
+    engine->debug->scaleOrigins = active;
+}
+
+void H2DE_DebugRotationOrigins(H2DE_Engine* engine, bool active) {
+    engine->debug->rotationOrigins = active;
 }
 
 // ASSETS
@@ -230,7 +238,7 @@ void H2DE_RenderEngine(H2DE_Engine* engine) {
     graphicObjects.insert(graphicObjects.end(), repeatYGraphicObjects.begin(), repeatYGraphicObjects.end());
 
     sort(graphicObjects.begin(), graphicObjects.end(), &H2DE_Calculator::isIndexGreater);
-    if (engine->debug) std::cout << "ENGINE => rendering " << graphicObjects.size() << " object(s)" << std::endl; 
+    if (engine->debug->graphicObjects) std::cout << "ENGINE => rendering " << graphicObjects.size() << " object(s)" << std::endl; 
 
     H2DE_GraphicObject* clickedElement = nullptr;
     for (H2DE_GraphicObject* g : graphicObjects) {
@@ -305,7 +313,7 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
     }
 
     H2DE_Pos scaleOrigin = { static_cast<int>(g->scaleOrigin.x * scale.x), static_cast<int>(g->scaleOrigin.y * scale.y) };
-    if (debug) renderPixel({ pos.x + scaleOrigin.x, pos.y + scaleOrigin.y }, { 255, 0, 0, 255 });
+    if (debug->scaleOrigins) renderPixel({ pos.x + scaleOrigin.x, pos.y + scaleOrigin.y }, { 255, 0, 0, 255 });
     pos = H2DE_Calculator::getRescaledPos(pos, size, scaleOrigin, g->scale);
     for (int i = 0; i < nbPoints; i++) {
         vx[i] = pos.x + g->points[i].x * scale.x * g->scale.x;
@@ -324,13 +332,11 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
             vy[i] = pointPos.y;
         }
 
-        scale.x *= parent->scale.x;
-        scale.y *= parent->scale.y;
         parent = parent->parent;
     }
 
     H2DE_Pos rotationOrigin = { static_cast<int>(pos.x + g->rotationOrigin.x * scale.x * g->scale.x), static_cast<int>(pos.y + g->rotationOrigin.y * scale.y * g->scale.y) };
-    if (debug) renderPixel(rotationOrigin, { 0, 255, 0, 255 });
+    if (debug->rotationOrigins) renderPixel(rotationOrigin, { 0, 255, 0, 255 });
     for (int i = 0; i < nbPoints; i++) {
         H2DE_Pos tempPointPos = { vx[i], vy[i] };
         H2DE_Pos pointPos = H2DE_Calculator::applyRotationOnPos(tempPointPos, rotationOrigin, g->rotation);
