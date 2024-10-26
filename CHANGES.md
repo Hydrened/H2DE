@@ -1,3 +1,9 @@
+## H2DE-1.3.3
+#### ADDED
+- parent rotations for polygons
+#### FIXED
+- rotation for polygons
+
 ## H2DE-1.3.2
 #### FIXED
 - scaled parent in scaled parent for polygons
