@@ -1,6 +1,12 @@
+## H2DE-1.3.2
+#### FIXED
+- scaled parent in scaled parent for polygons
+
 ## H2DE-1.3.1
 #### ADDED
 - scale for parents and child (only for polygons) (but not scaled parent in scaled parent)
+#### REMOVED
+- polygon rotations (temporary)
 
 ## H2DE-1.3.0
 #### ADDED
