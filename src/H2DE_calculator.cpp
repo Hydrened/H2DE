@@ -34,25 +34,27 @@ H2DE_Pos H2DE_Calculator::getPosFromParents(H2DE_GraphicObject* g) {
     return pos;
 }
 
-H2DE_Pos H2DE_Calculator::getRescaledPos(H2DE_Pos pos, H2DE_Size size, H2DE_Pos scaleOrigin, H2DE_Scale scale) {
-    if (scale.x != 1.0f || scale.y != 1.0f) {
-        int xOffset = ((size.w * scale.x - size.w) * (static_cast<float>(scaleOrigin.x) / static_cast<float>(size.w))) * -1;
-        int yOffset = ((size.h * scale.y - size.h) * (static_cast<float>(scaleOrigin.y) / static_cast<float>(size.h))) * -1;
-        return { pos.x + xOffset, pos.y + yOffset };
-    } return pos;
+H2DE_Pos H2DE_Calculator::getCenter(H2DE_Pos pos, H2DE_Size size, H2DE_Scale scale) {
+    return { static_cast<int>(pos.x + size.w * scale.x / 2), static_cast<int>(pos.y + size.h * scale.y / 2) };
 }
 
-H2DE_Size H2DE_Calculator::getRescaledSize(H2DE_Size size, H2DE_Scale scale) {
-    if (scale.x != 1.0f || scale.y != 1.0f) return { static_cast<int>(size.w * scale.x), static_cast<int>(size.h * scale.y) };
-    else return size;
+H2DE_Pos H2DE_Calculator::getFlipedPos(H2DE_Pos pos, H2DE_Pos center, SDL_RendererFlip flip) {
+    switch (flip) {
+        case SDL_FLIP_VERTICAL: return { center.x * 2 - pos.x, pos.y };
+        case SDL_FLIP_HORIZONTAL: return { pos.x, center.y * 2 - pos.y };
+        default: return pos;
+    }
 }
 
-H2DE_Pos H2DE_Calculator::getRescaledRotationOrigin(H2DE_Pos rotationOrigin, H2DE_Scale scale) {
-    if (scale.x != 1.0f || scale.y != 1.0f) return { static_cast<int>(rotationOrigin.x * scale.x), static_cast<int>(rotationOrigin.y * scale.y) };
-    else return rotationOrigin;
+H2DE_Pos H2DE_Calculator::getRotationOrigin(H2DE_Pos pos, H2DE_Pos origin) {
+    return { pos.x + origin.x, pos.y + origin.y };
 }
 
-H2DE_Pos H2DE_Calculator::applyRotationOnPos(H2DE_Pos pos, H2DE_Pos rotationOrigin, float rotation) {
+H2DE_Pos H2DE_Calculator::getScaleOrigin(H2DE_Pos pos, H2DE_Pos origin) {
+    return { pos.x + origin.x, pos.y + origin.y };
+}
+
+H2DE_Pos H2DE_Calculator::getRotatedPos(H2DE_Pos pos, H2DE_Pos rotationOrigin, float rotation) {
     if (rotation != 0.0f) {
         float x_translated = pos.x - rotationOrigin.x;
         float y_translated = pos.y - rotationOrigin.y;
@@ -68,3 +70,71 @@ H2DE_Pos H2DE_Calculator::applyRotationOnPos(H2DE_Pos pos, H2DE_Pos rotationOrig
         return { static_cast<int>(x_final), static_cast<int>(y_final) };
     } else return pos;
 }
+
+H2DE_Pos H2DE_Calculator::getRescaledPos(H2DE_Pos pos, H2DE_Size size, H2DE_Pos origin, H2DE_Scale scale) {
+    if (scale.x != 1.0f || scale.y != 1.0f) {
+        int xOffset = ((size.w * scale.x - size.w) * (static_cast<float>(origin.x - pos.x) / static_cast<float>(size.w)));
+        int yOffset = ((size.h * scale.y - size.h) * (static_cast<float>(origin.y - pos.y) / static_cast<float>(size.h)));
+        return { pos.x - xOffset, pos.y - yOffset };
+    } return pos;
+}
+
+
+
+
+
+
+// H2DE_Size H2DE_Calculator::getRescaledSize(H2DE_Size size, H2DE_Scale scale) {
+//     if (scale.x != 1.0f || scale.y != 1.0f) return { static_cast<int>(size.w * scale.x), static_cast<int>(size.h * scale.y) };
+//     else return size;
+// }
+
+// H2DE_Pos H2DE_Calculator::getRescaledRotationOrigin(H2DE_Pos rotationOrigin, H2DE_Scale scale) {
+//     if (scale.x != 1.0f || scale.y != 1.0f) return { static_cast<int>(rotationOrigin.x * scale.x), static_cast<int>(rotationOrigin.y * scale.y) };
+//     else return rotationOrigin;
+// }
+
+
+
+
+
+
+
+
+// H2DE_Pos H2DE_Calculator::getRescaledPos(H2DE_Pos pos, H2DE_Size size, H2DE_Pos scaleOrigin, H2DE_Scale scale) {
+//     if (scale.x != 1.0f || scale.y != 1.0f) {
+//         int xOffset = ((size.w * scale.x - size.w) * (static_cast<float>(scaleOrigin.x) / static_cast<float>(size.w))) * -1;
+//         int yOffset = ((size.h * scale.y - size.h) * (static_cast<float>(scaleOrigin.y) / static_cast<float>(size.h))) * -1;
+//         return { pos.x + xOffset, pos.y + yOffset };
+//     } return pos;
+// }
+
+
+
+// H2DE_Pos H2DE_Calculator::getRotatedPos(H2DE_Pos pos, H2DE_Pos rotationOrigin, float rotation) {
+//     if (rotation != 0.0f) {
+//         float x_translated = pos.x - rotationOrigin.x;
+//         float y_translated = pos.y - rotationOrigin.y;
+
+//         float radians = H2DE_Calculator::convertToRadians(rotation);
+
+//         float x_rotated = x_translated * std::cos(radians) - y_translated * std::sin(radians);
+//         float y_rotated = x_translated * std::sin(radians) + y_translated * std::cos(radians);
+
+//         float x_final = x_rotated + rotationOrigin.x;
+//         float y_final = y_rotated + rotationOrigin.y;
+
+//         return { static_cast<int>(x_final), static_cast<int>(y_final) };
+//     } else return pos;
+// }
+
+
+// H2DE_Pos H2DE_Calculator::getFlipedPos(H2DE_Pos pos, H2DE_Pos objPos, H2DE_Size size, SDL_RendererFlip flip) {
+//     H2DE_Pos center = { objPos.x + static_cast<int>(size.w / 2), objPos.y + static_cast<int>(size.h / 2) };
+
+//     switch (flip) {
+//         case SDL_FLIP_VERTICAL: return { center.x * 2 - pos.x, pos.y };
+//         case SDL_FLIP_HORIZONTAL: return { pos.x, center.y * 2 - pos.y };
+//         default: return pos;
+//     }
+// }

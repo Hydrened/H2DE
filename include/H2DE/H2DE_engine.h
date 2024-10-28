@@ -44,13 +44,14 @@ private:
     std::optional<H2DE_SClick*> click = std::nullopt;
 
     /**
-     * Type used to store debugs
+     * Type used to store debug states
      * \since H2DE-1.3.4
      */
     struct H2DE_Debug {
         bool graphicObjects = false;
         bool scaleOrigins = false;
         bool rotationOrigins = false;
+        bool flipOrigins = false;
     };
 
     H2DE_Debug* debug = new H2DE_Debug();
@@ -282,6 +283,13 @@ public:
      * \since H2DE-1.3.4
      */
     friend void H2DE_DebugRotationOrigins(H2DE_Engine* engine, bool active);
+    /**
+     * Debugs flip origins
+     * \param engine a pointer to an engine
+     * \param active state of the debug
+     * \since H2DE-1.3.5
+     */
+    friend void H2DE_DebugFlipOrigins(H2DE_Engine* engine, bool active);
 };
 
 /**

@@ -34,7 +34,6 @@ public:
      * \since H2DE-1.0.0
      */
     static H2DE_Size getPolygonSize(std::vector<SDL_Point> points);
-
     /**
      * Calculates the position of a point according to the object's parents
      * \param g a pointer to a `H2DE_GraphicObject`
@@ -42,6 +41,42 @@ public:
      * \since H2DE-1.3.0
      */
     static H2DE_Pos getPosFromParents(H2DE_GraphicObject* g);
+
+    /**
+     * \since H2DE-1.3.5
+     */
+    static H2DE_Pos getCenter(H2DE_Pos pos, H2DE_Size size, H2DE_Scale scale);
+
+    /**
+     * \since H2DE-1.3.5
+     */
+    static H2DE_Pos getFlipedPos(H2DE_Pos pos, H2DE_Pos center, SDL_RendererFlip flip);
+
+    /**
+     * \since H2DE-1.3.5
+     */ 
+    static H2DE_Pos getRotationOrigin(H2DE_Pos pos, H2DE_Pos origin);
+
+    /**
+     * \since H2DE-1.3.5
+     */ 
+    static H2DE_Pos getScaleOrigin(H2DE_Pos pos, H2DE_Pos origin);
+
+    /**
+     * \since H2DE-1.0.0
+     */
+    static H2DE_Pos getRotatedPos(H2DE_Pos pos, H2DE_Pos rotationOrigin, float rotation);
+
+    /**
+     * \since H2DE-1.0.0
+     */
+    static H2DE_Pos getRescaledPos(H2DE_Pos pos, H2DE_Size size, H2DE_Pos origin, H2DE_Scale scale);
+
+
+
+
+
+
     /**
      * Calculates the position of a point according to a scale and a scale origin
      * \param pos default position
@@ -51,7 +86,7 @@ public:
      * \return the rescaled position
      * \since H2DE-1.0.0
      */
-    static H2DE_Pos getRescaledPos(H2DE_Pos pos, H2DE_Size size, H2DE_Pos scaleOrigin, H2DE_Scale scale);
+    static H2DE_Pos OLDgetRescaledPos(H2DE_Pos pos, H2DE_Size size, H2DE_Pos scaleOrigin, H2DE_Scale scale);
     /**
      * Calculates the size of an element according to a scale
      * \param size default size
@@ -59,7 +94,7 @@ public:
      * \return the rescaled size
      * \since H2DE-1.0.0
      */
-    static H2DE_Size getRescaledSize(H2DE_Size size, H2DE_Scale scale);
+    static H2DE_Size OLDgetRescaledSize(H2DE_Size size, H2DE_Scale scale);
     /**
      * Calculates the position of the rotation origin according to a scale
      * \param rotationOrigin position of the rotation origin
@@ -67,17 +102,40 @@ public:
      * \return the rescaled rotation origin position
      * \since H2DE-1.0.0
      */
-    static H2DE_Pos getRescaledRotationOrigin(H2DE_Pos rotationOrigin, H2DE_Scale scale);
-
+    static H2DE_Pos OLDgetRescaledRotationOrigin(H2DE_Pos rotationOrigin, H2DE_Scale scale);
     /**
      * Calculates the position of a point according to a rotation origin and a rotation
-     * \param pos default position
      * \param rotationOrigin position of the rotation origin
      * \param rotation rotation
      * \return the rotated position of the point
      * \since H2DE-1.0.0
      */
-    static H2DE_Pos applyRotationOnPos(H2DE_Pos pos, H2DE_Pos rotationOrigin, float rotation);
+    static H2DE_Pos OLDgetRotatedPos(H2DE_Pos pos, H2DE_Pos rotationOrigin, float rotation);
+    /**
+     * Calculates the position of a point according to a flip origin
+     * \param pos position of the point to flip
+     * \param objPos position of the object
+     * \param size size of the object
+     * \param flip flip
+     * \return the fliped position
+     * \since H2DE-1.3.5
+     */
+    static H2DE_Pos OLDgetFlipedPos(H2DE_Pos pos, H2DE_Pos objPos, H2DE_Size size, SDL_RendererFlip flip);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 };
 
 #endif

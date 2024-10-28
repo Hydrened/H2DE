@@ -46,6 +46,10 @@ void H2DE_DebugRotationOrigins(H2DE_Engine* engine, bool active) {
     engine->debug->rotationOrigins = active;
 }
 
+void H2DE_DebugFlipOrigins(H2DE_Engine* engine, bool active) {
+    engine->debug->flipOrigins = active;
+}
+
 // ASSETS
 void H2DE_LoadAssets(H2DE_Engine* engine, const fs::path& dir) {
     if (fs::exists(dir)) {
@@ -266,28 +270,28 @@ void H2DE_Engine::renderPixel(H2DE_Pos pos, H2DE_RGB rgb) {
 }
 
 void H2DE_Engine::renderImage(H2DE_GraphicObject* g) {
-    std::unordered_map<std::string, SDL_Texture*>::iterator textureIterator = textures.find(g->texture);
-    if (textureIterator != textures.end()) {
+    // std::unordered_map<std::string, SDL_Texture*>::iterator textureIterator = textures.find(g->texture);
+    // if (textureIterator != textures.end()) {
 
-        H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
-        pos = H2DE_Calculator::getRescaledPos(pos, g->size, g->scaleOrigin, g->scale);
-        H2DE_Size size = H2DE_Calculator::getRescaledSize(g->size, g->scale);
-        SDL_Rect destRect = { pos.x, pos.y, size.w, size.h };
+    //     H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
+    //     pos = H2DE_Calculator::getRescaledPos(pos, g->size, g->scaleOrigin, g->scale);
+    //     H2DE_Size size = H2DE_Calculator::getRescaledSize(g->size, g->scale);
+    //     SDL_Rect destRect = { pos.x, pos.y, size.w, size.h };
 
-        H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
-        SDL_Point convertedRotationOrigin = static_cast<SDL_Point>(rotationOrigin);
+    //     H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
+    //     SDL_Point convertedRotationOrigin = static_cast<SDL_Point>(rotationOrigin);
 
-        SDL_Texture* texture = textureIterator->second;
+    //     SDL_Texture* texture = textureIterator->second;
 
-        SDL_SetTextureColorMod(texture, g->rgb.r, g->rgb.g, g->rgb.b);
-        SDL_SetTextureAlphaMod(texture, g->rgb.a);
-        SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
+    //     SDL_SetTextureColorMod(texture, g->rgb.r, g->rgb.g, g->rgb.b);
+    //     SDL_SetTextureAlphaMod(texture, g->rgb.a);
+    //     SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
 
-        if (g->srcRect.has_value()) {
-            SDL_Rect srcRect = (SDL_Rect)g->srcRect.value();
-            SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
-        } else SDL_RenderCopyEx(renderer, texture, NULL, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
-    }
+    //     if (g->srcRect.has_value()) {
+    //         SDL_Rect srcRect = (SDL_Rect)g->srcRect.value();
+    //         SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
+    //     } else SDL_RenderCopyEx(renderer, texture, NULL, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
+    // }
 }
 
 void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
@@ -295,93 +299,209 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
     std::vector<Sint16> vx(nbPoints);
     std::vector<Sint16> vy(nbPoints);
 
-    H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
+    H2DE_GraphicObject* parent = nullptr;
     H2DE_Size size = H2DE_Calculator::getPolygonSize(g->points);
-
-    H2DE_GraphicObject* parent = g->parent;
-    H2DE_Scale scale = { 1.0f, 1.0f };
-    H2DE_Pos posOffset = g->pos;
-    while (parent) {
-        H2DE_Pos tempScaleOrigin = { static_cast<int>((parent->scaleOrigin.x - posOffset.x) * scale.x), static_cast<int>((parent->scaleOrigin.y - posOffset.y) * scale.y) };
-        pos = H2DE_Calculator::getRescaledPos(pos, size, tempScaleOrigin, parent->scale);
-
-        scale.x *= parent->scale.x;
-        scale.y *= parent->scale.y;
-        posOffset.x += parent->pos.x;
-        posOffset.y += parent->pos.y;
-        parent = parent->parent;
-    }
-
-    H2DE_Pos scaleOrigin = { static_cast<int>(g->scaleOrigin.x * scale.x), static_cast<int>(g->scaleOrigin.y * scale.y) };
-    if (debug->scaleOrigins) renderPixel({ pos.x + scaleOrigin.x, pos.y + scaleOrigin.y }, { 255, 0, 0, 255 });
-    pos = H2DE_Calculator::getRescaledPos(pos, size, scaleOrigin, g->scale);
     for (int i = 0; i < nbPoints; i++) {
-        vx[i] = pos.x + g->points[i].x * scale.x * g->scale.x;
-        vy[i] = pos.y + g->points[i].y * scale.y * g->scale.y;
+        vx[i] = g->points[i].x;
+        vy[i] = g->points[i].y;
     }
 
+
+
+
+
+    // TRANSLATE
+    H2DE_Pos translatedPos = H2DE_Calculator::getPosFromParents(g);
+    for (int i = 0; i < nbPoints; i++) {
+        vx[i] += translatedPos.x;
+        vy[i] += translatedPos.y;
+    }
+
+
+
+
+
+    // FLIP
+    H2DE_Pos flipedPos = translatedPos;
     parent = g->parent;
     while (parent) {
-        H2DE_Pos absPos = H2DE_Calculator::getPosFromParents(parent);
-        H2DE_Pos tempRotationOrigin = { absPos.x + parent->rotationOrigin.x, absPos.y + parent->rotationOrigin.y };
+        H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
+        H2DE_Size parentSize = H2DE_Calculator::getPolygonSize(parent->points);
+        H2DE_Pos parentCenter = H2DE_Calculator::getCenter(parentPos, parentSize, { 1.0f, 1.0f });
+
+        switch (parent->flip) {
+            case SDL_FLIP_HORIZONTAL: flipedPos.y -= static_cast<int>((flipedPos.y - parentCenter.y) * 2 + size.h); break;
+            case SDL_FLIP_VERTICAL: flipedPos.x -= static_cast<int>((flipedPos.x - parentCenter.x) * 2 + size.w); break;
+            default: break;
+        }
 
         for (int i = 0; i < nbPoints; i++) {
-            H2DE_Pos tempPointPos = { vx[i], vy[i] };
-            H2DE_Pos pointPos = H2DE_Calculator::applyRotationOnPos(tempPointPos, tempRotationOrigin, parent->rotation);
-            vx[i] = pointPos.x;
-            vy[i] = pointPos.y;
+            H2DE_Pos point = { vx[i], vy[i] };
+            H2DE_Pos flipedPoint = H2DE_Calculator::getFlipedPos(point, parentCenter, parent->flip);
+            vx[i] = flipedPoint.x;
+            vy[i] = flipedPoint.y;
         }
 
         parent = parent->parent;
     }
+    parent = nullptr;
 
-    H2DE_Pos rotationOrigin = { static_cast<int>(pos.x + g->rotationOrigin.x * scale.x * g->scale.x), static_cast<int>(pos.y + g->rotationOrigin.y * scale.y * g->scale.y) };
-    if (debug->rotationOrigins) renderPixel(rotationOrigin, { 0, 255, 0, 255 });
-    for (int i = 0; i < nbPoints; i++) {
-        H2DE_Pos tempPointPos = { vx[i], vy[i] };
-        H2DE_Pos pointPos = H2DE_Calculator::applyRotationOnPos(tempPointPos, rotationOrigin, g->rotation);
-        vx[i] = pointPos.x;
-        vy[i] = pointPos.y;
+    H2DE_Pos center = H2DE_Calculator::getCenter(flipedPos, size, { 1.0f, 1.0f });
+    if (g->flip != SDL_FLIP_NONE) for (int i = 0; i < nbPoints; i++) {
+        H2DE_Pos point = { vx[i], vy[i] };
+        H2DE_Pos flipedPoint = H2DE_Calculator::getFlipedPos(point, center, g->flip);
+        vx[i] = flipedPoint.x;
+        vy[i] = flipedPoint.y;
     }
+
+
+
+
+
+    // ROTATE
+    parent = g->parent;
+    while (parent) {
+        H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
+        H2DE_Pos parentRotationOrigin = H2DE_Calculator::getRotationOrigin(parentPos, parent->rotationOrigin);
+
+        for (int i = 0; i < nbPoints; i++) {
+            H2DE_Pos point = { vx[i], vy[i] };
+            H2DE_Pos rotatedPoint = H2DE_Calculator::getRotatedPos(point, parentRotationOrigin, parent->rotation);
+            vx[i] = rotatedPoint.x;
+            vy[i] = rotatedPoint.y;
+        }
+
+        parent = parent->parent;
+    }
+    parent = nullptr;
+
+    if (g->rotation != 0.0f) {
+        H2DE_Pos rotationOrigin = H2DE_Calculator::getRotationOrigin(flipedPos, g->rotationOrigin);
+
+        for (int i = 0; i < nbPoints; i++) {
+            H2DE_Pos point = { vx[i], vy[i] };
+            H2DE_Pos rotatedPoint = H2DE_Calculator::getRotatedPos(point, rotationOrigin, g->rotation);
+            vx[i] = rotatedPoint.x;
+            vy[i] = rotatedPoint.y;
+        }
+    }
+
+
+
+
+
+    // SCALE
+    H2DE_Pos scaledPos = flipedPos;
+    H2DE_Scale scale = { 1.0f, 1.0f };
+    parent = g->parent;
+    while (parent) {
+        if (parent->scale.x != 1.0f || parent->scale.y != 1.0f) {
+            scale.x *= parent->scale.x;
+            scale.y *= parent->scale.y;
+
+            H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
+            H2DE_Pos parentScaleOrigin = H2DE_Calculator::getScaleOrigin(parentPos, parent->scaleOrigin);
+            renderPixel(parentScaleOrigin, { 0 ,255, 0, 255 });
+            scaledPos = H2DE_Calculator::getRescaledPos(scaledPos, size, parentScaleOrigin, scale);
+
+            for (int i = 0; i < nbPoints; i++) {
+                H2DE_Pos relativePoint = { static_cast<int>(g->points[i].x * scale.x), static_cast<int>(g->points[i].y * scale.y) };
+
+                vx[i] = scaledPos.x + relativePoint.x;
+                vy[i] = scaledPos.y + relativePoint.y;
+            }
+        }
+
+        parent = parent->parent;
+    }
+    parent = nullptr;
+
+
+
+    if (g->scale.x != 1.0f || g->scale.y != 1.0f) {
+        H2DE_Pos scaleOrigin = H2DE_Calculator::getScaleOrigin(scaledPos, g->scaleOrigin);
+        scaledPos = H2DE_Calculator::getRescaledPos(scaledPos, size, scaleOrigin, g->scale);
+
+        for (int i = 0; i < nbPoints; i++) {
+            H2DE_Pos relativePoint = { static_cast<int>(g->points[i].x * g->scale.x * scale.x), static_cast<int>(g->points[i].y * g->scale.y * scale.y) };
+
+            vx[i] = scaledPos.x + relativePoint.x;
+            vy[i] = scaledPos.y + relativePoint.y;
+        }
+    }
+
+
+
+
+
+
+    // parent = g->parent;
+    // H2DE_Scale scale = { 1.0f, 1.0f };
+    // H2DE_Pos posOffset = g->pos;
+    // while (parent) {
+    //     H2DE_Pos tempScaleOrigin = { static_cast<int>((parent->scaleOrigin.x - posOffset.x) * scale.x), static_cast<int>((parent->scaleOrigin.y - posOffset.y) * scale.y) };
+    //     pos = H2DE_Calculator::getRescaledPos(pos, size, tempScaleOrigin, parent->scale);
+
+    //     scale.x *= parent->scale.x;
+    //     scale.y *= parent->scale.y;
+    //     posOffset.x += parent->pos.x;
+    //     posOffset.y += parent->pos.y;
+    //     parent = parent->parent;
+    // }
+
+    // H2DE_Pos scaleOrigin = { static_cast<int>(g->scaleOrigin.x * scale.x), static_cast<int>(g->scaleOrigin.y * scale.y) };
+    // if (debug->scaleOrigins) renderPixel({ pos.x + scaleOrigin.x, pos.y + scaleOrigin.y }, { 255, 0, 0, 255 });
+    // pos = H2DE_Calculator::getRescaledPos(pos, size, scaleOrigin, g->scale);
+    // for (int i = 0; i < nbPoints; i++) {
+    //     vx[i] = pos.x + g->points[i].x * scale.x * g->scale.x;
+    //     vy[i] = pos.y + g->points[i].y * scale.y * g->scale.y;
+    // }
+
+
+
+
+
+
+
 
     if (g->filled) filledPolygonColor(renderer, vx.data(), vy.data(), nbPoints, static_cast<Uint32>(g->rgb));
     else polygonColor(renderer, vx.data(), vy.data(), nbPoints, static_cast<Uint32>(g->rgb));
 }
 
 void H2DE_Engine::renderCircle(H2DE_GraphicObject* g) {
-    H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
-    pos = H2DE_Calculator::getRescaledPos(pos, { static_cast<int>(g->radius) * 2, static_cast<int>(g->radius) * 2 }, g->scaleOrigin, g->scale);
+    // H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
+    // pos = H2DE_Calculator::getRescaledPos(pos, { static_cast<int>(g->radius) * 2, static_cast<int>(g->radius) * 2 }, g->scaleOrigin, g->scale);
     
-    H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
-    rotationOrigin = { rotationOrigin.x + pos.x, rotationOrigin.y + pos.y };
+    // H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
+    // rotationOrigin = { rotationOrigin.x + pos.x, rotationOrigin.y + pos.y };
 
-    pos = H2DE_Calculator::applyRotationOnPos(pos, rotationOrigin, g->rotation);
+    // pos = H2DE_Calculator::getRotatedPos(pos, rotationOrigin, g->rotation);
 
-    if (g->filled) filledCircleColor(renderer, pos.x, pos.y, g->radius, static_cast<Uint32>(g->rgb));
-    else circleColor(renderer, pos.x, pos.y, g->radius, static_cast<Uint32>(g->rgb));
+    // if (g->filled) filledCircleColor(renderer, pos.x, pos.y, g->radius, static_cast<Uint32>(g->rgb));
+    // else circleColor(renderer, pos.x, pos.y, g->radius, static_cast<Uint32>(g->rgb));
 }
 
 void H2DE_Engine::renderText(H2DE_GraphicObject* g) {
-    std::unordered_map<std::string, TTF_Font*>::iterator fontIterator = fonts.find(g->font);
-    if (fontIterator != fonts.end()) {
+    // std::unordered_map<std::string, TTF_Font*>::iterator fontIterator = fonts.find(g->font);
+    // if (fontIterator != fonts.end()) {
 
-        H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
-        pos = H2DE_Calculator::getRescaledPos(pos, g->size, g->scaleOrigin, g->scale);
-        H2DE_Size size = H2DE_Calculator::getRescaledSize(g->size, g->scale);
-        SDL_Rect destRect = { pos.x, pos.y, size.w, size.h };
+    //     H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
+    //     pos = H2DE_Calculator::getRescaledPos(pos, g->size, g->scaleOrigin, g->scale);
+    //     H2DE_Size size = H2DE_Calculator::getRescaledSize(g->size, g->scale);
+    //     SDL_Rect destRect = { pos.x, pos.y, size.w, size.h };
 
-        H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
-        SDL_Point convertedRotationOrigin = static_cast<SDL_Point>(rotationOrigin);
+    //     H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
+    //     SDL_Point convertedRotationOrigin = static_cast<SDL_Point>(rotationOrigin);
 
-        TTF_Font* font = fontIterator->second;
-        SDL_Surface* surface = TTF_RenderText_Solid(font, g->text, g->rgb);
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    //     TTF_Font* font = fontIterator->second;
+    //     SDL_Surface* surface = TTF_RenderText_Solid(font, g->text, g->rgb);
+    //     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-        SDL_FreeSurface(surface);
-        SDL_SetTextureAlphaMod(texture, g->rgb.a);
-        SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
-        SDL_RenderCopyEx(renderer, texture, NULL, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
-    }
+    //     SDL_FreeSurface(surface);
+    //     SDL_SetTextureAlphaMod(texture, g->rgb.a);
+    //     SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
+    //     SDL_RenderCopyEx(renderer, texture, NULL, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
+    // }
 }
 
 // SOUND

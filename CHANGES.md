@@ -1,3 +1,7 @@
+## H2DE-1.3.5
+#### FIXED
+- flips (only polygons)
+
 ## H2DE-1.3.4
 #### ADDED
 - debug for number of graphic objects
