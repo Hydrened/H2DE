@@ -46,10 +46,6 @@ void H2DE_DebugRotationOrigins(H2DE_Engine* engine, bool active) {
     engine->debug->rotationOrigins = active;
 }
 
-void H2DE_DebugFlipOrigins(H2DE_Engine* engine, bool active) {
-    engine->debug->flipOrigins = active;
-}
-
 // ASSETS
 void H2DE_LoadAssets(H2DE_Engine* engine, const fs::path& dir) {
     if (fs::exists(dir)) {
@@ -308,8 +304,6 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
 
 
 
-
-
     // TRANSLATE
     H2DE_Pos translatedPos = H2DE_Calculator::getPosFromParents(g);
     for (int i = 0; i < nbPoints; i++) {
@@ -319,14 +313,12 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
 
 
 
-
-
     // FLIP
     H2DE_Pos flipedPos = translatedPos;
     parent = g->parent;
     while (parent) {
         H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
-        H2DE_Size parentSize = H2DE_Calculator::getPolygonSize(parent->points);
+        H2DE_Size parentSize = (parent->type == POLYGON) ? H2DE_Calculator::getPolygonSize(parent->points) : parent->size;
         H2DE_Pos parentCenter = H2DE_Calculator::getCenter(parentPos, parentSize, { 1.0f, 1.0f });
 
         switch (parent->flip) {
@@ -356,8 +348,6 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
 
 
 
-
-
     // ROTATE
     parent = g->parent;
     while (parent) {
@@ -377,6 +367,7 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
 
     if (g->rotation != 0.0f) {
         H2DE_Pos rotationOrigin = H2DE_Calculator::getRotationOrigin(flipedPos, g->rotationOrigin);
+        if (debug->rotationOrigins) renderPixel(rotationOrigin, { 255, 0, 0, 255 });
 
         for (int i = 0; i < nbPoints; i++) {
             H2DE_Pos point = { vx[i], vy[i] };
@@ -385,8 +376,6 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
             vy[i] = rotatedPoint.y;
         }
     }
-
-
 
 
 
@@ -401,69 +390,43 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
 
             H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
             H2DE_Pos parentScaleOrigin = H2DE_Calculator::getScaleOrigin(parentPos, parent->scaleOrigin);
-            renderPixel(parentScaleOrigin, { 0 ,255, 0, 255 });
-            scaledPos = H2DE_Calculator::getRescaledPos(scaledPos, size, parentScaleOrigin, scale);
+            H2DE_Pos futurePos = H2DE_Calculator::getRescaledPos(scaledPos, size, parentScaleOrigin, parent->scale);
+            H2DE_Pos offset = { scaledPos.x - futurePos.x, scaledPos.y - futurePos.y };
 
             for (int i = 0; i < nbPoints; i++) {
-                H2DE_Pos relativePoint = { static_cast<int>(g->points[i].x * scale.x), static_cast<int>(g->points[i].y * scale.y) };
-
-                vx[i] = scaledPos.x + relativePoint.x;
-                vy[i] = scaledPos.y + relativePoint.y;
+                H2DE_Pos point = { vx[i], vy[i] };
+                H2DE_Pos t = { static_cast<int>((point.x - scaledPos.x) * parent->scale.x), static_cast<int>((point.y - scaledPos.y) * parent->scale.y) };
+                vx[i] = scaledPos.x + t.x - offset.x;
+                vy[i] = scaledPos.y + t.y - offset.y;
             }
+
+            scaledPos = futurePos;
         }
 
         parent = parent->parent;
     }
     parent = nullptr;
 
+    if (g->scale.x != 1.0f && g->scale.y != 1.0f) {
 
-
-    if (g->scale.x != 1.0f || g->scale.y != 1.0f) {
-        H2DE_Pos scaleOrigin = H2DE_Calculator::getScaleOrigin(scaledPos, g->scaleOrigin);
-        scaledPos = H2DE_Calculator::getRescaledPos(scaledPos, size, scaleOrigin, g->scale);
+        H2DE_Pos scaleOrigin = H2DE_Calculator::getScaleOrigin(scaledPos, { static_cast<int>(g->scaleOrigin.x * scale.x), static_cast<int>(g->scaleOrigin.y * scale.y) });
+        if (debug->scaleOrigins) renderPixel(scaleOrigin, { 0, 255, 0, 255 });
+        H2DE_Pos futurePos = H2DE_Calculator::getRescaledPos(scaledPos, size, scaleOrigin, g->scale);
+        H2DE_Pos offset = { scaledPos.x - futurePos.x, scaledPos.y - futurePos.y };
 
         for (int i = 0; i < nbPoints; i++) {
-            H2DE_Pos relativePoint = { static_cast<int>(g->points[i].x * g->scale.x * scale.x), static_cast<int>(g->points[i].y * g->scale.y * scale.y) };
-
-            vx[i] = scaledPos.x + relativePoint.x;
-            vy[i] = scaledPos.y + relativePoint.y;
+            H2DE_Pos point = { vx[i], vy[i] };
+            H2DE_Pos t = { static_cast<int>((point.x - scaledPos.x) * g->scale.x), static_cast<int>((point.y - scaledPos.y) * g->scale.y) };
+            vx[i] = scaledPos.x + t.x - offset.x;
+            vy[i] = scaledPos.y + t.y - offset.y;
         }
+
+        scaledPos = futurePos;
     }
 
 
 
-
-
-
-    // parent = g->parent;
-    // H2DE_Scale scale = { 1.0f, 1.0f };
-    // H2DE_Pos posOffset = g->pos;
-    // while (parent) {
-    //     H2DE_Pos tempScaleOrigin = { static_cast<int>((parent->scaleOrigin.x - posOffset.x) * scale.x), static_cast<int>((parent->scaleOrigin.y - posOffset.y) * scale.y) };
-    //     pos = H2DE_Calculator::getRescaledPos(pos, size, tempScaleOrigin, parent->scale);
-
-    //     scale.x *= parent->scale.x;
-    //     scale.y *= parent->scale.y;
-    //     posOffset.x += parent->pos.x;
-    //     posOffset.y += parent->pos.y;
-    //     parent = parent->parent;
-    // }
-
-    // H2DE_Pos scaleOrigin = { static_cast<int>(g->scaleOrigin.x * scale.x), static_cast<int>(g->scaleOrigin.y * scale.y) };
-    // if (debug->scaleOrigins) renderPixel({ pos.x + scaleOrigin.x, pos.y + scaleOrigin.y }, { 255, 0, 0, 255 });
-    // pos = H2DE_Calculator::getRescaledPos(pos, size, scaleOrigin, g->scale);
-    // for (int i = 0; i < nbPoints; i++) {
-    //     vx[i] = pos.x + g->points[i].x * scale.x * g->scale.x;
-    //     vy[i] = pos.y + g->points[i].y * scale.y * g->scale.y;
-    // }
-
-
-
-
-
-
-
-
+    // RENDER
     if (g->filled) filledPolygonColor(renderer, vx.data(), vy.data(), nbPoints, static_cast<Uint32>(g->rgb));
     else polygonColor(renderer, vx.data(), vy.data(), nbPoints, static_cast<Uint32>(g->rgb));
 }

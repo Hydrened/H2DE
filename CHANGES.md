@@ -1,6 +1,10 @@
+## H2DE-1.3.6
+#### ADDED
+- translate, flip, rotation, and scale (polygons only)
+
 ## H2DE-1.3.5
 #### FIXED
-- flips (only polygons)
+- flips (polygons only)
 
 ## H2DE-1.3.4
 #### ADDED
@@ -12,17 +16,17 @@
 
 ## H2DE-1.3.3
 #### ADDED
-- parent rotations for polygons
+- parent rotations (polygons only)
 #### FIXED
-- rotation for polygons
+- rotation (polygons only)
 
 ## H2DE-1.3.2
 #### FIXED
-- scaled parent in scaled parent for polygons
+- scaled parent in scaled parent (polygons only)
 
 ## H2DE-1.3.1
 #### ADDED
-- scale for parents and child (only for polygons) (but not scaled parent in scaled parent)
+- scale for parents and child (polygons only) (but not scaled parent in scaled parent)
 #### REMOVED
 - polygon rotations (temporary)
 
