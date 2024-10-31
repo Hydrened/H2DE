@@ -23,25 +23,40 @@ H2DE_Size H2DE_Calculator::getPolygonSize(std::vector<SDL_Point> points) {
     return { min.x + max.x, min.y + max.y };
 }
 
+H2DE_Size H2DE_Calculator::getCircleSize(int radius) {
+    int size = static_cast<int>(radius * 2);
+    return { size, size };
+}
+
 H2DE_Pos H2DE_Calculator::getPosFromParents(H2DE_GraphicObject* g) {
     H2DE_Pos pos = g->pos;
     H2DE_GraphicObject* parent = g->parent;
     while (parent) {
-        pos.x += parent->pos.x;
-        pos.y += parent->pos.y;
+        switch (g->type) {
+            case CIRCLE:
+                pos.x += parent->pos.x - parent->radius;
+                pos.y += parent->pos.y - parent->radius;
+                break;
+            default: 
+                pos.x += parent->pos.x;
+                pos.y += parent->pos.y;
+                break;
+        }
+
         parent = parent->parent;
     }
+
     return pos;
 }
 
-H2DE_Pos H2DE_Calculator::getCenter(H2DE_Pos pos, H2DE_Size size, H2DE_Scale scale) {
-    return { static_cast<int>(pos.x + size.w * scale.x / 2), static_cast<int>(pos.y + size.h * scale.y / 2) };
+H2DE_Pos H2DE_Calculator::getCenter(H2DE_Pos pos, H2DE_Size size) {
+    return { static_cast<int>(pos.x + size.w / 2), static_cast<int>(pos.y + size.h / 2) };
 }
 
 H2DE_Pos H2DE_Calculator::getFlipedPos(H2DE_Pos pos, H2DE_Pos center, SDL_RendererFlip flip) {
     switch (flip) {
-        case SDL_FLIP_VERTICAL: return { center.x * 2 - pos.x, pos.y };
-        case SDL_FLIP_HORIZONTAL: return { pos.x, center.y * 2 - pos.y };
+        case SDL_FLIP_HORIZONTAL: return { center.x * 2 - pos.x, pos.y };
+        case SDL_FLIP_VERTICAL: return { pos.x, center.y * 2 - pos.y };
         default: return pos;
     }
 }
@@ -77,4 +92,10 @@ H2DE_Pos H2DE_Calculator::getRescaledPos(H2DE_Pos pos, H2DE_Size size, H2DE_Pos 
         int yOffset = ((size.h * scale.y - size.h) * (static_cast<float>(origin.y - pos.y) / static_cast<float>(size.h)));
         return { pos.x - xOffset, pos.y - yOffset };
     } return pos;
+}
+
+SDL_RendererFlip H2DE_Calculator::addFlip(SDL_RendererFlip f1, SDL_RendererFlip f2) {
+    if (f1 == SDL_FLIP_NONE) return f2; 
+    if (f2 == SDL_FLIP_NONE) return f1;
+    return SDL_FLIP_NONE; 
 }

@@ -37,6 +37,14 @@ public:
     static H2DE_Size getPolygonSize(std::vector<SDL_Point> points);
 
     /**
+     * Gets the width and height of a circle
+     * \param radius the radius of the circle
+     * \return the width and the heigth of the circle
+     * \since H2DE-1.3.7
+     */
+    static H2DE_Size getCircleSize(int radius);
+
+    /**
      * Gets the rotation origin absolute position of an object
      * \param pos absolute position of the object
      * \param origin relative origin of the object
@@ -66,11 +74,10 @@ public:
      * Gets the center absolute position of an object
      * \param pos absolute position of the object
      * \param size size of the object
-     * \param scale scale of the object
      * \return the center absolute position
      * \since H2DE-1.3.5
      */
-    static H2DE_Pos getCenter(H2DE_Pos pos, H2DE_Size size, H2DE_Scale scale);
+    static H2DE_Pos getCenter(H2DE_Pos pos, H2DE_Size size);
 
     /**
      * Gets the filped absolute position of an object
@@ -102,6 +109,16 @@ public:
      * \since H2DE-1.0.0
      */
     static H2DE_Pos getRescaledPos(H2DE_Pos pos, H2DE_Size size, H2DE_Pos origin, H2DE_Scale scale);
+
+
+    /**
+     * Adds flips
+     * \param f1 first flip
+     * \param f2 second flip
+     * \return the addition of two flips
+     * \since H2DE-1.3.7
+     */
+    static SDL_RendererFlip addFlip(SDL_RendererFlip f1, SDL_RendererFlip f2);
 };
 
 #endif

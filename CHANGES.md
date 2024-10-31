@@ -1,3 +1,11 @@
+## H2DE-1.3.7
+#### ADDED
+- translate, flip for images
+- translate, flip, rotate for circles
+#### FIXED
+- swaped horizontal and vertical flips
+- polygons scales if x or y scale == 1.0f
+
 ## H2DE-1.3.6
 #### ADDED
 - translate, flip, rotation, and scale (polygons only)
