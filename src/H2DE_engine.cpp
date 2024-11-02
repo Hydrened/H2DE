@@ -279,54 +279,27 @@ void H2DE_Engine::renderImage(H2DE_GraphicObject* g) {
 
     // FLIP
     H2DE_Pos flipedPos = translatedPos;
-    parent = g->parent;
-    while (parent) {
-        H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
-        H2DE_Size parentSize = (parent->type == POLYGON) ? H2DE_Calculator::getPolygonSize(parent->points) : parent->size;
-        H2DE_Pos parentCenter = H2DE_Calculator::getCenter(parentPos, parentSize);
+    // parent = g->parent;
+    // while (parent) {
+    //     H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
+    //     H2DE_Size parentSize = (parent->type == POLYGON) ? H2DE_Calculator::getPolygonSize(parent->points) : parent->size;
+    //     H2DE_Pos parentCenter = H2DE_Calculator::getCenter(parentPos, parentSize);
 
-        switch (parent->flip) {
-            case SDL_FLIP_VERTICAL: flipedPos.y -= static_cast<int>((flipedPos.y - parentCenter.y) * 2 + size.h); break;
-            case SDL_FLIP_HORIZONTAL: flipedPos.x -= static_cast<int>((flipedPos.x - parentCenter.x) * 2 + size.w); break;
-            default: break;
-        }
+    //     switch (parent->flip) {
+    //         case SDL_FLIP_VERTICAL: flipedPos.y -= static_cast<int>((flipedPos.y - parentCenter.y) * 2 + size.h); break;
+    //         case SDL_FLIP_HORIZONTAL: flipedPos.x -= static_cast<int>((flipedPos.x - parentCenter.x) * 2 + size.w); break;
+    //         default: break;
+    //     }
 
-        if (flip != parent->flip && flip != SDL_FLIP_NONE && parent->flip != SDL_FLIP_NONE) rotation += 180;
-        flip = H2DE_Calculator::addFlip(flip, parent->flip);
+    //     if (flip != parent->flip && flip != SDL_FLIP_NONE && parent->flip != SDL_FLIP_NONE) rotation += 180;
+    //     flip = H2DE_Calculator::addFlip(flip, parent->flip);
 
-        parent = parent->parent;
-    }
-    parent = nullptr;
+    //     parent = parent->parent;
+    // }
+    // parent = nullptr;
 
     // ROTATE
     H2DE_Pos rotatedPos = flipedPos;
-    parent = g->parent;
-    while (parent) {
-        H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
-        H2DE_Pos parentRotationOrigin = H2DE_Calculator::getRotationOrigin(parentPos, parent->rotationOrigin);
-
-        rotatedPos = H2DE_Calculator::getRotatedPos(rotatedPos, parentRotationOrigin, parent->rotation);
-        rotation += parent->rotation;
-
-        parent = parent->parent;
-    }
-    parent = nullptr;
-
-
-
-
-    // recalculer la position des images grace un offset qui sera calculé avec cos et sin en fonction de l'angle (tout ça en plus de la ligne 308 qu'il faut garder)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -334,30 +307,16 @@ void H2DE_Engine::renderImage(H2DE_GraphicObject* g) {
     SDL_Rect destRect = { rotatedPos.x, rotatedPos.y, size.w, size.h };
     SDL_Point rotationOrigin = { g->rotationOrigin.x, g->rotationOrigin.y };
 
+    SDL_Point pivot = static_cast<SDL_Point>(rotationOrigin);
+
     SDL_SetTextureColorMod(texture, g->rgb.r, g->rgb.g, g->rgb.b);
     SDL_SetTextureAlphaMod(texture, g->rgb.a);
     SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
-    SDL_RenderCopyEx(renderer, texture, NULL, &destRect, rotation, &rotationOrigin, flip);
 
-
-    // H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
-    // pos = H2DE_Calculator::getRescaledPos(pos, g->size, g->scaleOrigin, g->scale);
-    // H2DE_Size size = H2DE_Calculator::getRescaledSize(g->size, g->scale);
-    // SDL_Rect destRect = { pos.x, pos.y, size.w, size.h };
-
-    // H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
-    // SDL_Point convertedRotationOrigin = static_cast<SDL_Point>(rotationOrigin);
-
-    // SDL_Texture* texture = textureIterator->second;
-
-    // SDL_SetTextureColorMod(texture, g->rgb.r, g->rgb.g, g->rgb.b);
-    // SDL_SetTextureAlphaMod(texture, g->rgb.a);
-    // SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
-
-    // if (g->srcRect.has_value()) {
-    //     SDL_Rect srcRect = (SDL_Rect)g->srcRect.value();
-    //     SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
-    // } else SDL_RenderCopyEx(renderer, texture, NULL, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
+    if (g->srcRect.has_value()) {
+        SDL_Rect srcRect = (SDL_Rect)g->srcRect.value();
+        SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, rotation, &pivot, flip);
+    } else SDL_RenderCopyEx(renderer, texture, NULL, &destRect, rotation, &pivot, flip);
 }
 
 void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
@@ -413,21 +372,21 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
     }
 
     // ROTATE
-    parent = g->parent;
-    while (parent) {
-        H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
-        H2DE_Pos parentRotationOrigin = H2DE_Calculator::getRotationOrigin(parentPos, parent->rotationOrigin);
+    // parent = g->parent;
+    // while (parent) {
+    //     H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
+    //     H2DE_Pos parentRotationOrigin = H2DE_Calculator::getRotationOrigin(parentPos, parent->rotationOrigin);
 
-        for (int i = 0; i < nbPoints; i++) {
-            H2DE_Pos point = { vx[i], vy[i] };
-            H2DE_Pos rotatedPoint = H2DE_Calculator::getRotatedPos(point, parentRotationOrigin, parent->rotation);
-            vx[i] = rotatedPoint.x;
-            vy[i] = rotatedPoint.y;
-        }
+    //     for (int i = 0; i < nbPoints; i++) {
+    //         H2DE_Pos point = { vx[i], vy[i] };
+    //         H2DE_Pos rotatedPoint = H2DE_Calculator::getRotatedPos(point, parentRotationOrigin, parent->rotation);
+    //         vx[i] = rotatedPoint.x;
+    //         vy[i] = rotatedPoint.y;
+    //     }
 
-        parent = parent->parent;
-    }
-    parent = nullptr;
+    //     parent = parent->parent;
+    // }
+    // parent = nullptr;
 
     if (g->rotation != 0.0f) {
         H2DE_Pos rotationOrigin = H2DE_Calculator::getRotationOrigin(flipedPos, g->rotationOrigin);
@@ -492,9 +451,6 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
 }
 
 void H2DE_Engine::renderCircle(H2DE_GraphicObject* g) {
-
-
-
     H2DE_GraphicObject* parent = nullptr;
     H2DE_Size size = H2DE_Calculator::getCircleSize(g->radius);
 
@@ -505,17 +461,17 @@ void H2DE_Engine::renderCircle(H2DE_GraphicObject* g) {
     H2DE_Pos flipedPos = translatedPos;
 
     // ROTATE
-    parent = g->parent;
     H2DE_Pos rotatedPos = flipedPos;
-    while (parent) {
-        H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
-        H2DE_Pos parentRotationOrigin = H2DE_Calculator::getRotationOrigin(parentPos, parent->rotationOrigin);
+    // parent = g->parent;
+    // while (parent) {
+    //     H2DE_Pos parentPos = H2DE_Calculator::getPosFromParents(parent);
+    //     H2DE_Pos parentRotationOrigin = H2DE_Calculator::getRotationOrigin(parentPos, parent->rotationOrigin);
 
-        rotatedPos = H2DE_Calculator::getRotatedPos(rotatedPos, parentRotationOrigin, parent->rotation);
+    //     rotatedPos = H2DE_Calculator::getRotatedPos(rotatedPos, parentRotationOrigin, parent->rotation);
 
-        parent = parent->parent;
-    }
-    parent = nullptr;
+    //     parent = parent->parent;
+    // }
+    // parent = nullptr;
 
     if (g->rotation != 0.0f) {
         H2DE_Pos rotationOrigin = H2DE_Calculator::getRotationOrigin(rotatedPos, g->rotationOrigin);
@@ -524,9 +480,6 @@ void H2DE_Engine::renderCircle(H2DE_GraphicObject* g) {
         rotatedPos = H2DE_Calculator::getRotatedPos(rotatedPos, rotationOrigin, g->rotation);
     }
     
-
-
-
 
 
     // H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);

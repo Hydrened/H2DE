@@ -1,7 +1,12 @@
+## H2DE-1.3.8
+#### REMOVED
+- rotate from parent for polygons
+- flip from parent for images
+
 ## H2DE-1.3.7
 #### ADDED
 - translate, flip for images
-- translate, flip, rotate for circles
+- translate, flip for circles
 #### FIXED
 - swaped horizontal and vertical flips
 - polygons scales if x or y scale == 1.0f
