@@ -548,19 +548,30 @@ H2DE_Size H2DE_GetEngineMaximumSize(H2DE_Engine* engine) {
     return engine->maxSize;
 }
 
+H2DE_Size H2DE_GetEngineMinimumSize(H2DE_Engine* engine) {
+    return engine->minSize;
+}
+
 int H2DE_GetEngineFPS(H2DE_Engine* engine) {
     return engine->fps;
 }
 
 // SETTER 
 void H2DE_SetEngineSize(H2DE_Engine* engine, int w, int h) {
-    engine->size.w = std::clamp(w, 0, (engine->maxSize.w == -1) ? INT_MAX : engine->maxSize.w);
-    engine->size.h = std::clamp(h, 0, (engine->maxSize.h == -1) ? INT_MAX : engine->maxSize.h);
+    engine->size.w = std::clamp(w, (engine->minSize.w == -1) ? 0 : engine->minSize.w, (engine->maxSize.w == -1) ? INT_MAX : engine->maxSize.w);
+    engine->size.h = std::clamp(h, (engine->minSize.h == -1) ? 0 : engine->minSize.h, (engine->maxSize.h == -1) ? INT_MAX : engine->maxSize.h);
 }
 
 void H2DE_SetEngineMaximumSize(H2DE_Engine* engine, int w, int h) {
     engine->maxSize.w = std::clamp(w, 0, INT_MAX);
     engine->maxSize.h = std::clamp(h, 0, INT_MAX);
+    H2DE_Size currentSize = H2DE_GetEngineSize(engine);
+    H2DE_SetEngineSize(engine, currentSize.w, currentSize.h);
+}
+
+void H2DE_SetEngineMinimumSize(H2DE_Engine* engine, int w, int h) {
+    engine->minSize.w = std::clamp(w, 0, INT_MAX);
+    engine->minSize.h = std::clamp(h, 0, INT_MAX);
     H2DE_Size currentSize = H2DE_GetEngineSize(engine);
     H2DE_SetEngineSize(engine, currentSize.w, currentSize.h);
 }

@@ -31,6 +31,7 @@ class H2DE_Engine {
 private:
     int fps;
     H2DE_Size size;
+    H2DE_Size minSize = { -1, -1 };
     H2DE_Size maxSize = { -1, -1 };
     bool isRunning = true;
     SDL_Renderer* renderer;
@@ -210,6 +211,21 @@ public:
      * \since H2DE-1.0.5
      */
     friend H2DE_Size H2DE_GetEngineMaximumSize(H2DE_Engine* engine);
+    /**
+     * Sets the minimum size for the specified engine
+     * \param engine a pointer to an engine
+     * \param w maxmum width for the engine
+     * \param h maxmum height for the engine
+     * \since H2DE-1.0.5
+     */
+    friend void H2DE_SetEngineMinimumSize(H2DE_Engine* engine, int w, int h);
+    /**
+     * Gets the minimum size for the specified engine
+     * \param engine a pointer to an engine
+     * \return the minimum size of the engine
+     * \since H2DE-1.0.5
+     */
+    friend H2DE_Size H2DE_GetEngineMinimumSize(H2DE_Engine* engine);
     /**
      * Gets the FPS on an engine
      * \param engine a pointer to an engine

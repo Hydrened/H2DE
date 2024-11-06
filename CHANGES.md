@@ -1,3 +1,8 @@
+## H2DE-1.3.9
+#### ADDED
+- `H2DE_SetEngineMinimumSize` method
+- `H2DE_GetEngineMinimumSize` method
+
 ## H2DE-1.3.8
 #### REMOVED
 - rotate from parent for polygons
