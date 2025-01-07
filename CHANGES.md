@@ -1,3 +1,10 @@
+## H2DE-1.3.10
+#### ADDED
+- `H2DE_LoadAsset` method
+- warnings when loading assets with same name
+#### FIXED
+- loading percentage not reseting
+
 ## H2DE-1.3.9
 #### ADDED
 - `H2DE_SetEngineMinimumSize` method

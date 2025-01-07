@@ -49,12 +49,22 @@ void H2DE_DebugRotationOrigins(H2DE_Engine* engine, bool active) {
 // ASSETS
 void H2DE_LoadAssets(H2DE_Engine* engine, const fs::path& dir) {
     if (fs::exists(dir)) {
+        engine->loadedData = 0;
         if (fs::is_directory(dir)) {
             engine->dataToLoad = H2DE_Engine::countFiles(dir);
             engine->importFiles(dir);
             std::cout << "ENGINE => Loading complete" << std::endl;
         } else std::cerr << "ENGINE => ERROR: Path isn't a directory" << std::endl;
     } else std::cerr << "ENGINE => ERROR: Asset directory not found" << std::endl;
+}
+
+void H2DE_LoadAsset(H2DE_Engine* engine, const fs::path& file) {
+    if (fs::exists(file)) {
+        engine->loadedData = 0;
+        engine->dataToLoad = 1;
+        engine->importFile(file);
+        std::cout << "ENGINE => Loading complete" << std::endl;
+    } else std::cerr << "ENGINE => ERROR: file not found" << std::endl;
 }
 
 int H2DE_Engine::countFiles(const fs::path& dir) {
@@ -67,16 +77,18 @@ int H2DE_Engine::countFiles(const fs::path& dir) {
     } return count;
 }
 
-void H2DE_Engine::importFiles(const fs::path& parentDir) {
-    for (const auto& entry : fs::directory_iterator(parentDir)) {
+void H2DE_Engine::importFiles(const fs::path& dir) {
+    for (const auto& entry : fs::directory_iterator(dir)) {
         if (fs::is_directory(entry.status())) importFiles(entry.path());
-        else if (fs::is_regular_file(entry.status())) {
-            fs::path extension = entry.path().extension();
-            if (extension == ".png") importTexture(entry.path());
-            else if (extension == ".mp3" || extension == ".ogg") importSound(entry.path());
-            else if (extension == ".ttf") importFont(entry.path());
-        }
+        else if (fs::is_regular_file(entry.status())) importFile(entry.path());
     }
+}
+
+void H2DE_Engine::importFile(const fs::path& file) {
+    fs::path extension = file.extension();
+    if (extension == ".png") importTexture(file);
+    else if (extension == ".mp3" || extension == ".ogg") importSound(file);
+    else if (extension == ".ttf") importFont(file);
 }
 
 void H2DE_Engine::importTexture(const fs::path& img) {
@@ -85,8 +97,10 @@ void H2DE_Engine::importTexture(const fs::path& img) {
     std::string file = img.string().substr(startNameIndex);
     std::replace(file.begin(), file.end(), '\\', '/');
     SDL_Texture* texture = H2DE_Loader::loadTexture(renderer, img.string().c_str());
-    if (texture != nullptr) textures[file] = texture;
-    else std::cerr << "ENGINE => IMG_Load failed: " << SDL_GetError() << std::endl;
+    if (texture != nullptr) {
+        if (textures.find(file) != textures.end()) std::cerr << "ENGINE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
+        textures[file] = texture;
+    } else std::cerr << "ENGINE => IMG_Load failed: " << SDL_GetError() << std::endl;
     assetImported();
 }
 
@@ -96,8 +110,10 @@ void H2DE_Engine::importSound(const fs::path& song) {
     std::string file = song.string().substr(startNameIndex);
     std::replace(file.begin(), file.end(), '\\', '/');
     Mix_Chunk* music = H2DE_Loader::loadSound(song.string().c_str());
-    if (music != nullptr) sounds[file] = music;
-    else std::cerr << "ENGINE => Mix_LoadMUS failed: " << Mix_GetError() << std::endl;
+    if (music != nullptr) {
+        if (sounds.find(file) != sounds.end()) std::cerr << "ENGINE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
+        sounds[file] = music;
+    } else std::cerr << "ENGINE => Mix_LoadMUS failed: " << Mix_GetError() << std::endl;
     assetImported();
 }
 
@@ -107,8 +123,10 @@ void H2DE_Engine::importFont(const fs::path& font) {
     std::string file = font.string().substr(startNameIndex);
     std::replace(file.begin(), file.end(), '\\', '/');
     TTF_Font* ttf = H2DE_Loader::loadFont(font.string().c_str());
-    if (ttf != nullptr) fonts[file] = ttf;
-    else std::cerr << "ENGINE => TTF_OpenFont failed: " << TTF_GetError() << std::endl;
+    if (ttf != nullptr) {
+        if (fonts.find(file) != fonts.end()) std::cerr << "ENGINE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
+        fonts[file] = ttf;
+    } else std::cerr << "ENGINE => TTF_OpenFont failed: " << TTF_GetError() << std::endl;
     assetImported();
 }
 
@@ -121,27 +139,47 @@ void H2DE_Engine::assetImported() {
 // REPEAT
 std::vector<H2DE_GraphicObject*> H2DE_Engine::getRepeatXGraphicObjects() {
     std::vector<H2DE_GraphicObject*> res;
+
     for (H2DE_GraphicObject* g : graphicObjects) if (g->repeatX) {
-        int leftNb = ceil(static_cast<float>(g->pos.x) / (g->size.w * g->scale.x));
-        for (int i = 0; i < leftNb; i++) {
-            int posX = g->pos.x - g->size.w * g->scale.x * (i + 1);
-            if (posX - g->size.w >= size.w) continue;
-            H2DE_GraphicObject* copy = new H2DE_GraphicObject(*g);
-            copy->pos.x = posX;
-            copy->repeatX = false;
-            res.push_back(copy);
+        H2DE_Pos pos = g->pos;
+        H2DE_Size size = (g->type == CIRCLE) ? H2DE_Calculator::getCircleSize(g->radius) : (g->type == POLYGON) ? H2DE_Calculator::getPolygonSize(g->points) : g->size;
+
+        int i = 0;
+        while (pos.x + size.w * g->scale.x < size.w && i < 10) {
+
+            // pos.x += 
+
+            i++;
         }
-        int rightNb = ceil(static_cast<float>(size.w - g->pos.x - g->size.w * g->scale.x) / (g->size.w * g->scale.x)) + 1;
-        for (int i = 0; i < rightNb; i++) {
-            int posX = g->pos.x + g->size.w * g->scale.x * (i + 1);
-            if (posX + g->size.w < 0) continue;
-            H2DE_GraphicObject* copy = new H2DE_GraphicObject(*g);
-            copy->pos.x = posX;
-            copy->repeatX = false;
-            res.push_back(copy);
-        }
+        
+
+
     }
+
     return res;
+
+    // std::vector<H2DE_GraphicObject*> res;
+    // for (H2DE_GraphicObject* g : graphicObjects) if (g->repeatX) {
+    //     int leftNb = ceil(static_cast<float>(g->pos.x) / (g->size.w * g->scale.x));
+    //     for (int i = 0; i < leftNb; i++) {
+    //         int posX = g->pos.x - g->size.w * g->scale.x * (i + 1);
+    //         if (posX - g->size.w >= size.w) continue;
+    //         H2DE_GraphicObject* copy = new H2DE_GraphicObject(*g);
+    //         copy->pos.x = posX;
+    //         copy->repeatX = false;
+    //         res.push_back(copy);
+    //     }
+    //     int rightNb = ceil(static_cast<float>(size.w - g->pos.x - g->size.w * g->scale.x) / (g->size.w * g->scale.x)) + 1;
+    //     for (int i = 0; i < rightNb; i++) {
+    //         int posX = g->pos.x + g->size.w * g->scale.x * (i + 1);
+    //         if (posX + g->size.w < 0) continue;
+    //         H2DE_GraphicObject* copy = new H2DE_GraphicObject(*g);
+    //         copy->pos.x = posX;
+    //         copy->repeatX = false;
+    //         res.push_back(copy);
+    //     }
+    // }
+    // return res;
 }
 
 std::vector<H2DE_GraphicObject*> H2DE_Engine::getRepeatYGraphicObjects() {

@@ -70,6 +70,12 @@ private:
      */
     void importFiles(const fs::path& dir);
     /**
+     * Imports a file
+     * \param file file
+     * \since H2DE-1.3.10
+     */
+    void importFile(const fs::path& file);
+    /**
      * Imports a texture from a png file
      * \param img png file
      * \since H2DE-1.0.0
@@ -165,6 +171,13 @@ public:
      * \since H2DE-1.0.0
      */
     friend void H2DE_LoadAssets(H2DE_Engine* engine, const fs::path& dir);
+    /**
+     * Loads an asset
+     * \param engine a pointer to an engine
+     * \param file file
+     * \since H2DE-1.3.10
+     */
+    friend void H2DE_LoadAsset(H2DE_Engine* engine, const fs::path& file);
     /**
      * Adds a graphic object to be rendered this frame
      * \param engine a pointer to an engine
