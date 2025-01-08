@@ -179,6 +179,19 @@ public:
      */
     friend void H2DE_LoadAsset(H2DE_Engine* engine, const fs::path& file);
     /**
+     * Removes every assets from an engine
+     * \param engine a pointer to an engine
+     * \since H2DE-1.3.11
+     */
+    friend void H2DE_RemoveAssets(H2DE_Engine* engine);
+    /**
+     * Removes an asset from an engine
+     * \param engine a pointer to an engine
+     * \param name asset's name
+     * \since H2DE-1.3.11
+     */
+    friend void H2DE_RemoveAsset(H2DE_Engine* engine, const fs::path& name);
+    /**
      * Adds a graphic object to be rendered this frame
      * \param engine a pointer to an engine
      * \param g a pointer the graphic object

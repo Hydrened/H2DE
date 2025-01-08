@@ -67,6 +67,29 @@ void H2DE_LoadAsset(H2DE_Engine* engine, const fs::path& file) {
     } else std::cerr << "ENGINE => ERROR: file not found" << std::endl;
 }
 
+void H2DE_RemoveAssets(H2DE_Engine* engine) {
+    for (const auto& [name, texture] : engine->textures) H2DE_RemoveAsset(engine, name);
+    for (const auto& [name, sound] : engine->sounds) H2DE_RemoveAsset(engine, name);
+    for (const auto& [name, font] : engine->fonts) H2DE_RemoveAsset(engine, name);
+}
+
+void H2DE_RemoveAsset(H2DE_Engine* engine, const fs::path& name) {
+    fs::path extension = name.extension();
+    if (extension == ".png") {
+        if (engine->textures.erase(name.string())) {
+            std::cout << "ENGINE => Removed texture " << name << " from engine" << std::endl;
+        }
+    } else if (extension == ".mp3" || extension == ".ogg") {
+        if (engine->sounds.erase(name.string())) {
+            std::cout << "ENGINE => Removed sound " << name << " from engine" << std::endl;
+        }
+    } else if (extension == ".ttf") {
+        if (engine->fonts.erase(name.string())) {
+            std::cout << "ENGINE => Removed font " << name << " from engine" << std::endl;
+        }
+    }
+}
+
 int H2DE_Engine::countFiles(const fs::path& dir) {
     int count = 0;
     for (const auto& entry : fs::directory_iterator(dir)) {
