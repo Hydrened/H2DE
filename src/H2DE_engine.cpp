@@ -109,7 +109,7 @@ void H2DE_Engine::importFiles(const fs::path& dir) {
 
 void H2DE_Engine::importFile(const fs::path& file) {
     fs::path extension = file.extension();
-    if (extension == ".png") importTexture(file);
+    if (extension == ".png" || extension == ".jpg") importTexture(file);
     else if (extension == ".mp3" || extension == ".ogg") importSound(file);
     else if (extension == ".ttf") importFont(file);
 }

@@ -1,6 +1,11 @@
+## H2DE-1.3.12
+#### ADDED
+- jpg loading
+
 ## H2DE-1.3.11
-
-
+#### ADDED
+- remove assets fro mengine
+- remove specific asset from engine
 
 ## H2DE-1.3.10
 #### ADDED
