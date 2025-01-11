@@ -370,8 +370,8 @@ void H2DE_Engine::renderImage(H2DE_GraphicObject* g) {
 
     SDL_Point pivot = static_cast<SDL_Point>(rotationOrigin);
 
-    SDL_SetTextureColorMod(texture, g->rgb.r, g->rgb.g, g->rgb.b);
-    SDL_SetTextureAlphaMod(texture, g->rgb.a);
+    SDL_SetTextureColorMod(texture, g->color.r, g->color.g, g->color.b);
+    SDL_SetTextureAlphaMod(texture, g->color.a);
     SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
 
     if (g->srcRect.has_value()) {
@@ -507,8 +507,8 @@ void H2DE_Engine::renderPolygon(H2DE_GraphicObject* g) {
     }
 
     // RENDER
-    if (g->filled) filledPolygonColor(renderer, vx.data(), vy.data(), nbPoints, static_cast<Uint32>(g->rgb));
-    else polygonColor(renderer, vx.data(), vy.data(), nbPoints, static_cast<Uint32>(g->rgb));
+    if (g->filled) filledPolygonColor(renderer, vx.data(), vy.data(), nbPoints, static_cast<Uint32>(g->color));
+    else polygonColor(renderer, vx.data(), vy.data(), nbPoints, static_cast<Uint32>(g->color));
 }
 
 void H2DE_Engine::renderCircle(H2DE_GraphicObject* g) {
@@ -551,8 +551,8 @@ void H2DE_Engine::renderCircle(H2DE_GraphicObject* g) {
 
     // pos = H2DE_Calculator::getRotatedPos(pos, rotationOrigin, g->rotation);
 
-    if (g->filled) filledCircleColor(renderer, rotatedPos.x, rotatedPos.y, g->radius, static_cast<Uint32>(g->rgb));
-    else circleColor(renderer, rotatedPos.x, rotatedPos.y, g->radius, static_cast<Uint32>(g->rgb));
+    if (g->filled) filledCircleColor(renderer, rotatedPos.x, rotatedPos.y, g->radius, static_cast<Uint32>(g->color));
+    else circleColor(renderer, rotatedPos.x, rotatedPos.y, g->radius, static_cast<Uint32>(g->color));
 }
 
 void H2DE_Engine::renderText(H2DE_GraphicObject* g) {

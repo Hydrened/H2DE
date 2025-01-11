@@ -33,7 +33,7 @@ struct H2DE_GraphicObject {
 
     SDL_RendererFlip flip = SDL_FLIP_NONE;                          /**< Flip the object */
 
-    H2DE_RGB rgb = { 255, 255, 255, 255 };                          /**< RGB Color of the object */
+    H2DE_RGB color = { 255, 255, 255, 255 };                        /**< Color of the object */
     bool filled = false;                                            /**< If you need to fill the object (only for `H2DE_GraphicObjectType::POLYGON` and `H2DE_GraphicObjectType::CIRCLE`) */
 
     bool repeatX = false;                                           /**< If you need the object to repeat on the x axis */

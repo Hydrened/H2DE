@@ -1,3 +1,7 @@
+## H2DE-1.3.13
+#### MODIFIED
+- color name in `H2DE_GraphicObject` structure
+
 ## H2DE-1.3.12
 #### ADDED
 - jpg loading
