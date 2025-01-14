@@ -1,3 +1,7 @@
+## H2DE-1.3.14
+#### MODIFIED
+- indexes are now signed
+
 ## H2DE-1.3.13
 #### MODIFIED
 - color name in `H2DE_GraphicObject` structure

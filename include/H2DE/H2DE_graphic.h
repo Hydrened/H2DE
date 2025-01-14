@@ -40,7 +40,7 @@ struct H2DE_GraphicObject {
     bool repeatY = false;                                           /**< If you need the object to repeat on the y axis */
 
     H2DE_GraphicObject* parent = nullptr;                           /**< Parent of the object */
-    unsigned int index = 0;                                         /**< The order of the object */
+    int index = 0;                                                  /**< The order of the object */
 
     std::optional<std::function<void()>> onclick = std::nullopt;    /**< Function that'll be triggered when clicked */
 };
