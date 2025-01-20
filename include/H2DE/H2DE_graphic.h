@@ -16,14 +16,12 @@ struct H2DE_GraphicObject {
     H2DE_GraphicObjectType type;                                    /**< Type of the object */
 
     H2DE_Pos pos = { 0, 0 };                                        /**< Position of the object */
-    H2DE_Size size = { 0, 0 };                                      /**< Size of the object (only for `H2DE_GraphicObjectType::IMAGE` and `H2DE_GraphicObjectType::TEXT`) */
+    H2DE_Size size = { 0, 0 };                                      /**< Size of the object (only for `H2DE_GraphicObjectType::IMAGE`) */
     std::vector<SDL_Point> points;                                  /**< Points of the polygon (only for `H2DE_GraphicObjectType::POLYGON`) */
     unsigned int radius = 0;                                        /**< Radius of the circle (only for `H2DE_GraphicObjectType::CIRCLE`) */
     std::optional<H2DE_Rect> srcRect = std::nullopt;                /**< Part of the image to display (only for `H2DE_GraphicObjectType::IMAGE`) */
 
     std::string texture = "";                                       /**< Texture of the object (only for `H2DE_GraphicObjectType::IMAGE`) */
-    const char* text = "";                                          /**< Text of the object (only for `H2DE_GraphicObjectType::TEXT`) */
-    std::string font = "";                                          /**< Font of the text (only for `H2DE_GraphicObjectType::TEXT`) */
 
     H2DE_Pos rotationOrigin = { 0, 0 };                             /**< Position of the rotation point */
     float rotation = 0.0f;                                          /**< Rotation of the object */

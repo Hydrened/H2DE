@@ -4,6 +4,12 @@ bool H2DE_Calculator::isIndexGreater(const H2DE_GraphicObject* s1, const H2DE_Gr
     return s1->index < s2->index;
 }
 
+bool H2DE_Calculator::isPositionGreater(const H2DE_GraphicObject* s1, const H2DE_GraphicObject* s2) {
+    bool equals = (s1->pos.x == s2->pos.x);
+    if (equals) return s1->pos.y < s2->pos.y;
+    else return s1->pos.x < s2->pos.x;
+}
+
 float H2DE_Calculator::convertToRadians(float rotation) {
     return rotation * M_PI / 180.0f;
 }

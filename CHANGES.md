@@ -1,3 +1,9 @@
+## H2DE-1.3.15
+#### FIXED
+- graphic object's index sorting
+#### REMOVED
+- text rendering
+
 ## H2DE-1.3.14
 #### MODIFIED
 - indexes are now signed

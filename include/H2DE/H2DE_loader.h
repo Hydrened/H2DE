@@ -4,13 +4,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_ttf.h>
 
 /**
  * Contains the methods required by the engine to load files such as:
  * - png
  * - mp3
- * - ogg
  * - ttf
  * \since H2DE-1.0.0
  */
@@ -31,13 +29,6 @@ public:
      * \since H2DE-1.0.0
      */
     static Mix_Chunk* loadSound(const char* file);
-    /**
-     * Loads a font from a ttf file
-     * \param file the name of the file
-     * \return a font
-     * \since H2DE-1.0.0
-     */
-    static TTF_Font* loadFont(const char* file);
 };
 
 #endif

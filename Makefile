@@ -4,7 +4,7 @@ BIN_DIR = bin
 SRC_DIR = src
 INCLUDE_DIR = include
 LIB_DIR = lib
-SDL_TAGS = -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_gfx -lSDL2_ttf
+SDL_TAGS = -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_gfx
 
 all:
 	make engine -j

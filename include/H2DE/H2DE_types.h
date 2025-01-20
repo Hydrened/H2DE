@@ -13,7 +13,6 @@ enum H2DE_GraphicObjectType {
     IMAGE,
     CIRCLE,
     POLYGON,
-    TEXT,
 };
 
 /**

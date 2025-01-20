@@ -21,6 +21,15 @@ public:
     static bool isIndexGreater(const H2DE_GraphicObject* s1, const H2DE_GraphicObject* s2);
 
     /**
+     * Picks the `H2DE_GraphicObject` with the greater position
+     * \param s1 a pointer to a `H2DE_GraphicObject`
+     * \param s2 a pointer to a `H2DE_GraphicObject`
+     * \return true if `s2` is greater than `s1` or false otherwise
+     * \since H2DE-1.3.15
+     */
+    static bool isPositionGreater(const H2DE_GraphicObject* s1, const H2DE_GraphicObject* s2);
+
+    /**
      * Converts a rotation in degress into radians 
      * \param rotation a float value corresponding to a rotation in degrees
      * \return a float value corresponding to a rotation in radians

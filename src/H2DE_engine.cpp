@@ -7,7 +7,6 @@ H2DE_Engine::H2DE_Engine(SDL_Renderer* r, int w, int h, int f) : renderer(r), si
     else if (!IMG_Init(IMG_INIT_PNG) && IMG_INIT_PNG) throw std::runtime_error("IMG_Init  failed: " + std::string(IMG_GetError()));
     else if (!(Mix_Init(MIX_INIT_MP3) & MIX_INIT_MP3)) throw std::runtime_error("Mix_Init  failed: " + std::string(Mix_GetError()));
     else if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) < 0) throw std::runtime_error("Mix_OpenAudio  failed: " + std::string(Mix_GetError()));
-    else if (TTF_Init() == -1) throw std::runtime_error("TTF_Init  failed: " + std::string(TTF_GetError()));
 }
 
 H2DE_Engine* H2DE_CreateEngine(SDL_Renderer* renderer, int w, int h, int fps) {
@@ -20,13 +19,10 @@ H2DE_Engine::~H2DE_Engine() {
     textures.clear();
     for (const auto& pair : sounds) if (pair.second != nullptr) Mix_FreeChunk(pair.second);
     sounds.clear();
-    for (const auto& pair : fonts) if (pair.second != nullptr) TTF_CloseFont(pair.second);
-    fonts.clear();
     for (H2DE_GraphicObject* g : graphicObjects) H2DE_DestroyGraphicObject(g);
     graphicObjects.clear();
     IMG_Quit();
     Mix_CloseAudio();
-    TTF_Quit();
 }
 
 void H2DE_DestroyEngine(H2DE_Engine* engine) {
@@ -70,7 +66,6 @@ void H2DE_LoadAsset(H2DE_Engine* engine, const fs::path& file) {
 void H2DE_RemoveAssets(H2DE_Engine* engine) {
     for (const auto& [name, texture] : engine->textures) H2DE_RemoveAsset(engine, name);
     for (const auto& [name, sound] : engine->sounds) H2DE_RemoveAsset(engine, name);
-    for (const auto& [name, font] : engine->fonts) H2DE_RemoveAsset(engine, name);
 }
 
 void H2DE_RemoveAsset(H2DE_Engine* engine, const fs::path& name) {
@@ -82,10 +77,6 @@ void H2DE_RemoveAsset(H2DE_Engine* engine, const fs::path& name) {
     } else if (extension == ".mp3" || extension == ".ogg") {
         if (engine->sounds.erase(name.string())) {
             std::cout << "ENGINE => Removed sound " << name << " from engine" << std::endl;
-        }
-    } else if (extension == ".ttf") {
-        if (engine->fonts.erase(name.string())) {
-            std::cout << "ENGINE => Removed font " << name << " from engine" << std::endl;
         }
     }
 }
@@ -111,7 +102,6 @@ void H2DE_Engine::importFile(const fs::path& file) {
     fs::path extension = file.extension();
     if (extension == ".png" || extension == ".jpg") importTexture(file);
     else if (extension == ".mp3" || extension == ".ogg") importSound(file);
-    else if (extension == ".ttf") importFont(file);
 }
 
 void H2DE_Engine::importTexture(const fs::path& img) {
@@ -140,19 +130,6 @@ void H2DE_Engine::importSound(const fs::path& song) {
     assetImported();
 }
 
-void H2DE_Engine::importFont(const fs::path& font) {
-    size_t startNameIndex = font.string().rfind('\\');
-    startNameIndex = (startNameIndex != std::string::npos) ? startNameIndex + 1 : 0;
-    std::string file = font.string().substr(startNameIndex);
-    std::replace(file.begin(), file.end(), '\\', '/');
-    TTF_Font* ttf = H2DE_Loader::loadFont(font.string().c_str());
-    if (ttf != nullptr) {
-        if (fonts.find(file) != fonts.end()) std::cerr << "ENGINE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
-        fonts[file] = ttf;
-    } else std::cerr << "ENGINE => TTF_OpenFont failed: " << TTF_GetError() << std::endl;
-    assetImported();
-}
-
 void H2DE_Engine::assetImported() {
     loadedData++;
     float percentage = round(static_cast<float>(loadedData) / static_cast<float>(dataToLoad) * 100 * 100) / 100;
@@ -174,9 +151,6 @@ std::vector<H2DE_GraphicObject*> H2DE_Engine::getRepeatXGraphicObjects() {
 
             i++;
         }
-        
-
-
     }
 
     return res;
@@ -244,10 +218,6 @@ void H2DE_AddGraphicObject(H2DE_Engine* engine, H2DE_GraphicObject* g) {
         case CIRCLE:
             if (g->radius < 1) canAdd = false;
             break;
-        case TEXT:
-            if (g->text == "") canAdd = false;
-            if (g->font == "") canAdd = false;
-            break;
         default: canAdd = false; break;
     }
     if (canAdd) engine->graphicObjects.push_back(g);
@@ -299,6 +269,21 @@ void H2DE_RenderEngine(H2DE_Engine* engine) {
     graphicObjects.insert(graphicObjects.end(), repeatYGraphicObjects.begin(), repeatYGraphicObjects.end());
 
     sort(graphicObjects.begin(), graphicObjects.end(), &H2DE_Calculator::isIndexGreater);
+    std::map<int, std::vector<H2DE_GraphicObject*>> test;
+    for (H2DE_GraphicObject* g : graphicObjects) test[g->index].push_back(g);
+    graphicObjects.clear();
+
+    int lastIndex = 0;
+    for (auto& [index, gs] : test) {
+        sort(gs.begin(), gs.end(), &H2DE_Calculator::isPositionGreater);
+
+        for (int i = 0; i < gs.size(); i++) {
+            gs[i]->index = lastIndex;
+            graphicObjects.push_back(gs[i]);
+            lastIndex++;
+        }
+    }
+
     if (engine->debug->graphicObjects) std::cout << "ENGINE => rendering " << graphicObjects.size() << " object(s)" << std::endl; 
 
     H2DE_GraphicObject* clickedElement = nullptr;
@@ -307,7 +292,6 @@ void H2DE_RenderEngine(H2DE_Engine* engine) {
             case IMAGE: engine->renderImage(g); break;
             case POLYGON: engine->renderPolygon(g); break;
             case CIRCLE: engine->renderCircle(g); break;
-            case TEXT: engine->renderText(g); break;
             default: break;
         }
         if (engine->click.has_value()) if (engine->isElementClicked(g)) clickedElement = g;
@@ -372,7 +356,7 @@ void H2DE_Engine::renderImage(H2DE_GraphicObject* g) {
 
     SDL_SetTextureColorMod(texture, g->color.r, g->color.g, g->color.b);
     SDL_SetTextureAlphaMod(texture, g->color.a);
-    SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
+    SDL_SetTextureScaleMode(texture, renderingMode);
 
     if (g->srcRect.has_value()) {
         SDL_Rect srcRect = (SDL_Rect)g->srcRect.value();
@@ -555,29 +539,6 @@ void H2DE_Engine::renderCircle(H2DE_GraphicObject* g) {
     else circleColor(renderer, rotatedPos.x, rotatedPos.y, g->radius, static_cast<Uint32>(g->color));
 }
 
-void H2DE_Engine::renderText(H2DE_GraphicObject* g) {
-    // std::unordered_map<std::string, TTF_Font*>::iterator fontIterator = fonts.find(g->font);
-    // if (fontIterator != fonts.end()) {
-
-    //     H2DE_Pos pos = H2DE_Calculator::getPosFromParents(g);
-    //     pos = H2DE_Calculator::getRescaledPos(pos, g->size, g->scaleOrigin, g->scale);
-    //     H2DE_Size size = H2DE_Calculator::getRescaledSize(g->size, g->scale);
-    //     SDL_Rect destRect = { pos.x, pos.y, size.w, size.h };
-
-    //     H2DE_Pos rotationOrigin = H2DE_Calculator::getRescaledRotationOrigin(g->rotationOrigin, g->scale);
-    //     SDL_Point convertedRotationOrigin = static_cast<SDL_Point>(rotationOrigin);
-
-    //     TTF_Font* font = fontIterator->second;
-    //     SDL_Surface* surface = TTF_RenderText_Solid(font, g->text, g->rgb);
-    //     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-    //     SDL_FreeSurface(surface);
-    //     SDL_SetTextureAlphaMod(texture, g->rgb.a);
-    //     SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
-    //     SDL_RenderCopyEx(renderer, texture, NULL, &destRect, g->rotation, &convertedRotationOrigin, g->flip);
-    // }
-}
-
 // SOUND
 void H2DE_SetSoundVolume(H2DE_Engine* engine, int channel, int volume) {
     volume = std::clamp(volume, 0, 100);
@@ -640,4 +601,8 @@ void H2DE_SetEngineMinimumSize(H2DE_Engine* engine, int w, int h) {
 H2DE_Timeline* H2DE_CreateTimeline(H2DE_Engine* engine, unsigned int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed, int loop) {
     H2DE_Timeline* timeline = new H2DE_Timeline(engine, duration, effect, update, completed, loop);
     return timeline;
+}
+
+void H2DE_SetTextureScaleMode(H2DE_Engine* engine, SDL_ScaleMode mode) {
+    engine->renderingMode = mode;
 }

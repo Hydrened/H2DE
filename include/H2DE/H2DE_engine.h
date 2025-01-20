@@ -16,6 +16,7 @@
 #include <filesystem>
 #include <iostream>
 #include <string>
+#include <map>
 #include <unordered_map>
 #include <vector>
 
@@ -39,7 +40,6 @@ private:
 
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, Mix_Chunk*> sounds;
-    std::unordered_map<std::string, TTF_Font*> fonts;
 
     std::vector<H2DE_GraphicObject*> graphicObjects;
     std::optional<H2DE_SClick*> click = std::nullopt;
@@ -55,6 +55,8 @@ private:
     };
 
     H2DE_Debug* debug = new H2DE_Debug();
+    SDL_ScaleMode renderingMode = SDL_ScaleModeLinear;
+
 
     /**
      * Counts the number of file to be loaded from a parent directory
@@ -87,12 +89,6 @@ private:
      * \since H2DE-1.0.0
      */
     void importSound(const fs::path& sound);
-    /**
-     * Imports a font from a ttf file
-     * \param font ttf file
-     * \since H2DE-1.0.0
-     */
-    void importFont(const fs::path& font);
     /**
      * Indicates that an asset has been loaded
      * \since H2DE-1.0.0
@@ -137,12 +133,6 @@ private:
      * \since H2DE-1.0.0
      */
     void renderCircle(H2DE_GraphicObject* g);
-    /**
-     * Renders a text on the renderer
-     * \param g the text to render
-     * \since H2DE-1.0.0
-     */
-    void renderText(H2DE_GraphicObject* g);
 
     /**
      * Simulates a click on a graphic element
@@ -324,6 +314,14 @@ public:
      * \since H2DE-1.3.4
      */
     friend void H2DE_DebugRotationOrigins(H2DE_Engine* engine, bool active);
+
+    /**
+     * Set the texture scale mode for image rendering
+     * \param engine a pointer to an engine
+     * \param mode rendering mode
+     * \since H2DE-1.3.15
+     */
+    friend void H2DE_SetTextureScaleMode(H2DE_Engine* engine, SDL_ScaleMode mode);
 };
 
 /**
