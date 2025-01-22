@@ -7,3 +7,5 @@ bin/*.exe
 src/test.cpp
 
 todo.md
+Makefile
+save.dat

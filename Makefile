@@ -11,7 +11,7 @@ all:
 	make test -j
 
 engine:
-	$(CC) $(VERSION) -m64 -shared -o $(BIN_DIR)/H2DE.dll $(SRC_DIR)/H2DE_*.cpp -I$(INCLUDE_DIR) -L$(LIB_DIR) -Wl,--out-implib,$(LIB_DIR)/H2DE.lib $(SDL_TAGS)
+	$(CC) $(VERSION) -m64 -shared -o $(BIN_DIR)/H2DE.dll $(SRC_DIR)/H2DE_*.cpp -I$(INCLUDE_DIR) -L$(LIB_DIR) -Wl,--out-implib,$(LIB_DIR)/H2DE.lib $(SDL_TAGS) -lbase64
 
 test:
 	$(CC) $(VERSION) -m64 -o $(BIN_DIR)/test $(SRC_DIR)/test.cpp -I$(INCLUDE_DIR) -L$(LIB_DIR) -lmingw32 -lSDL2main $(SDL_TAGS) -lH2DE

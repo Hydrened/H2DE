@@ -2,6 +2,7 @@
 #define H2DE_JSON_H
 
 #include <nlohmann/json.hpp>
+#include <base64/base64.h>
 #include <exception>
 #include <fstream>
 #include <iostream>
@@ -9,27 +10,19 @@
 using json = nlohmann::json;
 
 /**
- * Contains the methods required by the engine to open and write json files
- * \since H2DE-1.0.0
+ * Reads a json file
+ * \param file the name of the file
+ * \return the json data
+ * \since H2DE-1.3.16
  */
-class H2DE_Json {
-public:
-    /**
-     * Reads a json file
-     * \param file the name of the file
-     * \return the json data
-     * \since H2DE-1.0.0
-     */
-    static json* read(std::string file);
-    /**
-     * Write data in a json file
-     * \param file the name of the file
-     * \param j a pointer to the json data
-     * \param dump number of space for indentation
-     * \return true on sucess and false otherwise
-     * \since H2DE-1.0.0
-     */
-    static bool write(std::string file, json* j, unsigned int dump);
-};
+json H2DE_ReadJson(std::string file);
+/**
+ * Write data in a json file
+ * \param file the name of the file
+ * \param json a pointer to the json data
+ * \return true on sucess and false otherwise
+ * \since H2DE-1.3.16
+ */
+bool H2DE_WriteJson(std::string file, json* json);
 
 #endif

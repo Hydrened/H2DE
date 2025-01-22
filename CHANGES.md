@@ -1,3 +1,7 @@
+## H2DE-1.3.16
+#### ADDED
+- auto encode / decode json files
+
 ## H2DE-1.3.15
 #### FIXED
 - graphic object's index sorting
