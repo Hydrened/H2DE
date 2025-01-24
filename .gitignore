@@ -1,11 +1,7 @@
 .vscode/
-assets/
-data/
-temp/
-
+bin/objects
 bin/*.exe
 src/test.cpp
-
+errors.md
 todo.md
 Makefile
-save.dat

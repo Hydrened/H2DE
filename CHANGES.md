@@ -1,3 +1,18 @@
+## H2DE-2.0.0
+#### REMAKE FROM SCRATCH
+#### ADDED
+- auto window / renderer creation
+- game loop
+- set window title
+- set window size
+- set window min size
+- set window max size
+- set window fps
+
+
+
+
+
 ## H2DE-1.3.16
 #### ADDED
 - auto encode / decode json files
