@@ -1,3 +1,23 @@
+## H2DE-2.0.1
+#### ADDED
+- load assets
+- load specific asset
+- remove assets
+- remove specific asset
+- delay
+- get window size
+- get window minimum size
+- get window maximum size
+- get fps
+- get curernt fps
+- set sound volume
+- play sound
+- pause sound
+- resume sound
+#### FIXED
+- init errors
+- clearing memory
+
 ## H2DE-2.0.0
 #### REMAKE FROM SCRATCH
 #### ADDED

@@ -3,21 +3,33 @@
 // INIT
 H2DE_Engine::H2DE_Engine(H2DE_EngineData* d) : data(d), fps(data->fps) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        throw std::runtime_error("H2DE-101: Error initializing SDL => SDL_Init failed: " + std::string(SDL_GetError()));
+        throw std::runtime_error("H2DE-101: SDL_Init_Video failed: " + std::string(SDL_GetError()));
+    }
+    else if (SDL_Init(SDL_INIT_AUDIO) != 0) {
+        throw std::runtime_error("H2DE-102: SDL_Init_Audio failed: " + std::string(SDL_GetError()));
+    }
+    else if (!IMG_Init(IMG_INIT_PNG) && IMG_INIT_PNG) {
+        throw std::runtime_error("H2DE-103: IMG_Init failed: " + std::string(IMG_GetError()));
+    }
+    else if (!(Mix_Init(MIX_INIT_MP3) & MIX_INIT_MP3)) {
+        throw std::runtime_error("H2DE-104: Mix_Init failed: " + std::string(Mix_GetError()));
+    }
+    else if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) < 0) {
+        throw std::runtime_error("H2DE-105: Mix_OpenAudio failed: " + std::string(Mix_GetError()));
     }
 
     SDL_WindowFlags windowFlag = (data->fullscreen) ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_SHOWN;
     window = SDL_CreateWindow(data->title.c_str(), data->pos.x, data->pos.y, data->size.x, data->size.y, windowFlag);
     if (!window) {
         SDL_Quit();
-        throw std::runtime_error("H2DE-102: Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
+        throw std::runtime_error("H2DE-106: Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
     }
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
         SDL_DestroyWindow(window);
         SDL_Quit();
-        throw std::runtime_error("H2DE-103: Error creating window => SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
+        throw std::runtime_error("H2DE-107: Error creating window => SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
     }
     run();
 }
@@ -31,12 +43,15 @@ void H2DE_CreateEngine(H2DE_EngineData* data) {
     }
 }
 
-
-
-
-
 // CLEANUP
 H2DE_Engine::~H2DE_Engine() {
+    for (const auto& [key, texture] : textures) if (texture != nullptr) SDL_DestroyTexture(texture);
+    textures.clear();
+    for (const auto& [key, sound] : sounds) if (sound != nullptr) Mix_FreeChunk(sound);
+    sounds.clear();
+
+    IMG_Quit();
+    Mix_CloseAudio();
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
@@ -68,39 +83,174 @@ void H2DE_Engine::run() {
     }
 }
 
-
-
-
-// LOAD
-void H2DE_LoadAssets(H2DE_Engine* engine, std::filesystem::path dir) {
-
+// DELAY
+void H2DE_Engine::H2DE_Delay(unsigned int ms, std::function<void()> callback) {
+    std::thread([ms, callback]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+        callback();
+    }).detach();
 }
 
-void H2DE_LoadAsset(H2DE_Engine* engine, std::filesystem::path file) {
-
+// ASSETS
+void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& dir) {
+    if (std::filesystem::exists(dir)) {
+        engine->loadedData = 0;
+        if (std::filesystem::is_directory(dir)) {
+            engine->dataToLoad = H2DE_Engine::countFilesToLoad(dir);
+            engine->importFiles(dir);
+            std::cout << "ENGINE => Loading complete" << std::endl;
+        } else std::cerr << "ENGINE => ERROR: Path isn't a directory" << std::endl;
+    } else std::cerr << "ENGINE => ERROR: Asset directory not found" << std::endl;
 }
 
+void H2DE_LoadAsset(H2DE_Engine* engine, const std::filesystem::path& file) {
+    if (std::filesystem::exists(file)) {
+        engine->loadedData = 0;
+        engine->dataToLoad = 1;
+        engine->importFile(file);
+        std::cout << "ENGINE => Loading complete" << std::endl;
+    } else std::cerr << "ENGINE => ERROR: file not found" << std::endl;
+}
 
+void H2DE_RemoveAssets(H2DE_Engine* engine) {
+    for (const auto& [name, texture] : engine->textures) H2DE_RemoveAsset(engine, name);
+    for (const auto& [name, sound] : engine->sounds) H2DE_RemoveAsset(engine, name);
+}
 
+void H2DE_RemoveAsset(H2DE_Engine* engine, const std::filesystem::path& file) {
+    std::filesystem::path extension = file.extension();
+    if (extension == ".png" || extension == ".jpg") {
+        if (engine->textures.erase(file.string())) {
+            std::cout << "ENGINE => Removed texture " << file << " from engine" << std::endl;
+        }
+    } else if (extension == ".mp3" || extension == ".ogg") {
+        if (engine->sounds.erase(file.string())) {
+            std::cout << "ENGINE => Removed sound " << file << " from engine" << std::endl;
+        }
+    }
+}
 
+int H2DE_Engine::countFilesToLoad(const std::filesystem::path& dir) {
+    int count = 0;
+    for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+        if (std::filesystem::is_regular_file(entry.status())) {
+            std::string extension = entry.path().extension().string();
+            if (extension == ".png" || extension == ".jpg"  || extension == ".mp3" || extension == ".ogg") count++;
+        } else if (std::filesystem::is_directory(entry.status())) count += countFilesToLoad(entry.path());
+    } return count;
+}
 
+void H2DE_Engine::importFiles(const std::filesystem::path& dir) {
+    for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+        if (std::filesystem::is_directory(entry.status())) importFiles(entry.path());
+        else if (std::filesystem::is_regular_file(entry.status())) importFile(entry.path());
+    }
+}
 
+void H2DE_Engine::importFile(const std::filesystem::path& file) {
+    std::filesystem::path extension = file.extension();
+    if (extension == ".png" || extension == ".jpg") importTexture(file);
+    else if (extension == ".mp3" || extension == ".ogg") importSound(file);
+}
 
+void H2DE_Engine::importTexture(const std::filesystem::path& img) {
+    size_t startNameIndex = img.string().rfind('\\');
+    startNameIndex = (startNameIndex != std::string::npos) ? startNameIndex + 1 : 0;
+    std::string file = img.string().substr(startNameIndex);
+    std::replace(file.begin(), file.end(), '\\', '/');
+    SDL_Texture* texture = H2DE_AssetLoader::loadTexture(renderer, img.string().c_str());
+    if (texture != nullptr) {
+        if (textures.find(file) != textures.end()) std::cerr << "ENGINE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
+        textures[file] = texture;
+    } else std::cerr << "ENGINE => IMG_Load failed: " << SDL_GetError() << std::endl;
+    assetImported();
+}
+
+void H2DE_Engine::importSound(const std::filesystem::path& song) {
+    size_t startNameIndex = song.string().rfind('\\');
+    startNameIndex = (startNameIndex != std::string::npos) ? startNameIndex + 1 : 0;
+    std::string file = song.string().substr(startNameIndex);
+    std::replace(file.begin(), file.end(), '\\', '/');
+    Mix_Chunk* music = H2DE_AssetLoader::loadSound(song.string().c_str());
+    if (music != nullptr) {
+        if (sounds.find(file) != sounds.end()) std::cerr << "ENGINE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
+        sounds[file] = music;
+    } else std::cerr << "ENGINE => Mix_LoadMUS failed: " << Mix_GetError() << std::endl;
+    assetImported();
+}
+
+void H2DE_Engine::assetImported() {
+    loadedData++;
+    float percentage = round(static_cast<float>(loadedData) / static_cast<float>(dataToLoad) * 100 * 100) / 100;
+    std::cout << "ENGINE => Loading: " << std::to_string(percentage).substr(0, std::to_string(percentage).size() - 4) << "%" << std::endl;
+}
+
+// SOUNDS
+void H2DE_SetVolumeSound(int channel, int volume) {
+    volume = std::clamp(volume, 0, 100);
+    Mix_Volume(channel, static_cast<int>((volume / 100.0f) * 128));
+}
+
+int H2DE_PlaySound(H2DE_Engine* engine, int channel, std::string sound, int loop) {
+    std::unordered_map<std::string, Mix_Chunk*> sounds = engine->sounds;
+
+    int res = -1;
+    if (sounds.find(sound) != sounds.end()) {
+        res = Mix_PlayChannel(channel, sounds[sound], loop);
+        if (res == -1) std::cerr << "ENGINE => Mix_PlayChannel failed: " << Mix_GetError() << std::endl;
+    } else std::cerr << "ENGINE => Sound '" << sound << "' not found" << std::endl;
+    return res;
+}
+
+void H2DE_PauseSound(H2DE_Engine* engine, int channel) {
+    Mix_Pause(channel);
+}
+
+void H2DE_ResumeSound(H2DE_Engine* engine, int channel) {
+    Mix_Resume(channel);
+}
+
+// GETTER
+H2DE_2DAVector H2DE_GetWindowSize(H2DE_Engine* engine) {
+    int w, h;
+    SDL_GetWindowSize(engine->window, &w, &h);
+    return { w, h };
+}
+
+H2DE_2DAVector H2DE_GetWindowMinimumSize(H2DE_Engine* engine) {
+    int w, h;
+    SDL_GetWindowMinimumSize(engine->window, &w, &h);
+    return { w, h };
+}
+
+H2DE_2DAVector H2DE_GetWindowMaximumSize(H2DE_Engine* engine) {
+    int w, h;
+    SDL_GetWindowMaximumSize(engine->window, &w, &h);
+    return { w, h };
+}
+
+int H2DE_GetFps(H2DE_Engine* engine) {
+    return engine->fps;
+}
+
+int H2DE_GetCurrentFps(H2DE_Engine* engine) {
+    return engine->currentFPS;
+}
 
 // SETTER
 void H2DE_SetTitle(H2DE_Engine* engine, std::string title) {
     SDL_SetWindowTitle(engine->window, title.c_str());
 }
 
-void H2DE_SetSize(H2DE_Engine* engine, H2DE_2DAVector size) {
+void H2DE_SetWindowSize(H2DE_Engine* engine, H2DE_2DAVector size) {
     SDL_SetWindowSize(engine->window, size.x, size.y);
 }
 
-void H2DE_SetMinimumSize(H2DE_Engine* engine, H2DE_2DAVector minSize) {
+void H2DE_SetWindowMinimumSize(H2DE_Engine* engine, H2DE_2DAVector minSize) {
     SDL_SetWindowMinimumSize(engine->window, minSize.x, minSize.y);
 }
 
-void H2DE_SetMaximumSize(H2DE_Engine* engine, H2DE_2DAVector maxSize) {
+void H2DE_SetWindowMaximumSize(H2DE_Engine* engine, H2DE_2DAVector maxSize) {
     SDL_SetWindowMaximumSize(engine->window, maxSize.x, maxSize.y);
 }
 
