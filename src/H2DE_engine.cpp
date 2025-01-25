@@ -1,46 +1,17 @@
 #include "H2DE_engine.h"
 
 // INIT
-H2DE_Engine::H2DE_Engine(H2DE_EngineData* d) : data(d), fps(data->fps) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        throw std::runtime_error("H2DE-101: SDL_Init_Video failed: " + std::string(SDL_GetError()));
-    }
-    else if (SDL_Init(SDL_INIT_AUDIO) != 0) {
-        throw std::runtime_error("H2DE-102: SDL_Init_Audio failed: " + std::string(SDL_GetError()));
-    }
-    else if (!IMG_Init(IMG_INIT_PNG) && IMG_INIT_PNG) {
-        throw std::runtime_error("H2DE-103: IMG_Init failed: " + std::string(IMG_GetError()));
-    }
-    else if (!(Mix_Init(MIX_INIT_MP3) & MIX_INIT_MP3)) {
-        throw std::runtime_error("H2DE-104: Mix_Init failed: " + std::string(Mix_GetError()));
-    }
-    else if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) < 0) {
-        throw std::runtime_error("H2DE-105: Mix_OpenAudio failed: " + std::string(Mix_GetError()));
-    }
-
-    SDL_WindowFlags windowFlag = (data->fullscreen) ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_SHOWN;
-    window = SDL_CreateWindow(data->title.c_str(), data->pos.x, data->pos.y, data->size.x, data->size.y, windowFlag);
-    if (!window) {
-        SDL_Quit();
-        throw std::runtime_error("H2DE-106: Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
-    }
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer) {
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        throw std::runtime_error("H2DE-107: Error creating window => SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
-    }
-    run();
-}
-
-void H2DE_CreateEngine(H2DE_EngineData* data) {
+H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.fps) {
     try {
-        H2DE_Engine* engine = new H2DE_Engine(data);
-        delete engine;
+        window = new H2DE_Window(this, data.window);
+        camera = new H2DE_Camera(this, data.camera);
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
     }
+}
+
+H2DE_Engine* H2DE_CreateEngine(H2DE_EngineData data) {
+    return new H2DE_Engine(data);
 }
 
 // CLEANUP
@@ -49,12 +20,7 @@ H2DE_Engine::~H2DE_Engine() {
     textures.clear();
     for (const auto& [key, sound] : sounds) if (sound != nullptr) Mix_FreeChunk(sound);
     sounds.clear();
-
-    IMG_Quit();
-    Mix_CloseAudio();
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    SDL_Quit();
+    delete window;
 }
 
 void H2DE_DestroyEngine(H2DE_Engine* engine) {
@@ -62,24 +28,28 @@ void H2DE_DestroyEngine(H2DE_Engine* engine) {
 }
 
 // RUN
-void H2DE_Engine::run() {
+void H2DE_RunEngine(H2DE_Engine* engine) {
     Uint32 now = SDL_GetTicks();
     int frameTime;
     SDL_Event event;
-    int timePerFrame = 1000 / fps;
+    int timePerFrame = 1000 / engine->fps;
 
-    while (isRunning) {
-        now = SDL_GetTicks();
+    try {
+        while (engine->isRunning) {
+            now = SDL_GetTicks();
 
-        while (SDL_PollEvent(&event)) if (event.type == SDL_QUIT) isRunning = false;
+            while (SDL_PollEvent(&event)) if (event.type == SDL_QUIT) engine->isRunning = false;
 
-        if (data->handleEvents) data->handleEvents(event);
-        if (data->update) data->update();
-        if (data->render) data->render();
-        
-        frameTime = SDL_GetTicks() - now;
-        currentFPS = 1000.0f / static_cast<float>((frameTime > 0) ? frameTime : 1);
-        if (timePerFrame >= frameTime) SDL_Delay(timePerFrame - frameTime);
+            if (engine->handleEvents) engine->handleEvents(event);
+            if (engine->update) engine->update();
+            if (engine->render) engine->render();
+            
+            frameTime = SDL_GetTicks() - now;
+            engine->currentFPS = 1000.0f / static_cast<float>((frameTime > 0) ? frameTime : 1);
+            if (timePerFrame >= frameTime) SDL_Delay(timePerFrame - frameTime);
+        }
+    } catch (const std::exception& e) {
+        MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
     }
 }
 
@@ -158,7 +128,7 @@ void H2DE_Engine::importTexture(const std::filesystem::path& img) {
     startNameIndex = (startNameIndex != std::string::npos) ? startNameIndex + 1 : 0;
     std::string file = img.string().substr(startNameIndex);
     std::replace(file.begin(), file.end(), '\\', '/');
-    SDL_Texture* texture = H2DE_AssetLoader::loadTexture(renderer, img.string().c_str());
+    SDL_Texture* texture = H2DE_AssetLoader::loadTexture(H2DE_GetWindowsRenderer(window), img.string().c_str());
     if (texture != nullptr) {
         if (textures.find(file) != textures.end()) std::cerr << "ENGINE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
         textures[file] = texture;
@@ -211,22 +181,8 @@ void H2DE_ResumeSound(H2DE_Engine* engine, int channel) {
 }
 
 // GETTER
-H2DE_2DAVector H2DE_GetWindowSize(H2DE_Engine* engine) {
-    int w, h;
-    SDL_GetWindowSize(engine->window, &w, &h);
-    return { w, h };
-}
-
-H2DE_2DAVector H2DE_GetWindowMinimumSize(H2DE_Engine* engine) {
-    int w, h;
-    SDL_GetWindowMinimumSize(engine->window, &w, &h);
-    return { w, h };
-}
-
-H2DE_2DAVector H2DE_GetWindowMaximumSize(H2DE_Engine* engine) {
-    int w, h;
-    SDL_GetWindowMaximumSize(engine->window, &w, &h);
-    return { w, h };
+H2DE_Window* H2DE_GetWindow(H2DE_Engine* engine) {
+    return engine->window;
 }
 
 int H2DE_GetFps(H2DE_Engine* engine) {
@@ -238,22 +194,18 @@ int H2DE_GetCurrentFps(H2DE_Engine* engine) {
 }
 
 // SETTER
-void H2DE_SetTitle(H2DE_Engine* engine, std::string title) {
-    SDL_SetWindowTitle(engine->window, title.c_str());
-}
-
-void H2DE_SetWindowSize(H2DE_Engine* engine, H2DE_2DAVector size) {
-    SDL_SetWindowSize(engine->window, size.x, size.y);
-}
-
-void H2DE_SetWindowMinimumSize(H2DE_Engine* engine, H2DE_2DAVector minSize) {
-    SDL_SetWindowMinimumSize(engine->window, minSize.x, minSize.y);
-}
-
-void H2DE_SetWindowMaximumSize(H2DE_Engine* engine, H2DE_2DAVector maxSize) {
-    SDL_SetWindowMaximumSize(engine->window, maxSize.x, maxSize.y);
-}
-
 void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps) {
     engine->fps = fps;
+}
+
+void H2DE_SetHandleEventCall(H2DE_Engine* engine, std::function<void(SDL_Event)> call) {
+    engine->handleEvents = call;
+}
+
+void H2DE_SetUpdateCall(H2DE_Engine* engine, std::function<void()> call) {
+    engine->update = call;
+}
+
+void H2DE_SetRenderCall(H2DE_Engine* engine, std::function<void()> call) {
+    engine->render = call;
 }

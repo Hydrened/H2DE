@@ -1,3 +1,24 @@
+## H2DE-2.0.2
+#### ADDED
+- set window grab
+- set window fullscreen
+- set window resizable
+- camera
+- set camera pos
+- set camera zoom
+- get camera pos
+- get camera size
+- get camera zoom
+- level position system
+- level size system
+- level hitbox system
+- collision detection
+- rgb color
+- hsv color
+- add hue
+- add saturation
+- add value
+
 ## H2DE-2.0.1
 #### ADDED
 - load assets
