@@ -7,18 +7,22 @@
 #include <functional>
 #include <iostream>
 #include <thread>
-#include <unordered_map>
 #include <windows.h>
 #include "H2DE_utils.h"
 #include "H2DE_asset_loader.h"
 #include "H2DE_window.h"
+#include "H2DE_renderer.h"
 #include "H2DE_camera.h"
+#include "H2DE_graphic.h"
 class H2DE_Window;
+class H2DE_Renderer;
 class H2DE_Camera;
+class H2DE_GraphicObject;
 
 class H2DE_Engine {
 private:
     H2DE_Window* window = nullptr;
+    H2DE_Renderer* renderer = nullptr;
     H2DE_Camera* camera = nullptr;
 
     H2DE_EngineData data;
@@ -31,6 +35,7 @@ private:
 
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, Mix_Chunk*> sounds;
+    std::vector<H2DE_GraphicObject*> objects;
 
     std::function<void(SDL_Event)> handleEvents = NULL;
     std::function<void()> update = NULL;
@@ -56,6 +61,8 @@ public:
     friend void H2DE_RemoveAssets(H2DE_Engine* engine);
     friend void H2DE_RemoveAsset(H2DE_Engine* engine, const std::filesystem::path& file);
 
+    friend void H2DE_AddGraphicObject(H2DE_Engine* engine, H2DE_GraphicObject* object);
+
     friend int H2DE_PlaySound(H2DE_Engine* engine, int channel, std::string sound, int loop);
     friend void H2DE_PauseSound(H2DE_Engine* engine, int channel);
     friend void H2DE_ResumeSound(H2DE_Engine* engine, int channel);
@@ -63,6 +70,7 @@ public:
     friend H2DE_Window* H2DE_GetWindow(H2DE_Engine* engine);
     friend int H2DE_GetFps(H2DE_Engine* engine);
     friend int H2DE_GetCurrentFps(H2DE_Engine* engine);
+    friend H2DE_Camera* H2DE_GetCamera(H2DE_Engine* engine);
 
     friend void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps);
     friend void H2DE_SetHandleEventCall(H2DE_Engine* engine, std::function<void(SDL_Event)> call);

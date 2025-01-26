@@ -30,10 +30,8 @@ float H2DE_GetCameraZoom(H2DE_Camera* camera) {
 }
 
 bool H2DE_CameraContains(H2DE_Camera* camera, H2DE_LevelHitbox hitbox) {
-
-
-
-    return true;
+    H2DE_LevelHitbox camHitbox = camera->pos.makeHitbox(H2DE_GetCameraSize(camera));
+    return (camHitbox.collides(hitbox));
 }
 
 // SETTER

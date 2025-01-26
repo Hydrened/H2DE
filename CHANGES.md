@@ -1,3 +1,11 @@
+## H2DE-2.0.3
+#### ADDED
+- camera contains
+- types cout
+- image rendering
+#### FIXED
+- camera's default position
+
 ## H2DE-2.0.2
 #### ADDED
 - set window grab

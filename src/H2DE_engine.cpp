@@ -3,7 +3,12 @@
 // INIT
 H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.fps) {
     try {
+        static bool once = false;
+        if (once) throw std::runtime_error("H2DE-108: Can't create more than one engine");
+        once = true;
+
         window = new H2DE_Window(this, data.window);
+        renderer = new H2DE_Renderer(this, &textures, &sounds, &objects);
         camera = new H2DE_Camera(this, data.camera);
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
@@ -20,6 +25,10 @@ H2DE_Engine::~H2DE_Engine() {
     textures.clear();
     for (const auto& [key, sound] : sounds) if (sound != nullptr) Mix_FreeChunk(sound);
     sounds.clear();
+    for (H2DE_GraphicObject* object : objects) delete object;
+    objects.clear();
+    delete camera;
+    delete renderer;
     delete window;
 }
 
@@ -42,7 +51,9 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
 
             if (engine->handleEvents) engine->handleEvents(event);
             if (engine->update) engine->update();
+            engine->renderer->update();
             if (engine->render) engine->render();
+            engine->renderer->render();
             
             frameTime = SDL_GetTicks() - now;
             engine->currentFPS = 1000.0f / static_cast<float>((frameTime > 0) ? frameTime : 1);
@@ -155,6 +166,31 @@ void H2DE_Engine::assetImported() {
     std::cout << "ENGINE => Loading: " << std::to_string(percentage).substr(0, std::to_string(percentage).size() - 4) << "%" << std::endl;
 }
 
+// OBJECTS
+void H2DE_AddGraphicObject(H2DE_Engine* engine, H2DE_GraphicObject* object) {
+    if (object->color.a == 0) return;
+    if (object->transform.scale.x == 0.0f || object->transform.scale.y == 0.0f) return;
+
+    switch (object->type) {
+        case IMAGE:
+            if (object->image.texture == "") return;
+            else if (object->image.size.w == 0.0f || object->image.size.h == 0) return;
+            break;
+
+        case POLYGON:
+            if (object->polygon.points.size() < 3) return;
+            break;
+
+        case CIRCLE:
+            if (object->circle.radius == 0.0f) return;
+            break;
+
+        default: return;
+    }
+
+    engine->objects.push_back(object);
+}
+
 // SOUNDS
 void H2DE_SetVolumeSound(int channel, int volume) {
     volume = std::clamp(volume, 0, 100);
@@ -191,6 +227,10 @@ int H2DE_GetFps(H2DE_Engine* engine) {
 
 int H2DE_GetCurrentFps(H2DE_Engine* engine) {
     return engine->currentFPS;
+}
+
+H2DE_Camera* H2DE_GetCamera(H2DE_Engine* engine) {
+    return engine->camera;
 }
 
 // SETTER

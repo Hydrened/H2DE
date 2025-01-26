@@ -8,7 +8,7 @@ class H2DE_Camera {
 private:
     H2DE_Engine* engine;
     H2DE_CameraData data;
-    H2DE_LevelPos pos;
+    H2DE_LevelPos pos = { 0.0f, 0.0f };
     float zoom = 1.0f;
 
 public:

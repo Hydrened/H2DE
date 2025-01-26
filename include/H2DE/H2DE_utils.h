@@ -3,8 +3,12 @@
 
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_video.h>
+#include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <string>
+struct H2DE_AbsSize;
+struct H2DE_AbsRect;
 struct H2DE_LevelSize;
 struct H2DE_LevelVelocity;
 struct H2DE_LevelHitbox;
@@ -18,21 +22,41 @@ enum H2DE_Face {
     RIGHT,
 };
 
+enum H2DE_Flip {
+    H2DE_NO_FLIP,
+    H2DE_FLIP_HORIZONTAL,
+    H2DE_FLIP_VERTICAL,
+};
+
+enum H2DE_ScaleMode {
+    H2DE_SCALE_MODE_NEAREST,
+    H2DE_SCALE_MODE_LINEAR,
+    H2DE_SCALE_MODE_BEST,
+};
+
 struct H2DE_AbsPos {
     int x;
     int y;
+
+    H2DE_AbsRect makeRect(H2DE_AbsSize size) const;
+
+    operator SDL_Point() const;
 };
 
 struct H2DE_AbsSize {
     int w;
     int h;
+
+    H2DE_AbsRect makeRect(H2DE_AbsPos pos) const;
 };
 
-struct H2DE_AbsHitbox {
+struct H2DE_AbsRect {
     int x;
     int y;
     int w;
     int h;
+
+    operator SDL_Rect() const;
 };
 
 struct H2DE_LevelPos {
@@ -110,6 +134,11 @@ struct H2DE_LevelHitbox {
     H2DE_Face collides(const H2DE_LevelHitbox& other) const;
 };
 
+struct H2DE_Scale {
+    float x;
+    float y;
+};
+
 struct H2DE_ColorRGB {
     Uint8 r;
     Uint8 g;
@@ -182,5 +211,16 @@ struct H2DE_EngineData {
     H2DE_WindowData window = H2DE_WindowData();
     H2DE_CameraData camera = H2DE_CameraData();
 };
+
+std::ostream& operator<<(std::ostream& os, const H2DE_AbsPos& pos);
+std::ostream& operator<<(std::ostream& os, const H2DE_AbsSize& size);
+std::ostream& operator<<(std::ostream& os, const H2DE_AbsRect& rect);
+std::ostream& operator<<(std::ostream& os, const H2DE_LevelPos& pos);
+std::ostream& operator<<(std::ostream& os, const H2DE_LevelSize& size);
+std::ostream& operator<<(std::ostream& os, const H2DE_LevelVelocity& velocity);
+std::ostream& operator<<(std::ostream& os, const H2DE_LevelHitbox& hitbox);
+std::ostream& operator<<(std::ostream& os, const H2DE_Scale& hsv);
+std::ostream& operator<<(std::ostream& os, const H2DE_ColorRGB& rgb);
+std::ostream& operator<<(std::ostream& os, const H2DE_ColorHSV& hsv);
 
 #endif
