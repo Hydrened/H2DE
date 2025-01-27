@@ -38,6 +38,8 @@ struct H2DE_AbsPos {
     int x;
     int y;
 
+    H2DE_AbsPos operator+(const H2DE_AbsSize& size) const;
+
     H2DE_AbsRect makeRect(H2DE_AbsSize size) const;
 
     operator SDL_Point() const;
@@ -146,6 +148,7 @@ struct H2DE_ColorRGB {
     Uint8 a;
 
     explicit operator H2DE_ColorHSV() const;
+    operator Uint32() const;
 
     bool operator==(const H2DE_ColorRGB& other) const;
 

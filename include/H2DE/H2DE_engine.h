@@ -13,11 +13,11 @@
 #include "H2DE_window.h"
 #include "H2DE_renderer.h"
 #include "H2DE_camera.h"
-#include "H2DE_graphic.h"
+#include "H2DE_object.h"
 class H2DE_Window;
 class H2DE_Renderer;
 class H2DE_Camera;
-class H2DE_GraphicObject;
+class H2DE_LevelObject;
 
 class H2DE_Engine {
 private:
@@ -35,7 +35,7 @@ private:
 
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, Mix_Chunk*> sounds;
-    std::vector<H2DE_GraphicObject*> objects;
+    std::vector<H2DE_LevelObject*> objects;
 
     std::function<void(SDL_Event)> handleEvents = NULL;
     std::function<void()> update = NULL;
@@ -61,7 +61,7 @@ public:
     friend void H2DE_RemoveAssets(H2DE_Engine* engine);
     friend void H2DE_RemoveAsset(H2DE_Engine* engine, const std::filesystem::path& file);
 
-    friend void H2DE_AddGraphicObject(H2DE_Engine* engine, H2DE_GraphicObject* object);
+    friend void H2DE_AddLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object);
 
     friend int H2DE_PlaySound(H2DE_Engine* engine, int channel, std::string sound, int loop);
     friend void H2DE_PauseSound(H2DE_Engine* engine, int channel);

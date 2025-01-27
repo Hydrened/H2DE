@@ -25,10 +25,6 @@ H2DE_LevelSize H2DE_GetCameraSize(H2DE_Camera* camera) {
     return size;
 }
 
-float H2DE_GetCameraZoom(H2DE_Camera* camera) {
-    return camera->zoom;
-}
-
 bool H2DE_CameraContains(H2DE_Camera* camera, H2DE_LevelHitbox hitbox) {
     H2DE_LevelHitbox camHitbox = camera->pos.makeHitbox(H2DE_GetCameraSize(camera));
     return (camHitbox.collides(hitbox));
@@ -41,8 +37,4 @@ void H2DE_SetCameraPos(H2DE_Camera* camera, H2DE_LevelPos pos) {
 
 void H2DE_SetCameraSize(H2DE_Camera* camera, float blockOnWidth) {
     camera->data.blockOnWidth = blockOnWidth;
-}
-
-void H2DE_SetCameraZoom(H2DE_Camera* camera, float zoom) {
-    camera->zoom = zoom;
 }

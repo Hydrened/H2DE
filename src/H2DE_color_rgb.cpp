@@ -30,6 +30,10 @@ H2DE_ColorRGB::operator H2DE_ColorHSV() const {
     return hsv;
 }
 
+H2DE_ColorRGB::operator Uint32() const {
+    return (a << 24) | (b << 16) | (g << 8) | r;
+}
+
 // COMPARISON
 bool H2DE_ColorRGB::operator==(const H2DE_ColorRGB& other) const {
     return (r == other.r && g == other.g && b == other.b, a == other.a);

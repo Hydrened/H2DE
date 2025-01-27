@@ -1,3 +1,12 @@
+## H2DE-2.0.4
+#### ADDED
+- level object texture rendering
+- level object hitbox rendering 
+#### MODIFIED
+- graphic object now becomes level objects
+#### REMOVED
+- camera zoom
+
 ## H2DE-2.0.3
 #### ADDED
 - camera contains

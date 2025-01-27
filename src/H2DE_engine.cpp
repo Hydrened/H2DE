@@ -8,7 +8,7 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.fps) {
         once = true;
 
         window = new H2DE_Window(this, data.window);
-        renderer = new H2DE_Renderer(this, &textures, &sounds, &objects);
+        renderer = new H2DE_Renderer(this, &textures, &objects);
         camera = new H2DE_Camera(this, data.camera);
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
@@ -25,7 +25,7 @@ H2DE_Engine::~H2DE_Engine() {
     textures.clear();
     for (const auto& [key, sound] : sounds) if (sound != nullptr) Mix_FreeChunk(sound);
     sounds.clear();
-    for (H2DE_GraphicObject* object : objects) delete object;
+    for (H2DE_LevelObject* object : objects) delete object;
     objects.clear();
     delete camera;
     delete renderer;
@@ -167,26 +167,12 @@ void H2DE_Engine::assetImported() {
 }
 
 // OBJECTS
-void H2DE_AddGraphicObject(H2DE_Engine* engine, H2DE_GraphicObject* object) {
-    if (object->color.a == 0) return;
+void H2DE_AddLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object) {
+    if (!object) return;
+    if (object->rect.w == 0.0f || object->rect.h == 0.0f) return;
+    if (object->texture.name == "") return;
+    if (object->texture.color.a == 0) return;
     if (object->transform.scale.x == 0.0f || object->transform.scale.y == 0.0f) return;
-
-    switch (object->type) {
-        case IMAGE:
-            if (object->image.texture == "") return;
-            else if (object->image.size.w == 0.0f || object->image.size.h == 0) return;
-            break;
-
-        case POLYGON:
-            if (object->polygon.points.size() < 3) return;
-            break;
-
-        case CIRCLE:
-            if (object->circle.radius == 0.0f) return;
-            break;
-
-        default: return;
-    }
 
     engine->objects.push_back(object);
 }

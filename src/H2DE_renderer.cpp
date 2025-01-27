@@ -1,7 +1,7 @@
 #include "H2DE_renderer.h"
 
 // INIT
-H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, std::unordered_map<std::string, SDL_Texture*>* t, std::unordered_map<std::string, Mix_Chunk*>* s, std::vector<H2DE_GraphicObject*>* o) : engine(e), textures(t), sounds(s), objects(o) {
+H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, std::unordered_map<std::string, SDL_Texture*>* t, std::vector<H2DE_LevelObject*>* o) : engine(e), textures(t), objects(o) {
     static bool once = false;
     if (once) throw std::runtime_error("H2DE-109: Can't create more than one renderer");
     once = true;
@@ -27,19 +27,50 @@ void H2DE_Renderer::render() {
     SDL_RenderClear(renderer);
 
     // 2 => Render objects
-    for (H2DE_GraphicObject* object : *objects) {
-        switch (object->type) {
-            case IMAGE: renderImage(object); break;
-            case POLYGON: renderPolygon(object); break;
-            case CIRCLE: renderCircle(object); break;
-            default: break;
-        }
-    }
+    for (H2DE_LevelObject* object : *objects) renderObject(object);
     SDL_RenderPresent(renderer);
 
     // 3 => Clear objects
-    for (H2DE_GraphicObject* object : *objects) H2DE_DestroyGraphicObject(object);
+    for (H2DE_LevelObject* object : *objects) H2DE_DestroyLevelObject(object);
     objects->clear();
+}
+
+void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
+    if (object->texture.name != "" && (*textures).find(object->texture.name) != (*textures).end()) renderTexture(object);
+    if (object->hitbox.has_value()) renderHitbox(object);
+}
+
+void H2DE_Renderer::renderTexture(H2DE_LevelObject* object) {
+    static H2DE_Window* window = H2DE_GetWindow(engine);
+    static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
+
+    SDL_Texture* texture = (*textures)[object->texture.name];
+    SDL_Rect destRect = lvlToAbs(object->rect.getPos(), object->absolute).makeRect(lvlToAbs(object->rect.getSize()));
+    float rotation = object->transform.rotation;
+    SDL_Point pivot = lvlToAbs(object->transform.origin, object->absolute);
+    SDL_RendererFlip flip = getFlip(object->transform.flip);
+
+    if (object->texture.srcRect.has_value()) {
+        SDL_Rect srcRect = object->texture.srcRect.value();
+        SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, rotation, &pivot, flip);
+    } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, rotation, &pivot, flip);
+}
+
+void H2DE_Renderer::renderHitbox(H2DE_LevelObject* object) {
+    static H2DE_Window* window = H2DE_GetWindow(engine);
+    static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
+
+    H2DE_LevelHitbox hitbox = object->hitbox.value();
+    H2DE_AbsPos offset = lvlToAbs(object->rect.getPos() + hitbox.getPos(), object->absolute);
+    H2DE_AbsSize size = lvlToAbs(hitbox.getSize());
+
+    Sint16 offsetX = offset.x;
+    Sint16 offsetY = offset.y;
+
+    std::vector<Sint16> vx = { offsetX, static_cast<Sint16>(offsetX + size.w), static_cast<Sint16>(offsetX + size.w), offsetX };
+    std::vector<Sint16> vy = { offsetY, offsetY, static_cast<Sint16>(offsetY + size.h), static_cast<Sint16>(offsetY + size.h) };
+
+    polygonColor(renderer, vx.data(), vy.data(), 4, object->texture.color);
 }
 
 // GETTER
@@ -50,15 +81,11 @@ int H2DE_Renderer::getBlockSize() const {
     return H2DE_GetWindowSize(window).w / camSize.w;
 }
 
-H2DE_LevelPos H2DE_Renderer::getPos(H2DE_GraphicObject* object) const {
-    return (object->type == IMAGE) ? object->image.pos : (object->type == POLYGON) ? object->polygon.pos : object->circle.pos;
+SDL_RendererFlip H2DE_Renderer::getFlip(H2DE_Flip flip) {
+    return (flip == H2DE_NO_FLIP) ? SDL_FLIP_NONE : (flip == H2DE_FLIP_HORIZONTAL) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_VERTICAL;
 }
 
-SDL_RendererFlip H2DE_Renderer::getFlip(H2DE_GraphicObject* object) const {
-    return (object->transform.flip == H2DE_FLIP_HORIZONTAL) ? SDL_FLIP_HORIZONTAL : (object->transform.flip == H2DE_FLIP_VERTICAL) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
-}
-
-void H2DE_Renderer::whileParent(H2DE_GraphicObject* object, std::function<void(H2DE_GraphicObject*)> call) const {
+void H2DE_Renderer::whileParent(H2DE_LevelObject* object, std::function<void(H2DE_LevelObject*)> call) const {
     if (!call) return;
 
     while (true) {
