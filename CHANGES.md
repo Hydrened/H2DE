@@ -1,3 +1,14 @@
+## H2DE-2.0.5
+#### ADDED
+- level object default gravity
+- level object default max gravity
+- level object collision
+- level object snap
+- level object multiple hitboxes
+- auto save / load window data
+#### MODIFIED
+- level object functioning
+
 ## H2DE-2.0.4
 #### ADDED
 - level object texture rendering

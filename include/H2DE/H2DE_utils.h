@@ -5,21 +5,25 @@
 #include <SDL2/SDL_video.h>
 #include <algorithm>
 #include <cmath>
+#include <functional>
 #include <iostream>
+#include <optional>
 #include <string>
+#include <vector>
 struct H2DE_AbsSize;
 struct H2DE_AbsRect;
 struct H2DE_LevelSize;
 struct H2DE_LevelVelocity;
-struct H2DE_LevelHitbox;
+struct H2DE_LevelRect;
 struct H2DE_ColorHSV;
+class H2DE_LevelObject;
 
 enum H2DE_Face {
-    NONE,
-    TOP,
-    BOTTOM,
-    LEFT,
-    RIGHT,
+    H2DE_NO_FACE,
+    H2DE_TOP_FACE,
+    H2DE_BOTTOM_FACE,
+    H2DE_LEFT_FACE,
+    H2DE_RIGHT_FACE,
 };
 
 enum H2DE_Flip {
@@ -75,7 +79,7 @@ struct H2DE_LevelPos {
 
     bool operator==(const H2DE_LevelPos& other) const;
 
-    H2DE_LevelHitbox makeHitbox(const H2DE_LevelSize& size) const;
+    H2DE_LevelRect makeHitbox(const H2DE_LevelSize& size) const;
 };
 
 struct H2DE_LevelSize {
@@ -93,7 +97,7 @@ struct H2DE_LevelSize {
     bool operator>(const H2DE_LevelSize& other) const;
     bool operator<(const H2DE_LevelSize& other) const;
 
-    H2DE_LevelHitbox makeHitbox(const H2DE_LevelPos& pos) const;
+    H2DE_LevelRect makeHitbox(const H2DE_LevelPos& pos) const;
     H2DE_LevelPos toPos() const;
 };
 
@@ -117,23 +121,23 @@ struct H2DE_LevelVelocity {
     bool isNull() const;
 };
 
-struct H2DE_LevelHitbox {
+struct H2DE_LevelRect {
     float x;
     float y;
     float w;
     float h;
 
-    H2DE_LevelHitbox operator+(const H2DE_LevelPos& pos) const;
-    H2DE_LevelHitbox operator-(const H2DE_LevelPos& pos) const;
+    H2DE_LevelRect operator+(const H2DE_LevelPos& pos) const;
+    H2DE_LevelRect operator-(const H2DE_LevelPos& pos) const;
 
-    H2DE_LevelHitbox operator+(const H2DE_LevelSize& size) const;
-    H2DE_LevelHitbox operator-(const H2DE_LevelSize& size) const;
+    H2DE_LevelRect operator+(const H2DE_LevelSize& size) const;
+    H2DE_LevelRect operator-(const H2DE_LevelSize& size) const;
 
     H2DE_LevelPos getPos() const;
     H2DE_LevelSize getSize() const;
     H2DE_LevelPos getCenter() const;
 
-    H2DE_Face collides(const H2DE_LevelHitbox& other) const;
+    H2DE_Face collides(const H2DE_LevelRect& other) const;
 };
 
 struct H2DE_Scale {
@@ -215,13 +219,51 @@ struct H2DE_EngineData {
     H2DE_CameraData camera = H2DE_CameraData();
 };
 
+struct H2DE_Texture {
+    std::string name = "";
+    H2DE_LevelSize size = { 1.0f, 1.0f };
+    std::optional<H2DE_AbsRect> srcRect = std::nullopt;
+    H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
+};
+
+struct H2DE_Hitbox {
+    H2DE_LevelRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };
+    H2DE_ColorRGB color = { 255, 0, 0, 255 };
+    int collisionIndex = 0;
+    bool snap = false;
+    std::optional<std::function<void()>> onCollide = std::nullopt;
+};
+
+struct H2DE_LevelObjectTransform {
+    H2DE_LevelPos origin = { 0.0f, 0.0f }; 
+    float rotation = 0.0f;
+    H2DE_Flip flip = H2DE_NO_FLIP;
+};
+
+struct H2DE_LevelObjectData {
+    H2DE_LevelPos pos = { 0.0f, 0.0f };
+    H2DE_LevelVelocity velocity = { 0.0f, 0.0f };
+    std::vector<H2DE_Hitbox> hitobxes = {};
+
+    H2DE_Texture texture = H2DE_Texture();
+
+    bool absolute = false;
+    bool gravity = false;
+
+    H2DE_LevelObjectTransform transform = H2DE_LevelObjectTransform();
+
+    std::optional<H2DE_LevelObject*> parent = std::nullopt;
+    int index = 0;
+};
+
 std::ostream& operator<<(std::ostream& os, const H2DE_AbsPos& pos);
 std::ostream& operator<<(std::ostream& os, const H2DE_AbsSize& size);
 std::ostream& operator<<(std::ostream& os, const H2DE_AbsRect& rect);
 std::ostream& operator<<(std::ostream& os, const H2DE_LevelPos& pos);
 std::ostream& operator<<(std::ostream& os, const H2DE_LevelSize& size);
 std::ostream& operator<<(std::ostream& os, const H2DE_LevelVelocity& velocity);
-std::ostream& operator<<(std::ostream& os, const H2DE_LevelHitbox& hitbox);
+std::ostream& operator<<(std::ostream& os, const H2DE_LevelRect& hitbox);
 std::ostream& operator<<(std::ostream& os, const H2DE_Scale& hsv);
 std::ostream& operator<<(std::ostream& os, const H2DE_ColorRGB& rgb);
 std::ostream& operator<<(std::ostream& os, const H2DE_ColorHSV& hsv);

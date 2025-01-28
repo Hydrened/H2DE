@@ -25,8 +25,8 @@ H2DE_LevelSize H2DE_GetCameraSize(H2DE_Camera* camera) {
     return size;
 }
 
-bool H2DE_CameraContains(H2DE_Camera* camera, H2DE_LevelHitbox hitbox) {
-    H2DE_LevelHitbox camHitbox = camera->pos.makeHitbox(H2DE_GetCameraSize(camera));
+bool H2DE_CameraContains(H2DE_Camera* camera, H2DE_LevelRect hitbox) {
+    H2DE_LevelRect camHitbox = camera->pos.makeHitbox(H2DE_GetCameraSize(camera));
     return (camHitbox.collides(hitbox));
 }
 

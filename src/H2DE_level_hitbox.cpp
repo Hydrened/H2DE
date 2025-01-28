@@ -1,50 +1,50 @@
 #include "H2DE_utils.h"
 
 // LEVEL POS OPERATIONS
-H2DE_LevelHitbox H2DE_LevelHitbox::operator+(const H2DE_LevelPos& pos) const {
-    H2DE_LevelHitbox res = *this;
+H2DE_LevelRect H2DE_LevelRect::operator+(const H2DE_LevelPos& pos) const {
+    H2DE_LevelRect res = *this;
     res.x += pos.x;
     res.y += pos.y;
     return res;
 }
 
-H2DE_LevelHitbox H2DE_LevelHitbox::operator-(const H2DE_LevelPos& pos) const {
-    H2DE_LevelHitbox res = *this;
+H2DE_LevelRect H2DE_LevelRect::operator-(const H2DE_LevelPos& pos) const {
+    H2DE_LevelRect res = *this;
     res.x -= pos.x;
     res.y -= pos.y;
     return res;
 }
 
 // LEVEL SIZE OPERATIONS
-H2DE_LevelHitbox H2DE_LevelHitbox::operator+(const H2DE_LevelSize& size) const {
-    H2DE_LevelHitbox res = *this;
+H2DE_LevelRect H2DE_LevelRect::operator+(const H2DE_LevelSize& size) const {
+    H2DE_LevelRect res = *this;
     res.w += size.w;
     res.h += size.h;
     return res;
 }
 
-H2DE_LevelHitbox H2DE_LevelHitbox::operator-(const H2DE_LevelSize& size) const {
-    H2DE_LevelHitbox res = *this;
+H2DE_LevelRect H2DE_LevelRect::operator-(const H2DE_LevelSize& size) const {
+    H2DE_LevelRect res = *this;
     res.w -= size.w;
     res.h -= size.h;
     return res;
 }
 
 // GETTER
-H2DE_LevelPos H2DE_LevelHitbox::getPos() const {
+H2DE_LevelPos H2DE_LevelRect::getPos() const {
     return { x, y };
 }
 
-H2DE_LevelSize H2DE_LevelHitbox::getSize() const {
+H2DE_LevelSize H2DE_LevelRect::getSize() const {
     return { w, h };
 }
 
-H2DE_LevelPos H2DE_LevelHitbox::getCenter() const {
+H2DE_LevelPos H2DE_LevelRect::getCenter() const {
     return getPos() + (getSize() / 2.0f).toPos();
 }
 
 // METHODS
-H2DE_Face H2DE_LevelHitbox::collides(const H2DE_LevelHitbox& other) const {
+H2DE_Face H2DE_LevelRect::collides(const H2DE_LevelRect& other) const {
     bool collides = (
         other.x + other.w >= x &&
         other.x <= x + w &&
@@ -60,9 +60,9 @@ H2DE_Face H2DE_LevelHitbox::collides(const H2DE_LevelHitbox& other) const {
 
         float minOverlap = std::min({overlapLeft, overlapRight, overlapTop, overlapBottom});
 
-        if (minOverlap == overlapLeft) return LEFT;
-        else if (minOverlap == overlapRight) return RIGHT;
-        else if (minOverlap == overlapTop) return TOP;
-        else return BOTTOM;
-    } else return NONE;
+        if (minOverlap == overlapLeft) return H2DE_LEFT_FACE;
+        else if (minOverlap == overlapRight) return H2DE_RIGHT_FACE;
+        else if (minOverlap == overlapTop) return H2DE_TOP_FACE;
+        else return H2DE_BOTTOM_FACE;
+    } else return H2DE_NO_FACE;
 }

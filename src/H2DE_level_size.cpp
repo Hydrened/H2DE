@@ -51,7 +51,7 @@ bool H2DE_LevelSize::operator<(const H2DE_LevelSize& other) const {
 }
 
 // METHODS
-H2DE_LevelHitbox H2DE_LevelSize::makeHitbox(const H2DE_LevelPos& pos) const {
+H2DE_LevelRect H2DE_LevelSize::makeHitbox(const H2DE_LevelPos& pos) const {
     return { pos.x, pos.y, w, h };
 }
 

@@ -1,7 +1,9 @@
 #ifndef H2DE_WINDOW_H
 #define H2DE_WINDOW_H
 
-#include "H2DE_engine.h"
+#include <H2DE_engine.h>
+#include <cmath>
+#include <algorithm>
 class H2DE_Engine;
 
 class H2DE_Window {
@@ -10,6 +12,12 @@ private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     H2DE_WindowData data;
+
+    void initSDL();
+    void quitSDL();
+    void createWindow();
+    void loadData();
+    void saveData();
 
 public:
     H2DE_Window(H2DE_Engine* engine, H2DE_WindowData data);

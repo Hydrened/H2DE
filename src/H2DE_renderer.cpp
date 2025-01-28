@@ -14,7 +14,7 @@ H2DE_Renderer::~H2DE_Renderer() {
 
 // UPDATE
 void H2DE_Renderer::update() {
-
+    for (H2DE_LevelObject* object : *objects) object->update();
 }
 
 // RENDER
@@ -29,48 +29,57 @@ void H2DE_Renderer::render() {
     // 2 => Render objects
     for (H2DE_LevelObject* object : *objects) renderObject(object);
     SDL_RenderPresent(renderer);
-
-    // 3 => Clear objects
-    for (H2DE_LevelObject* object : *objects) H2DE_DestroyLevelObject(object);
-    objects->clear();
 }
 
 void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
-    if (object->texture.name != "" && (*textures).find(object->texture.name) != (*textures).end()) renderTexture(object);
-    if (object->hitbox.has_value()) renderHitbox(object);
+    H2DE_LevelObjectData data = object->getData();
+
+    if (data.texture.name != "" && (*textures).find(data.texture.name) != (*textures).end()) renderTexture(data);
+    if (data.hitobxes.size() > 0) renderHitboxes(data);
 }
 
-void H2DE_Renderer::renderTexture(H2DE_LevelObject* object) {
+void H2DE_Renderer::renderTexture(H2DE_LevelObjectData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
 
-    SDL_Texture* texture = (*textures)[object->texture.name];
-    SDL_Rect destRect = lvlToAbs(object->rect.getPos(), object->absolute).makeRect(lvlToAbs(object->rect.getSize()));
-    float rotation = object->transform.rotation;
-    SDL_Point pivot = lvlToAbs(object->transform.origin, object->absolute);
-    SDL_RendererFlip flip = getFlip(object->transform.flip);
+    if (data.texture.size.w == 0.0f || data.texture.size.h == 0.0f) return;
+    if (data.texture.color.a == 0) return;
 
-    if (object->texture.srcRect.has_value()) {
-        SDL_Rect srcRect = object->texture.srcRect.value();
+    SDL_Texture* texture = (*textures)[data.texture.name];
+    SDL_Rect destRect = lvlToAbs(data.pos, data.absolute).makeRect(lvlToAbs(data.texture.size));
+    float rotation = data.transform.rotation;
+    SDL_Point pivot = lvlToAbs(data.transform.origin, data.absolute);
+    SDL_RendererFlip flip = getFlip(data.transform.flip);
+
+    SDL_SetTextureColorMod(texture, data.texture.color.r, data.texture.color.g, data.texture.color.b);
+    SDL_SetTextureAlphaMod(texture, data.texture.color.a);
+    SDL_SetTextureScaleMode(texture, getScaleMode(data.texture.scaleMode));
+
+    if (data.texture.srcRect.has_value()) {
+        SDL_Rect srcRect = data.texture.srcRect.value();
         SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, rotation, &pivot, flip);
     } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, rotation, &pivot, flip);
 }
 
-void H2DE_Renderer::renderHitbox(H2DE_LevelObject* object) {
+void H2DE_Renderer::renderHitboxes(H2DE_LevelObjectData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
 
-    H2DE_LevelHitbox hitbox = object->hitbox.value();
-    H2DE_AbsPos offset = lvlToAbs(object->rect.getPos() + hitbox.getPos(), object->absolute);
-    H2DE_AbsSize size = lvlToAbs(hitbox.getSize());
+    for (H2DE_Hitbox hitbox : data.hitobxes) {
+        if (hitbox.rect.w == 0.0f || hitbox.rect.h == 0.0f) continue;
+        if (hitbox.color.a == 0) continue;
 
-    Sint16 offsetX = offset.x;
-    Sint16 offsetY = offset.y;
+        H2DE_AbsPos offset = lvlToAbs(data.pos + hitbox.rect.getPos(), data.absolute);
+        H2DE_AbsSize size = lvlToAbs(hitbox.rect.getSize());
 
-    std::vector<Sint16> vx = { offsetX, static_cast<Sint16>(offsetX + size.w), static_cast<Sint16>(offsetX + size.w), offsetX };
-    std::vector<Sint16> vy = { offsetY, offsetY, static_cast<Sint16>(offsetY + size.h), static_cast<Sint16>(offsetY + size.h) };
+        Sint16 offsetX = offset.x;
+        Sint16 offsetY = offset.y;
 
-    polygonColor(renderer, vx.data(), vy.data(), 4, object->texture.color);
+        std::vector<Sint16> vx = { offsetX, static_cast<Sint16>(offsetX + size.w), static_cast<Sint16>(offsetX + size.w), offsetX };
+        std::vector<Sint16> vy = { offsetY, offsetY, static_cast<Sint16>(offsetY + size.h), static_cast<Sint16>(offsetY + size.h) };
+
+        polygonColor(renderer, vx.data(), vy.data(), 4, hitbox.color);
+    }
 }
 
 // GETTER
@@ -85,12 +94,16 @@ SDL_RendererFlip H2DE_Renderer::getFlip(H2DE_Flip flip) {
     return (flip == H2DE_NO_FLIP) ? SDL_FLIP_NONE : (flip == H2DE_FLIP_HORIZONTAL) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_VERTICAL;
 }
 
-void H2DE_Renderer::whileParent(H2DE_LevelObject* object, std::function<void(H2DE_LevelObject*)> call) const {
+SDL_ScaleMode H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) {
+    return (scaleMode == H2DE_SCALE_MODE_LINEAR) ? SDL_ScaleModeLinear : (scaleMode == H2DE_SCALE_MODE_NEAREST) ? SDL_ScaleModeNearest : SDL_ScaleModeBest;
+}
+
+void H2DE_Renderer::whileParent(H2DE_LevelObjectData data, std::function<void(H2DE_LevelObjectData)> call) const {
     if (!call) return;
 
     while (true) {
-        call(object);
-        if (!object->parent.has_value()) break;
-        else object = object->parent.value();
+        call(data);
+        if (!data.parent.has_value()) break;
+        else data = data.parent.value()->getData();
     }
 }

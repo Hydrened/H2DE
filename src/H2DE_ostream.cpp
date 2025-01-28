@@ -30,7 +30,7 @@ std::ostream& operator<<(std::ostream& os, const H2DE_LevelVelocity& velocity) {
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const H2DE_LevelHitbox& hitbox) {
+std::ostream& operator<<(std::ostream& os, const H2DE_LevelRect& hitbox) {
     os << "x: " << hitbox.x << " y: " << hitbox.y << " w: " << hitbox.w << " h: " << hitbox.h;
     return os;
 }

@@ -1,8 +1,10 @@
 #ifndef H2DE_RENDERER_H
 #define H2DE_RENDERER_H
 
+#include <H2DE_engine.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
-#include "H2DE_engine.h"
+#include <functional>
+#include <unordered_map>
 class H2DE_Engine;
 struct H2DE_LevelObject;
 
@@ -14,17 +16,15 @@ private:
 
     int getBlockSize() const;
     SDL_RendererFlip getFlip(H2DE_Flip flip);
-    void whileParent(H2DE_LevelObject* object, std::function<void(H2DE_LevelObject*)> call) const;
-
-    // H2DE_LevelPos getTranslatedPos(H2DE_GraphicObject* object) const;
-    // H2DE_LevelPos getScaledPos(H2DE_GraphicObject* object) const;
+    SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
+    void whileParent(H2DE_LevelObjectData data, std::function<void(H2DE_LevelObjectData)> call) const;
     
     H2DE_AbsPos lvlToAbs(H2DE_LevelPos pos, bool absolute) const;
     H2DE_AbsSize lvlToAbs(H2DE_LevelSize size) const;
 
     void renderObject(H2DE_LevelObject* object);
-    void renderTexture(H2DE_LevelObject* object);
-    void renderHitbox(H2DE_LevelObject* object);
+    void renderTexture(H2DE_LevelObjectData data);
+    void renderHitboxes(H2DE_LevelObjectData data);
 
 public:
     H2DE_Renderer(H2DE_Engine* engine, std::unordered_map<std::string, SDL_Texture*>* textures, std::vector<H2DE_LevelObject*>* objects);

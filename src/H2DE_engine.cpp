@@ -21,12 +21,18 @@ H2DE_Engine* H2DE_CreateEngine(H2DE_EngineData data) {
 
 // CLEANUP
 H2DE_Engine::~H2DE_Engine() {
+    isRunning = false;
+    
     for (const auto& [key, texture] : textures) if (texture != nullptr) SDL_DestroyTexture(texture);
     textures.clear();
+
     for (const auto& [key, sound] : sounds) if (sound != nullptr) Mix_FreeChunk(sound);
     sounds.clear();
+
     for (H2DE_LevelObject* object : objects) delete object;
     objects.clear();
+
+    delete gameData;
     delete camera;
     delete renderer;
     delete window;
@@ -79,9 +85,9 @@ void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& dir) {
         if (std::filesystem::is_directory(dir)) {
             engine->dataToLoad = H2DE_Engine::countFilesToLoad(dir);
             engine->importFiles(dir);
-            std::cout << "ENGINE => Loading complete" << std::endl;
-        } else std::cerr << "ENGINE => ERROR: Path isn't a directory" << std::endl;
-    } else std::cerr << "ENGINE => ERROR: Asset directory not found" << std::endl;
+            std::cout << "H2DE => Loading complete" << std::endl;
+        } else std::cerr << "H2DE => ERROR: Path isn't a directory" << std::endl;
+    } else std::cerr << "H2DE => ERROR: Asset directory not found" << std::endl;
 }
 
 void H2DE_LoadAsset(H2DE_Engine* engine, const std::filesystem::path& file) {
@@ -89,8 +95,8 @@ void H2DE_LoadAsset(H2DE_Engine* engine, const std::filesystem::path& file) {
         engine->loadedData = 0;
         engine->dataToLoad = 1;
         engine->importFile(file);
-        std::cout << "ENGINE => Loading complete" << std::endl;
-    } else std::cerr << "ENGINE => ERROR: file not found" << std::endl;
+        std::cout << "H2DE => Loading complete" << std::endl;
+    } else std::cerr << "H2DE => ERROR: file not found" << std::endl;
 }
 
 void H2DE_RemoveAssets(H2DE_Engine* engine) {
@@ -102,11 +108,11 @@ void H2DE_RemoveAsset(H2DE_Engine* engine, const std::filesystem::path& file) {
     std::filesystem::path extension = file.extension();
     if (extension == ".png" || extension == ".jpg") {
         if (engine->textures.erase(file.string())) {
-            std::cout << "ENGINE => Removed texture " << file << " from engine" << std::endl;
+            std::cout << "H2DE => Removed texture " << file << " from engine" << std::endl;
         }
     } else if (extension == ".mp3" || extension == ".ogg") {
         if (engine->sounds.erase(file.string())) {
-            std::cout << "ENGINE => Removed sound " << file << " from engine" << std::endl;
+            std::cout << "H2DE => Removed sound " << file << " from engine" << std::endl;
         }
     }
 }
@@ -141,9 +147,9 @@ void H2DE_Engine::importTexture(const std::filesystem::path& img) {
     std::replace(file.begin(), file.end(), '\\', '/');
     SDL_Texture* texture = H2DE_AssetLoader::loadTexture(H2DE_GetWindowsRenderer(window), img.string().c_str());
     if (texture != nullptr) {
-        if (textures.find(file) != textures.end()) std::cerr << "ENGINE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
+        if (textures.find(file) != textures.end()) std::cerr << "H2DE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
         textures[file] = texture;
-    } else std::cerr << "ENGINE => IMG_Load failed: " << SDL_GetError() << std::endl;
+    } else std::cerr << "H2DE => IMG_Load failed: " << SDL_GetError() << std::endl;
     assetImported();
 }
 
@@ -154,27 +160,31 @@ void H2DE_Engine::importSound(const std::filesystem::path& song) {
     std::replace(file.begin(), file.end(), '\\', '/');
     Mix_Chunk* music = H2DE_AssetLoader::loadSound(song.string().c_str());
     if (music != nullptr) {
-        if (sounds.find(file) != sounds.end()) std::cerr << "ENGINE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
+        if (sounds.find(file) != sounds.end()) std::cerr << "H2DE => WARNING: Asset " << '"' << file << '"' << " has been replaced" << std::endl;
         sounds[file] = music;
-    } else std::cerr << "ENGINE => Mix_LoadMUS failed: " << Mix_GetError() << std::endl;
+    } else std::cerr << "H2DE => Mix_LoadMUS failed: " << Mix_GetError() << std::endl;
     assetImported();
 }
 
 void H2DE_Engine::assetImported() {
     loadedData++;
     float percentage = round(static_cast<float>(loadedData) / static_cast<float>(dataToLoad) * 100 * 100) / 100;
-    std::cout << "ENGINE => Loading: " << std::to_string(percentage).substr(0, std::to_string(percentage).size() - 4) << "%" << std::endl;
+    std::cout << "H2DE => Loading: " << std::to_string(percentage).substr(0, std::to_string(percentage).size() - 4) << "%" << std::endl;
 }
 
 // OBJECTS
-void H2DE_AddLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object) {
-    if (!object) return;
-    if (object->rect.w == 0.0f || object->rect.h == 0.0f) return;
-    if (object->texture.name == "") return;
-    if (object->texture.color.a == 0) return;
-    if (object->transform.scale.x == 0.0f || object->transform.scale.y == 0.0f) return;
+H2DE_LevelObject* H2DE_CreateLevelObject(H2DE_Engine* engine, H2DE_LevelObjectData data) {
+    H2DE_LevelObject* obj = new H2DE_LevelObject(engine, &engine->objects, data);
+    engine->objects.push_back(obj);
+    return obj;
+}
 
-    engine->objects.push_back(object);
+void H2DE_DestroyLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object) {
+    auto it = std::find(engine->objects.begin(), engine->objects.end(), object);
+    if (it != engine->objects.end()) {
+        delete object;
+        engine->objects.erase(it);
+    }
 }
 
 // SOUNDS
@@ -189,8 +199,8 @@ int H2DE_PlaySound(H2DE_Engine* engine, int channel, std::string sound, int loop
     int res = -1;
     if (sounds.find(sound) != sounds.end()) {
         res = Mix_PlayChannel(channel, sounds[sound], loop);
-        if (res == -1) std::cerr << "ENGINE => Mix_PlayChannel failed: " << Mix_GetError() << std::endl;
-    } else std::cerr << "ENGINE => Sound '" << sound << "' not found" << std::endl;
+        if (res == -1) std::cerr << "H2DE => Mix_PlayChannel failed: " << Mix_GetError() << std::endl;
+    } else std::cerr << "H2DE => Sound '" << sound << "' not found" << std::endl;
     return res;
 }
 
@@ -215,6 +225,10 @@ int H2DE_GetCurrentFps(H2DE_Engine* engine) {
     return engine->currentFPS;
 }
 
+H2DE_GameData* H2DE_GetGameData(H2DE_Engine* engine) {
+    return engine->gameData;
+}
+
 H2DE_Camera* H2DE_GetCamera(H2DE_Engine* engine) {
     return engine->camera;
 }
@@ -224,14 +238,14 @@ void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps) {
     engine->fps = fps;
 }
 
-void H2DE_SetHandleEventCall(H2DE_Engine* engine, std::function<void(SDL_Event)> call) {
+void H2DE_SetGameHandleEventCall(H2DE_Engine* engine, std::function<void(SDL_Event)> call) {
     engine->handleEvents = call;
 }
 
-void H2DE_SetUpdateCall(H2DE_Engine* engine, std::function<void()> call) {
+void H2DE_SetGameUpdateCall(H2DE_Engine* engine, std::function<void()> call) {
     engine->update = call;
 }
 
-void H2DE_SetRenderCall(H2DE_Engine* engine, std::function<void()> call) {
+void H2DE_SetGameRenderCall(H2DE_Engine* engine, std::function<void()> call) {
     engine->render = call;
 }

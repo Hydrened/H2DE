@@ -1,19 +1,22 @@
 #ifndef H2DE_ENGINE_H
 #define H2DE_ENGINE_H
 
+#undef min
+
+#include <H2DE_json.h>
+#include <H2DE_utils.h>
+#include <H2DE_asset_loader.h>
+#include <H2DE_window.h>
+#include <H2DE_renderer.h>
+#include <H2DE_camera.h>
+#include <H2DE_object.h>
+#include <H2DE_game_data.h>
 #include <SDL2/SDL.h>
-#include <cmath>
 #include <filesystem>
-#include <functional>
 #include <iostream>
 #include <thread>
-#include <windows.h>
-#include "H2DE_utils.h"
-#include "H2DE_asset_loader.h"
-#include "H2DE_window.h"
-#include "H2DE_renderer.h"
-#include "H2DE_camera.h"
-#include "H2DE_object.h"
+#include <Windows.h>
+struct H2DE_GameData;
 class H2DE_Window;
 class H2DE_Renderer;
 class H2DE_Camera;
@@ -25,6 +28,7 @@ private:
     H2DE_Renderer* renderer = nullptr;
     H2DE_Camera* camera = nullptr;
 
+    H2DE_GameData* gameData = new H2DE_GameData();
     H2DE_EngineData data;
     unsigned int fps;
     bool isRunning = true;
@@ -61,7 +65,8 @@ public:
     friend void H2DE_RemoveAssets(H2DE_Engine* engine);
     friend void H2DE_RemoveAsset(H2DE_Engine* engine, const std::filesystem::path& file);
 
-    friend void H2DE_AddLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object);
+    friend H2DE_LevelObject* H2DE_CreateLevelObject(H2DE_Engine* engine, H2DE_LevelObjectData data);
+    friend void H2DE_DestroyLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object);
 
     friend int H2DE_PlaySound(H2DE_Engine* engine, int channel, std::string sound, int loop);
     friend void H2DE_PauseSound(H2DE_Engine* engine, int channel);
@@ -70,12 +75,13 @@ public:
     friend H2DE_Window* H2DE_GetWindow(H2DE_Engine* engine);
     friend int H2DE_GetFps(H2DE_Engine* engine);
     friend int H2DE_GetCurrentFps(H2DE_Engine* engine);
+    friend H2DE_GameData* H2DE_GetGameData(H2DE_Engine* engine);
     friend H2DE_Camera* H2DE_GetCamera(H2DE_Engine* engine);
 
     friend void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps);
-    friend void H2DE_SetHandleEventCall(H2DE_Engine* engine, std::function<void(SDL_Event)> call);
-    friend void H2DE_SetUpdateCall(H2DE_Engine* engine, std::function<void()> call);
-    friend void H2DE_SetRenderCall(H2DE_Engine* engine, std::function<void()> call);
+    friend void H2DE_SetGameHandleEventCall(H2DE_Engine* engine, std::function<void(SDL_Event)> call);
+    friend void H2DE_SetGameUpdateCall(H2DE_Engine* engine, std::function<void()> call);
+    friend void H2DE_SetGameRenderCall(H2DE_Engine* engine, std::function<void()> call);
 };
 
 extern H2DE_Engine* H2DE_CreateEngine(H2DE_EngineData data);

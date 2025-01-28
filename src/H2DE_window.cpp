@@ -2,6 +2,11 @@
 
 // INIT
 H2DE_Window::H2DE_Window(H2DE_Engine* e, H2DE_WindowData d) : engine(e), data(d) {
+    initSDL();
+    createWindow();
+}
+
+void H2DE_Window::initSDL() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         throw std::runtime_error("H2DE-101: SDL_Init_Video failed: " + std::string(SDL_GetError()));
     }
@@ -17,6 +22,32 @@ H2DE_Window::H2DE_Window(H2DE_Engine* e, H2DE_WindowData d) : engine(e), data(d)
     else if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) < 0) {
         throw std::runtime_error("H2DE-105: Mix_OpenAudio failed: " + std::string(Mix_GetError()));
     }
+}
+
+void H2DE_Window::loadData() {
+    std::filesystem::path file = "window.dat";
+    if (std::filesystem::exists(file)) {
+        try {
+            json jsonData = H2DE_ReadJson(file);
+
+            bool fullscreen = jsonData["f"];
+            data.pos = (fullscreen) ? H2DE_AbsPos{ 0, 0 } : H2DE_AbsPos{ jsonData["x"], jsonData["y"] };
+            data.size = (fullscreen) ? H2DE_AbsSize{ 0, 0 } : H2DE_AbsSize{ jsonData["w"], jsonData["h"] };
+            data.fullscreen = fullscreen;
+
+        } catch (const std::exception& eOpen) {
+            try {
+                if (!std::filesystem::remove(file)) std::runtime_error("H2DE-501: Can't remove window data");
+            } catch (std::exception& eRemove) {
+                throw std::runtime_error("H2DE-502: Can't remove window data: " + std::string(eRemove.what()));
+            }
+            throw std::runtime_error("H2DE-203: Error loading window data: " + std::string(eOpen.what()));
+        }
+    }
+}
+
+void H2DE_Window::createWindow() {
+    if (data.saveState) loadData();
 
     SDL_WindowFlags flag = (data.fullscreen) ? SDL_WINDOW_FULLSCREEN : (data.resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
     window = SDL_CreateWindow(data.title.c_str(), data.pos.x, data.pos.y, data.size.w, data.size.h, SDL_WINDOW_SHOWN | flag);
@@ -35,6 +66,30 @@ H2DE_Window::H2DE_Window(H2DE_Engine* e, H2DE_WindowData d) : engine(e), data(d)
 
 // CLEANUP
 H2DE_Window::~H2DE_Window() {
+    if (data.saveState) saveData();
+    quitSDL();
+}
+
+void H2DE_Window::saveData() {
+    std::filesystem::path file = "window.dat";
+
+    int x, y;
+    SDL_GetWindowPosition(window, &x, &y);
+    int w, h;
+    SDL_GetWindowSize(window, &w, &h);
+    Uint32 flags = SDL_GetWindowFlags(window);
+
+    json data;
+    data["x"] = x;
+    data["y"] = y;
+    data["w"] = w;
+    data["h"] = h;
+    data["f"] = (flags & SDL_WINDOW_FULLSCREEN) || (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+    H2DE_WriteJson(file, data, true);
+}
+
+void H2DE_Window::quitSDL() {
     IMG_Quit();
     Mix_CloseAudio();
     SDL_Quit();
