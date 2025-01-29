@@ -35,11 +35,6 @@ std::ostream& operator<<(std::ostream& os, const H2DE_LevelRect& hitbox) {
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const H2DE_Scale& scale) {
-    os << "x: " << scale.x << " y: " << scale.y;
-    return os;
-}
-
 std::ostream& operator<<(std::ostream& os, const H2DE_ColorRGB& rgb) {
     os << "r: " << static_cast<int>(rgb.r) << " g: " << static_cast<int>(rgb.g) << " b: " << static_cast<int>(rgb.b) << " a: " << static_cast<int>(rgb.a);
     return os;

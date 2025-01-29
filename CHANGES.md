@@ -1,3 +1,14 @@
+## H2DE-2.0.6
+#### ADDED
+- methods comments
+- camera lock to level object
+- camera padding from a level object
+- camera smooth movements
+#### FIXED
+- get camera size
+#### REMOVED
+- set engine's render function
+
 ## H2DE-2.0.5
 #### ADDED
 - level object default gravity
@@ -6,6 +17,7 @@
 - level object snap
 - level object multiple hitboxes
 - auto save / load window data
+- game data
 #### MODIFIED
 - level object functioning
 

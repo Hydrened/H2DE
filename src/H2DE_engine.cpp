@@ -53,12 +53,15 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
         while (engine->isRunning) {
             now = SDL_GetTicks();
 
-            while (SDL_PollEvent(&event)) if (event.type == SDL_QUIT) engine->isRunning = false;
+            while (SDL_PollEvent(&event)) switch (event.type) {
+                case SDL_QUIT: engine->isRunning = false; break;
+                default: break;
+            }
 
             if (engine->handleEvents) engine->handleEvents(event);
             if (engine->update) engine->update();
-            engine->renderer->update();
-            if (engine->render) engine->render();
+            engine->updateLevelObjects();
+            engine->camera->update();
             engine->renderer->render();
             
             frameTime = SDL_GetTicks() - now;
@@ -68,6 +71,11 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
     }
+}
+
+// UPDATE
+void H2DE_Engine::updateLevelObjects() {
+    for (H2DE_LevelObject* object : objects) object->update();
 }
 
 // DELAY
@@ -244,8 +252,4 @@ void H2DE_SetGameHandleEventCall(H2DE_Engine* engine, std::function<void(SDL_Eve
 
 void H2DE_SetGameUpdateCall(H2DE_Engine* engine, std::function<void()> call) {
     engine->update = call;
-}
-
-void H2DE_SetGameRenderCall(H2DE_Engine* engine, std::function<void()> call) {
-    engine->render = call;
 }

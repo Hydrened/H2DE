@@ -52,7 +52,7 @@ void H2DE_LevelObject::update() {
     data.velocity.y = std::min(data.velocity.y, maxGravity);
     data.pos = data.pos + data.velocity;
 
-    for (const H2DE_Hitbox& objHitbox : data.hitobxes) {
+    for (const H2DE_Hitbox& objHitbox : data.hitboxes) {
         H2DE_LevelRect objRect = objHitbox.rect + data.pos;
         if (!objHitbox.onCollide.has_value() && !objHitbox.snap) continue;
 
@@ -60,7 +60,7 @@ void H2DE_LevelObject::update() {
             if (otherObj == this) continue;
 
             const H2DE_LevelObjectData& otherData = otherObj->data;
-            for (const H2DE_Hitbox& otherHitbox : otherData.hitobxes) {
+            for (const H2DE_Hitbox& otherHitbox : otherData.hitboxes) {
                 if (objHitbox.collisionIndex != otherHitbox.collisionIndex) continue;
                 
                 H2DE_LevelRect otherRect = otherHitbox.rect + otherData.pos;
@@ -75,11 +75,15 @@ void H2DE_LevelObject::update() {
 }
 
 // GETTER
-H2DE_LevelObjectData H2DE_LevelObject::getData() const {
-    return data;
+H2DE_LevelObjectData* H2DE_GetObjectData(H2DE_LevelObject* object) {
+    return &(object->data);
 }
 
 // SETTER
 void H2DE_SetObjectUpdateCall(H2DE_LevelObject* object, std::function<void()> updateCall) {
     object->updateCall = updateCall;
+}
+
+void H2DE_SetObjectPos(H2DE_LevelObject* object, H2DE_LevelPos pos) {
+    object->data.pos = pos;
 }

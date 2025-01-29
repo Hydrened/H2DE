@@ -12,11 +12,6 @@ H2DE_Renderer::~H2DE_Renderer() {
 
 }
 
-// UPDATE
-void H2DE_Renderer::update() {
-    for (H2DE_LevelObject* object : *objects) object->update();
-}
-
 // RENDER
 void H2DE_Renderer::render() {
     static H2DE_Window* window = H2DE_GetWindow(engine);
@@ -32,10 +27,10 @@ void H2DE_Renderer::render() {
 }
 
 void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
-    H2DE_LevelObjectData data = object->getData();
+    H2DE_LevelObjectData data = *H2DE_GetObjectData(object);
 
     if (data.texture.name != "" && (*textures).find(data.texture.name) != (*textures).end()) renderTexture(data);
-    if (data.hitobxes.size() > 0) renderHitboxes(data);
+    if (data.hitboxes.size() > 0) renderHitboxes(data);
 }
 
 void H2DE_Renderer::renderTexture(H2DE_LevelObjectData data) {
@@ -65,7 +60,7 @@ void H2DE_Renderer::renderHitboxes(H2DE_LevelObjectData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
 
-    for (H2DE_Hitbox hitbox : data.hitobxes) {
+    for (H2DE_Hitbox hitbox : data.hitboxes) {
         if (hitbox.rect.w == 0.0f || hitbox.rect.h == 0.0f) continue;
         if (hitbox.color.a == 0) continue;
 
@@ -98,12 +93,12 @@ SDL_ScaleMode H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) {
     return (scaleMode == H2DE_SCALE_MODE_LINEAR) ? SDL_ScaleModeLinear : (scaleMode == H2DE_SCALE_MODE_NEAREST) ? SDL_ScaleModeNearest : SDL_ScaleModeBest;
 }
 
-void H2DE_Renderer::whileParent(H2DE_LevelObjectData data, std::function<void(H2DE_LevelObjectData)> call) const {
+void H2DE_Renderer::whileParent(H2DE_LevelObjectData* data, std::function<void(H2DE_LevelObjectData*)> call) const {
     if (!call) return;
 
     while (true) {
         call(data);
-        if (!data.parent.has_value()) break;
-        else data = data.parent.value()->getData();
+        if (!data->parent.has_value()) break;
+        else data = H2DE_GetObjectData(data->parent.value());
     }
 }
