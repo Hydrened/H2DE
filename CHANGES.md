@@ -1,3 +1,8 @@
+## H2DE-2.0.7
+#### ADDED
+- parent position offset
+- rendering objects in index order
+
 ## H2DE-2.0.6
 #### ADDED
 - methods comments

@@ -17,7 +17,10 @@ private:
     int getBlockSize() const;
     SDL_RendererFlip getFlip(H2DE_Flip flip);
     SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
-    void whileParent(H2DE_LevelObjectData* data, std::function<void(H2DE_LevelObjectData*)> call) const;
+    H2DE_LevelPos getPosFromParents(H2DE_LevelObjectData data) const;
+
+    static bool isPositionGreater(H2DE_LevelObject* obj1, H2DE_LevelObject* obj2);
+    static void whileParent(H2DE_LevelObjectData* data, std::function<void(H2DE_LevelObjectData*)> call);
     
     H2DE_AbsPos lvlToAbs(H2DE_LevelPos pos, bool absolute) const;
     H2DE_AbsSize lvlToAbs(H2DE_LevelSize size) const;

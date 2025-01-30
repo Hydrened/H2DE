@@ -8,6 +8,7 @@
 #include <H2DE_asset_loader.h>
 #include <H2DE_window.h>
 #include <H2DE_renderer.h>
+#include <H2DE_settings.h>
 #include <H2DE_camera.h>
 #include <H2DE_object.h>
 #include <H2DE_game_data.h>

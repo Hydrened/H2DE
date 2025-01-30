@@ -21,9 +21,23 @@ void H2DE_Renderer::render() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    // 2 => Render objects
-    for (H2DE_LevelObject* object : *objects) renderObject(object);
+    // 2 => Sort objects per their index
+    std::map<int, std::vector<H2DE_LevelObject*>> groupedIndexes;
+    for (H2DE_LevelObject* object : *objects) groupedIndexes[H2DE_GetObjectData(object)->index].push_back(object);
+
+    std::vector<H2DE_LevelObject*> sortedObjects;
+    for (auto& [index, objs] : groupedIndexes) {
+        sort(objs.begin(), objs.end(), &H2DE_Renderer::isPositionGreater);
+        for (int i = 0; i < objs.size(); i++) sortedObjects.push_back(objs[i]);
+    }
+
+    // 3 => Render objects
+    for (H2DE_LevelObject* object : sortedObjects) renderObject(object);
     SDL_RenderPresent(renderer);
+
+    // 4 => Clear
+    groupedIndexes.clear();
+    sortedObjects.clear();
 }
 
 void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
@@ -40,8 +54,10 @@ void H2DE_Renderer::renderTexture(H2DE_LevelObjectData data) {
     if (data.texture.size.w == 0.0f || data.texture.size.h == 0.0f) return;
     if (data.texture.color.a == 0) return;
 
+    H2DE_LevelPos posFromParents = getPosFromParents(data);
+
     SDL_Texture* texture = (*textures)[data.texture.name];
-    SDL_Rect destRect = lvlToAbs(data.pos, data.absolute).makeRect(lvlToAbs(data.texture.size));
+    SDL_Rect destRect = lvlToAbs(posFromParents, data.absolute).makeRect(lvlToAbs(data.texture.size));
     float rotation = data.transform.rotation;
     SDL_Point pivot = lvlToAbs(data.transform.origin, data.absolute);
     SDL_RendererFlip flip = getFlip(data.transform.flip);
@@ -93,7 +109,24 @@ SDL_ScaleMode H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) {
     return (scaleMode == H2DE_SCALE_MODE_LINEAR) ? SDL_ScaleModeLinear : (scaleMode == H2DE_SCALE_MODE_NEAREST) ? SDL_ScaleModeNearest : SDL_ScaleModeBest;
 }
 
-void H2DE_Renderer::whileParent(H2DE_LevelObjectData* data, std::function<void(H2DE_LevelObjectData*)> call) const {
+H2DE_LevelPos H2DE_Renderer::getPosFromParents(H2DE_LevelObjectData data) const {
+    H2DE_LevelPos res = { 0.0f, 0.0f };
+    H2DE_Renderer::whileParent(&data, [&res](H2DE_LevelObjectData* d) {
+        res = res + d->pos;
+    });
+    return res;
+}
+
+bool H2DE_Renderer::isPositionGreater(H2DE_LevelObject* obj1, H2DE_LevelObject* obj2) {
+    H2DE_LevelObjectData* objData1 = H2DE_GetObjectData(obj1);
+    H2DE_LevelObjectData* objData2 = H2DE_GetObjectData(obj2);
+
+    bool equals = (objData1->pos.x == objData2->pos.x);
+    if (equals) return objData1->pos.y < objData2->pos.y;
+    else return objData1->pos.x < objData2->pos.x;
+}
+
+void H2DE_Renderer::whileParent(H2DE_LevelObjectData* data, std::function<void(H2DE_LevelObjectData*)> call) {
     if (!call) return;
 
     while (true) {
