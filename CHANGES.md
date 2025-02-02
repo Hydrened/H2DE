@@ -1,3 +1,10 @@
+## H2DE-2.0.8
+#### ADDED
+- settings initializer
+- settings reader
+- modify settings
+- get settings
+
 ## H2DE-2.0.7
 #### ADDED
 - parent position offset

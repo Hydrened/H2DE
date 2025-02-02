@@ -20,6 +20,7 @@
 struct H2DE_GameData;
 class H2DE_Window;
 class H2DE_Renderer;
+class H2DE_Settings;
 class H2DE_Camera;
 class H2DE_LevelObject;
 
@@ -31,6 +32,7 @@ class H2DE_Engine {
 private:
     H2DE_Window* window = nullptr;
     H2DE_Renderer* renderer = nullptr;
+    H2DE_Settings* settings = nullptr;
     H2DE_Camera* camera = nullptr;
 
     H2DE_GameData* gameData = new H2DE_GameData();
@@ -173,6 +175,13 @@ public:
      * \since H2DE-2.0.5
      */
     friend H2DE_GameData* H2DE_GetGameData(H2DE_Engine* engine);
+    /**
+     * Gets the engine's settings
+     * \param engine pointer to the engine
+     * \returns the engine's settings
+     * \since H2DE-2.0.8
+     */
+    friend H2DE_Settings* H2DE_GetSettings(H2DE_Engine* engine);
     /**
      * Gets the engine's camera
      * \param engine pointer to the engine

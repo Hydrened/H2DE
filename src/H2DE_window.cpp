@@ -2,6 +2,10 @@
 
 // INIT
 H2DE_Window::H2DE_Window(H2DE_Engine* e, H2DE_WindowData d) : engine(e), data(d) {
+    static bool once = false;
+    if (once) throw std::runtime_error("H2DE-110: Can't create more than one window");
+    once = true;
+    
     initSDL();
     createWindow();
 }

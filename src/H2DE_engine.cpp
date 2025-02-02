@@ -9,6 +9,7 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.fps) {
 
         window = new H2DE_Window(this, data.window);
         renderer = new H2DE_Renderer(this, &textures, &objects);
+        settings = new H2DE_Settings();
         camera = new H2DE_Camera(this, data.camera);
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
@@ -32,6 +33,7 @@ H2DE_Engine::~H2DE_Engine() {
     for (H2DE_LevelObject* object : objects) delete object;
     objects.clear();
 
+    delete settings;
     delete gameData;
     delete camera;
     delete renderer;
@@ -235,6 +237,10 @@ int H2DE_GetCurrentFps(H2DE_Engine* engine) {
 
 H2DE_GameData* H2DE_GetGameData(H2DE_Engine* engine) {
     return engine->gameData;
+}
+
+H2DE_Settings* H2DE_GetSettings(H2DE_Engine* engine) {
+    return engine->settings;
 }
 
 H2DE_Camera* H2DE_GetCamera(H2DE_Engine* engine) {
