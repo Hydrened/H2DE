@@ -14,6 +14,9 @@ private:
     std::unordered_map<std::string, SDL_Texture*>* textures;
     std::vector<H2DE_LevelObject*>* objects;
 
+    bool debug = false;
+    int renderedObjects = 0;
+
     int getBlockSize() const;
     SDL_RendererFlip getFlip(H2DE_Flip flip);
     SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
@@ -32,6 +35,8 @@ private:
 public:
     H2DE_Renderer(H2DE_Engine* engine, std::unordered_map<std::string, SDL_Texture*>* textures, std::vector<H2DE_LevelObject*>* objects);
     ~H2DE_Renderer();
+
+    void debugObjects(bool state);
 
     void render();
 };

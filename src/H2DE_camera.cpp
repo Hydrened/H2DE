@@ -22,16 +22,16 @@ void H2DE_Camera::update() {
 
     if (!lockedToReference) {
         if (refRect.x < pos.x + padding.w) {
-            pos.x =  lerp(pos.x, refRect.x - padding.w, smoothing);
+            pos.x =  H2DE_Lerp(pos.x, refRect.x - padding.w, smoothing);
         }
         else if (refRect.x + refRect.w > pos.x + camSize.w - padding.w) {
-            pos.x = lerp(pos.x, refRect.x + refRect.w + padding.w - camSize.w, smoothing);
+            pos.x = H2DE_Lerp(pos.x, refRect.x + refRect.w + padding.w - camSize.w, smoothing);
         }
         if (refRect.y < pos.y + padding.h) {
-            pos.y = lerp(pos.y, refRect.y - padding.h, smoothing);
+            pos.y = H2DE_Lerp(pos.y, refRect.y - padding.h, smoothing);
         }
         else if (refRect.y + refRect.h > pos.y + camSize.h - padding.h) {
-            pos.y = lerp(pos.y, refRect.y + refRect.h + padding.h - camSize.h, smoothing);
+            pos.y = H2DE_Lerp(pos.y, refRect.y + refRect.h + padding.h - camSize.h, smoothing);
         }
 
     } else pos = refRect.getPos() - lockedPadding.toPos();

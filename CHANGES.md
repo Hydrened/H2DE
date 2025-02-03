@@ -1,3 +1,8 @@
+## H2DE-2.0.9
+#### ADDED
+- timelines
+- engine debug
+
 ## H2DE-2.0.8
 #### ADDED
 - settings initializer
@@ -130,7 +135,7 @@
 
 ## H2DE-1.3.11
 #### ADDED
-- remove assets fro mengine
+- remove assets from engine
 - remove specific asset from engine
 
 ## H2DE-1.3.10

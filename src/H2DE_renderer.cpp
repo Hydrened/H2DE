@@ -12,6 +12,11 @@ H2DE_Renderer::~H2DE_Renderer() {
 
 }
 
+// EVENTS
+void H2DE_Renderer::debugObjects(bool state) {
+    debug = state;
+}
+
 // RENDER
 void H2DE_Renderer::render() {
     static H2DE_Window* window = H2DE_GetWindow(engine);
@@ -35,7 +40,13 @@ void H2DE_Renderer::render() {
     for (H2DE_LevelObject* object : sortedObjects) renderObject(object);
     SDL_RenderPresent(renderer);
 
-    // 4 => Clear
+    // 4 => Debug
+    if (debug) {
+        std::cout << "H2DE => Rendered " << renderedObjects << " objects" << std::endl;
+        renderedObjects = 0;
+    }
+
+    // 5 => Clear
     groupedIndexes.clear();
     sortedObjects.clear();
 }
@@ -70,6 +81,8 @@ void H2DE_Renderer::renderTexture(H2DE_LevelObjectData data) {
         SDL_Rect srcRect = data.texture.srcRect.value();
         SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, rotation, &pivot, flip);
     } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, rotation, &pivot, flip);
+
+    renderedObjects++;
 }
 
 void H2DE_Renderer::renderHitboxes(H2DE_LevelObjectData data) {
@@ -90,6 +103,7 @@ void H2DE_Renderer::renderHitboxes(H2DE_LevelObjectData data) {
         std::vector<Sint16> vy = { offsetY, offsetY, static_cast<Sint16>(offsetY + size.h), static_cast<Sint16>(offsetY + size.h) };
 
         polygonColor(renderer, vx.data(), vy.data(), 4, hitbox.color);
+        renderedObjects++;
     }
 }
 

@@ -51,6 +51,17 @@ enum H2DE_ScaleMode {
 };
 
 /**
+ * Types used to identify timeline effects
+ * \since H2DE-1.0.9
+ */
+enum H2DE_TimelineEffect {
+    LINEAR,                                                                         // Linear
+    EASE_IN_OUT,                                                                    // Ease in out
+    EASE_IN,                                                                        // Ease in
+    EASE_OUT,                                                                       // Ease out
+};
+
+/**
  * Types used to identify absolute positions
  * \since H2DE-2.0.2
  */
@@ -514,6 +525,10 @@ std::ostream& operator<<(std::ostream& os, const H2DE_LevelRect& hitbox);
 std::ostream& operator<<(std::ostream& os, const H2DE_ColorRGB& rgb);
 std::ostream& operator<<(std::ostream& os, const H2DE_ColorHSV& hsv);
 
-float lerp(float min, float max, float blend);
+/**
+ * 
+ * \since HH2DE-2.0.6
+ */
+float H2DE_Lerp(float min, float max, float blend);
 
 #endif

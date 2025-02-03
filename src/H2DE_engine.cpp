@@ -44,7 +44,7 @@ void H2DE_DestroyEngine(H2DE_Engine* engine) {
     delete engine;
 }
 
-// RUN
+// EVENTS
 void H2DE_RunEngine(H2DE_Engine* engine) {
     Uint32 now = SDL_GetTicks();
     int frameTime;
@@ -75,17 +75,20 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
     }
 }
 
-// UPDATE
-void H2DE_Engine::updateLevelObjects() {
-    for (H2DE_LevelObject* object : objects) object->update();
+void H2DE_DebugEngine(H2DE_Engine* engine, bool state) {
+    engine->renderer->debugObjects(state);
 }
 
-// DELAY
 void H2DE_Engine::H2DE_Delay(unsigned int ms, std::function<void()> callback) {
     std::thread([ms, callback]() {
         std::this_thread::sleep_for(std::chrono::milliseconds(ms));
         callback();
     }).detach();
+}
+
+// UPDATE
+void H2DE_Engine::updateLevelObjects() {
+    for (H2DE_LevelObject* object : objects) object->update();
 }
 
 // ASSETS
@@ -229,6 +232,10 @@ H2DE_Window* H2DE_GetWindow(H2DE_Engine* engine) {
 
 int H2DE_GetFps(H2DE_Engine* engine) {
     return engine->fps;
+}
+
+int H2DE_GetSteps(H2DE_Engine* engine, unsigned int ms) {
+    return std::round(engine->fps / 1000.0f * ms);
 }
 
 int H2DE_GetCurrentFps(H2DE_Engine* engine) {

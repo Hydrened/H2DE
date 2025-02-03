@@ -11,6 +11,7 @@
 #include <H2DE_settings.h>
 #include <H2DE_camera.h>
 #include <H2DE_object.h>
+#include <H2DE_timeline.h>
 #include <H2DE_game_data.h>
 #include <SDL2/SDL.h>
 #include <filesystem>
@@ -22,6 +23,7 @@ class H2DE_Window;
 class H2DE_Renderer;
 class H2DE_Settings;
 class H2DE_Camera;
+class H2DE_Timeline;
 class H2DE_LevelObject;
 
 /**
@@ -46,7 +48,9 @@ private:
 
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, Mix_Chunk*> sounds;
+
     std::vector<H2DE_LevelObject*> objects;
+    std::vector<H2DE_Timeline*> loops;
 
     std::function<void(SDL_Event)> handleEvents = NULL;
     std::function<void()> update = NULL;
@@ -57,6 +61,7 @@ private:
     void importTexture(const std::filesystem::path& img);
     void importSound(const std::filesystem::path& song);
     void assetImported();
+
     void updateLevelObjects();
 
 public:
@@ -69,6 +74,14 @@ public:
      * \since H2DE-2.0.0
      */
     friend void H2DE_RunEngine(H2DE_Engine* engine);
+
+    /**
+     * Debugs the number of object rendered on by an engine
+     * \param engine pointer to the engine
+     * \param state debug state
+     * \since H2DE-1.3.4
+     */
+    friend void H2DE_DebugEngine(H2DE_Engine* engine, bool state);
 
     /**
      * Delays a function call
@@ -161,6 +174,14 @@ public:
      * \since H2DE-1.0.9
      */
     friend int H2DE_GetFps(H2DE_Engine* engine);
+    /**
+     * Gets the number of frames for a time in ms
+     * \param engine pointer to the engine
+     * \param ms time in ms
+     * \returns the number of frame
+     * \since H2DE-2.0.9
+     */
+    friend int H2DE_GetSteps(H2DE_Engine* engine, unsigned int ms);
     /**
      * Gets the current FPS the engine is running at
      * \param engine pointer to the engine
