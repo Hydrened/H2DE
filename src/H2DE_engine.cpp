@@ -62,9 +62,13 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
             }
 
             if (engine->handleEvents) engine->handleEvents(event);
-            if (engine->update) engine->update();
-            engine->updateLevelObjects();
-            engine->camera->update();
+
+            if (!engine->paused) {
+                if (engine->update) engine->update();
+                engine->updateLevelObjects();
+                engine->camera->update();
+            }
+
             engine->renderer->render();
             
             frameTime = SDL_GetTicks() - now;
@@ -101,6 +105,18 @@ void H2DE_Engine::click(int x, int y) {
 
         if (btnRect.contains(clickPos)) btnData->onClick();
     }
+}
+
+void H2DE_Pause(H2DE_Engine* engine) {
+    engine->paused = true;
+}
+
+void H2DE_Resume(H2DE_Engine* engine) {
+    engine->paused = false;
+}
+
+bool H2DE_IsPaused(H2DE_Engine* engine) {
+    return engine->paused;
 }
 
 // UPDATE

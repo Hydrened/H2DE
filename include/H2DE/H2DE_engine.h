@@ -44,6 +44,7 @@ private:
     unsigned int fps;
     bool isRunning = true;
     int currentFPS = 0;
+    bool paused = false;
     
     int loadedData = 0;
     int dataToLoad = 0;
@@ -155,6 +156,26 @@ public:
      * \since H2DE-2.0.10
      */
     friend void H2DE_DestroyButton(H2DE_Engine* engine, H2DE_Button* button);
+
+    /**
+     * Pauses the game
+     * \param engine pointer to the engine
+     * \since H2DE-2.0.11
+     */
+    friend void H2DE_Pause(H2DE_Engine* engine);
+    /**
+     * Resumes the game
+     * \param engine pointer to the engine
+     * \since H2DE-2.0.11
+     */
+    friend void H2DE_Resume(H2DE_Engine* engine);
+    /**
+     * Gets the pause state of an engine
+     * \param engine pointer to the engine
+     * \returns true if game is paused
+     * \since H2DE-2.0.11
+     */
+    friend bool H2DE_IsPaused(H2DE_Engine* engine);
 
     /**
      * Plays a sound

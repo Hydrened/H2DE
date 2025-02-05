@@ -1,3 +1,8 @@
+## H2DE-2.0.11
+#### ADDED
+- pause
+- resume
+
 ## H2DE-2.0.10
 #### ADDED
 - buttons
