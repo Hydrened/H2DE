@@ -41,7 +41,7 @@ void H2DE_LevelObject::snap(H2DE_LevelRect objRect, H2DE_LevelRect otherRect, H2
 
 // UPDATE
 void H2DE_LevelObject::update() {
-    if (updateCall) updateCall();
+    if (data.update.has_value()) data.update.value()(&data);
     if (!data.gravity) return;
 
     static H2DE_GameData* gameData = H2DE_GetGameData(engine);
@@ -77,13 +77,4 @@ void H2DE_LevelObject::update() {
 // GETTER
 H2DE_LevelObjectData* H2DE_GetObjectData(H2DE_LevelObject* object) {
     return &(object->data);
-}
-
-// SETTER
-void H2DE_SetObjectUpdateCall(H2DE_LevelObject* object, std::function<void()> updateCall) {
-    object->updateCall = updateCall;
-}
-
-void H2DE_SetObjectPos(H2DE_LevelObject* object, H2DE_LevelPos pos) {
-    object->data.pos = pos;
 }

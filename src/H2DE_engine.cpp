@@ -8,7 +8,7 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.fps) {
         once = true;
 
         window = new H2DE_Window(this, data.window);
-        renderer = new H2DE_Renderer(this, &textures, &objects);
+        renderer = new H2DE_Renderer(this, &textures, &objects, &buttons);
         settings = new H2DE_Settings();
         camera = new H2DE_Camera(this, data.camera);
     } catch (const std::exception& e) {
@@ -57,6 +57,7 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
 
             while (SDL_PollEvent(&event)) switch (event.type) {
                 case SDL_QUIT: engine->isRunning = false; break;
+                case SDL_MOUSEBUTTONDOWN: engine->click(event.button.x, event.button.y); break;
                 default: break;
             }
 
@@ -84,6 +85,22 @@ void H2DE_Engine::H2DE_Delay(unsigned int ms, std::function<void()> callback) {
         std::this_thread::sleep_for(std::chrono::milliseconds(ms));
         callback();
     }).detach();
+}
+
+void H2DE_Engine::click(int x, int y) {
+    H2DE_AbsPos clickPos = { x, y };
+    int blockSize = renderer->getBlockSize();
+
+    for (H2DE_Button* button : buttons) {
+        H2DE_ButtonData* btnData = H2DE_GetButtonData(button);
+        if (!btnData->onClick) continue;
+
+        H2DE_AbsPos pos = H2DE_AbsPos{ static_cast<int>(btnData->pos.x * blockSize), static_cast<int>(btnData->pos.y * blockSize) };
+        H2DE_AbsSize size = H2DE_AbsSize{ static_cast<int>(btnData->texture.size.w * blockSize), static_cast<int>(btnData->texture.size.h * blockSize) };
+        H2DE_AbsRect btnRect = pos.makeRect(size);
+
+        if (btnRect.contains(clickPos)) btnData->onClick();
+    }
 }
 
 // UPDATE
@@ -197,6 +214,21 @@ void H2DE_DestroyLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object) {
     if (it != engine->objects.end()) {
         delete object;
         engine->objects.erase(it);
+    }
+}
+
+// BUTTONS
+H2DE_Button* H2DE_CreateButton(H2DE_Engine* engine, H2DE_ButtonData data) {
+    H2DE_Button* btn = new H2DE_Button(engine, data);
+    engine->buttons.push_back(btn);
+    return btn;
+}
+
+void H2DE_DestroyButton(H2DE_Engine* engine, H2DE_Button* button) {
+    auto it = std::find(engine->buttons.begin(), engine->buttons.end(), button);
+    if (it != engine->buttons.end()) {
+        delete button;
+        engine->buttons.erase(it);
     }
 }
 

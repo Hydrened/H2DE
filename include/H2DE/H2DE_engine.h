@@ -11,6 +11,7 @@
 #include <H2DE_settings.h>
 #include <H2DE_camera.h>
 #include <H2DE_object.h>
+#include <H2DE_button.h>
 #include <H2DE_timeline.h>
 #include <H2DE_game_data.h>
 #include <SDL2/SDL.h>
@@ -25,6 +26,7 @@ class H2DE_Settings;
 class H2DE_Camera;
 class H2DE_Timeline;
 class H2DE_LevelObject;
+class H2DE_Button;
 
 /**
  * Type used to identify an engine
@@ -50,6 +52,7 @@ private:
     std::unordered_map<std::string, Mix_Chunk*> sounds;
 
     std::vector<H2DE_LevelObject*> objects;
+    std::vector<H2DE_Button*> buttons;
     std::vector<H2DE_Timeline*> loops;
 
     std::function<void(SDL_Event)> handleEvents = NULL;
@@ -63,6 +66,8 @@ private:
     void assetImported();
 
     void updateLevelObjects();
+
+    void click(int x, int y);
 
 public:
     H2DE_Engine(H2DE_EngineData data);
@@ -134,6 +139,22 @@ public:
      * \since H2DE-2.0.4
      */
     friend void H2DE_DestroyLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object);
+
+    /**
+     * Creates a button
+     * \param engine pointer to the engine
+     * \param data button's data
+     * \returns a pointer to the new button
+     * \since H2DE-2.0.10
+     */
+    friend H2DE_Button* H2DE_CreateButton(H2DE_Engine* engine, H2DE_ButtonData data);
+    /**
+     * Destroys a button
+     * \param engine pointer to the engine
+     * \param button pointer to the button
+     * \since H2DE-2.0.10
+     */
+    friend void H2DE_DestroyButton(H2DE_Engine* engine, H2DE_Button* button);
 
     /**
      * Plays a sound

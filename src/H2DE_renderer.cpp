@@ -1,7 +1,7 @@
 #include "H2DE_renderer.h"
 
 // INIT
-H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, std::unordered_map<std::string, SDL_Texture*>* t, std::vector<H2DE_LevelObject*>* o) : engine(e), textures(t), objects(o) {
+H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, std::unordered_map<std::string, SDL_Texture*>* t, std::vector<H2DE_LevelObject*>* o, std::vector<H2DE_Button*>* b) : engine(e), textures(t), objects(o), buttons(b) {
     static bool once = false;
     if (once) throw std::runtime_error("H2DE-109: Can't create more than one renderer");
     once = true;
@@ -38,27 +38,29 @@ void H2DE_Renderer::render() {
 
     // 3 => Render objects
     for (H2DE_LevelObject* object : sortedObjects) renderObject(object);
+
+    // 4 => Render buttons
+    for (H2DE_Button* button : *buttons) renderButton(button);
     SDL_RenderPresent(renderer);
 
-    // 4 => Debug
+    // 5 => Debug
     if (debug) {
         std::cout << "H2DE => Rendered " << renderedObjects << " objects" << std::endl;
         renderedObjects = 0;
     }
 
-    // 5 => Clear
+    // 6 => Clear
     groupedIndexes.clear();
     sortedObjects.clear();
 }
 
 void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
     H2DE_LevelObjectData data = *H2DE_GetObjectData(object);
-
-    if (data.texture.name != "" && (*textures).find(data.texture.name) != (*textures).end()) renderTexture(data);
-    if (data.hitboxes.size() > 0) renderHitboxes(data);
+    if (data.texture.name != "" && (*textures).find(data.texture.name) != (*textures).end()) renderObjectTexture(data);
+    if (data.hitboxes.size() > 0) renderObjectHitboxes(data);
 }
 
-void H2DE_Renderer::renderTexture(H2DE_LevelObjectData data) {
+void H2DE_Renderer::renderObjectTexture(H2DE_LevelObjectData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
 
@@ -85,7 +87,7 @@ void H2DE_Renderer::renderTexture(H2DE_LevelObjectData data) {
     renderedObjects++;
 }
 
-void H2DE_Renderer::renderHitboxes(H2DE_LevelObjectData data) {
+void H2DE_Renderer::renderObjectHitboxes(H2DE_LevelObjectData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
 
@@ -105,6 +107,34 @@ void H2DE_Renderer::renderHitboxes(H2DE_LevelObjectData data) {
         polygonColor(renderer, vx.data(), vy.data(), 4, hitbox.color);
         renderedObjects++;
     }
+}
+
+void H2DE_Renderer::renderButton(H2DE_Button* button) {
+    H2DE_ButtonData data = *H2DE_GetButtonData(button);
+    if (data.texture.name != "" && (*textures).find(data.texture.name) != (*textures).end()) renderButtonTexture(data);
+}
+
+void H2DE_Renderer::renderButtonTexture(H2DE_ButtonData data) {
+    static H2DE_Window* window = H2DE_GetWindow(engine);
+    static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
+
+    if (data.texture.size.w == 0.0f || data.texture.size.h == 0.0f) return;
+    if (data.texture.color.a == 0) return;
+    
+    SDL_Texture* texture = (*textures)[data.texture.name];
+    SDL_Rect destRect = lvlToAbs(data.pos, true).makeRect(lvlToAbs(data.texture.size));
+    SDL_Point pivot = { 0, 0 };
+
+    SDL_SetTextureColorMod(texture, data.texture.color.r, data.texture.color.g, data.texture.color.b);
+    SDL_SetTextureAlphaMod(texture, data.texture.color.a);
+    SDL_SetTextureScaleMode(texture, getScaleMode(data.texture.scaleMode));
+
+    if (data.texture.srcRect.has_value()) {
+        SDL_Rect srcRect = data.texture.srcRect.value();
+        SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, 0.0f, &pivot, SDL_FLIP_NONE);
+    } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, 0.0f, &pivot, SDL_FLIP_NONE);
+
+    renderedObjects++;
 }
 
 // GETTER

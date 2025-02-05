@@ -23,11 +23,11 @@ class H2DE_LevelObject;
  * \since H2DE-2.0.2
  */
 enum H2DE_Face {
-    H2DE_NO_FACE,                                                                   // No face
-    H2DE_TOP_FACE,                                                                  // Top face
-    H2DE_BOTTOM_FACE,                                                               // Bottom face
-    H2DE_LEFT_FACE,                                                                 // Left face
-    H2DE_RIGHT_FACE,                                                                // right face
+    H2DE_NO_FACE,                                                                           // No face
+    H2DE_TOP_FACE,                                                                          // Top face
+    H2DE_BOTTOM_FACE,                                                                       // Bottom face
+    H2DE_LEFT_FACE,                                                                         // Left face
+    H2DE_RIGHT_FACE,                                                                        // right face
 };
 
 /**
@@ -35,9 +35,9 @@ enum H2DE_Face {
  * \since H2DE-2.0.2
  */
 enum H2DE_Flip {
-    H2DE_NO_FLIP,                                                                   // No flip
-    H2DE_FLIP_HORIZONTAL,                                                           // Flip horizontaly
-    H2DE_FLIP_VERTICAL,                                                             // Flip verticaly
+    H2DE_NO_FLIP,                                                                           // No flip
+    H2DE_FLIP_HORIZONTAL,                                                                   // Flip horizontaly
+    H2DE_FLIP_VERTICAL,                                                                     // Flip verticaly
 };
 
 /**
@@ -45,9 +45,9 @@ enum H2DE_Flip {
  * \since H2DE-2.0.2
  */
 enum H2DE_ScaleMode {
-    H2DE_SCALE_MODE_NEAREST,                                                        // Nearest scale mode
-    H2DE_SCALE_MODE_LINEAR,                                                         // Linear scale mode
-    H2DE_SCALE_MODE_BEST,                                                           // Best scale mode
+    H2DE_SCALE_MODE_NEAREST,                                                                // Nearest scale mode
+    H2DE_SCALE_MODE_LINEAR,                                                                 // Linear scale mode
+    H2DE_SCALE_MODE_BEST,                                                                   // Best scale mode
 };
 
 /**
@@ -55,10 +55,10 @@ enum H2DE_ScaleMode {
  * \since H2DE-1.0.9
  */
 enum H2DE_TimelineEffect {
-    LINEAR,                                                                         // Linear
-    EASE_IN_OUT,                                                                    // Ease in out
-    EASE_IN,                                                                        // Ease in
-    EASE_OUT,                                                                       // Ease out
+    LINEAR,                                                                                 // Linear
+    EASE_IN_OUT,                                                                            // Ease in out
+    EASE_IN,                                                                                // Ease in
+    EASE_OUT,                                                                               // Ease out
 };
 
 /**
@@ -66,8 +66,8 @@ enum H2DE_TimelineEffect {
  * \since H2DE-2.0.2
  */
 struct H2DE_AbsPos {
-    int x;                                                                          // Absolute x position
-    int y;                                                                          // Absolute y position
+    int x;                                                                                  // Absolute x position
+    int y;                                                                                  // Absolute y position
 
     H2DE_AbsPos operator+(const H2DE_AbsSize& size) const;
 
@@ -87,8 +87,8 @@ struct H2DE_AbsPos {
  * \since H2DE-2.0.2
  */
 struct H2DE_AbsSize {
-    int w;                                                                          // Absolute width
-    int h;                                                                          // Absolute height
+    int w;                                                                                  // Absolute width
+    int h;                                                                                  // Absolute height
 
     /**
      * Makes a rectangle with a position
@@ -104,12 +104,20 @@ struct H2DE_AbsSize {
  * \since H2DE-2.0.2
  */
 struct H2DE_AbsRect {
-    int x;                                                                          // Absolute x position
-    int y;                                                                          // Absolute y position
-    int w;                                                                          // Absolute width
-    int h;                                                                          // Absolute height
+    int x;                                                                                  // Absolute x position
+    int y;                                                                                  // Absolute y position
+    int w;                                                                                  // Absolute width
+    int h;                                                                                  // Absolute height
 
     operator SDL_Rect() const;
+
+    /**
+     * Checks if a absolute position is in this rectangle
+     * \param pos absolute position of the point
+     * \returns a boolean
+     * \since H2DE-2.0.10
+     */
+    bool contains(const H2DE_AbsPos& pos);
 };
 
 /**
@@ -117,8 +125,8 @@ struct H2DE_AbsRect {
  * \since H2DE-2.0.2
  */
 struct H2DE_LevelPos {
-    float x;                                                                        // Level x position
-    float y;                                                                        // Level y position
+    float x;                                                                                // Level x position
+    float y;                                                                                // Level y position
 
     H2DE_LevelPos operator+(const H2DE_LevelPos& other) const;
     H2DE_LevelPos operator-(const H2DE_LevelPos& other) const;
@@ -144,8 +152,8 @@ struct H2DE_LevelPos {
  * \since H2DE-2.0.2
  */
 struct H2DE_LevelSize {
-    float w;                                                                        // Level width
-    float h;                                                                        // Level height
+    float w;                                                                                // Level width
+    float h;                                                                                // Level height
 
     H2DE_LevelSize operator+(const H2DE_LevelSize& other) const;
     H2DE_LevelSize operator-(const H2DE_LevelSize& other) const;
@@ -178,8 +186,8 @@ struct H2DE_LevelSize {
  * \since H2DE-2.0.2
  */
 struct H2DE_LevelVelocity {
-    float x;                                                                        // Level x velocity
-    float y;                                                                        // Level y velocity
+    float x;                                                                                // Level x velocity
+    float y;                                                                                // Level y velocity
 
     H2DE_LevelVelocity operator+(const H2DE_LevelVelocity& other) const;
     H2DE_LevelVelocity operator-(const H2DE_LevelVelocity& other) const;
@@ -207,10 +215,10 @@ struct H2DE_LevelVelocity {
  * \since H2DE-2.0.2
  */
 struct H2DE_LevelRect {
-    float x;                                                                        // Level x position
-    float y;                                                                        // Level y position
-    float w;                                                                        // Level width
-    float h;                                                                        // Level height
+    float x;                                                                                // Level x position
+    float y;                                                                                // Level y position
+    float w;                                                                                // Level width
+    float h;                                                                                // Level height
 
     H2DE_LevelRect operator+(const H2DE_LevelPos& pos) const;
     H2DE_LevelRect operator-(const H2DE_LevelPos& pos) const;
@@ -251,10 +259,10 @@ struct H2DE_LevelRect {
  * \since H2DE-1.0.0
  */
 struct H2DE_ColorRGB {
-    Uint8 r;                                                                    // Red
-    Uint8 g;                                                                    // Green
-    Uint8 b;                                                                    // Blue
-    Uint8 a;                                                                    // Alpha (opacity)
+    Uint8 r;                                                                            // Red
+    Uint8 g;                                                                            // Green
+    Uint8 b;                                                                            // Blue
+    Uint8 a;                                                                            // Alpha (opacity)
 
     explicit operator H2DE_ColorHSV() const;
     operator Uint32() const;
@@ -343,10 +351,10 @@ struct H2DE_ColorRGB {
  * \since H2DE-1.2.0
  */
 struct H2DE_ColorHSV {
-    float h;                                                                    // Hue
-    float s;                                                                    // Saturation
-    float v;                                                                    // Value / lightness
-    float a;                                                                    // Alpha (opacity)
+    float h;                                                                            // Hue
+    float s;                                                                            // Saturation
+    float v;                                                                            // Value / lightness
+    float a;                                                                            // Alpha (opacity)
 
     explicit operator H2DE_ColorRGB() const;
 
@@ -434,12 +442,12 @@ struct H2DE_ColorHSV {
  * \since H2DE-2.0.0
  */
 struct H2DE_WindowData {
-    std::string title = "";                                                     // Title of a window
-    H2DE_AbsPos pos = { SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED };       // Absolute position of a window
-    H2DE_AbsSize size = { 640, 360 };                                           // Absolute size of a window
-    bool fullscreen = false;                                                    // Whether the window should be on fullscreen
-    bool resizable = false;                                                     // Whether the window should be resizable
-    bool saveState = false;                                                     // Whether the window data should be saved
+    std::string title = "";                                                             // Title of a window
+    H2DE_AbsPos pos = { SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED };               // Absolute position of a window
+    H2DE_AbsSize size = { 640, 360 };                                                   // Absolute size of a window
+    bool fullscreen = false;                                                            // Whether the window should be on fullscreen
+    bool resizable = false;                                                             // Whether the window should be resizable
+    bool saveState = false;                                                             // Whether the window data should be saved
 };
 
 /**
@@ -447,8 +455,8 @@ struct H2DE_WindowData {
  * \since H2DE-2.0.2
  */
 struct H2DE_CameraData {
-    float width = 20.0f;                                                        // Width of the camera
-    float smoothing = 0.1f;                                                     // Smoothing (0.0f = no smooth, 1.0f = not moving)
+    float width = 20.0f;                                                                // Width of the camera
+    float smoothing = 0.1f;                                                             // Smoothing (0.0f = no smooth, 1.0f = not moving)
 };
 
 /**
@@ -456,9 +464,9 @@ struct H2DE_CameraData {
  * \since H2DE-2.0.0
  */
 struct H2DE_EngineData {
-    unsigned int fps = 60;                                                      // FPS limit for an engine and the window (60 recommended)
-    H2DE_WindowData window = H2DE_WindowData();                                 // Window data
-    H2DE_CameraData camera = H2DE_CameraData();                                 // Camera data
+    unsigned int fps = 60;                                                              // FPS limit for an engine and the window (60 recommended)
+    H2DE_WindowData window = H2DE_WindowData();                                         // Window data
+    H2DE_CameraData camera = H2DE_CameraData();                                         // Camera data
 };
 
 /**
@@ -466,11 +474,11 @@ struct H2DE_EngineData {
  * \since H2DE-2.0.3
  */
 struct H2DE_Texture {
-    std::string name = "";                                                      // Name of the texture
-    H2DE_LevelSize size = { 1.0f, 1.0f };                                       // Level size of the texture
-    std::optional<H2DE_AbsRect> srcRect = std::nullopt;                         // Part of the texture you wanna display
-    H2DE_ColorRGB color = { 255, 255, 255, 255 };                               // RGB color aplied on the texture
-    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;                          // Scale mode the texture will be rendered by
+    std::string name = "";                                                              // Name of the texture
+    H2DE_LevelSize size = { 1.0f, 1.0f };                                               // Level size of the texture
+    std::optional<H2DE_AbsRect> srcRect = std::nullopt;                                 // Part of the texture you wanna display
+    H2DE_ColorRGB color = { 255, 255, 255, 255 };                                       // RGB color aplied on the texture
+    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;                                  // Scale mode the texture will be rendered by
 };
 
 /**
@@ -478,11 +486,11 @@ struct H2DE_Texture {
  * \since H2DE-2.0.5
  */
 struct H2DE_Hitbox {
-    H2DE_LevelRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };                           // Level rectangle of the hitbox
-    H2DE_ColorRGB color = { 255, 0, 0, 255 };                                   // RGB color of the hitbox
-    int collisionIndex = 0;                                                     // Collision index of the hitbox (it can only collides with same collision index)
-    bool snap = false;                                                          // Snap when colliding to another hitbox
-    std::optional<std::function<void()>> onCollide = std::nullopt;              // Function called when colliding to another hitbox
+    H2DE_LevelRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };                                   // Level rectangle of the hitbox
+    H2DE_ColorRGB color = { 255, 0, 0, 255 };                                           // RGB color of the hitbox
+    int collisionIndex = 0;                                                             // Collision index of the hitbox (it can only collides with same collision index)
+    bool snap = false;                                                                  // Snap when colliding to another hitbox
+    std::optional<std::function<void()>> onCollide = std::nullopt;                      // Function called when colliding to another hitbox
 };
 
 /**
@@ -490,9 +498,9 @@ struct H2DE_Hitbox {
  * \since H2DE-2.0.2
  */
 struct H2DE_LevelObjectTransform {
-    H2DE_LevelPos origin = { 0.0f, 0.0f };                                      // Level position of the point for the roatation
-    float rotation = 0.0f;                                                      // Rotation of the level object
-    H2DE_Flip flip = H2DE_NO_FLIP;                                              // Flip of the level object
+    H2DE_LevelPos origin = { 0.0f, 0.0f };                                              // Level position of the point for the roatation
+    float rotation = 0.0f;                                                              // Rotation of the level object
+    H2DE_Flip flip = H2DE_NO_FLIP;                                                      // Flip of the level object
 };
 
 /**
@@ -500,19 +508,31 @@ struct H2DE_LevelObjectTransform {
  * \since H2DE-2.0.2
  */
 struct H2DE_LevelObjectData {
-    H2DE_LevelPos pos = { 0.0f, 0.0f };                                         // Level position of the level object
-    H2DE_LevelVelocity velocity = { 0.0f, 0.0f };                               // Level velocity of the level object
-    std::vector<H2DE_Hitbox> hitboxes = {};                                     // Hitboxes of the level object
+    H2DE_LevelPos pos = { 0.0f, 0.0f };                                                 // Level position of the level object
+    H2DE_LevelVelocity velocity = { 0.0f, 0.0f };                                       // Level velocity of the level object
+    std::vector<H2DE_Hitbox> hitboxes = {};                                             // Hitboxes of the level object
 
-    H2DE_Texture texture = H2DE_Texture();                                      // Texture of the level object
+    H2DE_Texture texture = H2DE_Texture();                                              // Texture of the level object
 
-    bool absolute = false;                                                      // Whether the level object is absolute
-    bool gravity = false;                                                       // Whether the level object has default gravity
+    bool absolute = false;                                                              // Whether the level object is absolute
+    bool gravity = false;                                                               // Whether the level object has default gravity
 
-    H2DE_LevelObjectTransform transform = H2DE_LevelObjectTransform();          // Transform data of the level object
+    H2DE_LevelObjectTransform transform = H2DE_LevelObjectTransform();                  // Transform data of the level object
 
-    std::optional<H2DE_LevelObject*> parent = std::nullopt;                     // Parent of the level object
-    int index = 0;                                                              // Z-index of the level object (Greather == on top of other level objects)
+    std::optional<H2DE_LevelObject*> parent = std::nullopt;                             // Parent of the level object
+    int index = 0;                                                                      // Z-index of the level object (Greather == on top of other level objects)
+
+    std::optional<std::function<void(H2DE_LevelObjectData*)>> update = std::nullopt;    // Update function call
+};
+
+/**
+ * Types used to identify button data
+ * \since H2DE-2.0.10
+ */
+struct H2DE_ButtonData {
+    H2DE_LevelPos pos = { 0.0f, 0.0f };                                                 // Level position of the button (ignores camera"s position)
+    H2DE_Texture texture = H2DE_Texture();                                              // Texture of the button
+    std::function<void()> onClick = NULL;                                               // On click function call
 };
 
 std::ostream& operator<<(std::ostream& os, const H2DE_AbsPos& pos);
@@ -526,7 +546,6 @@ std::ostream& operator<<(std::ostream& os, const H2DE_ColorRGB& rgb);
 std::ostream& operator<<(std::ostream& os, const H2DE_ColorHSV& hsv);
 
 /**
- * 
  * \since HH2DE-2.0.6
  */
 float H2DE_Lerp(float min, float max, float blend);

@@ -7,17 +7,18 @@
 #include <unordered_map>
 class H2DE_Engine;
 struct H2DE_LevelObject;
+struct H2DE_Button;
 
 class H2DE_Renderer {
 private:
     H2DE_Engine* engine;
     std::unordered_map<std::string, SDL_Texture*>* textures;
     std::vector<H2DE_LevelObject*>* objects;
+    std::vector<H2DE_Button*>* buttons;
 
     bool debug = false;
     int renderedObjects = 0;
 
-    int getBlockSize() const;
     SDL_RendererFlip getFlip(H2DE_Flip flip);
     SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
     H2DE_LevelPos getPosFromParents(H2DE_LevelObjectData data) const;
@@ -29,16 +30,21 @@ private:
     H2DE_AbsSize lvlToAbs(H2DE_LevelSize size) const;
 
     void renderObject(H2DE_LevelObject* object);
-    void renderTexture(H2DE_LevelObjectData data);
-    void renderHitboxes(H2DE_LevelObjectData data);
+    void renderObjectTexture(H2DE_LevelObjectData data);
+    void renderObjectHitboxes(H2DE_LevelObjectData data);
+    
+    void renderButton(H2DE_Button* button);
+    void renderButtonTexture(H2DE_ButtonData data);
 
 public:
-    H2DE_Renderer(H2DE_Engine* engine, std::unordered_map<std::string, SDL_Texture*>* textures, std::vector<H2DE_LevelObject*>* objects);
+    H2DE_Renderer(H2DE_Engine* engine, std::unordered_map<std::string, SDL_Texture*>* textures, std::vector<H2DE_LevelObject*>* objects, std::vector<H2DE_Button*>* buttons);
     ~H2DE_Renderer();
 
     void debugObjects(bool state);
 
     void render();
+    
+    int getBlockSize() const;
 };
 
 #endif

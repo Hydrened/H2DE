@@ -1,3 +1,9 @@
+## H2DE-2.0.10
+#### ADDED
+- buttons
+#### REMOVED
+- setters for level object (get data and modify it intead)
+
 ## H2DE-2.0.9
 #### ADDED
 - timelines
