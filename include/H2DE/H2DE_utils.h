@@ -17,6 +17,7 @@ struct H2DE_LevelVelocity;
 struct H2DE_LevelRect;
 struct H2DE_ColorHSV;
 class H2DE_LevelObject;
+class H2DE_Surface;
 
 /**
  * Types used to identify faces
@@ -456,7 +457,7 @@ struct H2DE_WindowData {
  */
 struct H2DE_CameraData {
     float width = 20.0f;                                                                // Width of the camera
-    float smoothing = 0.1f;                                                             // Smoothing (0.0f = no smooth, 1.0f = not moving)
+    float smoothing = 0.0f;                                                             // Smoothing (0.0f = no smoothing, 1.0f = max smoothing)
 };
 
 /**
@@ -470,15 +471,25 @@ struct H2DE_EngineData {
 };
 
 /**
- * Types used to identify textures
- * \since H2DE-2.0.3
+ * Types used to identify texture data
+ * \since H2DE-2.0.13
  */
-struct H2DE_Texture {
+struct H2DE_TextureData {
     std::string name = "";                                                              // Name of the texture
     H2DE_LevelSize size = { 1.0f, 1.0f };                                               // Level size of the texture
     std::optional<H2DE_AbsRect> srcRect = std::nullopt;                                 // Part of the texture you wanna display
     H2DE_ColorRGB color = { 255, 255, 255, 255 };                                       // RGB color aplied on the texture
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;                                  // Scale mode the texture will be rendered by
+};
+
+/**
+ * Types used to identify sprite data
+ * \since H2DE-2.0.13
+ */
+struct H2DE_SpriteData {
+    std::string defaultAnimationName = "";                                              // Name of the sprite animation
+    unsigned int nbFrame = 0;                                                           // Number of sprite's frame
+    unsigned int delay = 200;                                                           // Delay between frames
 };
 
 /**
@@ -512,7 +523,7 @@ struct H2DE_LevelObjectData {
     H2DE_LevelVelocity velocity = { 0.0f, 0.0f };                                       // Level velocity of the level object
     std::vector<H2DE_Hitbox> hitboxes = {};                                             // Hitboxes of the level object
 
-    H2DE_Texture texture = H2DE_Texture();                                              // Texture of the level object
+    H2DE_Surface* texture;                                                              // Texture / sprite of the level object
 
     bool absolute = false;                                                              // Whether the level object is absolute
     bool gravity = false;                                                               // Whether the level object has default gravity
@@ -531,7 +542,7 @@ struct H2DE_LevelObjectData {
  */
 struct H2DE_ButtonData {
     H2DE_LevelPos pos = { 0.0f, 0.0f };                                                 // Level position of the button (ignores camera"s position)
-    H2DE_Texture texture = H2DE_Texture();                                              // Texture of the button
+    H2DE_Surface* texture;                                                              // Texture / sprite of the button
     std::function<void()> onClick = NULL;                                               // On click function call
 };
 

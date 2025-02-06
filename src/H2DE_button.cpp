@@ -1,4 +1,4 @@
-#include "H2DE_button.h"
+#include "H2DE/H2DE_button.h"
 
 // INIT
 H2DE_Button::H2DE_Button(H2DE_Engine* e, H2DE_ButtonData d) : engine(e), data(d) {

@@ -1,4 +1,4 @@
-#include "H2DE_timeline.h"
+#include "H2DE/H2DE_timeline.h"
 
 // INIT
 H2DE_Timeline::H2DE_Timeline(H2DE_Engine* en, unsigned int du, H2DE_TimelineEffect ef, std::function<void(float)> up, std::function<void()> co, unsigned int lo) : duration(H2DE_GetSteps(en, du)), effect(ef), update(up), completed(co), loops(lo) {

@@ -1,4 +1,4 @@
-#include "H2DE_camera.h"
+#include "H2DE/H2DE_camera.h"
 
 // INIT
 H2DE_Camera::H2DE_Camera(H2DE_Engine* e, H2DE_CameraData d) : engine(e), data(d) {
@@ -15,10 +15,10 @@ void H2DE_Camera::update() {
     if (!reference) return;
 
     H2DE_LevelObjectData refData = *H2DE_GetObjectData(reference);
-    H2DE_LevelRect refRect = refData.pos.makeHitbox(refData.texture.size);
+    H2DE_LevelRect refRect = refData.pos.makeHitbox(refData.texture->getData().size);
 
     H2DE_LevelSize camSize = H2DE_GetCameraSize(this);
-    float smoothing = data.smoothing;
+    float smoothing = std::abs(1.0f - std::max(std::min(data.smoothing, 0.999f), 0.0f));
 
     if (!lockedToReference) {
         if (refRect.x < pos.x + padding.w) {

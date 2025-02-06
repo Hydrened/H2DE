@@ -1,4 +1,4 @@
-#include "H2DE_settings.h"
+#include "H2DE/H2DE_settings.h"
 
 // INIT
 H2DE_Settings::H2DE_Settings() {

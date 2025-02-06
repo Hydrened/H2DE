@@ -1,10 +1,12 @@
 #ifndef H2DE_ENGINE_H
 #define H2DE_ENGINE_H
 
+#undef max
 #undef min
 
 #include <H2DE_json.h>
 #include <H2DE_utils.h>
+#include <H2DE_surface.h>
 #include <H2DE_asset_loader.h>
 #include <H2DE_window.h>
 #include <H2DE_renderer.h>

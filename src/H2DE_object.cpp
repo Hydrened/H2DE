@@ -1,4 +1,4 @@
-#include "H2DE_object.h"
+#include "H2DE/H2DE_object.h"
 
 // INIT
 H2DE_LevelObject::H2DE_LevelObject(H2DE_Engine* e, std::vector<H2DE_LevelObject*>* o, H2DE_LevelObjectData d) : engine(e), objects(o), data(d) {
@@ -7,7 +7,7 @@ H2DE_LevelObject::H2DE_LevelObject(H2DE_Engine* e, std::vector<H2DE_LevelObject*
 
 // CLEANUP
 H2DE_LevelObject::~H2DE_LevelObject() {
-
+    delete data.texture;
 }
 
 // EVENTS

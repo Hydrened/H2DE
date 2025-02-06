@@ -1,3 +1,13 @@
+## H2DE-2.0.13
+#### ADDED
+- sprites
+#### FIXED
+- camera smoothing
+
+## H2DE-2.0.12
+#### FIXED
+- compiled with test
+
 ## H2DE-2.0.11
 #### ADDED
 - pause

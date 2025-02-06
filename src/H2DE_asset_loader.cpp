@@ -1,4 +1,4 @@
-#include "H2DE_asset_loader.h"
+#include "H2DE/H2DE_asset_loader.h"
 
 SDL_Texture* H2DE_AssetLoader::loadTexture(SDL_Renderer* renderer, const char* file) {
     SDL_Surface* surface = IMG_Load(file);
