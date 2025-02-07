@@ -16,7 +16,8 @@ private:
     std::vector<H2DE_LevelObject*>* objects;
     std::vector<H2DE_Button*>* buttons;
 
-    bool debug = false;
+    bool debugNumber = false;
+    bool debugHitboxes = false;
     int renderedObjects = 0;
 
     SDL_RendererFlip getFlip(H2DE_Flip flip);
@@ -40,7 +41,8 @@ public:
     H2DE_Renderer(H2DE_Engine* engine, std::unordered_map<std::string, SDL_Texture*>* textures, std::vector<H2DE_LevelObject*>* objects, std::vector<H2DE_Button*>* buttons);
     ~H2DE_Renderer();
 
-    void debugObjects(bool state);
+    void debugObjectNumber(bool state);
+    void debugObjectHitboxes(bool state);
 
     void render();
     

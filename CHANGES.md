@@ -1,3 +1,13 @@
+## H2DE-2.0.14
+#### ADDED
+- hitboxes debug
+#### MODIFIED
+- object rendered number debug
+#### FIXED
+- level objects and hitboxes rendering outside of screen
+#### REMOVED
+- level object data update parameter
+
 ## H2DE-2.0.13
 #### ADDED
 - sprites

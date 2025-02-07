@@ -41,7 +41,6 @@ void H2DE_LevelObject::snap(H2DE_LevelRect objRect, H2DE_LevelRect otherRect, H2
 
 // UPDATE
 void H2DE_LevelObject::update() {
-    if (data.update.has_value()) data.update.value()(&data);
     if (!data.gravity) return;
 
     static H2DE_GameData* gameData = H2DE_GetGameData(engine);

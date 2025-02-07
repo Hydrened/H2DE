@@ -80,8 +80,12 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
     }
 }
 
-void H2DE_DebugEngine(H2DE_Engine* engine, bool state) {
-    engine->renderer->debugObjects(state);
+void H2DE_DebugObjectNumber(H2DE_Engine* engine, bool state) {
+    engine->renderer->debugObjectNumber(state);
+}
+
+void H2DE_DebugObjectHitboxes(H2DE_Engine* engine, bool state) {
+    engine->renderer->debugObjectHitboxes(state);
 }
 
 void H2DE_Engine::H2DE_Delay(unsigned int ms, std::function<void()> callback) {

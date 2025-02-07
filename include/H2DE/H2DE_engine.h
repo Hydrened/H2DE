@@ -84,12 +84,19 @@ public:
     friend void H2DE_RunEngine(H2DE_Engine* engine);
 
     /**
-     * Debugs the number of object rendered on by an engine
+     * Debugs the number of object rendered by the engine
      * \param engine pointer to the engine
      * \param state debug state
      * \since H2DE-1.3.4
      */
-    friend void H2DE_DebugEngine(H2DE_Engine* engine, bool state);
+    friend void H2DE_DebugObjectNumber(H2DE_Engine* engine, bool state);
+    /**
+     * Render each hitboxe of every level objects 
+     * \param engine pointer to the engine
+     * \param state debug state
+     * \since H2DE-2.0.14
+     */
+    friend void H2DE_DebugObjectHitboxes(H2DE_Engine* engine, bool state);
 
     /**
      * Delays a function call

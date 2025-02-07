@@ -13,8 +13,12 @@ H2DE_Renderer::~H2DE_Renderer() {
 }
 
 // EVENTS
-void H2DE_Renderer::debugObjects(bool state) {
-    debug = state;
+void H2DE_Renderer::debugObjectNumber(bool state) {
+    debugNumber = state;
+}
+
+void H2DE_Renderer::debugObjectHitboxes(bool state) {
+    debugHitboxes = state;
 }
 
 // RENDER
@@ -43,8 +47,8 @@ void H2DE_Renderer::render() {
     for (H2DE_Button* button : *buttons) renderButton(button);
     SDL_RenderPresent(renderer);
 
-    // 5 => Debug
-    if (debug) {
+    // 5 => Debug number
+    if (debugNumber) {
         std::cout << "H2DE => Rendered " << renderedObjects << " objects" << std::endl;
         renderedObjects = 0;
     }
@@ -55,11 +59,19 @@ void H2DE_Renderer::render() {
 }
 
 void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
+    static H2DE_Camera* camera = H2DE_GetCamera(engine);
+
     H2DE_LevelObjectData data = *H2DE_GetObjectData(object);
     data.texture->update();
     std::string texture = data.texture->get();
-    if (texture != "" && (*textures).find(texture) != (*textures).end()) renderObjectTexture(data);
-    if (data.hitboxes.size() > 0) renderObjectHitboxes(data);
+    
+    bool textureIsNull = texture == "";
+    bool textureExists = (*textures).find(texture) != (*textures).end();
+    bool textureIsOnScreen = H2DE_CameraContains(camera, data.pos.makeHitbox(data.texture->getData().size));
+    if (!textureIsNull && textureExists && textureIsOnScreen) renderObjectTexture(data);
+
+    bool atLeastOneHitbox = data.hitboxes.size() > 0;
+    if (debugHitboxes && atLeastOneHitbox) renderObjectHitboxes(data);
 }
 
 void H2DE_Renderer::renderObjectTexture(H2DE_LevelObjectData data) {
@@ -94,10 +106,14 @@ void H2DE_Renderer::renderObjectTexture(H2DE_LevelObjectData data) {
 void H2DE_Renderer::renderObjectHitboxes(H2DE_LevelObjectData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
+    static H2DE_Camera* camera = H2DE_GetCamera(engine);
 
     for (H2DE_Hitbox hitbox : data.hitboxes) {
         if (hitbox.rect.w == 0.0f || hitbox.rect.h == 0.0f) continue;
         if (hitbox.color.a == 0) continue;
+
+        bool hitboxIsOnScreen = H2DE_CameraContains(camera, hitbox.rect + data.pos);
+        if (!hitboxIsOnScreen) continue;
 
         H2DE_AbsPos offset = lvlToAbs(data.pos + hitbox.rect.getPos(), data.absolute);
         H2DE_AbsSize size = lvlToAbs(hitbox.rect.getSize());

@@ -532,8 +532,6 @@ struct H2DE_LevelObjectData {
 
     std::optional<H2DE_LevelObject*> parent = std::nullopt;                             // Parent of the level object
     int index = 0;                                                                      // Z-index of the level object (Greather == on top of other level objects)
-
-    std::optional<std::function<void(H2DE_LevelObjectData*)>> update = std::nullopt;    // Update function call
 };
 
 /**
