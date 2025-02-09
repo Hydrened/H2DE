@@ -261,6 +261,14 @@ public:
      * \since H2DE-2.0.2
      */
     friend H2DE_Camera* H2DE_GetCamera(H2DE_Engine* engine);
+    /**
+     * Converts an absolute position to a level position
+     * \param engine pointer to the engine
+     * \param pos absollute position
+     * \returns the converted position
+     * \since H2DE-2.0.16
+     */
+    friend H2DE_LevelPos H2DE_ConvertToLevelPos(H2DE_Engine* engine, H2DE_AbsPos pos);
 
     /**
      * Sets the FPS limit of an engine

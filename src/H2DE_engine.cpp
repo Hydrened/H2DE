@@ -310,6 +310,16 @@ H2DE_Camera* H2DE_GetCamera(H2DE_Engine* engine) {
     return engine->camera;
 }
 
+H2DE_LevelPos H2DE_ConvertToLevelPos(H2DE_Engine* engine, H2DE_AbsPos pos) {
+    int blockSize = engine->renderer->getBlockSize();
+    H2DE_LevelPos camPos = H2DE_GetCameraPos(engine->camera);
+
+    return {
+        (float)pos.x / blockSize + camPos.x,
+        (float)pos.y / blockSize + camPos.y
+    };
+}
+
 // SETTER
 void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps) {
     engine->fps = fps;

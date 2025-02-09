@@ -1,3 +1,7 @@
+## H2DE-2.0.16
+#### ADDED
+- `H2DE_ConvertToLevelPos` method
+
 ## H2DE-2.0.15
 #### FIXED
 - game events not working
