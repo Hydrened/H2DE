@@ -9,6 +9,7 @@
 #include <iostream>
 #include <optional>
 #include <string>
+#include <random>
 #include <vector>
 struct H2DE_AbsSize;
 struct H2DE_AbsRect;
@@ -558,5 +559,17 @@ std::ostream& operator<<(std::ostream& os, const H2DE_ColorHSV& hsv);
  * \since HH2DE-2.0.6
  */
 float H2DE_Lerp(float min, float max, float blend);
+/**
+ * \since HH2DE-2.0.17
+ */
+float H2DE_RandomFloatInRange(float min, float max);
+/**
+ * \since HH2DE-2.0.17
+ */
+int H2DE_RandomIntInRange(int min, int max);
+/**
+ * \since HH2DE-2.0.17
+ */
+bool H2DE_RandomBool();
 
 #endif

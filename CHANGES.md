@@ -1,3 +1,9 @@
+## H2DE-2.0.17
+#### ADDED
+- `H2DE_RandomFloatInRange` method
+- `H2DE_RandomIntInRange` method
+- `H2DE_RandomBool` method
+
 ## H2DE-2.0.16
 #### ADDED
 - `H2DE_ConvertToLevelPos` method
