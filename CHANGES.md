@@ -1,3 +1,7 @@
+## H2DE-2.0.15
+#### FIXED
+- game events not working
+
 ## H2DE-2.0.14
 #### ADDED
 - hitboxes debug

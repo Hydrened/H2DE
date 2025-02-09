@@ -55,13 +55,15 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
         while (engine->isRunning) {
             now = SDL_GetTicks();
 
-            while (SDL_PollEvent(&event)) switch (event.type) {
-                case SDL_QUIT: engine->isRunning = false; break;
-                case SDL_MOUSEBUTTONDOWN: engine->click(event.button.x, event.button.y); break;
-                default: break;
-            }
+            while (SDL_PollEvent(&event)) {
+                switch (event.type) {
+                    case SDL_QUIT: engine->isRunning = false; break;
+                    case SDL_MOUSEBUTTONDOWN: engine->click(event.button.x, event.button.y); break;
+                    default: break;
+                }
 
-            if (engine->handleEvents) engine->handleEvents(event);
+                if (engine->handleEvents) engine->handleEvents(event);
+            }
 
             if (!engine->paused) {
                 if (engine->update) engine->update();
