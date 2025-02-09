@@ -7,7 +7,7 @@ float H2DE_Lerp(float min, float max, float blend) {
 float H2DE_RandomFloatInRange(float min, float max) {
     static std::random_device rd;
     static std::default_random_engine e(rd());
-    std::uniform_int_distribution<float> dist(min, max);
+    std::uniform_real_distribution<float> dist(min, max);
     return dist(e);
 }
 
