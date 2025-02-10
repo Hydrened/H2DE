@@ -1,3 +1,7 @@
+## H2DE-2.0.19
+#### FIXED
+- get surface data give a pointer to the data instead
+
 ## H2DE-2.0.18
 #### ADDED
 - on collides now gives the level object that collided

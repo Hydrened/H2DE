@@ -67,7 +67,7 @@ void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
     
     bool textureIsNull = texture == "";
     bool textureExists = (*textures).find(texture) != (*textures).end();
-    bool textureIsOnScreen = H2DE_CameraContains(camera, data.pos.makeHitbox(data.texture->getData().size));
+    bool textureIsOnScreen = H2DE_CameraContains(camera, data.pos.makeHitbox(data.texture->getData()->size));
     if (!textureIsNull && textureExists && textureIsOnScreen) renderObjectTexture(data);
 
     bool atLeastOneHitbox = data.hitboxes.size() > 0;
@@ -78,25 +78,25 @@ void H2DE_Renderer::renderObjectTexture(H2DE_LevelObjectData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
 
-    H2DE_TextureData textureData = data.texture->getData();
+    H2DE_TextureData* textureData = data.texture->getData();
 
-    if (textureData.size.w == 0.0f || textureData.size.h == 0.0f) return;
-    if (textureData.color.a == 0) return;
+    if (textureData->size.w == 0.0f || textureData->size.h == 0.0f) return;
+    if (textureData->color.a == 0) return;
 
     H2DE_LevelPos posFromParents = getPosFromParents(data);
 
     SDL_Texture* texture = (*textures)[data.texture->get()];
-    SDL_Rect destRect = lvlToAbs(posFromParents, data.absolute).makeRect(lvlToAbs(textureData.size));
+    SDL_Rect destRect = lvlToAbs(posFromParents, data.absolute).makeRect(lvlToAbs(textureData->size));
     float rotation = data.transform.rotation;
     SDL_Point pivot = lvlToAbs(data.transform.origin, data.absolute);
     SDL_RendererFlip flip = getFlip(data.transform.flip);
 
-    SDL_SetTextureColorMod(texture, textureData.color.r, textureData.color.g, textureData.color.b);
-    SDL_SetTextureAlphaMod(texture, textureData.color.a);
-    SDL_SetTextureScaleMode(texture, getScaleMode(textureData.scaleMode));
+    SDL_SetTextureColorMod(texture, textureData->color.r, textureData->color.g, textureData->color.b);
+    SDL_SetTextureAlphaMod(texture, textureData->color.a);
+    SDL_SetTextureScaleMode(texture, getScaleMode(textureData->scaleMode));
 
-    if (textureData.srcRect.has_value()) {
-        SDL_Rect srcRect = textureData.srcRect.value();
+    if (textureData->srcRect.has_value()) {
+        SDL_Rect srcRect = textureData->srcRect.value();
         SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, rotation, &pivot, flip);
     } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, rotation, &pivot, flip);
 
@@ -140,21 +140,21 @@ void H2DE_Renderer::renderButtonTexture(H2DE_ButtonData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
 
-    H2DE_TextureData textureData = data.texture->getData();
+    H2DE_TextureData* textureData = data.texture->getData();
 
-    if (textureData.size.w == 0.0f || textureData.size.h == 0.0f) return;
-    if (textureData.color.a == 0) return;
+    if (textureData->size.w == 0.0f || textureData->size.h == 0.0f) return;
+    if (textureData->color.a == 0) return;
     
     SDL_Texture* texture = (*textures)[data.texture->get()];
-    SDL_Rect destRect = lvlToAbs(data.pos, true).makeRect(lvlToAbs(textureData.size));
+    SDL_Rect destRect = lvlToAbs(data.pos, true).makeRect(lvlToAbs(textureData->size));
     SDL_Point pivot = { 0, 0 };
 
-    SDL_SetTextureColorMod(texture, textureData.color.r, textureData.color.g, textureData.color.b);
-    SDL_SetTextureAlphaMod(texture, textureData.color.a);
-    SDL_SetTextureScaleMode(texture, getScaleMode(textureData.scaleMode));
+    SDL_SetTextureColorMod(texture, textureData->color.r, textureData->color.g, textureData->color.b);
+    SDL_SetTextureAlphaMod(texture, textureData->color.a);
+    SDL_SetTextureScaleMode(texture, getScaleMode(textureData->scaleMode));
 
-    if (textureData.srcRect.has_value()) {
-        SDL_Rect srcRect = textureData.srcRect.value();
+    if (textureData->srcRect.has_value()) {
+        SDL_Rect srcRect = textureData->srcRect.value();
         SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, 0.0f, &pivot, SDL_FLIP_NONE);
     } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, 0.0f, &pivot, SDL_FLIP_NONE);
 

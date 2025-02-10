@@ -22,7 +22,7 @@ public:
     virtual void update() = 0;
 
     std::string get() const;
-    H2DE_TextureData getData() const;
+    H2DE_TextureData* getData();
 };
 
 /**

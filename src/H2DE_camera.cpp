@@ -15,7 +15,7 @@ void H2DE_Camera::update() {
     if (!reference) return;
 
     H2DE_LevelObjectData refData = *H2DE_GetObjectData(reference);
-    H2DE_LevelRect refRect = refData.pos.makeHitbox(refData.texture->getData().size);
+    H2DE_LevelRect refRect = refData.pos.makeHitbox(refData.texture->getData()->size);
 
     H2DE_LevelSize camSize = H2DE_GetCameraSize(this);
     float smoothing = std::abs(1.0f - std::max(std::min(data.smoothing, 0.999f), 0.0f));
