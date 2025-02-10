@@ -1,3 +1,9 @@
+## H2DE-2.0.18
+#### ADDED
+- on collides now gives the level object that collided
+#### FIXED
+- object not updating if no gravity
+
 ## H2DE-2.0.17
 #### ADDED
 - `H2DE_RandomFloatInRange` method

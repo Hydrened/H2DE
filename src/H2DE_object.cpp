@@ -41,15 +41,16 @@ void H2DE_LevelObject::snap(H2DE_LevelRect objRect, H2DE_LevelRect otherRect, H2
 
 // UPDATE
 void H2DE_LevelObject::update() {
-    if (!data.gravity) return;
-
     static H2DE_GameData* gameData = H2DE_GetGameData(engine);
-    float gravity = gameData->gravity;
-    float maxGravity = gameData->maxGravity;
 
-    data.velocity.y = data.velocity.y + gravity;
-    data.velocity.y = std::min(data.velocity.y, maxGravity);
-    data.pos = data.pos + data.velocity;
+    if (data.gravity) {
+        float gravity = gameData->gravity;
+        float maxGravity = gameData->maxGravity;
+
+        data.velocity.y = data.velocity.y + gravity;
+        data.velocity.y = std::min(data.velocity.y, maxGravity);
+        data.pos = data.pos + data.velocity;
+    }
 
     for (const H2DE_Hitbox& objHitbox : data.hitboxes) {
         H2DE_LevelRect objRect = objHitbox.rect + data.pos;
@@ -66,7 +67,7 @@ void H2DE_LevelObject::update() {
                 H2DE_Face face = objRect.collides(otherRect);
                 if (face != H2DE_NO_FACE) {
                     if (objHitbox.snap) snap(objRect, otherRect, face);
-                    if (objHitbox.onCollide.has_value()) objHitbox.onCollide.value()();
+                    if (objHitbox.onCollide.has_value()) objHitbox.onCollide.value()(otherObj);
                 }
             }
         }

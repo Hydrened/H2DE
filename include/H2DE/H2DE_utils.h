@@ -502,7 +502,7 @@ struct H2DE_Hitbox {
     H2DE_ColorRGB color = { 255, 0, 0, 255 };                                           // RGB color of the hitbox
     int collisionIndex = 0;                                                             // Collision index of the hitbox (it can only collides with same collision index)
     bool snap = false;                                                                  // Snap when colliding to another hitbox
-    std::optional<std::function<void()>> onCollide = std::nullopt;                      // Function called when colliding to another hitbox
+    std::optional<std::function<void(H2DE_LevelObject*)>> onCollide = std::nullopt;     // Function called when colliding to another hitbox
 };
 
 /**
