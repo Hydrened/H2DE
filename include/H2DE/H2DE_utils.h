@@ -491,6 +491,7 @@ struct H2DE_SpriteData {
     std::string defaultAnimationName = "";                                              // Name of the sprite animation
     unsigned int nbFrame = 0;                                                           // Number of sprite's frame
     unsigned int delay = 200;                                                           // Delay between frames
+    bool updateOnPause = false;                                                         // Update sprite when game is paused
 };
 
 /**

@@ -26,6 +26,11 @@ void H2DE_Sprite::update() {
     setCurrentTexture();
 }
 
+// GETTER
+H2DE_SpriteData H2DE_GetSpriteData(H2DE_Sprite* sprite) {
+    return sprite->spriteData;
+}
+
 // SETTER
 void H2DE_Sprite::setCurrentTexture() {
     size_t extentionIndex = textureData.name.find_last_of('.');

@@ -62,7 +62,13 @@ void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
     static H2DE_Camera* camera = H2DE_GetCamera(engine);
 
     H2DE_LevelObjectData data = *H2DE_GetObjectData(object);
-    data.texture->update();
+    H2DE_Sprite* sprite = dynamic_cast<H2DE_Sprite*>(data.texture);
+    if (sprite) {
+        H2DE_SpriteData spriteData = H2DE_GetSpriteData(sprite);
+        bool isPausedAndUpdates = spriteData.updateOnPause && H2DE_IsPaused(engine);
+        bool notPausedAndDontUpdate = !spriteData.updateOnPause && !H2DE_IsPaused(engine);
+        if (isPausedAndUpdates || notPausedAndDontUpdate) data.texture->update();
+    }
     std::string texture = data.texture->get();
     
     bool textureIsNull = texture == "";
@@ -131,7 +137,13 @@ void H2DE_Renderer::renderObjectHitboxes(H2DE_LevelObjectData data) {
 
 void H2DE_Renderer::renderButton(H2DE_Button* button) {
     H2DE_ButtonData data = *H2DE_GetButtonData(button);
-    data.texture->update();
+    H2DE_Sprite* sprite = dynamic_cast<H2DE_Sprite*>(data.texture);
+    if (sprite) {
+        H2DE_SpriteData spriteData = H2DE_GetSpriteData(sprite);
+        bool isPausedAndUpdates = spriteData.updateOnPause && H2DE_IsPaused(engine);
+        bool notPausedAndDontUpdate = !spriteData.updateOnPause && !H2DE_IsPaused(engine);
+        if (isPausedAndUpdates || notPausedAndDontUpdate) data.texture->update();
+    }
     std::string texture = data.texture->get();
     if (texture != "" && (*textures).find(texture) != (*textures).end()) renderButtonTexture(data);
 }

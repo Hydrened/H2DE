@@ -59,6 +59,14 @@ public:
     void update() override;
 
     /**
+     * Gets the data of a sprite
+     * \param sprite pointer to a sprite
+     * \returns the sprite's data
+     * \since H2DE-2.0.21
+     */
+    friend H2DE_SpriteData H2DE_GetSpriteData(H2DE_Sprite* sprite);
+
+    /**
      * Sets the animation of a sprite
      * \param sprite pointer to a sprite
      * \param animation new animation

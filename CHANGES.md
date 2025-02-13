@@ -1,3 +1,7 @@
+## H2DE-2.0.21
+#### ADDED
+- sprite can update or not when game is paused
+
 ## H2DE-2.0.20
 #### ADDED
 - `H2DE_StopEngine` method
