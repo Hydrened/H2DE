@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_object.h"
+#undef min
 
 // INIT
 H2DE_LevelObject::H2DE_LevelObject(H2DE_Engine* e, std::vector<H2DE_LevelObject*>* o, H2DE_LevelObjectData d) : engine(e), objects(o), data(d) {
@@ -52,15 +53,15 @@ void H2DE_LevelObject::update() {
         data.pos = data.pos + data.velocity;
     }
 
-    for (const H2DE_Hitbox& objHitbox : data.hitboxes) {
+    for (H2DE_Hitbox objHitbox : data.hitboxes) {
         H2DE_LevelRect objRect = objHitbox.rect + data.pos;
         if (!objHitbox.onCollide.has_value() && !objHitbox.snap) continue;
 
         for (H2DE_LevelObject* otherObj : *objects) {
             if (otherObj == this) continue;
 
-            const H2DE_LevelObjectData& otherData = otherObj->data;
-            for (const H2DE_Hitbox& otherHitbox : otherData.hitboxes) {
+            H2DE_LevelObjectData otherData = otherObj->data;
+            for (H2DE_Hitbox otherHitbox : otherData.hitboxes) {
                 if (objHitbox.collisionIndex != otherHitbox.collisionIndex) continue;
                 
                 H2DE_LevelRect otherRect = otherHitbox.rect + otherData.pos;

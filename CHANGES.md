@@ -1,3 +1,9 @@
+## H2DE-2.0.20
+#### ADDED
+- `H2DE_StopEngine` method
+#### FIXED
+- set fps
+
 ## H2DE-2.0.19
 #### FIXED
 - get surface data give a pointer to the data instead

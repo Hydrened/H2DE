@@ -82,6 +82,12 @@ public:
      * \since H2DE-2.0.0
      */
     friend void H2DE_RunEngine(H2DE_Engine* engine);
+    /**
+     * Stops the engine's game loop
+     * \param engine pointer to the engine
+     * \since H2DE-2.0.20
+     */
+    friend void H2DE_StopEngine(H2DE_Engine* engine);
 
     /**
      * Debugs the number of object rendered by the engine

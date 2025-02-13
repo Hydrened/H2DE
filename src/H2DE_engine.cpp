@@ -49,7 +49,6 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
     Uint32 now = SDL_GetTicks();
     int frameTime;
     SDL_Event event;
-    int timePerFrame = 1000 / engine->fps;
 
     try {
         while (engine->isRunning) {
@@ -75,11 +74,16 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
             
             frameTime = SDL_GetTicks() - now;
             engine->currentFPS = 1000.0f / static_cast<float>((frameTime > 0) ? frameTime : 1);
+            int timePerFrame = 1000 / engine->fps;
             if (timePerFrame >= frameTime) SDL_Delay(timePerFrame - frameTime);
         }
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
     }
+}
+
+void H2DE_StopEngine(H2DE_Engine* engine) {
+    engine->isRunning = false;
 }
 
 void H2DE_DebugObjectNumber(H2DE_Engine* engine, bool state) {
