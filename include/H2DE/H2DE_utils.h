@@ -134,9 +134,15 @@ struct H2DE_LevelPos {
     H2DE_LevelPos operator-(const H2DE_LevelPos& other) const;
     H2DE_LevelPos operator*(const float& multiplier) const;
     H2DE_LevelPos operator/(const float& divider) const;
+    H2DE_LevelPos& operator+=(const H2DE_LevelPos& other);
+    H2DE_LevelPos& operator-=(const H2DE_LevelPos& other);
+    H2DE_LevelPos& operator*=(const float& multiplier);
+    H2DE_LevelPos& operator/=(const float& divider);
 
     H2DE_LevelPos operator+(const H2DE_LevelVelocity& velocity) const;
     H2DE_LevelPos operator-(const H2DE_LevelVelocity& velocity) const;
+    H2DE_LevelPos& operator+=(const H2DE_LevelVelocity& velocity);
+    H2DE_LevelPos& operator-=(const H2DE_LevelVelocity& velocity);
 
     bool operator==(const H2DE_LevelPos& other) const;
 
@@ -161,6 +167,10 @@ struct H2DE_LevelSize {
     H2DE_LevelSize operator-(const H2DE_LevelSize& other) const;
     H2DE_LevelSize operator*(const float& multiplier) const;
     H2DE_LevelSize operator/(const float& divider) const;
+    H2DE_LevelSize& operator+=(const H2DE_LevelSize& other);
+    H2DE_LevelSize& operator-=(const H2DE_LevelSize& other);
+    H2DE_LevelSize& operator*=(const float& multiplier);
+    H2DE_LevelSize& operator/=(const float& divider);
 
     bool operator==(const H2DE_LevelSize& other) const;
     bool operator>=(const H2DE_LevelSize& other) const;
@@ -195,8 +205,10 @@ struct H2DE_LevelVelocity {
     H2DE_LevelVelocity operator-(const H2DE_LevelVelocity& other) const;
     H2DE_LevelVelocity operator*(const float& multiplier) const;
     H2DE_LevelVelocity operator/(const float& divider) const;
-
-    H2DE_LevelPos operator+(const H2DE_LevelPos& pos) const;
+    H2DE_LevelVelocity& operator+=(const H2DE_LevelVelocity& other);
+    H2DE_LevelVelocity& operator-=(const H2DE_LevelVelocity& other);
+    H2DE_LevelVelocity& operator*=(const float& multiplier);
+    H2DE_LevelVelocity& operator/=(const float& divider);
     
     bool operator==(const H2DE_LevelVelocity& other) const;
     bool operator>=(const H2DE_LevelVelocity& other) const;
@@ -224,9 +236,13 @@ struct H2DE_LevelRect {
 
     H2DE_LevelRect operator+(const H2DE_LevelPos& pos) const;
     H2DE_LevelRect operator-(const H2DE_LevelPos& pos) const;
+    H2DE_LevelRect& operator+=(const H2DE_LevelPos& pos);
+    H2DE_LevelRect& operator-=(const H2DE_LevelPos& pos);
 
     H2DE_LevelRect operator+(const H2DE_LevelSize& size) const;
     H2DE_LevelRect operator-(const H2DE_LevelSize& size) const;
+    H2DE_LevelRect& operator+=(const H2DE_LevelSize& size);
+    H2DE_LevelRect& operator-=(const H2DE_LevelSize& size);
 
     /**
      * Gets the level position from the rectangle

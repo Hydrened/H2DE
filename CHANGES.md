@@ -1,3 +1,10 @@
+## H2DE-2.0.22
+#### ADDED
+- += operators for `H2DE_LevelPos`, `H2DE_LevelSize`, `H2DE_LevelVelocity` and `H2DE_LevelRect`
+- -= operators for `H2DE_LevelPos`, `H2DE_LevelSize`, `H2DE_LevelVelocity` and `H2DE_LevelRect`
+- *= operators for `H2DE_LevelPos`, `H2DE_LevelSize` and `H2DE_LevelVelocity`
+- /= operators for `H2DE_LevelPos`, `H2DE_LevelSize` and `H2DE_LevelVelocity`
+
 ## H2DE-2.0.21
 #### ADDED
 - sprite can update or not when game is paused

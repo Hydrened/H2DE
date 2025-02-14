@@ -29,12 +29,28 @@ H2DE_LevelVelocity H2DE_LevelVelocity::operator/(const float& divider) const {
     return res;
 }
 
-// LEVEL POS OPERATIONS
-H2DE_LevelPos H2DE_LevelVelocity::operator+(const H2DE_LevelPos& pos) const {
-    H2DE_LevelPos res = pos;
-    res.x += x;
-    res.y += y;
-    return res;
+H2DE_LevelVelocity& H2DE_LevelVelocity::operator+=(const H2DE_LevelVelocity& other) {
+    x += other.x;
+    y += other.y;
+    return *this;
+}
+
+H2DE_LevelVelocity& H2DE_LevelVelocity::operator-=(const H2DE_LevelVelocity& other) {
+    x -= other.x;
+    y -= other.y;
+    return *this;
+}
+
+H2DE_LevelVelocity& H2DE_LevelVelocity::operator*=(const float& multiplier) {
+    x *= multiplier;
+    y *= multiplier;
+    return *this;
+}
+
+H2DE_LevelVelocity& H2DE_LevelVelocity::operator/=(const float& divider) {
+    x /= divider;
+    y /= divider;
+    return *this;
 }
 
 // COMPARISONS

@@ -29,6 +29,30 @@ H2DE_LevelPos H2DE_LevelPos::operator/(const float& divider) const {
     return res;
 }
 
+H2DE_LevelPos& H2DE_LevelPos::operator+=(const H2DE_LevelPos& other) {
+    x += other.x;
+    y += other.y;
+    return *this;
+}
+
+H2DE_LevelPos& H2DE_LevelPos::operator-=(const H2DE_LevelPos& other) {
+    x -= other.x;
+    y -= other.y;
+    return *this;
+}
+
+H2DE_LevelPos& H2DE_LevelPos::operator*=(const float& multiplier) {
+    x *= multiplier;
+    y *= multiplier;
+    return *this;
+}
+
+H2DE_LevelPos& H2DE_LevelPos::operator/=(const float& multiplier) {
+    x /= multiplier;
+    y /= multiplier;
+    return *this;
+}
+
 // VELOCITY OPERATIONS
 H2DE_LevelPos H2DE_LevelPos::operator+(const H2DE_LevelVelocity& velocity) const {
     H2DE_LevelPos res = *this;
@@ -42,6 +66,18 @@ H2DE_LevelPos H2DE_LevelPos::operator-(const H2DE_LevelVelocity& velocity) const
     res.x -= velocity.x;
     res.y -= velocity.y;
     return res;
+}
+
+H2DE_LevelPos& H2DE_LevelPos::operator+=(const H2DE_LevelVelocity& velocity) {
+    x += velocity.x;
+    y += velocity.y;
+    return *this;
+}
+
+H2DE_LevelPos& H2DE_LevelPos::operator-=(const H2DE_LevelVelocity& velocity) {
+    x -= velocity.x;
+    y -= velocity.y;
+    return *this;
 }
 
 // COMPARISONS

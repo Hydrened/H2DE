@@ -15,6 +15,18 @@ H2DE_LevelRect H2DE_LevelRect::operator-(const H2DE_LevelPos& pos) const {
     return res;
 }
 
+H2DE_LevelRect& H2DE_LevelRect::operator+=(const H2DE_LevelPos& pos) {
+    x += pos.x;
+    y += pos.y;
+    return *this;
+}
+
+H2DE_LevelRect& H2DE_LevelRect::operator-=(const H2DE_LevelPos& pos) {
+    x -= pos.x;
+    y -= pos.y;
+    return *this;
+}
+
 // LEVEL SIZE OPERATIONS
 H2DE_LevelRect H2DE_LevelRect::operator+(const H2DE_LevelSize& size) const {
     H2DE_LevelRect res = *this;
@@ -28,6 +40,18 @@ H2DE_LevelRect H2DE_LevelRect::operator-(const H2DE_LevelSize& size) const {
     res.w -= size.w;
     res.h -= size.h;
     return res;
+}
+
+H2DE_LevelRect& H2DE_LevelRect::operator+=(const H2DE_LevelSize& size) {
+    w += size.w;
+    h += size.h;
+    return *this;
+}
+
+H2DE_LevelRect& H2DE_LevelRect::operator-=(const H2DE_LevelSize& size) {
+    w -= size.w;
+    h -= size.h;
+    return *this;
 }
 
 // GETTER

@@ -29,6 +29,30 @@ H2DE_LevelSize H2DE_LevelSize::operator/(const float& divider) const {
     return res;
 }
 
+H2DE_LevelSize& H2DE_LevelSize::operator+=(const H2DE_LevelSize& other) {
+    w += other.w;
+    h += other.h;
+    return *this;
+}
+
+H2DE_LevelSize& H2DE_LevelSize::operator-=(const H2DE_LevelSize& other) {
+    w -= other.w;
+    h -= other.h;
+    return *this;
+}
+
+H2DE_LevelSize& H2DE_LevelSize::operator*=(const float& multiplier) {
+    w *= multiplier;
+    h *= multiplier;
+    return *this;
+}
+
+H2DE_LevelSize& H2DE_LevelSize::operator/=(const float& divider) {
+    w /= divider;
+    h /= divider;
+    return *this;
+}
+
 // COMPARISONS
 bool H2DE_LevelSize::operator==(const H2DE_LevelSize& other) const {
     return (w == other.w && h == other.h);
