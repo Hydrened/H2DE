@@ -1,3 +1,9 @@
+## H2DE-2.1.0
+#### ADDED
+- text system
+- text align
+- letter spacing
+
 ## H2DE-2.0.23
 #### ADDED
 - name for hitboxes

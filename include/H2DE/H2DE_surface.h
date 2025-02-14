@@ -38,7 +38,7 @@ public:
 };
 
 /**
- * Types used to identify textures
+ * Types used to identify sprites
  * \since H2DE-2.0.13
  */
 class H2DE_Sprite : public H2DE_Surface {
@@ -76,6 +76,31 @@ public:
 };
 
 /**
+ * Types used to identify texts
+ * \since H2DE-2.1.0
+ */
+class H2DE_Text : public H2DE_Surface {
+private:
+    H2DE_TextData textData;
+
+    H2DE_LevelSize getTextSize() const;
+
+public:
+    H2DE_Text(H2DE_Engine* engine, H2DE_TextData textData);
+    ~H2DE_Text();
+
+    void update() override;
+
+    /**
+     * Gets the data of a text
+     * \param text pointer to a text
+     * \returns the text's data
+     * \since H2DE-2.1.0
+     */
+    friend H2DE_TextData H2DE_GetTextData(H2DE_Text* text);
+};
+
+/**
  * Creates a texture
  * \param engine pointer to the engine
  * \param textureData texture's data
@@ -92,5 +117,13 @@ extern H2DE_Texture* H2DE_CreateTexture(H2DE_Engine* engine, H2DE_TextureData te
  * \since H2DE-2.0.13
  */
 extern H2DE_Sprite* H2DE_CreateSprite(H2DE_Engine* engine, H2DE_TextureData textureData, H2DE_SpriteData spriteData);
+/**
+ * Creates a text
+ * \param engine pointer to the engine
+ * \param textData text's data
+ * \returns a pointer to a new text
+ * \since H2DE-2.1.0
+ */
+extern H2DE_Text* H2DE_CreateText(H2DE_Engine* engine, H2DE_TextData textData);
 
 #endif
