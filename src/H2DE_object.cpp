@@ -53,7 +53,7 @@ void H2DE_LevelObject::update() {
         data.pos = data.pos + data.velocity;
     }
 
-    for (H2DE_Hitbox objHitbox : data.hitboxes) {
+    for (const auto& [key1, objHitbox] : data.hitboxes) {
         H2DE_LevelRect objRect = objHitbox.rect + data.pos;
         if (!objHitbox.onCollide.has_value() && !objHitbox.snap) continue;
 
@@ -61,7 +61,7 @@ void H2DE_LevelObject::update() {
             if (otherObj == this) continue;
 
             H2DE_LevelObjectData otherData = otherObj->data;
-            for (H2DE_Hitbox otherHitbox : otherData.hitboxes) {
+            for (const auto& [key2, otherHitbox] : otherData.hitboxes) {
                 if (objHitbox.collisionIndex != otherHitbox.collisionIndex) continue;
                 
                 H2DE_LevelRect otherRect = otherHitbox.rect + otherData.pos;

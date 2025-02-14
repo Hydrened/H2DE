@@ -1,4 +1,6 @@
 #include "H2DE/H2DE_camera.h"
+#undef min
+#undef max
 
 // INIT
 H2DE_Camera::H2DE_Camera(H2DE_Engine* e, H2DE_CameraData d) : engine(e), data(d) {

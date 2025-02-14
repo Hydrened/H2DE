@@ -539,7 +539,7 @@ struct H2DE_LevelObjectTransform {
 struct H2DE_LevelObjectData {
     H2DE_LevelPos pos = { 0.0f, 0.0f };                                                 // Level position of the level object
     H2DE_LevelVelocity velocity = { 0.0f, 0.0f };                                       // Level velocity of the level object
-    std::vector<H2DE_Hitbox> hitboxes = {};                                             // Hitboxes of the level object
+    std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};                         // Hitboxes of the level object
 
     H2DE_Surface* texture;                                                              // Texture / sprite of the level object
 

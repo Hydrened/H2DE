@@ -114,7 +114,7 @@ void H2DE_Renderer::renderObjectHitboxes(H2DE_LevelObjectData data) {
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
     static H2DE_Camera* camera = H2DE_GetCamera(engine);
 
-    for (H2DE_Hitbox hitbox : data.hitboxes) {
+    for (const auto& [key, hitbox] : data.hitboxes) {
         if (hitbox.rect.w == 0.0f || hitbox.rect.h == 0.0f) continue;
         if (hitbox.color.a == 0) continue;
 

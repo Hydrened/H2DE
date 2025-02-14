@@ -1,3 +1,7 @@
+## H2DE-2.0.23
+#### ADDED
+- name for hitboxes
+
 ## H2DE-2.0.22
 #### ADDED
 - += operators for `H2DE_LevelPos`, `H2DE_LevelSize`, `H2DE_LevelVelocity` and `H2DE_LevelRect`
