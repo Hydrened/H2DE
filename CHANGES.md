@@ -1,3 +1,7 @@
+## H2DE-2.1.1
+#### FIXED
+- timeline with loop = 0
+
 ## H2DE-2.1.0
 #### ADDED
 - text system

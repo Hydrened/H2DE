@@ -13,14 +13,14 @@ private:
     H2DE_TimelineEffect effect;
     std::function<void(float)> update;
     std::function<void()> completed;
-    unsigned int loops = 0;
+    int loops = 0;
 
     int frame = 0;
-    int loop = 0;
+    int loopSave = 0;
     bool finished = false;
 
 public:
-    H2DE_Timeline(H2DE_Engine* engine, unsigned int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed, unsigned int loops = 0);
+    H2DE_Timeline(H2DE_Engine* engine, unsigned int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed, int loops = 1);
     ~H2DE_Timeline();
 
     /**
@@ -50,6 +50,6 @@ public:
  * \returns a pointer to a timeline
  * \since H2DE-1.0.9
  */
-extern H2DE_Timeline* H2DE_CreateTimeline(H2DE_Engine* engine, unsigned int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed, unsigned int loops = 0);
+extern H2DE_Timeline* H2DE_CreateTimeline(H2DE_Engine* engine, unsigned int duration, H2DE_TimelineEffect effect, std::function<void(float)> update, std::function<void()> completed, int loops = 1);
 
 #endif
