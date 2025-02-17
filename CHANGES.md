@@ -1,3 +1,11 @@
+## H2DE-2.1.2
+#### FIXED
+- `H2DE_GetSpriteData` returns a pointer to the data instead of a copy
+- `H2DE_GetTextData` returns a pointer to the data instead of a copy
+- absolute level objects not rendering
+#### MODIFIED
+- `H2DE_GetSurfaceData` instead of surface->getData()
+
 ## H2DE-2.1.1
 #### FIXED
 - timeline with loop = 0

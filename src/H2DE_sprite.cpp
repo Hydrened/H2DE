@@ -27,8 +27,8 @@ void H2DE_Sprite::update() {
 }
 
 // GETTER
-H2DE_SpriteData H2DE_GetSpriteData(H2DE_Sprite* sprite) {
-    return sprite->spriteData;
+H2DE_SpriteData* H2DE_GetSpriteData(H2DE_Sprite* sprite) {
+    return &sprite->spriteData;
 }
 
 // SETTER

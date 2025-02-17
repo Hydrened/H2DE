@@ -109,7 +109,7 @@ void H2DE_Engine::click(int x, int y) {
         H2DE_ButtonData* btnData = H2DE_GetButtonData(button);
         if (!btnData->onClick) continue;
 
-        H2DE_TextureData* btnTextureData = btnData->texture->getData();
+        H2DE_TextureData* btnTextureData = H2DE_GetTextureData(btnData->texture);
 
         H2DE_AbsPos pos = H2DE_AbsPos{ static_cast<int>(btnData->pos.x * blockSize), static_cast<int>(btnData->pos.y * blockSize) };
         H2DE_AbsSize size = H2DE_AbsSize{ static_cast<int>(btnTextureData->size.w * blockSize), static_cast<int>(btnTextureData->size.h * blockSize) };

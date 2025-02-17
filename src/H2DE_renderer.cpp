@@ -66,7 +66,7 @@ void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
     H2DE_Text* text = dynamic_cast<H2DE_Text*>(data.texture);
 
     if (sprite) {
-        H2DE_SpriteData spriteData = H2DE_GetSpriteData(sprite);
+        H2DE_SpriteData spriteData = *H2DE_GetSpriteData(sprite);
         bool isPausedAndUpdates = spriteData.updateOnPause && H2DE_IsPaused(engine);
         bool notPausedAndDontUpdate = !spriteData.updateOnPause && !H2DE_IsPaused(engine);
         if (isPausedAndUpdates || notPausedAndDontUpdate) data.texture->update();
@@ -75,7 +75,7 @@ void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
 
     bool textureIsNull = texture == "" && !text;
     bool textureExists = (*textures).find(texture) != (*textures).end() || text;
-    bool textureIsOnScreen = H2DE_CameraContains(camera, data.pos.makeHitbox(data.texture->getData()->size)); // redo
+    bool textureIsOnScreen = H2DE_CameraContains(camera, data.pos.makeHitbox(H2DE_GetTextureData(data.texture)->size)) || data.absolute; // redo for text
     if (!textureIsNull && textureExists && textureIsOnScreen) renderObjectTexture(data);
 
     bool atLeastOneHitbox = data.hitboxes.size() > 0;
@@ -88,7 +88,7 @@ void H2DE_Renderer::renderObjectTexture(H2DE_LevelObjectData data) {
 
     H2DE_Text* text = dynamic_cast<H2DE_Text*>(data.texture);
     if (!text) {
-        H2DE_TextureData* textureData = data.texture->getData();
+        H2DE_TextureData* textureData = H2DE_GetTextureData(data.texture);
 
         if (textureData->size.w == 0.0f || textureData->size.h == 0.0f) return;
         if (textureData->color.a == 0) return;
@@ -111,8 +111,8 @@ void H2DE_Renderer::renderObjectTexture(H2DE_LevelObjectData data) {
         } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, rotation, &pivot, flip);
     
     } else {
-        H2DE_TextData textData = H2DE_GetTextData(text);
-        H2DE_LevelSize textureSize = data.texture->getData()->size;
+        H2DE_TextData textData = *H2DE_GetTextData(text);
+        H2DE_LevelSize textureSize = H2DE_GetTextureData(data.texture)->size;
 
         float alignOffset = (textData.textAlign == H2DE_TEXT_ALIGN_LEFT) ? 0.0f : (textData.textAlign == H2DE_TEXT_ALIGN_RIGHT) ? (textureSize * -1).w : (textureSize / -2).w;
         H2DE_LevelPos posOrigin = getPosFromParents(data) + H2DE_LevelPos{ alignOffset, 0.0f };
@@ -171,7 +171,7 @@ void H2DE_Renderer::renderButton(H2DE_Button* button) {
     H2DE_ButtonData data = *H2DE_GetButtonData(button);
     H2DE_Sprite* sprite = dynamic_cast<H2DE_Sprite*>(data.texture);
     if (sprite) {
-        H2DE_SpriteData spriteData = H2DE_GetSpriteData(sprite);
+        H2DE_SpriteData spriteData = *H2DE_GetSpriteData(sprite);
         bool isPausedAndUpdates = spriteData.updateOnPause && H2DE_IsPaused(engine);
         bool notPausedAndDontUpdate = !spriteData.updateOnPause && !H2DE_IsPaused(engine);
         if (isPausedAndUpdates || notPausedAndDontUpdate) data.texture->update();
@@ -184,7 +184,7 @@ void H2DE_Renderer::renderButtonTexture(H2DE_ButtonData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
 
-    H2DE_TextureData* textureData = data.texture->getData();
+    H2DE_TextureData* textureData = H2DE_GetTextureData(data.texture);
 
     if (textureData->size.w == 0.0f || textureData->size.h == 0.0f) return;
     if (textureData->color.a == 0) return;

@@ -22,7 +22,14 @@ public:
     virtual void update() = 0;
 
     std::string get() const;
-    H2DE_TextureData* getData();
+
+    /**
+     * Gets the data of a texture
+     * \param texture pointer to a texture
+     * \returns a pointer to the texture's data
+     * \since H2DE-2.1.2
+     */
+    friend H2DE_TextureData* H2DE_GetTextureData(H2DE_Surface* texture);
 };
 
 /**
@@ -61,10 +68,10 @@ public:
     /**
      * Gets the data of a sprite
      * \param sprite pointer to a sprite
-     * \returns the sprite's data
+     * \returns a pointer to the sprite's data
      * \since H2DE-2.0.21
      */
-    friend H2DE_SpriteData H2DE_GetSpriteData(H2DE_Sprite* sprite);
+    friend H2DE_SpriteData* H2DE_GetSpriteData(H2DE_Sprite* sprite);
 
     /**
      * Sets the animation of a sprite
@@ -94,10 +101,10 @@ public:
     /**
      * Gets the data of a text
      * \param text pointer to a text
-     * \returns the text's data
+     * \returns a pointer to the text's data
      * \since H2DE-2.1.0
      */
-    friend H2DE_TextData H2DE_GetTextData(H2DE_Text* text);
+    friend H2DE_TextData* H2DE_GetTextData(H2DE_Text* text);
 };
 
 /**

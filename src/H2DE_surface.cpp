@@ -15,6 +15,6 @@ std::string H2DE_Surface::get() const {
     return currentTexture;
 }
 
-H2DE_TextureData* H2DE_Surface::getData() {
-    return &textureData;
+H2DE_TextureData* H2DE_GetTextureData(H2DE_Surface* texture) {
+    return &texture->textureData;
 }

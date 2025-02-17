@@ -20,8 +20,8 @@ void H2DE_Text::update() {
 }
 
 // GETTER
-H2DE_TextData H2DE_GetTextData(H2DE_Text* text) {
-    return text->textData;
+H2DE_TextData* H2DE_GetTextData(H2DE_Text* text) {
+    return &text->textData;
 }
 
 H2DE_LevelSize H2DE_Text::getTextSize() const {
