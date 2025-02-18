@@ -8,7 +8,7 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.fps) {
         once = true;
 
         window = new H2DE_Window(this, data.window);
-        renderer = new H2DE_Renderer(this, &textures, &objects, &buttons);
+        renderer = new H2DE_Renderer(this, &textures, &objects, &buttons, &fonts);
         settings = new H2DE_Settings();
         camera = new H2DE_Camera(this, data.camera);
     } catch (const std::exception& e) {
@@ -283,6 +283,12 @@ void H2DE_PauseSound(H2DE_Engine* engine, int channel) {
 
 void H2DE_ResumeSound(H2DE_Engine* engine, int channel) {
     Mix_Resume(channel);
+}
+
+// FONTS
+void H2DE_InitFont(H2DE_Engine* engine, std::string name, H2DE_Font* font) {
+    if (engine->fonts.find(name) != engine->fonts.end()) std::cerr << "H2DE => WARNING: Font " << '"' << name << '"' << " has been replaced" << std::endl;
+    engine->fonts[name] = font;
 }
 
 // GETTER

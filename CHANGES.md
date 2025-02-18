@@ -1,3 +1,11 @@
+## H2DE-2.1.3
+#### ADDED
+- special characters
+- uppercase characters
+- lowercase characters
+#### MODIFIED
+- font system
+
 ## H2DE-2.1.2
 #### FIXED
 - `H2DE_GetSpriteData` returns a pointer to the data instead of a copy

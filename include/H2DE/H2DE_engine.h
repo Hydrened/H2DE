@@ -53,6 +53,7 @@ private:
 
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, Mix_Chunk*> sounds;
+    std::unordered_map<std::string, H2DE_Font*> fonts;
 
     std::vector<H2DE_LevelObject*> objects;
     std::vector<H2DE_Button*> buttons;
@@ -139,6 +140,15 @@ public:
      * \since H2DE-1.3.11
      */
     friend void H2DE_RemoveAsset(H2DE_Engine* engine, const std::filesystem::path& file);
+
+    /**
+     * Initializes a font
+     * \param engine pointer to the engine
+     * \param name name of the font
+     * \param font pointer to the font's data
+     * \since H2DE-2.1.3
+     */
+    friend void H2DE_InitFont(H2DE_Engine* engine, std::string name, H2DE_Font* font);
 
     /**
      * Creates a level object

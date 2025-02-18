@@ -493,6 +493,17 @@ struct H2DE_EngineData {
 };
 
 /**
+ * Types used to identify a font
+ * \since H2DE-2.1.3
+ */
+struct H2DE_Font {
+    std::string textureName = "";                                                       // Texture name of the font
+    H2DE_AbsSize charSize = { 0, 0 };                                                   // Character absolute size on the font
+    std::string charOrder = "";                                                         // Every character of the font in displayed order 
+    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;                                  // Scale mode the font will be rendered by
+};
+
+/**
  * Types used to identify texture data
  * \since H2DE-2.0.13
  */
@@ -521,12 +532,11 @@ struct H2DE_SpriteData {
  */
 struct H2DE_TextData {
     std::string text = "";                                                              // Written text
-    std::string font = "";                                                              // Font of the text
-    H2DE_LevelSize charSize = { 0.6f, 1.0f };                                           // Font height
+    std::string fontName = "";                                                          // Name of the font
+    H2DE_LevelSize charSize = { 1.0f, 1.0f };                                           // Level size of characters
+    float spacing = 0.1f;                                                               // Spacing between letters 
     H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_LEFT;                                    // Text alignment
     H2DE_ColorRGB color = { 255, 255, 255, 255 };                                       // RGB color of the text
-    float spacing = 0.1f;                                                               // Spacing between letters 
-    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;                                  // Scale mode the texture will be rendered by
 };
 
 /**

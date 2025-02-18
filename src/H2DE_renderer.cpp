@@ -1,7 +1,7 @@
 #include "H2DE/H2DE_renderer.h"
 
 // INIT
-H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, std::unordered_map<std::string, SDL_Texture*>* t, std::vector<H2DE_LevelObject*>* o, std::vector<H2DE_Button*>* b) : engine(e), textures(t), objects(o), buttons(b) {
+H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, std::unordered_map<std::string, SDL_Texture*>* t, std::vector<H2DE_LevelObject*>* o, std::vector<H2DE_Button*>* b, std::unordered_map<std::string, H2DE_Font*>* f) : engine(e), textures(t), objects(o), buttons(b), fonts(f) {
     static bool once = false;
     if (once) throw std::runtime_error("H2DE-109: Can't create more than one renderer");
     once = true;
@@ -83,62 +83,76 @@ void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
 }
 
 void H2DE_Renderer::renderObjectTexture(H2DE_LevelObjectData data) {
+    H2DE_Text* text = dynamic_cast<H2DE_Text*>(data.texture);
+    if (!text) renderObjectTextureImage(data);
+    else renderObjectTextureText(data);
+    renderedObjects++;
+}
+
+void H2DE_Renderer::renderObjectTextureImage(H2DE_LevelObjectData data) {
+    static H2DE_Window* window = H2DE_GetWindow(engine);
+    static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
+
+    H2DE_TextureData* textureData = H2DE_GetTextureData(data.texture);
+
+    if (textureData->size.w == 0.0f || textureData->size.h == 0.0f) return;
+    if (textureData->color.a == 0) return;
+
+    H2DE_LevelPos posFromParents = getPosFromParents(data);
+
+    SDL_Texture* texture = (*textures)[data.texture->get()];
+    SDL_Rect destRect = lvlToAbs(posFromParents, data.absolute).makeRect(lvlToAbs(textureData->size));
+    float rotation = data.transform.rotation;
+    SDL_Point pivot = lvlToAbs(data.transform.origin, data.absolute);
+    SDL_RendererFlip flip = getFlip(data.transform.flip);
+
+    SDL_SetTextureColorMod(texture, textureData->color.r, textureData->color.g, textureData->color.b);
+    SDL_SetTextureAlphaMod(texture, textureData->color.a);
+    SDL_SetTextureScaleMode(texture, getScaleMode(textureData->scaleMode));
+
+    if (textureData->srcRect.has_value()) {
+        SDL_Rect srcRect = textureData->srcRect.value();
+        SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, rotation, &pivot, flip);
+    } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, rotation, &pivot, flip);
+}
+
+void H2DE_Renderer::renderObjectTextureText(H2DE_LevelObjectData data) {
     static H2DE_Window* window = H2DE_GetWindow(engine);
     static SDL_Renderer* renderer = H2DE_GetWindowsRenderer(window);
 
     H2DE_Text* text = dynamic_cast<H2DE_Text*>(data.texture);
-    if (!text) {
-        H2DE_TextureData* textureData = H2DE_GetTextureData(data.texture);
 
-        if (textureData->size.w == 0.0f || textureData->size.h == 0.0f) return;
-        if (textureData->color.a == 0) return;
+    H2DE_TextData textData = *H2DE_GetTextData(text);
+    H2DE_LevelSize textureSize = H2DE_GetTextureData(data.texture)->size;
 
-        H2DE_LevelPos posFromParents = getPosFromParents(data);
+    float alignOffset = (textData.textAlign == H2DE_TEXT_ALIGN_LEFT) ? 0.0f : (textData.textAlign == H2DE_TEXT_ALIGN_RIGHT) ? (textureSize * -1).w : (textureSize / -2).w;
+    H2DE_LevelPos posOrigin = getPosFromParents(data) + H2DE_LevelPos{ alignOffset, 0.0f };
 
-        SDL_Texture* texture = (*textures)[data.texture->get()];
-        SDL_Rect destRect = lvlToAbs(posFromParents, data.absolute).makeRect(lvlToAbs(textureData->size));
-        float rotation = data.transform.rotation;
-        SDL_Point pivot = lvlToAbs(data.transform.origin, data.absolute);
-        SDL_RendererFlip flip = getFlip(data.transform.flip);
+    H2DE_AbsSize absCharSize = lvlToAbs(textData.charSize);
 
-        SDL_SetTextureColorMod(texture, textureData->color.r, textureData->color.g, textureData->color.b);
-        SDL_SetTextureAlphaMod(texture, textureData->color.a);
-        SDL_SetTextureScaleMode(texture, getScaleMode(textureData->scaleMode));
+    if (fonts->find(textData.fontName) == fonts->end()) return;
+    H2DE_Font* font = (*fonts)[textData.fontName];
 
-        if (textureData->srcRect.has_value()) {
-            SDL_Rect srcRect = textureData->srcRect.value();
-            SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, rotation, &pivot, flip);
-        } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, rotation, &pivot, flip);
-    
-    } else {
-        H2DE_TextData textData = *H2DE_GetTextData(text);
-        H2DE_LevelSize textureSize = H2DE_GetTextureData(data.texture)->size;
+    if (textures->find(font->textureName) == textures->end()) return;
+    SDL_Texture* texture = (*textures)[font->textureName];
 
-        float alignOffset = (textData.textAlign == H2DE_TEXT_ALIGN_LEFT) ? 0.0f : (textData.textAlign == H2DE_TEXT_ALIGN_RIGHT) ? (textureSize * -1).w : (textureSize / -2).w;
-        H2DE_LevelPos posOrigin = getPosFromParents(data) + H2DE_LevelPos{ alignOffset, 0.0f };
+    SDL_SetTextureColorMod(texture, textData.color.r, textData.color.g, textData.color.b);
+    SDL_SetTextureAlphaMod(texture, textData.color.a);
+    SDL_SetTextureScaleMode(texture, getScaleMode(font->scaleMode));
 
-        H2DE_AbsSize absCharSize = lvlToAbs(textData.charSize);
+    for (size_t i = 0; i < textData.text.size(); i++) {
+        char c = textData.text[i];
+        size_t charIndex = font->charOrder.find(c);
+        if (charIndex == std::string::npos) continue;
 
-        for (size_t i = 0; i < textData.text.size(); i++) {
-            std::string textureName = textData.font + '-' + textData.text[i] + ".png";
-            SDL_Texture* texture = (*textures)[textureName];
+        H2DE_LevelPos pos = posOrigin;
+        pos.x += i * textData.charSize.w + i * textData.spacing;
 
-            if (!texture) continue;
+        SDL_Rect destRect = lvlToAbs(pos, data.absolute).makeRect(absCharSize);
+        SDL_Rect srcRect = { static_cast<int>(charIndex * font->charSize.w), 0, font->charSize.w, font->charSize.h };
 
-            H2DE_LevelPos pos = posOrigin;
-            pos.x += i * textData.charSize.w + i * textData.spacing;
-
-            SDL_Rect destRect = lvlToAbs(pos, data.absolute).makeRect(absCharSize);
-
-            SDL_SetTextureColorMod(texture, textData.color.r, textData.color.g, textData.color.b);
-            SDL_SetTextureAlphaMod(texture, textData.color.a);
-            SDL_SetTextureScaleMode(texture, getScaleMode(textData.scaleMode));
-
-            SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, 0, nullptr, SDL_FLIP_NONE);
-        }
+        SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, 0, nullptr, SDL_FLIP_NONE);
     }
-
-    renderedObjects++;
 }
 
 void H2DE_Renderer::renderObjectHitboxes(H2DE_LevelObjectData data) {

@@ -15,6 +15,7 @@ private:
     std::unordered_map<std::string, SDL_Texture*>* textures;
     std::vector<H2DE_LevelObject*>* objects;
     std::vector<H2DE_Button*>* buttons;
+    std::unordered_map<std::string, H2DE_Font*>* fonts;
 
     bool debugNumber = false;
     bool debugHitboxes = false;
@@ -32,13 +33,15 @@ private:
 
     void renderObject(H2DE_LevelObject* object);
     void renderObjectTexture(H2DE_LevelObjectData data);
+    void renderObjectTextureImage(H2DE_LevelObjectData data);
+    void renderObjectTextureText(H2DE_LevelObjectData data);
     void renderObjectHitboxes(H2DE_LevelObjectData data);
     
     void renderButton(H2DE_Button* button);
     void renderButtonTexture(H2DE_ButtonData data);
 
 public:
-    H2DE_Renderer(H2DE_Engine* engine, std::unordered_map<std::string, SDL_Texture*>* textures, std::vector<H2DE_LevelObject*>* objects, std::vector<H2DE_Button*>* buttons);
+    H2DE_Renderer(H2DE_Engine* engine, std::unordered_map<std::string, SDL_Texture*>* textures, std::vector<H2DE_LevelObject*>* objects, std::vector<H2DE_Button*>* buttons, std::unordered_map<std::string, H2DE_Font*>* fonts);
     ~H2DE_Renderer();
 
     void debugObjectNumber(bool state);
