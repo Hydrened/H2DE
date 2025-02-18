@@ -123,6 +123,7 @@ void H2DE_Renderer::renderObjectTextureText(H2DE_LevelObjectData data) {
     H2DE_Text* text = dynamic_cast<H2DE_Text*>(data.texture);
 
     H2DE_TextData textData = *H2DE_GetTextData(text);
+    text->update();
     H2DE_LevelSize textureSize = H2DE_GetTextureData(data.texture)->size;
 
     float alignOffset = (textData.textAlign == H2DE_TEXT_ALIGN_LEFT) ? 0.0f : (textData.textAlign == H2DE_TEXT_ALIGN_RIGHT) ? (textureSize * -1).w : (textureSize / -2).w;

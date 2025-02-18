@@ -1,3 +1,7 @@
+## H2DE-2.1.4
+#### FIXED
+- text size updating when changing text
+
 ## H2DE-2.1.3
 #### ADDED
 - special characters

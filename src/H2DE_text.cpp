@@ -16,7 +16,7 @@ H2DE_Text::~H2DE_Text() {
 
 // UPDATE
 void H2DE_Text::update() {
-
+    textureData.size = getTextSize();
 }
 
 // GETTER
