@@ -101,6 +101,15 @@ void H2DE_Window::quitSDL() {
     SDL_DestroyRenderer(renderer);
 }
 
+// EVENTS
+void H2DE_ShowCursor() {
+    SDL_ShowCursor(SDL_ENABLE);
+}
+
+void H2DE_HideCursor() {
+    SDL_ShowCursor(SDL_DISABLE);
+}
+
 // GETTER
 SDL_Renderer* H2DE_GetWindowsRenderer(H2DE_Window* window) {
     return window->renderer;

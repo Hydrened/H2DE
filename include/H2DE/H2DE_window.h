@@ -103,4 +103,15 @@ public:
     friend void H2DE_SetWindowResizable(H2DE_Window* window, bool state);
 };
 
+/**
+ * Shows the cursor on the window
+ * \since H2DE-2.1.5
+ */
+void H2DE_ShowCursor();
+/**
+ * Hides the cursor on the window
+ * \since H2DE-2.1.5
+ */
+void H2DE_HideCursor();
+
 #endif

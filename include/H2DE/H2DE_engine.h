@@ -280,7 +280,7 @@ public:
     /**
      * Converts an absolute position to a level position
      * \param engine pointer to the engine
-     * \param pos absollute position
+     * \param pos absolute position
      * \returns the converted position
      * \since H2DE-2.0.16
      */

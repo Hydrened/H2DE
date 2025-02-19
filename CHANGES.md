@@ -1,3 +1,8 @@
+## H2DE-2.1.5
+#### ADDED
+- show cursor 
+- hide cursor 
+
 ## H2DE-2.1.4
 #### FIXED
 - text size updating when changing text
