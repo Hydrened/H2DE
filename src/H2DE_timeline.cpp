@@ -51,4 +51,5 @@ bool H2DE_TickTimeline(H2DE_Timeline* timeline) {
 void H2DE_ResetTimeline(H2DE_Timeline* timeline) {
     timeline->frame = 0;
     timeline->loops = timeline->loopSave;
+    timeline->finished = false;
 }

@@ -1,3 +1,7 @@
+## H2DE-2.1.6
+#### FIXED
+- timeline not resetting correctly
+
 ## H2DE-2.1.5
 #### ADDED
 - show cursor 
