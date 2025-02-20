@@ -40,6 +40,14 @@ void H2DE_LevelObject::snap(H2DE_LevelRect objRect, H2DE_LevelRect otherRect, H2
     }
 }
 
+void H2DE_ShowLevelObject(H2DE_LevelObject* object) {
+    object->hidden = false;
+}
+
+void H2DE_HideLevelObject(H2DE_LevelObject* object) {
+    object->hidden = true;
+}
+
 // UPDATE
 void H2DE_LevelObject::update() {
     static H2DE_GameData* gameData = H2DE_GetGameData(engine);
@@ -76,6 +84,10 @@ void H2DE_LevelObject::update() {
 }
 
 // GETTER
-H2DE_LevelObjectData* H2DE_GetObjectData(H2DE_LevelObject* object) {
+H2DE_LevelObjectData* H2DE_GetLevelObjectData(H2DE_LevelObject* object) {
     return &(object->data);
+}
+
+bool H2DE_IsLevelObjectHidden(H2DE_LevelObject* object) {
+    return object->hidden;
 }

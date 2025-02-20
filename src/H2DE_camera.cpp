@@ -16,7 +16,7 @@ H2DE_Camera::~H2DE_Camera() {
 void H2DE_Camera::update() {
     if (!reference) return;
 
-    H2DE_LevelObjectData refData = *H2DE_GetObjectData(reference);
+    H2DE_LevelObjectData refData = *H2DE_GetLevelObjectData(reference);
     H2DE_LevelRect refRect = refData.pos.makeHitbox(H2DE_GetTextureData(refData.texture)->size);
 
     H2DE_LevelSize camSize = H2DE_GetCameraSize(this);
@@ -87,6 +87,6 @@ void H2DE_SetCameraPadding(H2DE_Camera* camera, H2DE_LevelSize padding) {
 }
 
 void H2DE_Camera::setPaddingFromReference() {
-    H2DE_LevelPos diff = pos - (*H2DE_GetObjectData(reference)).pos;
+    H2DE_LevelPos diff = pos - (*H2DE_GetLevelObjectData(reference)).pos;
     lockedPadding = { std::abs(diff.x), std::abs(diff.y) };
 }

@@ -32,7 +32,10 @@ void H2DE_Renderer::render() {
 
     // 2 => Sort objects per their index
     std::map<int, std::vector<H2DE_LevelObject*>> groupedIndexes;
-    for (H2DE_LevelObject* object : *objects) groupedIndexes[H2DE_GetObjectData(object)->index].push_back(object);
+    for (H2DE_LevelObject* object : *objects) {
+        if (H2DE_IsLevelObjectHidden(object)) continue;
+        groupedIndexes[H2DE_GetLevelObjectData(object)->index].push_back(object);
+    }
 
     std::vector<H2DE_LevelObject*> sortedObjects;
     for (auto& [index, objs] : groupedIndexes) {
@@ -61,7 +64,7 @@ void H2DE_Renderer::render() {
 void H2DE_Renderer::renderObject(H2DE_LevelObject* object) {
     static H2DE_Camera* camera = H2DE_GetCamera(engine);
 
-    H2DE_LevelObjectData data = *H2DE_GetObjectData(object);
+    H2DE_LevelObjectData data = *H2DE_GetLevelObjectData(object);
     H2DE_Sprite* sprite = dynamic_cast<H2DE_Sprite*>(data.texture);
     H2DE_Text* text = dynamic_cast<H2DE_Text*>(data.texture);
 
@@ -245,8 +248,8 @@ H2DE_LevelPos H2DE_Renderer::getPosFromParents(H2DE_LevelObjectData data) const 
 }
 
 bool H2DE_Renderer::isPositionGreater(H2DE_LevelObject* obj1, H2DE_LevelObject* obj2) {
-    H2DE_LevelObjectData* objData1 = H2DE_GetObjectData(obj1);
-    H2DE_LevelObjectData* objData2 = H2DE_GetObjectData(obj2);
+    H2DE_LevelObjectData* objData1 = H2DE_GetLevelObjectData(obj1);
+    H2DE_LevelObjectData* objData2 = H2DE_GetLevelObjectData(obj2);
 
     bool equals = (objData1->pos.x == objData2->pos.x);
     if (equals) return objData1->pos.y < objData2->pos.y;
@@ -259,6 +262,6 @@ void H2DE_Renderer::whileParent(H2DE_LevelObjectData* data, std::function<void(H
     while (true) {
         call(data);
         if (!data->parent.has_value()) break;
-        else data = H2DE_GetObjectData(data->parent.value());
+        else data = H2DE_GetLevelObjectData(data->parent.value());
     }
 }

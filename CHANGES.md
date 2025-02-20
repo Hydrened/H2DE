@@ -1,3 +1,8 @@
+## H2DE-2.1.7
+- added show and hode methods on level objects
+#### REPLACED
+- `H2DE_GetObjectData` per `H2DE_GetLevelObjectData`
+
 ## H2DE-2.1.6
 #### FIXED
 - timeline not resetting correctly
