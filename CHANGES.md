@@ -1,3 +1,14 @@
+## H2DE-b-3.0.0
+#### REMAKE FROM SCRATCH
+#### ADDED
+- window
+- game loop
+- asset loader
+
+
+
+
+
 ## H2DE-2.1.7
 - added show and hode methods on level objects
 #### REPLACED
