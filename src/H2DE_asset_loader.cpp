@@ -25,15 +25,21 @@ void H2DE_Engine::H2DE_AssetLoader::load(const std::filesystem::path& directory)
     std::vector<std::filesystem::path> filesToLoad = getFilesToLoad(directory);
     assetsToLoad = filesToLoad.size();
 
-    for (std::filesystem::path file : filesToLoad) importFile(file);
+    for (std::filesystem::path file : filesToLoad) {
+        importFile(file);
+    }
     std::cout << "H2DE => Loading complete" << std::endl;
 }
 
 // IMPORT
 void H2DE_Engine::H2DE_AssetLoader::importFile(const std::filesystem::path& file) {
     std::filesystem::path extension = file.extension();
-    if (extension == ".png" || extension == ".jpg") importTexture(file);
-    else if (extension == ".mp3" || extension == ".ogg") importSound(file);
+
+    if (extension == ".png" || extension == ".jpg") {
+        importTexture(file);
+    } else if (extension == ".mp3" || extension == ".ogg") {
+        importSound(file);
+    }
 }
 
 void H2DE_Engine::H2DE_AssetLoader::importTexture(const std::filesystem::path& file) {
@@ -69,6 +75,7 @@ void H2DE_Engine::H2DE_AssetLoader::importSound(const std::filesystem::path& fil
 void H2DE_Engine::H2DE_AssetLoader::assetImported() {
     loadedAssets++;
     float percentage = static_cast<int>(static_cast<float>(loadedAssets) / assetsToLoad * 10000.0f) / 100.0f;
+
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(2) << percentage;
     std::cout << "H2DE => Loading: " << oss.str() << "%" << std::endl;
@@ -81,6 +88,7 @@ std::vector<std::filesystem::path> H2DE_Engine::H2DE_AssetLoader::getFilesToLoad
     for (const auto& entry : std::filesystem::directory_iterator(directory)) {
         if (std::filesystem::is_regular_file(entry.status())) {
             std::string extension = entry.path().extension().string();
+            
             if (extension == ".png" || extension == ".jpg"  || extension == ".mp3" || extension == ".ogg") {
                 res.push_back(entry.path());
             }

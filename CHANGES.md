@@ -1,3 +1,14 @@
+## H2DE-b-3.0.1
+#### ADDED
+- window resize
+- window fullscreen
+- settings
+- get window pos
+- get window size
+- get window fullscreen
+- get window resizable
+- save window state
+
 ## H2DE-b-3.0.0
 #### REMAKE FROM SCRATCH
 #### ADDED

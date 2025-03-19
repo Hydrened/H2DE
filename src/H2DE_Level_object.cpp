@@ -15,5 +15,7 @@ H2DE_LevelObject::~H2DE_LevelObject() {
 }
 
 void H2DE_DestroyLevelObject(H2DE_LevelObject* object) {
-    if (object) delete object;
+    if (object) {
+        delete object;
+    }
 }

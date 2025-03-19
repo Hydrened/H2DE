@@ -2,6 +2,7 @@
 
 // INIT
 H2DE_Engine::H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e) : engine(e) {
+    
 }
 
 // CLEANUP
@@ -12,15 +13,21 @@ H2DE_Engine::H2DE_Renderer::~H2DE_Renderer() {
 
 void H2DE_Engine::H2DE_Renderer::destroyTextures() {
     for (const auto& [name, texture] : textures) {
-        if (texture) SDL_DestroyTexture(texture);
+        if (texture) {
+            SDL_DestroyTexture(texture);
+        }
     }
+
     textures.clear();
 }
 
 void H2DE_Engine::H2DE_Renderer::destroySounds() {
     for (const auto& [name, sound] : sounds) {
-        // if (sound) delete sound; // crash -1073740940
+        if (sound) {
+            // delete sound; // crash -1073740940
+        }
     }
+
     sounds.clear();
 }
 

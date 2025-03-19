@@ -4,6 +4,7 @@
 H2DE_Engine::H2DE_Window::H2DE_Window(H2DE_Engine* e, H2DE_WindowData d) : engine(e), data(d) {
     initSDL();
     create();
+    initSettings();
 }
 
 void H2DE_Engine::H2DE_Window::initSDL() {
@@ -25,18 +26,52 @@ void H2DE_Engine::H2DE_Window::initSDL() {
 }
 
 void H2DE_Engine::H2DE_Window::create() {
-    window = SDL_CreateWindow(data.title, data.pos.x, data.pos.y, data.size.x, data.size.y, SDL_WINDOW_SHOWN);
+    SDL_WindowFlags flag = (data.fullscreen) ? SDL_WINDOW_FULLSCREEN : (data.resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
+
+    int x = H2DE_SettingsGetKeyInteger(engine, "WINDOW", "x", data.pos.x);
+    int y = H2DE_SettingsGetKeyInteger(engine, "WINDOW", "y", data.pos.y);
+    int w = H2DE_SettingsGetKeyInteger(engine, "WINDOW", "w", data.size.x);
+    int h = H2DE_SettingsGetKeyInteger(engine, "WINDOW", "h", data.size.y);
+
+    if (data.fullscreen) {
+        SDL_DisplayMode dm;
+        if (SDL_GetCurrentDisplayMode(0, &dm) != 0) {
+            throw std::runtime_error("H2DE-107: Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
+        }
+
+        x = 0;
+        y = 0;
+        w = dm.w;
+        h = dm.h;
+
+    }
+
+    std::cout << "load " << x << ' ' << y  << ' ' << w << ' ' << h << std::endl;
+
+    window = SDL_CreateWindow(data.title, x, y, w, h, SDL_WINDOW_SHOWN | flag);
     if (!window) {
         SDL_Quit();
-        throw std::runtime_error("H2DE-107: Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
+        throw std::runtime_error("H2DE-108: Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
     }
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
         SDL_DestroyWindow(window);
         SDL_Quit();
-        throw std::runtime_error("H2DE-108: Error creating window => SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
+        throw std::runtime_error("H2DE-109: Error creating window => SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
     }
+}
+
+void H2DE_Engine::H2DE_Window::initSettings() {
+    if (!data.saveState) {
+        return;
+    }
+
+    H2DE_SettingsAddSection(engine, "WINDOW");
+    H2DE_SettingsAddKey(engine, "WINDOW", "x", std::to_string(data.pos.x));
+    H2DE_SettingsAddKey(engine, "WINDOW", "y", std::to_string(data.pos.y));
+    H2DE_SettingsAddKey(engine, "WINDOW", "w", std::to_string(data.size.x));
+    H2DE_SettingsAddKey(engine, "WINDOW", "h", std::to_string(data.size.y));
 }
 
 // CLEANUP
@@ -49,11 +84,35 @@ void H2DE_Engine::H2DE_Window::quitSDL() {
     IMG_Quit();
     Mix_Quit();
     SDL_Quit();
-    if (window) SDL_DestroyWindow(window);
-    if (renderer) SDL_DestroyRenderer(renderer);
+    if (window) {
+        SDL_DestroyWindow(window);
+    }
+    if (renderer) {
+        SDL_DestroyRenderer(renderer);
+    }
+}
+
+void H2DE_Engine::H2DE_Window::saveState() {
+    if (!data.saveState) {
+        return;
+    }
+
+    H2DE_AbsPos pos = H2DE_GetWindowPos(engine);
+    H2DE_AbsSize size = H2DE_GetWindowSize(engine);
+
+    std::cout << "save " << pos.x << ' ' << pos.y  << ' ' << size.x << ' ' << size.y << std::endl;
+    
+    H2DE_SettingsSetKeyValue(engine, "WINDOW", "x", std::to_string(pos.x));
+    H2DE_SettingsSetKeyValue(engine, "WINDOW", "y", std::to_string(pos.y));
+    H2DE_SettingsSetKeyValue(engine, "WINDOW", "w", std::to_string(size.x));
+    H2DE_SettingsSetKeyValue(engine, "WINDOW", "h", std::to_string(size.y));
 }
 
 // GETTER
+SDL_Window* H2DE_Engine::H2DE_Window::getWindow() const {
+    return window;
+}
+
 SDL_Renderer* H2DE_Engine::H2DE_Window::getRenderer() const {
     return renderer;
 }
