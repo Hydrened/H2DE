@@ -4,4 +4,3 @@ bin/*
 src/test.cpp
 errors.md
 todo.md
-Makefile

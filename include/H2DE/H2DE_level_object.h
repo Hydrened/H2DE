@@ -7,13 +7,14 @@ class H2DE_Engine;
 class H2DE_LevelObject {
 private:
     H2DE_Engine* engine;
+    H2DE_LevelObjectData data;
 
-    H2DE_LevelObject(H2DE_Engine* engine);
+    H2DE_LevelObject(H2DE_Engine* engine, H2DE_LevelObjectData data);
     ~H2DE_LevelObject();
 
 public:
-    friend H2DE_LevelObject* H2DE_CreateLevelObject(H2DE_Engine* engine);
-    friend void H2DE_DestroyLevelObject(H2DE_LevelObject* object);
+    friend H2DE_LevelObject* H2DE_CreateLevelObject(H2DE_Engine* engine, H2DE_LevelObjectData data);
+    friend void H2DE_DestroyLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object);
 };
 
 #endif

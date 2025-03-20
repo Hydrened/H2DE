@@ -32,7 +32,7 @@ H2DE_Engine::~H2DE_Engine() {
     window->saveState();
 
     for (H2DE_LevelObject* object : objects) {
-        H2DE_DestroyLevelObject(object);
+        H2DE_DestroyLevelObject(this, object);
     }
     
     delete assetLoader;

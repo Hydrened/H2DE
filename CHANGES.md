@@ -1,3 +1,25 @@
+## H2DE-b-3.0.2
+#### ADDED
+- vector 2d +, +=, -, -=, *, *=, /, /= operators
+- vector 2d ==, !=, >, >=, <, <= operators
+- vector 2d << operator
+- rect +, +=, -, -=, *, *=, /, /= operators
+- rect ==, !=, >, >=, <, <= operators
+- rect << operator
+- rgb color
+- rgb color ==, != operators
+- rgb color << operator
+- hsv color
+- hsv color ==, != operators
+- hsv color << operator
+- random int in range
+- random float in range
+- random bool
+- lerp
+#### FIXED
+- settings key finding
+- window pos y and size saving
+
 ## H2DE-b-3.0.1
 #### ADDED
 - window resize

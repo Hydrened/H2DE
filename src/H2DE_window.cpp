@@ -46,8 +46,6 @@ void H2DE_Engine::H2DE_Window::create() {
 
     }
 
-    std::cout << "load " << x << ' ' << y  << ' ' << w << ' ' << h << std::endl;
-
     window = SDL_CreateWindow(data.title, x, y, w, h, SDL_WINDOW_SHOWN | flag);
     if (!window) {
         SDL_Quit();
@@ -99,8 +97,6 @@ void H2DE_Engine::H2DE_Window::saveState() {
 
     H2DE_AbsPos pos = H2DE_GetWindowPos(engine);
     H2DE_AbsSize size = H2DE_GetWindowSize(engine);
-
-    std::cout << "save " << pos.x << ' ' << pos.y  << ' ' << size.x << ' ' << size.y << std::endl;
     
     H2DE_SettingsSetKeyValue(engine, "WINDOW", "x", std::to_string(pos.x));
     H2DE_SettingsSetKeyValue(engine, "WINDOW", "y", std::to_string(pos.y));

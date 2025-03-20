@@ -116,7 +116,21 @@ bool H2DE_Engine::H2DE_Settings::hasSection(const std::string& section) const {
 }
 
 bool H2DE_Engine::H2DE_Settings::hasKey(const std::string& section, const std::string& key) const {
-    return reader->HasValue(section, key);
+    std::vector<std::string> lines = getLines();
+    bool inGoodSection = false;
+
+    for (int i = 0; i <= getLastSectionPosition(section); i++) {
+        if (lines[i] == '[' + section + ']') {
+            inGoodSection = true;
+
+        } else if (inGoodSection) {
+            size_t separator = lines[i].find('=');
+            std::string k = lines[i].substr(0, separator);
+            if (k == key) return true;
+        }
+    }
+
+    return false;
 }
 
 size_t H2DE_Engine::H2DE_Settings::getLastSectionPosition(const std::string& section) const {

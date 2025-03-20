@@ -69,6 +69,9 @@ public:
     friend bool H2DE_SettingsAddKey(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
     friend bool H2DE_SettingsSetKeyValue(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
     friend int H2DE_SettingsGetKeyInteger(H2DE_Engine* engine, const std::string& section, const std::string& key, int defaultValue);
+
+    friend H2DE_LevelObject* H2DE_CreateLevelObject(H2DE_Engine* engine, H2DE_LevelObjectData data);
+    friend void H2DE_DestroyLevelObject(H2DE_Engine* engine, H2DE_LevelObject* object);
 };
 
 H2DE_Engine* H2DE_CreateEngine(H2DE_EngineData data);

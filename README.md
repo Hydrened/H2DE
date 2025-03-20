@@ -20,7 +20,7 @@ H2DE is a simple and open-source 2D game engine built with C++. It uses SDL2 for
 ```
 
 
-### Create an engine
+<!-- ### Create an engine
 
 1. Create the engine's data 
 ```cpp
@@ -58,4 +58,4 @@ H2DE_SetGameUpdateCall(engine, []() {
 5. Run the engine
 ```cpp
 H2DE_RunEngine(engine);
-```
+``` -->
