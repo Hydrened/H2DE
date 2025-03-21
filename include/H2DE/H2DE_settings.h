@@ -25,12 +25,12 @@ public:
     H2DE_Settings();
     ~H2DE_Settings();
 
-    bool addSection(const std::string& section);
-    bool addKey(const std::string& section, const std::string& key, const std::string& value);
-    
-    INIReader* getReader() const;
-
-    bool setKeyValue(const std::string& section, const std::string& key, const std::string& value);
+    friend bool H2DE_SettingsAddSection(H2DE_Engine* engine, const std::string& section);
+    friend bool H2DE_SettingsAddKey(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
+    friend bool H2DE_SettingsSetKeyValue(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
+    friend int H2DE_SettingsGetKeyInteger(H2DE_Engine* engine, const std::string& section, const std::string& key, const int& defaultValue);
+    friend std::string H2DE_SettingsGetKeyString(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& defaultValue);
+    friend bool H2DE_SettingsGetKeyBool(H2DE_Engine* engine, const std::string& section, const std::string& key, const bool& defaultValue);
 };
 
 #endif

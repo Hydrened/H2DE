@@ -3,7 +3,7 @@ APP_NAME = H2DE
 CPP_VERSION = c++17
 
 BIN_DIR = bin
-OBJECT_DIR = $(BIN_DIR)\objects
+OBJECT_DIR = $(BIN_DIR)/objects
 INCLUDE_DIR = include
 LIB_DIR = lib
 SRC_DIR = src
@@ -35,8 +35,8 @@ run:
 	cd $(BIN_DIR) && test.exe
 
 clean:
-	if exist $(OBJECT_DIR) rmdir /s /q $(OBJECT_DIR)
-	for /d %%d in ($(SRC_DIR)\*) do if exist %%d mkdir $(OBJECT_DIR)\%%~nxd
+	if exist "$(OBJECT_DIR)" rmdir /s /q "$(OBJECT_DIR)"
+	for /d %%d in ($(SRC_DIR)\*) do if exist %%d mkdir "$(OBJECT_DIR)"/%%~nxd
 	if exist $(BIN_DIR)\settings.ini del /f /q $(BIN_DIR)\settings.ini
 	if exist $(BIN_DIR)\$(APP_NAME).dll del /f /q $(BIN_DIR)\$(APP_NAME).dll
 	if exist $(LIB_DIR)\$(APP_NAME).lib del /f /q $(LIB_DIR)\$(APP_NAME).lib

@@ -63,36 +63,32 @@ bool H2DE_Engine::H2DE_Settings::addLineAt(const std::string& newLine, size_t po
     return true;
 }
 
-bool H2DE_Engine::H2DE_Settings::addSection(const std::string& section) {
-    if (hasSection(section)) {
+bool H2DE_SettingsAddSection(H2DE_Engine* engine, const std::string& section) {
+    if (engine->settings->hasSection(section)) {
         return false;
     }
 
-    addLineAt("[" + section + "]", -1);
-    updateReader();
+    engine->settings->addLineAt("[" + section + "]", -1);
+    engine->settings->updateReader();
 
     return true;
 }
 
-bool H2DE_Engine::H2DE_Settings::addKey(const std::string& section, const std::string& key, const std::string& value) {
-    if (!hasSection(section)) {
+bool H2DE_SettingsAddKey(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
+    if (!engine->settings->hasSection(section)) {
         return false;
     }
 
-    if (hasKey(section, key)) {
+    if (engine->settings->hasKey(section, key)) {
         return false;
     }
 
     std::string newLine = key + '=' + value;
-    size_t position = getLastSectionPosition(section);
-    return addLineAt(newLine, position + 1);
+    size_t position = engine->settings->getLastSectionPosition(section);
+    return engine->settings->addLineAt(newLine, position + 1);
 }
 
 // GETTER
-INIReader* H2DE_Engine::H2DE_Settings::getReader() const {
-    return reader;
-}
-
 std::vector<std::string> H2DE_Engine::H2DE_Settings::getLines() const {
     std::ifstream file(path);
     if (!file) {
@@ -156,19 +152,31 @@ size_t H2DE_Engine::H2DE_Settings::getLastSectionPosition(const std::string& sec
     return lines.size() - 1;
 }
 
+int H2DE_SettingsGetKeyInteger(H2DE_Engine* engine, const std::string& section, const std::string& key, const int& defaultValue) {
+    return engine->settings->reader->GetInteger(section, key, defaultValue);
+}
+
+std::string H2DE_SettingsGetKeyString(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& defaultValue) {
+    return engine->settings->reader->GetString(section, key, defaultValue);
+}
+
+bool H2DE_SettingsGetKeyBool(H2DE_Engine* engine, const std::string& section, const std::string& key, const bool& defaultValue) {
+    return engine->settings->reader->GetBoolean(section, key, defaultValue);
+}
+
 // SETTER
-bool H2DE_Engine::H2DE_Settings::setKeyValue(const std::string& section, const std::string& key, const std::string& value) {
-    if (!hasSection(section)) {
+bool H2DE_SettingsSetKeyValue(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
+    if (!engine->settings->hasSection(section)) {
         return false;
     }
 
-    if (!hasKey(section, key)) {
+    if (!engine->settings->hasKey(section, key)) {
         return false;
     }
 
-    std::vector<std::string> lines = getLines();
+    std::vector<std::string> lines = engine->settings->getLines();
     
-    for (int i = getLastSectionPosition(section) - 1; i >= 0; i--) {
+    for (int i = engine->settings->getLastSectionPosition(section) - 1; i >= 0; i--) {
         if (lines[i] == '[' + section + ']') {
             return false;
         }
@@ -183,7 +191,7 @@ bool H2DE_Engine::H2DE_Settings::setKeyValue(const std::string& section, const s
         }
     }
 
-    std::ofstream outputFile(path);
+    std::ofstream outputFile(engine->settings->path);
     if (!outputFile) {
         throw std::runtime_error("H2DE-205: Error reading settings.ini");
         return false;
@@ -193,6 +201,6 @@ bool H2DE_Engine::H2DE_Settings::setKeyValue(const std::string& section, const s
         outputFile << line << "\n";
     }
 
-    updateReader();
+    engine->settings->updateReader();
     return true;
 }

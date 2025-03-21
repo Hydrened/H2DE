@@ -143,3 +143,31 @@ template<typename H2DE_Rect_T>
 H2DE_Vector2D<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::getCenter() const {
     return getPos() + getSize().getCenter();
 }
+
+template<typename H2DE_Rect_T>
+bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
+    return (
+        rect.x + rect.w >= x &&
+        rect.x <= x + w &&
+        rect.y + rect.h >= y &&
+        rect.y <= y + h
+    );
+}
+
+template<typename H2DE_Rect_T>
+std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const {
+    if (collides(rect)) {
+        float overlapLeft = rect.x + rect.w - x;
+        float overlapRight = x + w - rect.x;
+        float overlapTop = rect.y + rect.h - y;
+        float overlapBottom = y + h - rect.y;
+
+        float minOverlap = std::min({overlapLeft, overlapRight, overlapTop, overlapBottom});
+
+        if (minOverlap == overlapLeft) return H2DE_FACE_LEFT;
+        else if (minOverlap == overlapRight) return H2DE_FACE_RIGHT;
+        else if (minOverlap == overlapTop) return H2DE_FACE_TOP;
+        else return H2DE_FACE_BOTTOM;
+
+    } else return std::nullopt;
+}

@@ -1,8 +1,14 @@
-#include "H2DE_engine.h"
-#include "H2DE_window.h"
-#include "H2DE_renderer.h"
-#include "H2DE_asset_loader.h"
-#include "H2DE_settings.h"
+#include "H2DE/H2DE_engine.h"
+#include "H2DE/H2DE_window.h"
+#include "H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE_asset_loader.h"
+#include "H2DE/H2DE_settings.h"
+#include "H2DE/H2DE_camera.h"
+#include "H2DE/H2DE_level_object.h"
+#include "H2DE/H2DE_interface_object_bar.h"
+#include "H2DE/H2DE_interface_object_button.h"
+#include "H2DE/H2DE_interface_object_image.h"
+#include "H2DE/H2DE_interface_object_text.h"
 
 // INIT
 H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
@@ -17,13 +23,14 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
         window = new H2DE_Window(this, data.window);
         renderer = new H2DE_Renderer(this);
         assetLoader = new H2DE_AssetLoader(this, window->getRenderer());
+        camera = new H2DE_Camera(this, data.camera);
 
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
     }
 }
 
-H2DE_Engine* H2DE_CreateEngine(H2DE_EngineData data) {
+H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data) {
     return new H2DE_Engine(data);
 }
 
@@ -31,10 +38,15 @@ H2DE_Engine* H2DE_CreateEngine(H2DE_EngineData data) {
 H2DE_Engine::~H2DE_Engine() {
     window->saveState();
 
-    for (H2DE_LevelObject* object : objects) {
-        H2DE_DestroyLevelObject(this, object);
+    for (H2DE_LevelObject* levelObject : levelObjects) {
+        H2DE_DestroyLevelObject(this, levelObject);
+    }
+
+    for (H2DE_InterfaceObject* interfaceObject : interfaceObjects) {
+        H2DE_DestroyInterfaceObject(this, interfaceObject);
     }
     
+    delete camera;
     delete assetLoader;
     delete renderer;
     delete window;
@@ -75,7 +87,7 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
             engine->renderer->render();
             
             frameTime = SDL_GetTicks() - now;
-            engine->currentFPS = 1000.0f / static_cast<float>((frameTime > 0) ? frameTime : 1);
+            engine->currentFPS = static_cast<unsigned int>(1000.0f / static_cast<float>((frameTime > 0) ? frameTime : 1));
             int timePerFrame = 1000 / engine->fps;
             if (timePerFrame >= frameTime) {
                 SDL_Delay(timePerFrame - frameTime);
@@ -107,11 +119,15 @@ void H2DE_SetUpdateCall(H2DE_Engine* engine, std::function<void()> call) {
 }
 
 // FPS
-int H2DE_GetCurrentFps(H2DE_Engine* engine) {
+unsigned int H2DE_GetCurrentFps(H2DE_Engine* engine) {
     return engine->currentFPS;
 }
 
-void H2DE_SetFPS(H2DE_Engine* engine, unsigned int fps) {
+unsigned int H2DE_GetFps(H2DE_Engine* engine) {
+    return engine->fps;
+}
+
+void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps) {
     engine->fps = fps;
 }
 
@@ -128,41 +144,31 @@ void H2DE_Resume(H2DE_Engine* engine) {
     engine->paused = false;
 }
 
-// WINDOW
-H2DE_AbsPos H2DE_GetWindowPos(H2DE_Engine* engine) {
-    int x, y;
-    SDL_GetWindowPosition(engine->window->getWindow(), &x, &y);
-    return H2DE_AbsPos{ x, y };
+// OBJECTS
+void H2DE_Engine::addLevelObject(H2DE_LevelObject* obj) {
+    levelObjects.push_back(obj);
 }
 
-H2DE_AbsSize H2DE_GetWindowSize(H2DE_Engine* engine) {
-    int w, h;
-    SDL_GetWindowSize(engine->window->getWindow(), &w, &h);
-    return H2DE_AbsSize{ w, h };
+void H2DE_Engine::destroyLevelObject(H2DE_LevelObject* obj) {
+    if (obj) {
+        auto it = std::find(levelObjects.begin(), levelObjects.end(), obj);
+
+        if (it != levelObjects.end()) {
+            levelObjects.erase(it);
+        }
+    }
 }
 
-bool H2DE_IsWindowFullscreen(H2DE_Engine* engine) {
-    Uint32 flags = SDL_GetWindowFlags(engine->window->getWindow());
-    return (flags & SDL_WINDOW_FULLSCREEN) || (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+void H2DE_Engine::addInterfaceObject(H2DE_InterfaceObject* obj) {
+    interfaceObjects.push_back(obj);
 }
 
-bool H2DE_IsWindowResizable(H2DE_Engine* engine) {
-    return SDL_GetWindowFlags(engine->window->getWindow()) & SDL_WINDOW_RESIZABLE;
-}
+void H2DE_Engine::destroyInterfaceObject(H2DE_InterfaceObject* obj) {
+    if (obj) {
+        auto it = std::find(interfaceObjects.begin(), interfaceObjects.end(), obj);
 
-// SETTINGS
-bool H2DE_SettingsAddSection(H2DE_Engine* engine, const std::string& section) {
-    return engine->settings->addSection(section);
-}
-
-bool H2DE_SettingsAddKey(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
-    return engine->settings->addKey(section, key, value);
-}
-
-bool H2DE_SettingsSetKeyValue(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
-    return engine->settings->setKeyValue(section, key, value);
-}
-
-int H2DE_SettingsGetKeyInteger(H2DE_Engine* engine, const std::string& section, const std::string& key, int defaultValue) {
-    return engine->settings->getReader()->GetInteger(section, key, defaultValue);
+        if (it != interfaceObjects.end()) {
+            interfaceObjects.erase(it);
+        }
+    }
 }

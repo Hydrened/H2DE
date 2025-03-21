@@ -14,6 +14,13 @@ struct H2DE_Rect;
 struct H2DE_ColorHSV;
 class H2DE_LevelObject;
 
+enum H2DE_Face {
+    H2DE_FACE_TOP,
+    H2DE_FACE_RIGHT,
+    H2DE_FACE_BOTTOM,
+    H2DE_FACE_LEFT,
+};
+
 template<typename H2DE_Vector2D_T>
 struct H2DE_Vector2D {
     H2DE_Vector2D_T x;
@@ -90,6 +97,9 @@ struct H2DE_Rect {
     H2DE_Vector2D<H2DE_Rect_T> getPos() const;
     H2DE_Vector2D<H2DE_Rect_T> getSize() const;
     H2DE_Vector2D<H2DE_Rect_T> getCenter() const;
+
+    bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const;
+    std::optional<H2DE_Face> getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const;
 };
 
 using H2DE_AbsRect = H2DE_Rect<int>;
@@ -162,6 +172,13 @@ struct H2DE_ColorHSV {
     H2DE_ColorHSV divideValue(const float& divider) const;
 };
 
+struct H2DE_LevelPadding {
+    float top = 0.0f;
+    float right = 0.0f;
+    float bottom = 0.0f;
+    float left = 0.0f;
+};
+
 struct H2DE_WindowData {
     unsigned int fps = 60;
     const char* title = "H2DE window";
@@ -172,8 +189,16 @@ struct H2DE_WindowData {
     bool saveState = false;
 };
 
+struct H2DE_CameraData {
+    H2DE_LevelPos defaultPos = { 0.0f, 0.0f };
+    float width = 20.0f;
+    float smoothing = 0.0f;
+    H2DE_LevelPadding padding = { 0.0f, 0.0f, 0.0f, 0.0f };
+};
+
 struct H2DE_EngineData {
     H2DE_WindowData window = H2DE_WindowData();
+    H2DE_CameraData camera = H2DE_CameraData();
 };
 
 struct H2DE_Hitbox {
@@ -184,11 +209,30 @@ struct H2DE_Hitbox {
     std::optional<std::function<void(H2DE_LevelObject*)>> onCollide = std::nullopt;
 };
 
-struct H2DE_LevelObjectData {
+struct H2DE_ObjectData {
     H2DE_LevelPos pos = { 0.0f, 0.0f };
-    std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
-    bool absolute = false;
+    H2DE_LevelSize size = { 1.0f, 1.0f };
     int index = 0;
+};
+
+struct H2DE_LevelObjectData {
+    std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
+};
+
+struct H2DE_InterfaceObjectBarData {
+
+};
+
+struct H2DE_InterfaceObjectButtonData {
+
+};
+
+struct H2DE_InterfaceObjectImageData {
+
+};
+
+struct H2DE_InterfaceObjectTextData {
+
 };
 
 float H2DE_Lerp(float min, float max, float blend);

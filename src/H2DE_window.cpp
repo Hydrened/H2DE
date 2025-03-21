@@ -112,3 +112,24 @@ SDL_Window* H2DE_Engine::H2DE_Window::getWindow() const {
 SDL_Renderer* H2DE_Engine::H2DE_Window::getRenderer() const {
     return renderer;
 }
+
+H2DE_AbsPos H2DE_GetWindowPos(H2DE_Engine* engine) {
+    int x, y;
+    SDL_GetWindowPosition(engine->window->getWindow(), &x, &y);
+    return H2DE_AbsPos{ x, y };
+}
+
+H2DE_AbsSize H2DE_GetWindowSize(H2DE_Engine* engine) {
+    int w, h;
+    SDL_GetWindowSize(engine->window->getWindow(), &w, &h);
+    return H2DE_AbsSize{ w, h };
+}
+
+bool H2DE_IsWindowFullscreen(H2DE_Engine* engine) {
+    Uint32 flags = SDL_GetWindowFlags(engine->window->getWindow());
+    return (flags & SDL_WINDOW_FULLSCREEN) || (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+}
+
+bool H2DE_IsWindowResizable(H2DE_Engine* engine) {
+    return SDL_GetWindowFlags(engine->window->getWindow()) & SDL_WINDOW_RESIZABLE;
+}

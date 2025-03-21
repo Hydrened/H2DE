@@ -1,3 +1,14 @@
+## H2DE-b-3.0.3
+#### ADDED
+- rect collision detection
+- rect face collision detection
+- camera
+- settings get key string 
+- settings get key bool 
+- get fps
+#### FIXED
+- set fps
+
 ## H2DE-b-3.0.2
 #### ADDED
 - vector 2d +, +=, -, -=, *, *=, /, /= operators
