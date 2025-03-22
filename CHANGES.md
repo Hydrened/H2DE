@@ -1,3 +1,10 @@
+## H2DE-b-3.0.4
+#### ADDED
+- camera contains object (auto absolute detection)
+- camera contains hitbox (absolute or not)
+- objects
+- render object hitboxes
+
 ## H2DE-b-3.0.3
 #### ADDED
 - rect collision detection

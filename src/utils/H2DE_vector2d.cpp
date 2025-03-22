@@ -15,12 +15,12 @@ H2DE_Vector2D<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::operator-(const H
 }
 
 template<typename H2DE_Vector2D_T>
-H2DE_Vector2D<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::operator*(const float& multiplier) const {
+H2DE_Vector2D<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::operator*(float multiplier) const {
     return H2DE_Vector2D{ static_cast<H2DE_Vector2D_T>(x * multiplier), static_cast<H2DE_Vector2D_T>(y * multiplier) };
 }
 
 template<typename H2DE_Vector2D_T>
-H2DE_Vector2D<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::operator/(const float& divider) const {
+H2DE_Vector2D<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::operator/(float divider) const {
     return H2DE_Vector2D{ static_cast<H2DE_Vector2D_T>(x / divider), static_cast<H2DE_Vector2D_T>(y / divider) };
 }
 
@@ -39,14 +39,14 @@ H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator-=(const
 }
 
 template<typename H2DE_Vector2D_T>
-H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator*=(const float& multiplier) {
+H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator*=(float multiplier) {
     x *= multiplier;
     y *= multiplier;
     return *this;
 }
 
 template<typename H2DE_Vector2D_T>
-H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator/=(const float& divider) {
+H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator/=(float divider) {
     x /= divider;
     y /= divider;
     return *this;

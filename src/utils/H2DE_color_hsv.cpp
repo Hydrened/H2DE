@@ -54,7 +54,7 @@ bool H2DE_ColorHSV::operator!=(const H2DE_ColorHSV& other) const {
 }
 
 // ADD
-H2DE_ColorHSV H2DE_ColorHSV::addHue(const float& hue) const {
+H2DE_ColorHSV H2DE_ColorHSV::addHue(float hue) const {
     H2DE_ColorHSV hsv = *this;
     hsv.h += hue;
 
@@ -63,7 +63,7 @@ H2DE_ColorHSV H2DE_ColorHSV::addHue(const float& hue) const {
     return hsv;
 }
 
-H2DE_ColorHSV H2DE_ColorHSV::addSaturation(const float& saturation) const {
+H2DE_ColorHSV H2DE_ColorHSV::addSaturation(float saturation) const {
     H2DE_ColorHSV hsv = *this;
     hsv.s += saturation;
 
@@ -72,7 +72,7 @@ H2DE_ColorHSV H2DE_ColorHSV::addSaturation(const float& saturation) const {
     return hsv;
 }
 
-H2DE_ColorHSV H2DE_ColorHSV::addValue(const float& value) const {
+H2DE_ColorHSV H2DE_ColorHSV::addValue(float value) const {
     H2DE_ColorHSV hsv = *this;
     hsv.v += value;
 
@@ -82,20 +82,20 @@ H2DE_ColorHSV H2DE_ColorHSV::addValue(const float& value) const {
 }
 
 // SUBTRACT
-H2DE_ColorHSV H2DE_ColorHSV::subtractHue(const float& hue) const {
+H2DE_ColorHSV H2DE_ColorHSV::subtractHue(float hue) const {
     return addHue(hue * -1);
 }
 
-H2DE_ColorHSV H2DE_ColorHSV::subtractSaturation(const float& saturation) const {
+H2DE_ColorHSV H2DE_ColorHSV::subtractSaturation(float saturation) const {
     return addSaturation(saturation * -1);
 }
 
-H2DE_ColorHSV H2DE_ColorHSV::subtractValue(const float& value) const {
+H2DE_ColorHSV H2DE_ColorHSV::subtractValue(float value) const {
     return addValue(value * -1);
 }
 
 // MULTIPLY
-H2DE_ColorHSV H2DE_ColorHSV::multiplyHue(const float& multiplier) const {
+H2DE_ColorHSV H2DE_ColorHSV::multiplyHue(float multiplier) const {
     H2DE_ColorHSV hsv = *this;
     hsv.h *= multiplier;
 
@@ -104,7 +104,7 @@ H2DE_ColorHSV H2DE_ColorHSV::multiplyHue(const float& multiplier) const {
     return hsv;
 }
 
-H2DE_ColorHSV H2DE_ColorHSV::multiplySaturation(const float& multiplier) const {
+H2DE_ColorHSV H2DE_ColorHSV::multiplySaturation(float multiplier) const {
     H2DE_ColorHSV hsv = *this;
     hsv.s *= multiplier;
 
@@ -113,7 +113,7 @@ H2DE_ColorHSV H2DE_ColorHSV::multiplySaturation(const float& multiplier) const {
     return hsv;
 }
 
-H2DE_ColorHSV H2DE_ColorHSV::multiplyValue(const float& multiplier) const {
+H2DE_ColorHSV H2DE_ColorHSV::multiplyValue(float multiplier) const {
     H2DE_ColorHSV hsv = *this;
     hsv.v *= multiplier;
 
@@ -123,14 +123,14 @@ H2DE_ColorHSV H2DE_ColorHSV::multiplyValue(const float& multiplier) const {
 }
 
 // DIVIDE
-H2DE_ColorHSV H2DE_ColorHSV::divideHue(const float& divider) const {
+H2DE_ColorHSV H2DE_ColorHSV::divideHue(float divider) const {
     return multiplyHue(1 / divider);
 }
 
-H2DE_ColorHSV H2DE_ColorHSV::divideSaturation(const float& divider) const {
+H2DE_ColorHSV H2DE_ColorHSV::divideSaturation(float divider) const {
     return multiplySaturation(1 / divider);
 }
 
-H2DE_ColorHSV H2DE_ColorHSV::divideValue(const float& divider) const {
+H2DE_ColorHSV H2DE_ColorHSV::divideValue(float divider) const {
     return multiplyValue(1 / divider);
 }

@@ -44,53 +44,53 @@ bool H2DE_ColorRGB::operator!=(const H2DE_ColorRGB& other) const {
 }
 
 // ADD
-H2DE_ColorRGB H2DE_ColorRGB::addHue(const float& hue) const {
+H2DE_ColorRGB H2DE_ColorRGB::addHue(float hue) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).addHue(hue));
 }
 
-H2DE_ColorRGB H2DE_ColorRGB::addSaturation(const float& saturation) const {
+H2DE_ColorRGB H2DE_ColorRGB::addSaturation(float saturation) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).addSaturation(saturation));
 }
 
-H2DE_ColorRGB H2DE_ColorRGB::addValue(const float& value) const {
+H2DE_ColorRGB H2DE_ColorRGB::addValue(float value) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).addValue(value));
 }
 
 // SUBTRACT
-H2DE_ColorRGB H2DE_ColorRGB::subtractHue(const float& hue) const {
+H2DE_ColorRGB H2DE_ColorRGB::subtractHue(float hue) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).subtractHue(hue));
 }
 
-H2DE_ColorRGB H2DE_ColorRGB::subtractSaturation(const float& saturation) const {
+H2DE_ColorRGB H2DE_ColorRGB::subtractSaturation(float saturation) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).subtractSaturation(saturation));
 }
 
-H2DE_ColorRGB H2DE_ColorRGB::subtractValue(const float& value) const {
+H2DE_ColorRGB H2DE_ColorRGB::subtractValue(float value) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).subtractValue(value));
 }
 
 // MULTIPLY
-H2DE_ColorRGB H2DE_ColorRGB::multiplyHue(const float& multiplier) const {
+H2DE_ColorRGB H2DE_ColorRGB::multiplyHue(float multiplier) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).multiplyHue(multiplier));
 }
 
-H2DE_ColorRGB H2DE_ColorRGB::multiplySaturation(const float& multiplier) const {
+H2DE_ColorRGB H2DE_ColorRGB::multiplySaturation(float multiplier) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).multiplySaturation(multiplier));
 }
 
-H2DE_ColorRGB H2DE_ColorRGB::multiplyValue(const float& multiplier) const {
+H2DE_ColorRGB H2DE_ColorRGB::multiplyValue(float multiplier) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).multiplyValue(multiplier));
 }
 
 // DIVIDE
-H2DE_ColorRGB H2DE_ColorRGB::divideHue(const float& divider) const {
+H2DE_ColorRGB H2DE_ColorRGB::divideHue(float divider) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).divideHue(divider));
 }
 
-H2DE_ColorRGB H2DE_ColorRGB::divideSaturation(const float& divider) const {
+H2DE_ColorRGB H2DE_ColorRGB::divideSaturation(float divider) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).divideSaturation(divider));
 }
 
-H2DE_ColorRGB H2DE_ColorRGB::divideValue(const float& divider) const {
+H2DE_ColorRGB H2DE_ColorRGB::divideValue(float divider) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).divideValue(divider));
 }

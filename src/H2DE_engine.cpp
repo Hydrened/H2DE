@@ -4,11 +4,6 @@
 #include "H2DE/H2DE_asset_loader.h"
 #include "H2DE/H2DE_settings.h"
 #include "H2DE/H2DE_camera.h"
-#include "H2DE/H2DE_level_object.h"
-#include "H2DE/H2DE_interface_object_bar.h"
-#include "H2DE/H2DE_interface_object_button.h"
-#include "H2DE/H2DE_interface_object_image.h"
-#include "H2DE/H2DE_interface_object_text.h"
 
 // INIT
 H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
@@ -21,7 +16,7 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
 
         settings = new H2DE_Settings();
         window = new H2DE_Window(this, data.window);
-        renderer = new H2DE_Renderer(this);
+        renderer = new H2DE_Renderer(this, window->getRenderer(), objects);
         assetLoader = new H2DE_AssetLoader(this, window->getRenderer());
         camera = new H2DE_Camera(this, data.camera);
 
@@ -38,12 +33,8 @@ H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data) {
 H2DE_Engine::~H2DE_Engine() {
     window->saveState();
 
-    for (H2DE_LevelObject* levelObject : levelObjects) {
-        H2DE_DestroyLevelObject(this, levelObject);
-    }
-
-    for (H2DE_InterfaceObject* interfaceObject : interfaceObjects) {
-        H2DE_DestroyInterfaceObject(this, interfaceObject);
+    for (H2DE_Object* object : objects) {
+        H2DE_DestroyObject(this, object);
     }
     
     delete camera;
@@ -82,6 +73,7 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
                 if (engine->update) {
                     engine->update();
                 }
+                engine->updateObjects();
             }
 
             engine->renderer->render();
@@ -102,6 +94,12 @@ void H2DE_StopEngine(H2DE_Engine* engine) {
     engine->isRunning = false;
 }
 
+void H2DE_Engine::updateObjects() {
+    for (H2DE_Object* object : objects) {
+        // update object
+    }
+}
+
 // ASSETS
 void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory) {
     engine->assetLoader->load(directory);
@@ -110,20 +108,20 @@ void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory
 }
 
 // CALLS
-void H2DE_SetHandleEventsCall(H2DE_Engine* engine, std::function<void(SDL_Event)> call) {
+void H2DE_SetHandleEventsCall(H2DE_Engine* engine, const std::function<void(SDL_Event)>& call) {
     engine->handleEvents = call;
 }
 
-void H2DE_SetUpdateCall(H2DE_Engine* engine, std::function<void()> call) {
+void H2DE_SetUpdateCall(H2DE_Engine* engine, const std::function<void()>& call) {
     engine->update = call;
 }
 
 // FPS
-unsigned int H2DE_GetCurrentFps(H2DE_Engine* engine) {
+unsigned int H2DE_GetCurrentFps(const H2DE_Engine* engine) {
     return engine->currentFPS;
 }
 
-unsigned int H2DE_GetFps(H2DE_Engine* engine) {
+unsigned int H2DE_GetFps(const H2DE_Engine* engine) {
     return engine->fps;
 }
 
@@ -132,7 +130,7 @@ void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps) {
 }
 
 // PAUSE
-bool H2DE_IsPaused(H2DE_Engine* engine) {
+bool H2DE_IsPaused(const H2DE_Engine* engine) {
     return engine->paused;
 }
 
@@ -145,30 +143,16 @@ void H2DE_Resume(H2DE_Engine* engine) {
 }
 
 // OBJECTS
-void H2DE_Engine::addLevelObject(H2DE_LevelObject* obj) {
-    levelObjects.push_back(obj);
+void H2DE_Engine::addObject(H2DE_Object* object) {
+    objects.push_back(object);
 }
 
-void H2DE_Engine::destroyLevelObject(H2DE_LevelObject* obj) {
-    if (obj) {
-        auto it = std::find(levelObjects.begin(), levelObjects.end(), obj);
+void H2DE_Engine::destroyObject(H2DE_Object* object) {
+    if (object) {
+        auto it = std::find(objects.begin(), objects.end(), object);
 
-        if (it != levelObjects.end()) {
-            levelObjects.erase(it);
-        }
-    }
-}
-
-void H2DE_Engine::addInterfaceObject(H2DE_InterfaceObject* obj) {
-    interfaceObjects.push_back(obj);
-}
-
-void H2DE_Engine::destroyInterfaceObject(H2DE_InterfaceObject* obj) {
-    if (obj) {
-        auto it = std::find(interfaceObjects.begin(), interfaceObjects.end(), obj);
-
-        if (it != interfaceObjects.end()) {
-            interfaceObjects.erase(it);
+        if (it != objects.end()) {
+            objects.erase(it);
         }
     }
 }

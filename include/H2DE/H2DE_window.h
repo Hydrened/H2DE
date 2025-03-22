@@ -11,17 +11,17 @@ private:
     SDL_Renderer* renderer = nullptr;
     H2DE_WindowData data;
 
-    void initSDL();
+    void initSDL() const;
     void create();
-    void initSettings();
+    void initSettings() const;
 
-    void quitSDL();
+    void quitSDL() const;
 
 public:
     H2DE_Window(H2DE_Engine* engine, H2DE_WindowData data);
     ~H2DE_Window();
 
-    void saveState();
+    void saveState() const;
 
     SDL_Window* getWindow() const;
     SDL_Renderer* getRenderer() const;

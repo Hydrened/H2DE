@@ -12,12 +12,10 @@
 #include <SDL2/SDL_mixer.h>
 #include <H2DE/H2DE_utils.h>
 #include <H2DE/H2DE_object.h>
-class H2DE_LevelObject;
-class H2DE_InterfaceObject;
-class H2DE_InterfaceObjectBar;
-class H2DE_InterfaceObjectButton;
-class H2DE_InterfaceObjectImage;
-class H2DE_InterfaceObjectText;
+class H2DE_BarObject;
+class H2DE_ButtonObject;
+class H2DE_BasicObject;
+class H2DE_TextObject;
 
 class H2DE_Engine {
 private:
@@ -43,16 +41,14 @@ private:
     std::function<void(SDL_Event)> handleEvents = NULL;
     std::function<void()> update = NULL;
 
-    std::vector<H2DE_LevelObject*> levelObjects = {};
-    std::vector<H2DE_InterfaceObject*> interfaceObjects = {};
+    std::vector<H2DE_Object*> objects = {};
 
     H2DE_Engine(H2DE_EngineData data);
     ~H2DE_Engine();
 
-    void addLevelObject(H2DE_LevelObject* obj);
-    void destroyLevelObject(H2DE_LevelObject* obj);
-    void addInterfaceObject(H2DE_InterfaceObject* obj);
-    void destroyInterfaceObject(H2DE_InterfaceObject* obj);
+    void updateObjects();
+    void addObject(H2DE_Object* object);
+    void destroyObject(H2DE_Object* object);
 
 public:
     friend H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);
@@ -61,48 +57,47 @@ public:
     friend void H2DE_RunEngine(H2DE_Engine* engine);
     friend void H2DE_StopEngine(H2DE_Engine* engine);
 
-    friend void H2DE_SetHandleEventsCall(H2DE_Engine* engine, std::function<void(SDL_Event)> call);
-    friend void H2DE_SetUpdateCall(H2DE_Engine* engine, std::function<void()> call);
+    friend void H2DE_SetHandleEventsCall(H2DE_Engine* engine, const std::function<void(SDL_Event)>& call);
+    friend void H2DE_SetUpdateCall(H2DE_Engine* engine, const std::function<void()>& call);
 
     friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
 
-    friend unsigned int H2DE_GetCurrentFps(H2DE_Engine* engine);
-    friend unsigned int H2DE_GetFps(H2DE_Engine* engine);
+    friend unsigned int H2DE_GetCurrentFps(const H2DE_Engine* engine);
+    friend unsigned int H2DE_GetFps(const H2DE_Engine* engine);
     friend void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps);
 
+    friend bool H2DE_IsPaused(const H2DE_Engine* engine);
     friend void H2DE_Pause(H2DE_Engine* engine);
     friend void H2DE_Resume(H2DE_Engine* engine);
-    friend bool H2DE_IsPaused(H2DE_Engine* engine);
 
-    friend H2DE_AbsPos H2DE_GetWindowPos(H2DE_Engine* engine);
-    friend H2DE_AbsSize H2DE_GetWindowSize(H2DE_Engine* engine);
-    friend bool H2DE_IsWindowFullscreen(H2DE_Engine* engine);
-    friend bool H2DE_IsWindowResizable(H2DE_Engine* engine);
+    friend H2DE_AbsPos H2DE_GetWindowPos(const H2DE_Engine* engine);
+    friend H2DE_AbsSize H2DE_GetWindowSize(const H2DE_Engine* engine);
+    friend bool H2DE_IsWindowFullscreen(const H2DE_Engine* engine);
+    friend bool H2DE_IsWindowResizable(const H2DE_Engine* engine);
 
-    friend bool H2DE_SettingsAddSection(H2DE_Engine* engine, const std::string& section);
-    friend bool H2DE_SettingsAddKey(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
-    friend bool H2DE_SettingsSetKeyValue(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
-    friend int H2DE_SettingsGetKeyInteger(H2DE_Engine* engine, const std::string& section, const std::string& key, const int& defaultValue);
-    friend std::string H2DE_SettingsGetKeyString(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& defaultValue);
-    friend bool H2DE_SettingsGetKeyBool(H2DE_Engine* engine, const std::string& section, const std::string& key, const bool& defaultValue);
+    friend bool H2DE_SettingsAddSection(const H2DE_Engine* engine, const std::string& section);
+    friend bool H2DE_SettingsAddKey(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
+    friend int H2DE_SettingsGetKeyInteger(const H2DE_Engine* engine, const std::string& section, const std::string& key, int defaultValue);
+    friend std::string H2DE_SettingsGetKeyString(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& defaultValue);
+    friend bool H2DE_SettingsGetKeyBool(const H2DE_Engine* engine, const std::string& section, const std::string& key, bool defaultValue);
+    friend bool H2DE_SettingsSetKeyValue(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
 
-    friend H2DE_LevelPos H2DE_GetCameraPos(H2DE_Engine* engine);
-    friend H2DE_LevelSize H2DE_GetCameraSize(H2DE_Engine* engine);
-    friend bool H2DE_CameraContains(H2DE_Engine* engine, const H2DE_Hitbox& hitbox);
-    friend void H2DE_SetCameraPos(H2DE_Engine* engine, const H2DE_LevelPos& pos);
-    friend void H2DE_SetCameraWidth(H2DE_Engine* engine, const float& width);
-    friend void H2DE_SetCameraSmoothing(H2DE_Engine* engine, const float& smoothing);
-    friend void H2DE_SetCameraReference(H2DE_Engine* engine, H2DE_LevelObject* object);
-    friend void H2DE_SetCameraLockedToReference(H2DE_Engine* engine, const bool& state);
-    friend void H2DE_SetCameraPadding(H2DE_Engine* engine, const H2DE_LevelPadding& padding);
+    friend H2DE_LevelPos H2DE_GetCameraPos(const H2DE_Engine* engine);
+    friend H2DE_LevelSize H2DE_GetCameraSize(const H2DE_Engine* engine);
+    friend bool H2DE_CameraContainsObject(const H2DE_Engine* engine, H2DE_Object* object);
+    friend bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_Hitbox& hitbox, bool absolute);
+    friend void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos);
+    friend void H2DE_SetCameraWidth(const H2DE_Engine* engine, float width);
+    friend void H2DE_SetCameraSmoothing(const H2DE_Engine* engine, float smoothing);
+    friend void H2DE_SetCameraReference(const H2DE_Engine* engine, H2DE_Object* object);
+    friend void H2DE_SetCameraLockedToReference(const H2DE_Engine* engine, bool state);
+    friend void H2DE_SetCameraPadding(const H2DE_Engine* engine, const H2DE_LevelPadding& padding);
 
-    friend H2DE_LevelObject* H2DE_CreateLevelObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_LevelObjectData& lod);
-    friend H2DE_InterfaceObjectBar* H2DE_CreateInterfaceObjectBar(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_InterfaceObjectBarData& iod);
-    friend H2DE_InterfaceObjectButton* H2DE_CreateInterfaceObjectButton(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_InterfaceObjectButtonData& iod);
-    friend H2DE_InterfaceObjectImage* H2DE_CreateInterfaceObjectImage(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_InterfaceObjectImageData& iod);
-    friend H2DE_InterfaceObjectText* H2DE_CreateInterfaceObjectText(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_InterfaceObjectTextData& iod);
-    friend void H2DE_DestroyLevelObject(H2DE_Engine* engine, H2DE_LevelObject* obj);
-    friend void H2DE_DestroyInterfaceObject(H2DE_Engine* engine, H2DE_InterfaceObject* obj);
+    friend H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_BarObjectData& bod);
+    friend H2DE_BasicObject* H2DE_CreateBasicObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_BasicObjectData& bod);
+    friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod);
+    friend H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_TextObjectData& tod);
+    friend void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object);
 };
 
 H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);

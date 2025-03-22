@@ -12,7 +12,7 @@
 template<typename H2DE_Rect_T>
 struct H2DE_Rect;
 struct H2DE_ColorHSV;
-class H2DE_LevelObject;
+class H2DE_Object;
 
 enum H2DE_Face {
     H2DE_FACE_TOP,
@@ -28,13 +28,13 @@ struct H2DE_Vector2D {
 
     H2DE_Vector2D operator+(const H2DE_Vector2D& other) const;
     H2DE_Vector2D operator-(const H2DE_Vector2D& other) const;
-    H2DE_Vector2D operator*(const float& multiplier) const;
-    H2DE_Vector2D operator/(const float& divider) const;
+    H2DE_Vector2D operator*(float multiplier) const;
+    H2DE_Vector2D operator/(float divider) const;
 
     H2DE_Vector2D& operator+=(const H2DE_Vector2D& other);
     H2DE_Vector2D& operator-=(const H2DE_Vector2D& other);
-    H2DE_Vector2D& operator*=(const float& multiplier);
-    H2DE_Vector2D& operator/=(const float& divider);
+    H2DE_Vector2D& operator*=(float multiplier);
+    H2DE_Vector2D& operator/=(float divider);
 
     bool operator==(const H2DE_Vector2D& other) const;
     bool operator!=(const H2DE_Vector2D& other) const;
@@ -69,13 +69,13 @@ struct H2DE_Rect {
 
     H2DE_Rect operator+(const H2DE_Rect& other) const;
     H2DE_Rect operator-(const H2DE_Rect& other) const;
-    H2DE_Rect operator*(const float& multiplier) const;
-    H2DE_Rect operator/(const float& divider) const;
+    H2DE_Rect operator*(float multiplier) const;
+    H2DE_Rect operator/(float divider) const;
 
     H2DE_Rect& operator+=(const H2DE_Rect& other);
     H2DE_Rect& operator-=(const H2DE_Rect& other);
-    H2DE_Rect& operator*=(const float& multiplier);
-    H2DE_Rect& operator/=(const float& divider);
+    H2DE_Rect& operator*=(float multiplier);
+    H2DE_Rect& operator/=(float divider);
 
     bool operator==(const H2DE_Rect& other) const;
     bool operator!=(const H2DE_Rect& other) const;
@@ -89,10 +89,10 @@ struct H2DE_Rect {
     H2DE_Rect addSize(const H2DE_Vector2D<H2DE_Rect_T>& size);
     H2DE_Rect substractPos(const H2DE_Vector2D<H2DE_Rect_T>& pos);
     H2DE_Rect substractSize(const H2DE_Vector2D<H2DE_Rect_T>& size);
-    H2DE_Rect multiplyPos(const float& multiplier);
-    H2DE_Rect multiplySize(const float& multiplier);
-    H2DE_Rect dividePos(const float& divider);
-    H2DE_Rect divideSize(const float& divider);
+    H2DE_Rect multiplyPos(float multiplier);
+    H2DE_Rect multiplySize(float multiplier);
+    H2DE_Rect dividePos(float divider);
+    H2DE_Rect divideSize(float divider);
 
     H2DE_Vector2D<H2DE_Rect_T> getPos() const;
     H2DE_Vector2D<H2DE_Rect_T> getSize() const;
@@ -111,8 +111,8 @@ struct H2DE_ColorRGB {
     Uint8 b;
     Uint8 a;
 
-    operator H2DE_ColorHSV() const;
-    operator Uint32() const;
+    explicit operator H2DE_ColorHSV() const;
+    explicit operator Uint32() const;
 
     bool operator==(const H2DE_ColorRGB& other) const;
     bool operator!=(const H2DE_ColorRGB& other) const;
@@ -122,21 +122,21 @@ struct H2DE_ColorRGB {
         return os;
     }
 
-    H2DE_ColorRGB addHue(const float& hue) const;
-    H2DE_ColorRGB addSaturation(const float& saturation) const;
-    H2DE_ColorRGB addValue(const float& value) const;
+    H2DE_ColorRGB addHue(float hue) const;
+    H2DE_ColorRGB addSaturation(float saturation) const;
+    H2DE_ColorRGB addValue(float value) const;
 
-    H2DE_ColorRGB subtractHue(const float& hue) const;
-    H2DE_ColorRGB subtractSaturation(const float& saturation) const;
-    H2DE_ColorRGB subtractValue(const float& value) const;
+    H2DE_ColorRGB subtractHue(float hue) const;
+    H2DE_ColorRGB subtractSaturation(float saturation) const;
+    H2DE_ColorRGB subtractValue(float value) const;
 
-    H2DE_ColorRGB multiplyHue(const float& multiplier) const;
-    H2DE_ColorRGB multiplySaturation(const float& multiplier) const;
-    H2DE_ColorRGB multiplyValue(const float& multiplier) const;
+    H2DE_ColorRGB multiplyHue(float multiplier) const;
+    H2DE_ColorRGB multiplySaturation(float multiplier) const;
+    H2DE_ColorRGB multiplyValue(float multiplier) const;
 
-    H2DE_ColorRGB divideHue(const float& divider) const;
-    H2DE_ColorRGB divideSaturation(const float& divider) const;
-    H2DE_ColorRGB divideValue(const float& divider) const;
+    H2DE_ColorRGB divideHue(float divider) const;
+    H2DE_ColorRGB divideSaturation(float divider) const;
+    H2DE_ColorRGB divideValue(float divider) const;
 };
 
 struct H2DE_ColorHSV {
@@ -145,7 +145,7 @@ struct H2DE_ColorHSV {
     float v;
     float a;
 
-    operator H2DE_ColorRGB() const;
+    explicit operator H2DE_ColorRGB() const;
 
     bool operator==(const H2DE_ColorHSV& other) const;
     bool operator!=(const H2DE_ColorHSV& other) const;
@@ -155,21 +155,21 @@ struct H2DE_ColorHSV {
         return os;
     }
 
-    H2DE_ColorHSV addHue(const float& hue) const;
-    H2DE_ColorHSV addSaturation(const float& saturation) const;
-    H2DE_ColorHSV addValue(const float& value) const;
+    H2DE_ColorHSV addHue(float hue) const;
+    H2DE_ColorHSV addSaturation(float saturation) const;
+    H2DE_ColorHSV addValue(float value) const;
 
-    H2DE_ColorHSV subtractHue(const float& hue) const;
-    H2DE_ColorHSV subtractSaturation(const float& saturation) const;
-    H2DE_ColorHSV subtractValue(const float& value) const;
+    H2DE_ColorHSV subtractHue(float hue) const;
+    H2DE_ColorHSV subtractSaturation(float saturation) const;
+    H2DE_ColorHSV subtractValue(float value) const;
 
-    H2DE_ColorHSV multiplyHue(const float& multiplier) const;
-    H2DE_ColorHSV multiplySaturation(const float& multiplier) const;
-    H2DE_ColorHSV multiplyValue(const float& multiplier) const;
+    H2DE_ColorHSV multiplyHue(float multiplier) const;
+    H2DE_ColorHSV multiplySaturation(float multiplier) const;
+    H2DE_ColorHSV multiplyValue(float multiplier) const;
 
-    H2DE_ColorHSV divideHue(const float& divider) const;
-    H2DE_ColorHSV divideSaturation(const float& divider) const;
-    H2DE_ColorHSV divideValue(const float& divider) const;
+    H2DE_ColorHSV divideHue(float divider) const;
+    H2DE_ColorHSV divideSaturation(float divider) const;
+    H2DE_ColorHSV divideValue(float divider) const;
 };
 
 struct H2DE_LevelPadding {
@@ -206,32 +206,30 @@ struct H2DE_Hitbox {
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
     int collisionIndex = 0;
     bool snap = false;
-    std::optional<std::function<void(H2DE_LevelObject*)>> onCollide = std::nullopt;
+    std::optional<std::function<void(H2DE_Object*)>> onCollide = std::nullopt;
 };
 
 struct H2DE_ObjectData {
     H2DE_LevelPos pos = { 0.0f, 0.0f };
     H2DE_LevelSize size = { 1.0f, 1.0f };
+    std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
+    bool absolute = false;
     int index = 0;
 };
 
-struct H2DE_LevelObjectData {
-    std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
-};
-
-struct H2DE_InterfaceObjectBarData {
+struct H2DE_BarObjectData {
 
 };
 
-struct H2DE_InterfaceObjectButtonData {
+struct H2DE_BasicObjectData {
 
 };
 
-struct H2DE_InterfaceObjectImageData {
+struct H2DE_ButtonObjectData {
 
 };
 
-struct H2DE_InterfaceObjectTextData {
+struct H2DE_TextObjectData {
 
 };
 

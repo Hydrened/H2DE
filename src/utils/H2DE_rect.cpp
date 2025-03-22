@@ -15,12 +15,12 @@ H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator-(const H2DE_Rect<H2DE_Re
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator*(const float& multiplier) const {
+H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator*(float multiplier) const {
     return H2DE_Rect{ static_cast<H2DE_Rect_T>(x * multiplier), static_cast<H2DE_Rect_T>(y * multiplier), static_cast<H2DE_Rect_T>(w * multiplier), static_cast<H2DE_Rect_T>(h * multiplier) };
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator/(const float& divider) const {
+H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator/(float divider) const {
     return H2DE_Rect{ static_cast<H2DE_Rect_T>(x / divider), static_cast<H2DE_Rect_T>(y / divider), static_cast<H2DE_Rect_T>(w / divider), static_cast<H2DE_Rect_T>(h / divider) };
 }
 
@@ -43,7 +43,7 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator-=(const H2DE_Rect<H2DE_
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator*=(const float& multiplier) {
+H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator*=(float multiplier) {
     x *= multiplier;
     y *= multiplier;
     w *= multiplier;
@@ -52,7 +52,7 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator*=(const float& multipli
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(const float& divider) {
+H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) {
     x /= divider;
     y /= divider;
     w /= divider;
@@ -101,28 +101,28 @@ H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::substractSize(const H2DE_Vector2D
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::multiplyPos(const float& multiplier) {
+H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::multiplyPos(float multiplier) {
     x *= multiplier;
     y *= multiplier;
     return *this;
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::multiplySize(const float& multiplier) {
+H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::multiplySize(float multiplier) {
     w *= multiplier;
     h *= multiplier;
     return *this;
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::dividePos(const float& divider) {
+H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::dividePos(float divider) {
     x /= divider;
     y /= divider;
     return *this;
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::divideSize(const float& divider) {
+H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::divideSize(float divider) {
     w /= divider;
     h /= divider;
     return *this;

@@ -7,7 +7,7 @@ H2DE_Engine::H2DE_Window::H2DE_Window(H2DE_Engine* e, H2DE_WindowData d) : engin
     initSettings();
 }
 
-void H2DE_Engine::H2DE_Window::initSDL() {
+void H2DE_Engine::H2DE_Window::initSDL() const {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         throw std::runtime_error("H2DE-102: SDL_Init_Video failed: " + std::string(SDL_GetError()));
     }
@@ -60,7 +60,7 @@ void H2DE_Engine::H2DE_Window::create() {
     }
 }
 
-void H2DE_Engine::H2DE_Window::initSettings() {
+void H2DE_Engine::H2DE_Window::initSettings() const {
     if (!data.saveState) {
         return;
     }
@@ -77,7 +77,7 @@ H2DE_Engine::H2DE_Window::~H2DE_Window() {
     quitSDL();
 }
 
-void H2DE_Engine::H2DE_Window::quitSDL() {
+void H2DE_Engine::H2DE_Window::quitSDL() const {
     Mix_CloseAudio();
     IMG_Quit();
     Mix_Quit();
@@ -90,7 +90,7 @@ void H2DE_Engine::H2DE_Window::quitSDL() {
     }
 }
 
-void H2DE_Engine::H2DE_Window::saveState() {
+void H2DE_Engine::H2DE_Window::saveState() const {
     if (!data.saveState) {
         return;
     }
@@ -113,23 +113,23 @@ SDL_Renderer* H2DE_Engine::H2DE_Window::getRenderer() const {
     return renderer;
 }
 
-H2DE_AbsPos H2DE_GetWindowPos(H2DE_Engine* engine) {
+H2DE_AbsPos H2DE_GetWindowPos(const H2DE_Engine* engine) {
     int x, y;
     SDL_GetWindowPosition(engine->window->getWindow(), &x, &y);
     return H2DE_AbsPos{ x, y };
 }
 
-H2DE_AbsSize H2DE_GetWindowSize(H2DE_Engine* engine) {
+H2DE_AbsSize H2DE_GetWindowSize(const H2DE_Engine* engine) {
     int w, h;
     SDL_GetWindowSize(engine->window->getWindow(), &w, &h);
     return H2DE_AbsSize{ w, h };
 }
 
-bool H2DE_IsWindowFullscreen(H2DE_Engine* engine) {
+bool H2DE_IsWindowFullscreen(const H2DE_Engine* engine) {
     Uint32 flags = SDL_GetWindowFlags(engine->window->getWindow());
     return (flags & SDL_WINDOW_FULLSCREEN) || (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
 }
 
-bool H2DE_IsWindowResizable(H2DE_Engine* engine) {
+bool H2DE_IsWindowResizable(const H2DE_Engine* engine) {
     return SDL_GetWindowFlags(engine->window->getWindow()) & SDL_WINDOW_RESIZABLE;
 }

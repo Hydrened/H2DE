@@ -63,7 +63,7 @@ bool H2DE_Engine::H2DE_Settings::addLineAt(const std::string& newLine, size_t po
     return true;
 }
 
-bool H2DE_SettingsAddSection(H2DE_Engine* engine, const std::string& section) {
+bool H2DE_SettingsAddSection(const H2DE_Engine* engine, const std::string& section) {
     if (engine->settings->hasSection(section)) {
         return false;
     }
@@ -74,7 +74,7 @@ bool H2DE_SettingsAddSection(H2DE_Engine* engine, const std::string& section) {
     return true;
 }
 
-bool H2DE_SettingsAddKey(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
+bool H2DE_SettingsAddKey(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
     if (!engine->settings->hasSection(section)) {
         return false;
     }
@@ -152,20 +152,20 @@ size_t H2DE_Engine::H2DE_Settings::getLastSectionPosition(const std::string& sec
     return lines.size() - 1;
 }
 
-int H2DE_SettingsGetKeyInteger(H2DE_Engine* engine, const std::string& section, const std::string& key, const int& defaultValue) {
+int H2DE_SettingsGetKeyInteger(const H2DE_Engine* engine, const std::string& section, const std::string& key, int defaultValue) {
     return engine->settings->reader->GetInteger(section, key, defaultValue);
 }
 
-std::string H2DE_SettingsGetKeyString(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& defaultValue) {
+std::string H2DE_SettingsGetKeyString(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& defaultValue) {
     return engine->settings->reader->GetString(section, key, defaultValue);
 }
 
-bool H2DE_SettingsGetKeyBool(H2DE_Engine* engine, const std::string& section, const std::string& key, const bool& defaultValue) {
+bool H2DE_SettingsGetKeyBool(const H2DE_Engine* engine, const std::string& section, const std::string& key, bool defaultValue) {
     return engine->settings->reader->GetBoolean(section, key, defaultValue);
 }
 
 // SETTER
-bool H2DE_SettingsSetKeyValue(H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
+bool H2DE_SettingsSetKeyValue(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
     if (!engine->settings->hasSection(section)) {
         return false;
     }
