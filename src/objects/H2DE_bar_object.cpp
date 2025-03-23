@@ -7,7 +7,7 @@ H2DE_BarObject::H2DE_BarObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_Bar
 
 H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_BarObjectData& bod) {
     H2DE_BarObject* object = new H2DE_BarObject(engine, od, bod);
-    engine->addObject(object);
+    engine->objects.push_back(object);
     return object;
 }
 
@@ -16,7 +16,7 @@ H2DE_BarObject::~H2DE_BarObject() {
 
 }
 
-// UPDATE
-void H2DE_BarObject::update() {
-    
+// GETTER
+std::vector<H2DE_Surface*> H2DE_BarObject::getSurfaces() const {
+    return { bod.background, bod.front };
 }

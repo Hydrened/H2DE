@@ -10,20 +10,28 @@ private:
     SDL_Renderer* renderer;
     std::vector<H2DE_Object*>& objects;
 
-    std::unordered_map<std::string, SDL_Texture*> textures = {};
-    std::unordered_map<std::string, Mix_Chunk*> sounds = {};
+    std::unordered_map<std::string, SDL_Texture*> textures;
+    std::unordered_map<std::string, Mix_Chunk*> sounds;
 
+    void destroyTextures();
+    void destroySounds();
+    
     void clearRenderer() const;
     void sortObjects();
+
     void renderObjects() const;
     void renderObject(H2DE_Object* object) const;
+    void renderSurface(const H2DE_Surface* surface, const H2DE_LevelRect& rect, bool absolute) const;
     void renderHitbox(const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute) const;
 
     static bool isPositionGreater(H2DE_Object* object1, H2DE_Object* object2);
     static bool isVisible(const H2DE_ColorRGB& color);
     const unsigned int getBlockSize() const;
+    SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode) const;
+    SDL_RendererFlip getFlip(H2DE_Flip flip) const;
     H2DE_AbsPos lvlToAbs(const H2DE_LevelPos& pos, bool absolute) const;
     H2DE_AbsSize lvlToAbs(const H2DE_LevelSize& size) const;
+    H2DE_AbsRect lvlToAbs(const H2DE_LevelRect& rect, bool absolute) const;
 
 public:
     H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer, std::vector<H2DE_Object*>& objects);
@@ -31,11 +39,7 @@ public:
 
     void render();
 
-    void destroyTextures();
-    void destroySounds();
-
-    void setTextures(std::unordered_map<std::string, SDL_Texture*> textures);
-    void setSounds(std::unordered_map<std::string, Mix_Chunk*> sounds);
+    friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
 };
 
 #endif

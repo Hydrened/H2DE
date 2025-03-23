@@ -10,10 +10,11 @@ private:
     H2DE_ButtonObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_ButtonObjectData bod);
     ~H2DE_ButtonObject();
 
-    void update() override;
+    std::vector<H2DE_Surface*> getSurfaces() const override;
 
 public:
-    friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod);
+    friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
+    friend class H2DE_Engine;
 };
 
 #endif

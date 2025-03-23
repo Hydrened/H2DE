@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_asset_loader.h"
+#include "H2DE/H2DE_renderer.h"
 
 // INIT
 H2DE_Engine::H2DE_AssetLoader::H2DE_AssetLoader(H2DE_Engine* e, SDL_Renderer* r) : engine(e), renderer(r) {
@@ -11,7 +12,7 @@ H2DE_Engine::H2DE_AssetLoader::~H2DE_AssetLoader() {
 }
 
 // LOAD
-void H2DE_Engine::H2DE_AssetLoader::load(const std::filesystem::path& directory) {
+void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory) {
     if (!std::filesystem::exists(directory)) {
         std::cerr << "H2DE => ERROR: Asset directory not found" << std::endl;
         return;
@@ -22,12 +23,16 @@ void H2DE_Engine::H2DE_AssetLoader::load(const std::filesystem::path& directory)
         return;
     }
 
-    std::vector<std::filesystem::path> filesToLoad = getFilesToLoad(directory);
-    assetsToLoad = filesToLoad.size();
+    std::vector<std::filesystem::path> filesToLoad = engine->assetLoader->getFilesToLoad(directory);
+    engine->assetLoader->assetsToLoad = filesToLoad.size();
 
     for (std::filesystem::path file : filesToLoad) {
-        importFile(file);
+        engine->assetLoader->importFile(file);
     }
+
+    engine->renderer->textures = engine->assetLoader->textureBuffer;
+    engine->renderer->sounds = engine->assetLoader->soundBuffer;
+    
     std::cout << "H2DE => Loading complete" << std::endl;
 }
 
@@ -100,16 +105,4 @@ std::vector<std::filesystem::path> H2DE_Engine::H2DE_AssetLoader::getFilesToLoad
     }
 
     return res;
-}
-
-std::unordered_map<std::string, SDL_Texture*> H2DE_Engine::H2DE_AssetLoader::getLoadedTextures() {
-    std::unordered_map<std::string, SDL_Texture*> copy = textureBuffer;
-    textureBuffer.clear();
-    return copy;
-}
-
-std::unordered_map<std::string, Mix_Chunk*> H2DE_Engine::H2DE_AssetLoader::getLoadedSounds() {
-    std::unordered_map<std::string, Mix_Chunk*> copy = soundBuffer;
-    soundBuffer.clear();
-    return copy;
 }

@@ -1,3 +1,12 @@
+## H2DE-3.0.0
+#### ADDED
+- delays
+- bar object rendering
+- basic object rendering
+- button object rendering
+- textures
+- sprites
+
 ## H2DE-b-3.0.4
 #### ADDED
 - camera contains object (auto absolute detection)

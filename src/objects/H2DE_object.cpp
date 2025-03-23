@@ -11,12 +11,13 @@ H2DE_Object::~H2DE_Object() {
 }
 
 void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object) {
-    engine->destroyObject(object);
-}
+    if (object) {
+        auto it = std::find(engine->objects.begin(), engine->objects.end(), object);
 
-// UPDATE
-void H2DE_Object::update() {
-
+        if (it != engine->objects.end()) {
+            engine->objects.erase(it); 
+        }
+    }
 }
 
 // EVENTS

@@ -7,7 +7,7 @@ H2DE_TextObject::H2DE_TextObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_T
 
 H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_TextObjectData& tod) {
     H2DE_TextObject* object = new H2DE_TextObject(engine, od, tod);
-    engine->addObject(object);
+    engine->objects.push_back(object);
     return object;
 }
 
@@ -16,7 +16,7 @@ H2DE_TextObject::~H2DE_TextObject() {
 
 }
 
-// UPDATE
-void H2DE_TextObject::update() {
-    
+// GETTER
+std::vector<H2DE_Surface*> H2DE_TextObject::getSurfaces() const {
+    return {  };
 }

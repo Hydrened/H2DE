@@ -7,7 +7,7 @@ H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* engine, H2DE_ObjectData od, H2
 
 H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod) {
     H2DE_ButtonObject* object = new H2DE_ButtonObject(engine, od, bod);
-    engine->addObject(object);
+    engine->objects.push_back(object);
     return object;
 }
 
@@ -16,7 +16,7 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
 
 }
 
-// UPDATE
-void H2DE_ButtonObject::update() {
-    
+// GETTER
+std::vector<H2DE_Surface*> H2DE_ButtonObject::getSurfaces() const {
+    return { bod.surface };
 }

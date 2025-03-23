@@ -60,6 +60,11 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) {
     return *this;
 }
 
+template<typename H2DE_Rect_T>
+H2DE_Rect<H2DE_Rect_T>::operator SDL_Rect() const {
+    return SDL_Rect{ static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
+}
+
 // COMPARISONS
 template<typename H2DE_Rect_T>
 bool H2DE_Rect<H2DE_Rect_T>::operator==(const H2DE_Rect& other) const {

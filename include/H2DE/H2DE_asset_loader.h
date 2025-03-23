@@ -27,10 +27,7 @@ public:
     H2DE_AssetLoader(H2DE_Engine* engine, SDL_Renderer* renderer);
     ~H2DE_AssetLoader();
 
-    void load(const std::filesystem::path& directory);
-
-    std::unordered_map<std::string, SDL_Texture*> getLoadedTextures();
-    std::unordered_map<std::string, Mix_Chunk*> getLoadedSounds();
+    friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
 };
 
 #endif

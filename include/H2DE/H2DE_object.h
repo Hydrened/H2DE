@@ -16,7 +16,7 @@ protected:
     H2DE_Object(H2DE_Engine* engine, H2DE_ObjectData od);
     ~H2DE_Object();
 
-    virtual void update() = 0;
+    virtual std::vector<H2DE_Surface*> getSurfaces() const = 0;
 
 public:
     friend void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object);
@@ -36,6 +36,8 @@ public:
     friend void H2DE_SetObjectIndex(H2DE_Object* object, int index);
     friend void H2DE_ShowObject(H2DE_Object* object);
     friend void H2DE_HideObject(H2DE_Object* object);
+
+    friend class H2DE_Engine;
 };
 
 #endif

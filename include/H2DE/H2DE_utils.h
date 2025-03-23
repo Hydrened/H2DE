@@ -13,12 +13,31 @@ template<typename H2DE_Rect_T>
 struct H2DE_Rect;
 struct H2DE_ColorHSV;
 class H2DE_Object;
+class H2DE_Surface;
 
 enum H2DE_Face {
     H2DE_FACE_TOP,
     H2DE_FACE_RIGHT,
     H2DE_FACE_BOTTOM,
     H2DE_FACE_LEFT,
+};
+
+enum H2DE_Flip {
+    H2DE_FLIP_NONE,
+    H2DE_FLIP_HORIZONTAL,
+    H2DE_FLIP_VERTICAL,
+};
+
+enum H2DE_ScaleMode {
+    H2DE_SCALE_MODE_NEAREST,
+    H2DE_SCALE_MODE_LINEAR,
+    H2DE_SCALE_MODE_BEST,
+};
+
+enum H2DE_TextAlign {
+    H2DE_TEXT_ALIGN_LEFT,
+    H2DE_TEXT_ALIGN_RIGHT,
+    H2DE_TEXT_ALIGN_CENTER,
 };
 
 template<typename H2DE_Vector2D_T>
@@ -84,6 +103,8 @@ struct H2DE_Rect {
         os << std::string("x: ") << rect.x << ", y: " << rect.y << ", w: " << rect.w << ", h: " << rect.h;
         return os;
     }
+
+    operator SDL_Rect() const;
 
     H2DE_Rect addPos(const H2DE_Vector2D<H2DE_Rect_T>& pos);
     H2DE_Rect addSize(const H2DE_Vector2D<H2DE_Rect_T>& size);
@@ -209,6 +230,13 @@ struct H2DE_Hitbox {
     std::optional<std::function<void(H2DE_Object*)>> onCollide = std::nullopt;
 };
 
+struct H2DE_Font {
+    std::string textureName = "";
+    H2DE_AbsSize charSize = { 1, 1 };
+    std::string charOrder = "";
+    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
+};
+
 struct H2DE_ObjectData {
     H2DE_LevelPos pos = { 0.0f, 0.0f };
     H2DE_LevelSize size = { 1.0f, 1.0f };
@@ -217,20 +245,48 @@ struct H2DE_ObjectData {
     int index = 0;
 };
 
-struct H2DE_BarObjectData {
+struct H2DE_SurfaceData {
+    std::string textureName = "";
+    H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
+};
 
+struct H2DE_TextureData {
+    std::optional<H2DE_AbsRect> srcRect = std::nullopt;
+};
+
+struct H2DE_SpriteData {
+    H2DE_AbsSize size = { 1, 1 };
+    int spacing = 0;
+    unsigned int nbFrame = 0;
+    unsigned int delay = 200;
+    bool pauseSensitive = false;
+};
+
+struct H2DE_BarObjectData {
+    H2DE_Surface* front = nullptr;
+    H2DE_Surface* background = nullptr;
+    float min = 0.0f;
+    float max = 100.0f;
 };
 
 struct H2DE_BasicObjectData {
-
+    H2DE_Surface* surface = nullptr;
 };
 
 struct H2DE_ButtonObjectData {
-
+    H2DE_Surface* surface = nullptr;
+    std::function<void()> onclick = nullptr;
+    std::function<void()> onhover = nullptr;
 };
 
 struct H2DE_TextObjectData {
-
+    std::string text = "";
+    std::string font = "";
+    H2DE_LevelSize fontSize = { 1.0f, 1.0f };
+    float spacing = 0.1f;
+    H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_LEFT;
+    H2DE_ColorRGB color = { 255, 255, 255, 255 };
 };
 
 float H2DE_Lerp(float min, float max, float blend);

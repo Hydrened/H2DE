@@ -4,6 +4,7 @@
 #include "H2DE/H2DE_asset_loader.h"
 #include "H2DE/H2DE_settings.h"
 #include "H2DE/H2DE_camera.h"
+#include "H2DE/H2DE_delay_manager.h"
 
 // INIT
 H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
@@ -19,6 +20,7 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
         renderer = new H2DE_Renderer(this, window->getRenderer(), objects);
         assetLoader = new H2DE_AssetLoader(this, window->getRenderer());
         camera = new H2DE_Camera(this, data.camera);
+        delayManager = new H2DE_DelayManager(this);
 
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
@@ -37,6 +39,7 @@ H2DE_Engine::~H2DE_Engine() {
         H2DE_DestroyObject(this, object);
     }
     
+    delete delayManager;
     delete camera;
     delete assetLoader;
     delete renderer;
@@ -73,7 +76,7 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
                 if (engine->update) {
                     engine->update();
                 }
-                engine->updateObjects();
+                engine->delayManager->update();
             }
 
             engine->renderer->render();
@@ -92,19 +95,6 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
 
 void H2DE_StopEngine(H2DE_Engine* engine) {
     engine->isRunning = false;
-}
-
-void H2DE_Engine::updateObjects() {
-    for (H2DE_Object* object : objects) {
-        // update object
-    }
-}
-
-// ASSETS
-void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory) {
-    engine->assetLoader->load(directory);
-    engine->renderer->setTextures(engine->assetLoader->getLoadedTextures());
-    engine->renderer->setSounds(engine->assetLoader->getLoadedSounds());
 }
 
 // CALLS
@@ -140,19 +130,4 @@ void H2DE_Pause(H2DE_Engine* engine) {
 
 void H2DE_Resume(H2DE_Engine* engine) {
     engine->paused = false;
-}
-
-// OBJECTS
-void H2DE_Engine::addObject(H2DE_Object* object) {
-    objects.push_back(object);
-}
-
-void H2DE_Engine::destroyObject(H2DE_Object* object) {
-    if (object) {
-        auto it = std::find(objects.begin(), objects.end(), object);
-
-        if (it != objects.end()) {
-            objects.erase(it);
-        }
-    }
 }

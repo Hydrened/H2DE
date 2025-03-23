@@ -10,10 +10,12 @@ private:
     H2DE_BarObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_BarObjectData bod);
     ~H2DE_BarObject();
 
-    void update() override;
+    std::vector<H2DE_Surface*> getSurfaces() const override;
 
 public:
-    friend H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_BarObjectData& bod);
-};
+    friend H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
+    friend class H2DE_Engine;
+};    
+
 
 #endif

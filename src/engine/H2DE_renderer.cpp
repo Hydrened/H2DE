@@ -3,6 +3,8 @@
 #include "H2DE/H2DE_basic_object.h"
 #include "H2DE/H2DE_button_object.h"
 #include "H2DE/H2DE_text_object.h"
+#include "H2DE/H2DE_texture.h"
+#include "H2DE/H2DE_sprite.h"
 
 // INIT
 H2DE_Engine::H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, SDL_Renderer* r, std::vector<H2DE_Object*>& o) : engine(e), renderer(r), objects(o) {
@@ -40,7 +42,6 @@ void H2DE_Engine::H2DE_Renderer::render() {
     clearRenderer();
     sortObjects();
     renderObjects();
-    // throw std::runtime_error("Anti-loop");
 }
 
 void H2DE_Engine::H2DE_Renderer::clearRenderer() const {
@@ -69,21 +70,14 @@ void H2DE_Engine::H2DE_Renderer::renderObjects() const {
 }
 
 void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
-    if (H2DE_CameraContainsObject(engine, object)) {
-        H2DE_BarObject* bar = dynamic_cast<H2DE_BarObject*>(object);
-        H2DE_BasicObject* basic = dynamic_cast<H2DE_BasicObject*>(object);
-        H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
-        H2DE_TextObject* text = dynamic_cast<H2DE_TextObject*>(object);
-
-        if (bar) {
-
-        } else if (basic) {
-
-        } else if (button) {
-
-        } else if (text) {
-
-        } else throw std::runtime_error("H2DE-401: Can't find polymorphic class");
+    if (object->od.size.x != 0.0f && object->od.size.y != 0.0f) {
+        if (H2DE_CameraContainsObject(engine, object)) {
+            for (const H2DE_Surface* surface : object->getSurfaces()) {
+                if (surface) {
+                    renderSurface(surface, object->od.pos.makeRect(object->od.size), object->od.absolute);
+                }
+            }
+        }
     }
 
     H2DE_LevelPos pos = H2DE_GetObjectPos(object);
@@ -96,6 +90,32 @@ void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
             }
         }
     }
+}
+
+void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_Surface* surface, const H2DE_LevelRect& rect, bool absolute) const {
+    std::string textureName = surface->sd.textureName;
+    
+    auto it = textures.find(textureName);
+    if (it == textures.end()) {
+        return;
+    }
+
+    SDL_Rect destRect = lvlToAbs(rect, absolute);
+    std::optional<SDL_Rect> srcRect = surface->getSrcRect();
+    int rotation = 0; // temp
+    SDL_Point pivot = { 0, 0 }; // temp
+    SDL_RendererFlip flip = getFlip(H2DE_FLIP_NONE); // temp
+
+    SDL_Texture* texture = it->second;
+    H2DE_ColorRGB color = surface->sd.color;
+
+    SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
+    SDL_SetTextureAlphaMod(texture, color.a);
+    SDL_SetTextureScaleMode(texture, getScaleMode(surface->sd.scaleMode));
+
+    if (srcRect.has_value()) {
+        SDL_RenderCopyEx(renderer, texture, &srcRect.value(), &destRect, rotation, &pivot, flip);
+    } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, rotation, &pivot, flip);
 }
 
 void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute) const {
@@ -130,6 +150,14 @@ const unsigned int H2DE_Engine::H2DE_Renderer::getBlockSize() const {
     return H2DE_GetWindowSize(engine).x / H2DE_GetCameraSize(engine).x;
 }
 
+SDL_ScaleMode H2DE_Engine::H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) const {
+    return (scaleMode == H2DE_SCALE_MODE_LINEAR) ? SDL_ScaleModeLinear : (scaleMode == H2DE_SCALE_MODE_NEAREST) ? SDL_ScaleModeNearest : SDL_ScaleModeBest;
+}
+
+SDL_RendererFlip H2DE_Engine::H2DE_Renderer::getFlip(H2DE_Flip flip) const {
+    return (flip == H2DE_FLIP_NONE) ? SDL_FLIP_NONE : (flip == H2DE_FLIP_HORIZONTAL) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_VERTICAL;
+}
+
 H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelPos& pos, bool absolute) const {
     H2DE_LevelPos camPos = H2DE_GetCameraPos(engine);
     const unsigned int blockSize = getBlockSize(); 
@@ -149,13 +177,14 @@ H2DE_AbsSize H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelSize& size) co
     };
 }
 
-// SETTER
-void H2DE_Engine::H2DE_Renderer::setTextures(std::unordered_map<std::string, SDL_Texture*> t) {
-    destroyTextures();
-    textures = t;
-}
-
-void H2DE_Engine::H2DE_Renderer::setSounds(std::unordered_map<std::string, Mix_Chunk*> s) {
-    destroySounds();
-    sounds = s;
+H2DE_AbsRect H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelRect& rect, bool absolute) const {
+    H2DE_AbsPos pos = lvlToAbs(rect.getPos(), absolute);
+    H2DE_AbsSize size = lvlToAbs(rect.getSize());
+    
+    return {
+        pos.x,
+        pos.y,
+        size.x,
+        size.y,
+    };
 }
