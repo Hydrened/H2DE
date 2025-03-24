@@ -13,7 +13,6 @@ H2DE_Surface* H2DE_CreateSprite(H2DE_Engine* engine, const H2DE_SurfaceData& sd,
 
 // CLEANUP
 H2DE_Sprite::~H2DE_Sprite() {
-    
 }
 
 // EVENTS
@@ -29,8 +28,8 @@ void H2DE_Sprite::nextFrame() {
 std::optional<H2DE_AbsRect> H2DE_Sprite::getSrcRect() const {
     H2DE_AbsRect srcRect = H2DE_AbsRect();
 
-    srcRect.x = currentFrame * (spd.size.x + spd.spacing);
-    srcRect.y = 0;
+    srcRect.x = currentFrame * (spd.size.x + spd.spacing) + spd.startingPos.x;
+    srcRect.y = spd.startingPos.y;
     srcRect.addSize(spd.size);
 
     return srcRect;

@@ -8,7 +8,9 @@ private:
     H2DE_TextObjectData tod;
 
     H2DE_TextObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_TextObjectData tod);
-    ~H2DE_TextObject();
+    ~H2DE_TextObject() override;
+
+    void updateImpl() override;
 
     std::vector<H2DE_Surface*> getSurfaces() const override;
 

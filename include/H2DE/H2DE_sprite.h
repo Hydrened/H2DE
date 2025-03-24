@@ -10,7 +10,7 @@ private:
     unsigned int currentFrame = 0;
 
     H2DE_Sprite(H2DE_Engine* engine, const H2DE_SurfaceData& sd, const H2DE_SpriteData& spd);
-    ~H2DE_Sprite();
+    ~H2DE_Sprite() override;
 
     void nextFrame();
     std::optional<H2DE_AbsRect> getSrcRect() const override;

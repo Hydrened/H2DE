@@ -13,7 +13,14 @@ H2DE_BasicObject* H2DE_CreateBasicObject(H2DE_Engine* engine, const H2DE_ObjectD
 
 // CLEANUP
 H2DE_BasicObject::~H2DE_BasicObject() {
+    if (bod.surface) {
+        delete bod.surface;
+    }
+}
 
+// UPDATE
+void H2DE_BasicObject::updateImpl() {
+    
 }
 
 // GETTER

@@ -65,7 +65,18 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
 
             while (SDL_PollEvent(&event)) {
                 switch (event.type) {
-                    case SDL_QUIT: engine->isRunning = false; break;
+                    case SDL_QUIT:
+                        engine->isRunning = false;
+                        break;
+
+                    case SDL_MOUSEMOTION:
+                        engine->mousePos = { event.motion.x, event.motion.y };
+                        break;
+
+                    case SDL_MOUSEBUTTONDOWN:
+                        engine->click = { event.button.x, event.button.y };
+                        break;
+
                     default: break;
                 }
 
@@ -73,11 +84,15 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
             }
 
             if (!engine->paused) {
+                engine->delayManager->update();
+                engine->updateObjects();
+
                 if (engine->update) {
                     engine->update();
                 }
-                engine->delayManager->update();
             }
+
+            engine->click = std::nullopt;
 
             engine->renderer->render();
             
@@ -95,6 +110,13 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
 
 void H2DE_StopEngine(H2DE_Engine* engine) {
     engine->isRunning = false;
+}
+
+// UPDATE
+void H2DE_Engine::updateObjects() {
+    for (H2DE_Object* object : objects) {
+        object->update();
+    }
 }
 
 // CALLS
@@ -130,4 +152,9 @@ void H2DE_Pause(H2DE_Engine* engine) {
 
 void H2DE_Resume(H2DE_Engine* engine) {
     engine->paused = false;
+}
+
+// MOUSE
+H2DE_LevelPos H2DE_GetMousePos(H2DE_Engine* engine, bool absolute) {
+    return engine->renderer->absToLvl(engine->mousePos, absolute);
 }

@@ -54,36 +54,36 @@ H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator/=(float
 
 // COMPARISONS
 template<typename H2DE_Vector2D_T>
-bool H2DE_Vector2D<H2DE_Vector2D_T>::operator==(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+const bool H2DE_Vector2D<H2DE_Vector2D_T>::operator==(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
     return x == other.x && y == other.y;
 }
 
 template<typename H2DE_Vector2D_T>
-bool H2DE_Vector2D<H2DE_Vector2D_T>::operator!=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+const bool H2DE_Vector2D<H2DE_Vector2D_T>::operator!=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
     return !(*this == other);
 }
 
 template<typename H2DE_Vector2D_T>
-bool H2DE_Vector2D<H2DE_Vector2D_T>::operator>(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+const bool H2DE_Vector2D<H2DE_Vector2D_T>::operator>(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
     H2DE_Vector2D_T sum1 = std::abs(x) + std::abs(y);
     H2DE_Vector2D_T sum2 = std::abs(other.x) + std::abs(other.y);
     return sum1 > sum2;
 }
 
 template<typename H2DE_Vector2D_T>
-bool H2DE_Vector2D<H2DE_Vector2D_T>::operator>=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+const bool H2DE_Vector2D<H2DE_Vector2D_T>::operator>=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
     H2DE_Vector2D_T sum1 = std::abs(x) + std::abs(y);
     H2DE_Vector2D_T sum2 = std::abs(other.x) + std::abs(other.y);
     return sum1 >= sum2;
 }
 
 template<typename H2DE_Vector2D_T>
-bool H2DE_Vector2D<H2DE_Vector2D_T>::operator<(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+const bool H2DE_Vector2D<H2DE_Vector2D_T>::operator<(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
     return !(*this >= other);
 }
 
 template<typename H2DE_Vector2D_T>
-bool H2DE_Vector2D<H2DE_Vector2D_T>::operator<=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+const bool H2DE_Vector2D<H2DE_Vector2D_T>::operator<=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
     return !(*this > other);
 }
 
@@ -95,7 +95,7 @@ H2DE_Rect<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::makeRect(const H2DE_V
 
 // GETTER
 template<typename H2DE_Vector2D_T>
-bool H2DE_Vector2D<H2DE_Vector2D_T>::isNull() const {
+const bool H2DE_Vector2D<H2DE_Vector2D_T>::isNull() const {
     return x == 0 && y == 0;
 }
 

@@ -6,16 +6,21 @@ class H2DE_Engine;
 
 class H2DE_Object {
 private:
-    H2DE_Engine* engine;
-
     bool hidden = false;
 
 protected:
+    H2DE_Engine* engine;
     H2DE_ObjectData od;
     
     H2DE_Object(H2DE_Engine* engine, H2DE_ObjectData od);
-    ~H2DE_Object();
+    virtual ~H2DE_Object();
 
+    void update();
+    void updateCollision();
+    virtual void updateImpl() = 0;
+
+    void snap(const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face);
+    
     virtual std::vector<H2DE_Surface*> getSurfaces() const = 0;
 
 public:

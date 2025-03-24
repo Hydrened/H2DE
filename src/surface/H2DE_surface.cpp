@@ -7,5 +7,5 @@ H2DE_Surface::H2DE_Surface(H2DE_Engine* e, const H2DE_SurfaceData& s) : engine(e
 
 // CLEANUP
 H2DE_Surface::~H2DE_Surface() {
-    
+
 }

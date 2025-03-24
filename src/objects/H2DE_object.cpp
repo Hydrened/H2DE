@@ -7,7 +7,7 @@ H2DE_Object::H2DE_Object(H2DE_Engine* e, H2DE_ObjectData d) : engine(e), od(d) {
 
 // CLEANUP
 H2DE_Object::~H2DE_Object() {
-
+    
 }
 
 void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object) {
@@ -16,6 +16,7 @@ void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object) {
 
         if (it != engine->objects.end()) {
             engine->objects.erase(it); 
+            delete object;
         }
     }
 }
@@ -34,6 +35,71 @@ void H2DE_RemoveHitboxFromObject(H2DE_Object* object, const std::string& name) {
 
     if (it != object->od.hitboxes.end()) {
         object->od.hitboxes.erase(it);
+    }
+}
+
+void H2DE_Object::snap(const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face) {
+    switch (face) {
+        case H2DE_FACE_TOP:
+            od.pos.y = otherRect.y + otherRect.h;
+            break;
+
+        case H2DE_FACE_BOTTOM:
+            od.pos.y = otherRect.y - rect.h;
+            break;
+
+        case H2DE_FACE_LEFT:
+            od.pos.x = otherRect.x + otherRect.w;
+            break;
+
+        case H2DE_FACE_RIGHT:
+            od.pos.x = otherRect.x - rect.w;
+            break;
+
+        default: return;
+    }
+}
+
+// UPDATE
+void H2DE_Object::update() {
+    updateCollision();
+    updateImpl();
+}
+
+void H2DE_Object::updateCollision() {
+    for (auto [name, hitbox] : od.hitboxes) {
+        if (!hitbox.onCollide && !hitbox.snap) {
+            continue;
+        }
+
+        H2DE_LevelRect rect = hitbox.rect.addPos(od.pos);
+
+        for (H2DE_Object* otherObject : engine->objects) {
+            if (otherObject == this) {
+                continue;
+            }
+
+            for (auto [otherName, otherHitbox] : od.hitboxes) {
+                if (otherHitbox.collisionIndex != hitbox.collisionIndex) {
+                    continue;
+                }
+
+                H2DE_LevelRect otherRect = otherHitbox.rect.addPos(H2DE_GetObjectPos(otherObject));
+
+                if (rect.collides(otherRect)) {
+                    if (hitbox.onCollide) {
+                        hitbox.onCollide(otherObject);
+                    }
+
+                    if (hitbox.snap) {
+                        std::optional<H2DE_Face> face = rect.getCollidedFace(otherRect);
+                        if (face.has_value()) {
+                            snap(rect, otherRect, face.value());
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

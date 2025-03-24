@@ -9,11 +9,13 @@ private:
     H2DE_Engine* engine;
     H2DE_SurfaceData sd;
 
+    std::optional<H2DE_LevelRect> cropRect = std::nullopt;
+
     virtual std::optional<H2DE_AbsRect> getSrcRect() const = 0;
 
 protected:
     H2DE_Surface(H2DE_Engine* engine, const H2DE_SurfaceData& sd);
-    ~H2DE_Surface();
+    virtual ~H2DE_Surface();
 
 public:
     friend class H2DE_Engine;

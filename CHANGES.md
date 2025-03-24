@@ -1,3 +1,17 @@
+## H2DE-3.0.1
+#### ADDED
+- collision detection
+- snap when collision
+- get mouse pos (absolute or not)
+- button click event
+- button hover event
+- button out event
+- sprite starting pos
+#### FIXED
+- blockSize <= 0 (prevent division by 0)
+- object memory clear
+- surface memory clear
+
 ## H2DE-3.0.0
 #### ADDED
 - delays

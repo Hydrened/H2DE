@@ -55,12 +55,12 @@ struct H2DE_Vector2D {
     H2DE_Vector2D& operator*=(float multiplier);
     H2DE_Vector2D& operator/=(float divider);
 
-    bool operator==(const H2DE_Vector2D& other) const;
-    bool operator!=(const H2DE_Vector2D& other) const;
-    bool operator>(const H2DE_Vector2D& other) const;
-    bool operator>=(const H2DE_Vector2D& other) const;
-    bool operator<(const H2DE_Vector2D& other) const;
-    bool operator<=(const H2DE_Vector2D& other) const;
+    const bool operator==(const H2DE_Vector2D& other) const;
+    const bool operator!=(const H2DE_Vector2D& other) const;
+    const bool operator>(const H2DE_Vector2D& other) const;
+    const bool operator>=(const H2DE_Vector2D& other) const;
+    const bool operator<(const H2DE_Vector2D& other) const;
+    const bool operator<=(const H2DE_Vector2D& other) const;
 
     friend std::ostream& operator<<(std::ostream& os, const H2DE_Vector2D& vec) {
         os << std::string("x: ") << vec.x << ", y: " << vec.y;
@@ -69,7 +69,7 @@ struct H2DE_Vector2D {
 
     H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D& size) const;
 
-    bool isNull() const;
+    const bool isNull() const;
     H2DE_Vector2D<H2DE_Vector2D_T> getCenter() const;
 };
 
@@ -96,8 +96,8 @@ struct H2DE_Rect {
     H2DE_Rect& operator*=(float multiplier);
     H2DE_Rect& operator/=(float divider);
 
-    bool operator==(const H2DE_Rect& other) const;
-    bool operator!=(const H2DE_Rect& other) const;
+    const bool operator==(const H2DE_Rect& other) const;
+    const bool operator!=(const H2DE_Rect& other) const;
 
     friend std::ostream& operator<<(std::ostream& os, const H2DE_Rect& rect) {
         os << std::string("x: ") << rect.x << ", y: " << rect.y << ", w: " << rect.w << ", h: " << rect.h;
@@ -119,8 +119,9 @@ struct H2DE_Rect {
     H2DE_Vector2D<H2DE_Rect_T> getSize() const;
     H2DE_Vector2D<H2DE_Rect_T> getCenter() const;
 
-    bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const;
-    std::optional<H2DE_Face> getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const;
+    const bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const;
+    const bool collides(const H2DE_Vector2D<H2DE_Rect_T>& pos) const;
+    const std::optional<H2DE_Face> getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const;
 };
 
 using H2DE_AbsRect = H2DE_Rect<int>;
@@ -135,8 +136,8 @@ struct H2DE_ColorRGB {
     explicit operator H2DE_ColorHSV() const;
     explicit operator Uint32() const;
 
-    bool operator==(const H2DE_ColorRGB& other) const;
-    bool operator!=(const H2DE_ColorRGB& other) const;
+    const bool operator==(const H2DE_ColorRGB& other) const;
+    const bool operator!=(const H2DE_ColorRGB& other) const;
 
     friend std::ostream& operator<<(std::ostream& os, const H2DE_ColorRGB& color) {
         os << std::string("r: ") << static_cast<int>(color.r) << ", g: " << static_cast<int>(color.g) << ", b: " << static_cast<int>(color.b) << ", a: " << static_cast<int>(color.a);
@@ -168,8 +169,8 @@ struct H2DE_ColorHSV {
 
     explicit operator H2DE_ColorRGB() const;
 
-    bool operator==(const H2DE_ColorHSV& other) const;
-    bool operator!=(const H2DE_ColorHSV& other) const;
+    const bool operator==(const H2DE_ColorHSV& other) const;
+    const bool operator!=(const H2DE_ColorHSV& other) const;
 
     friend std::ostream& operator<<(std::ostream& os, const H2DE_ColorHSV& color) {
         os << std::string("h: ") << color.h << ", s: " << color.s << ", v: " << color.v << ", a: " << color.a;
@@ -227,7 +228,7 @@ struct H2DE_Hitbox {
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
     int collisionIndex = 0;
     bool snap = false;
-    std::optional<std::function<void(H2DE_Object*)>> onCollide = std::nullopt;
+    std::function<void(H2DE_Object*)> onCollide = nullptr;
 };
 
 struct H2DE_Font {
@@ -256,6 +257,7 @@ struct H2DE_TextureData {
 };
 
 struct H2DE_SpriteData {
+    H2DE_AbsPos startingPos = { 0, 0 };
     H2DE_AbsSize size = { 1, 1 };
     int spacing = 0;
     unsigned int nbFrame = 0;
@@ -268,6 +270,7 @@ struct H2DE_BarObjectData {
     H2DE_Surface* background = nullptr;
     float min = 0.0f;
     float max = 100.0f;
+    float defaultValue = 0.0f;
 };
 
 struct H2DE_BasicObjectData {
@@ -278,6 +281,7 @@ struct H2DE_ButtonObjectData {
     H2DE_Surface* surface = nullptr;
     std::function<void()> onclick = nullptr;
     std::function<void()> onhover = nullptr;
+    std::function<void()> onout = nullptr;
 };
 
 struct H2DE_TextObjectData {

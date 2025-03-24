@@ -8,7 +8,9 @@ private:
     H2DE_BasicObjectData bod;
 
     H2DE_BasicObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_BasicObjectData bod);
-    ~H2DE_BasicObject();
+    ~H2DE_BasicObject() override;
+
+    void updateImpl() override;
 
     std::vector<H2DE_Surface*> getSurfaces() const override;
 

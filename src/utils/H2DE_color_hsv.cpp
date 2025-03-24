@@ -45,11 +45,11 @@ H2DE_ColorHSV::operator H2DE_ColorRGB() const {
 }
 
 // COMPARISONS
-bool H2DE_ColorHSV::operator==(const H2DE_ColorHSV& other) const {
+const bool H2DE_ColorHSV::operator==(const H2DE_ColorHSV& other) const {
     return h == other.h && s == other.s && v == other.v, a == other.a;
 }
 
-bool H2DE_ColorHSV::operator!=(const H2DE_ColorHSV& other) const {
+const bool H2DE_ColorHSV::operator!=(const H2DE_ColorHSV& other) const {
     return !(*this == other);
 }
 

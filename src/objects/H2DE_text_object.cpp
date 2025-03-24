@@ -16,6 +16,11 @@ H2DE_TextObject::~H2DE_TextObject() {
 
 }
 
+// UPDATE
+void H2DE_TextObject::updateImpl() {
+    
+}
+
 // GETTER
 std::vector<H2DE_Surface*> H2DE_TextObject::getSurfaces() const {
     return {  };

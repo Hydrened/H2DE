@@ -40,6 +40,7 @@ public:
     void render();
 
     friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
+    H2DE_LevelPos absToLvl(const H2DE_AbsPos& pos, bool absolute) const;
 };
 
 #endif

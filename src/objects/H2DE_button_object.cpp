@@ -13,7 +13,51 @@ H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_Objec
 
 // CLEANUP
 H2DE_ButtonObject::~H2DE_ButtonObject() {
+    if (bod.surface) {
+        delete bod.surface;
+    }
+}
 
+// UPDATE
+void H2DE_ButtonObject::updateImpl() {
+    if (!bod.onclick && !bod.onhover && !bod.onout) {
+        return;
+    }
+
+    H2DE_LevelPos mousePos = H2DE_GetMousePos(engine, false);
+    H2DE_LevelPos pos = od.pos;
+    bool clicked = false;
+    bool hovered = false;
+
+    for (auto [name, hitbox] : od.hitboxes) {
+        if (hitbox.rect.addPos(pos).collides(mousePos)) {
+            if (bod.onclick && !clicked && engine->click.has_value()) {
+                bod.onclick();
+                clicked = true;
+            }
+
+            if (bod.onhover && !hover && !hovered) {
+                hover = true;
+                hovered = true;
+                bod.onhover();
+            }
+        }
+    }
+
+    if (!hovered && hover && bod.onout) {
+        int nbOut = 0;
+
+        for (auto [name, hitbox] : od.hitboxes) {
+            if (!hitbox.rect.addPos(pos).collides(mousePos)) {
+                nbOut++;
+            }
+        }
+
+        if (nbOut >= od.hitboxes.size()) {
+            bod.onout();
+            hover = false;
+        }
+    }
 }
 
 // GETTER

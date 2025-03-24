@@ -8,7 +8,7 @@ private:
     H2DE_TextureData ted;
 
     H2DE_Texture(H2DE_Engine* engine, const H2DE_SurfaceData& sd, const H2DE_TextureData& ted);
-    ~H2DE_Texture();
+    ~H2DE_Texture() override;
 
     std::optional<H2DE_AbsRect> getSrcRect() const override;
     

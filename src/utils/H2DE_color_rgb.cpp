@@ -35,11 +35,11 @@ H2DE_ColorRGB::operator Uint32() const {
 }
 
 // COMPARISONS
-bool H2DE_ColorRGB::operator==(const H2DE_ColorRGB& other) const {
+const bool H2DE_ColorRGB::operator==(const H2DE_ColorRGB& other) const {
     return r == other.r&& g == other.g && b == other.b && a == other.a;
 }
 
-bool H2DE_ColorRGB::operator!=(const H2DE_ColorRGB& other) const {
+const bool H2DE_ColorRGB::operator!=(const H2DE_ColorRGB& other) const {
     return !(*this == other);
 }
 

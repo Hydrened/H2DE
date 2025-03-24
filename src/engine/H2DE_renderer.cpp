@@ -147,7 +147,11 @@ bool H2DE_Engine::H2DE_Renderer::isVisible(const H2DE_ColorRGB& color) {
 }
 
 const unsigned int H2DE_Engine::H2DE_Renderer::getBlockSize() const {
-    return H2DE_GetWindowSize(engine).x / H2DE_GetCameraSize(engine).x;
+    int blockSize = H2DE_GetWindowSize(engine).x / H2DE_GetCameraSize(engine).x;
+    if (blockSize <= 0) {
+        blockSize = 1;
+    }
+    return blockSize;
 }
 
 SDL_ScaleMode H2DE_Engine::H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) const {
@@ -186,5 +190,20 @@ H2DE_AbsRect H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelRect& rect, bo
         pos.y,
         size.x,
         size.y,
+    };
+}
+
+H2DE_LevelPos H2DE_Engine::H2DE_Renderer::absToLvl(const H2DE_AbsPos& pos, bool absolute) const {
+    const unsigned int blockSize = getBlockSize(); 
+
+    H2DE_LevelPos levelCamPos = H2DE_GetCameraPos(engine);
+    H2DE_AbsPos absCamPos = {
+        static_cast<int>(levelCamPos.x * blockSize),
+        static_cast<int>(levelCamPos.y * blockSize),
+    };
+
+    return {
+        (static_cast<float>(pos.x) + ((absolute) ? 0.0f : absCamPos.x)) / static_cast<float>(blockSize),
+        (static_cast<float>(pos.y) + ((absolute) ? 0.0f : absCamPos.y)) / static_cast<float>(blockSize),
     };
 }

@@ -47,8 +47,13 @@ private:
 
     std::vector<H2DE_Object*> objects = {};
 
+    H2DE_AbsPos mousePos = { 0, 0 };
+    std::optional<H2DE_AbsPos> click = std::nullopt;
+
     H2DE_Engine(H2DE_EngineData data);
     ~H2DE_Engine();
+
+    void updateObjects();
 
 public:
     friend H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);
@@ -96,14 +101,19 @@ public:
     friend void H2DE_SetCameraLockedToReference(const H2DE_Engine* engine, bool state);
     friend void H2DE_SetCameraPadding(const H2DE_Engine* engine, const H2DE_LevelPadding& padding);
 
+    friend class H2DE_Object;
+    friend class H2DE_ButtonObject;
     friend H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
     friend H2DE_BasicObject* H2DE_CreateBasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BasicObjectData& basicObjectData);
     friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     friend H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     friend void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object);
+    friend void H2DE_SetBarValue(H2DE_Engine* engine, H2DE_BarObject* bar, float value);
 
     friend H2DE_Surface* H2DE_CreateTexture(H2DE_Engine* engine, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData);
     friend H2DE_Surface* H2DE_CreateSprite(H2DE_Engine* engine, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData);
+
+    friend H2DE_LevelPos H2DE_GetMousePos(H2DE_Engine* engine, bool absolute);
 };
 
 H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);

@@ -7,8 +7,12 @@ class H2DE_ButtonObject : public H2DE_Object {
 private:
     H2DE_ButtonObjectData bod;
 
+    bool hover = false;
+
     H2DE_ButtonObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_ButtonObjectData bod);
-    ~H2DE_ButtonObject();
+    ~H2DE_ButtonObject() override;
+
+    void updateImpl() override;
 
     std::vector<H2DE_Surface*> getSurfaces() const override;
 

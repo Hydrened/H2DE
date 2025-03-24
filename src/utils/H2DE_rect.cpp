@@ -67,12 +67,12 @@ H2DE_Rect<H2DE_Rect_T>::operator SDL_Rect() const {
 
 // COMPARISONS
 template<typename H2DE_Rect_T>
-bool H2DE_Rect<H2DE_Rect_T>::operator==(const H2DE_Rect& other) const {
+const bool H2DE_Rect<H2DE_Rect_T>::operator==(const H2DE_Rect& other) const {
     return x == other.x && y == other.y && w == other.w && h == other.h;
 }
 
 template<typename H2DE_Rect_T>
-bool H2DE_Rect<H2DE_Rect_T>::operator!=(const H2DE_Rect& other) const {
+const bool H2DE_Rect<H2DE_Rect_T>::operator!=(const H2DE_Rect& other) const {
     return !(*this == other);
 }
 
@@ -150,17 +150,27 @@ H2DE_Vector2D<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::getCenter() const {
 }
 
 template<typename H2DE_Rect_T>
-bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
+const bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
     return (
-        rect.x + rect.w >= x &&
-        rect.x <= x + w &&
-        rect.y + rect.h >= y &&
-        rect.y <= y + h
+        rect.x + rect.w > x &&
+        rect.x < x + w &&
+        rect.y + rect.h > y &&
+        rect.y < y + h
     );
 }
 
 template<typename H2DE_Rect_T>
-std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const {
+const bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& pos) const {
+    return (
+        pos.x >= x &&
+        pos.x <= x + w &&
+        pos.y >= y &&
+        pos.y <= y + h
+    );
+}
+
+template<typename H2DE_Rect_T>
+const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const {
     if (collides(rect)) {
         float overlapLeft = rect.x + rect.w - x;
         float overlapRight = x + w - rect.x;
