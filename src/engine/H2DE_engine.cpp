@@ -155,6 +155,6 @@ void H2DE_Resume(H2DE_Engine* engine) {
 }
 
 // MOUSE
-H2DE_LevelPos H2DE_GetMousePos(H2DE_Engine* engine, bool absolute) {
+H2DE_LevelPos H2DE_GetMousePos(const H2DE_Engine* engine, bool absolute) {
     return engine->renderer->absToLvl(engine->mousePos, absolute);
 }

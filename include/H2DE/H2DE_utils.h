@@ -270,7 +270,7 @@ struct H2DE_BarObjectData {
     H2DE_Surface* background = nullptr;
     float min = 0.0f;
     float max = 100.0f;
-    float defaultValue = 0.0f;
+    float defaultPercentage = 0.0f;
 };
 
 struct H2DE_BasicObjectData {

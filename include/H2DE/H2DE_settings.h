@@ -11,11 +11,8 @@ private:
     INIReader* reader = nullptr;
 
     void initFile();
-
     void updateReader();
-
     bool addLineAt(const std::string& line, size_t position);
-
     std::vector<std::string> getLines() const;
     bool hasSection(const std::string& section) const;
     bool hasKey(const std::string& section, const std::string& key) const;

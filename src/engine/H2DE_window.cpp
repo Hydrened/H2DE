@@ -114,22 +114,47 @@ SDL_Renderer* H2DE_Engine::H2DE_Window::getRenderer() const {
 }
 
 H2DE_AbsPos H2DE_GetWindowPos(const H2DE_Engine* engine) {
+    static SDL_Window* window = engine->window->getWindow();
     int x, y;
-    SDL_GetWindowPosition(engine->window->getWindow(), &x, &y);
+    SDL_GetWindowPosition(window, &x, &y);
     return H2DE_AbsPos{ x, y };
 }
 
 H2DE_AbsSize H2DE_GetWindowSize(const H2DE_Engine* engine) {
+    static SDL_Window* window = engine->window->getWindow();
     int w, h;
-    SDL_GetWindowSize(engine->window->getWindow(), &w, &h);
+    SDL_GetWindowSize(window, &w, &h);
     return H2DE_AbsSize{ w, h };
 }
 
 bool H2DE_IsWindowFullscreen(const H2DE_Engine* engine) {
-    Uint32 flags = SDL_GetWindowFlags(engine->window->getWindow());
+    static SDL_Window* window = engine->window->getWindow();
+    Uint32 flags = SDL_GetWindowFlags(window);
     return (flags & SDL_WINDOW_FULLSCREEN) || (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
 }
 
 bool H2DE_IsWindowResizable(const H2DE_Engine* engine) {
-    return SDL_GetWindowFlags(engine->window->getWindow()) & SDL_WINDOW_RESIZABLE;
+    static SDL_Window* window = engine->window->getWindow();
+    return SDL_GetWindowFlags(window) & SDL_WINDOW_RESIZABLE;
+}
+
+// SETTER
+void H2DE_SetWindowPos(const H2DE_Engine* engine, const H2DE_AbsPos& pos) {
+    static SDL_Window* window = engine->window->getWindow();
+    SDL_SetWindowPosition(window, pos.x, pos.y);
+}
+
+void H2DE_SetWindowSize(const H2DE_Engine* engine, const H2DE_AbsSize& size) {
+    static SDL_Window* window = engine->window->getWindow();
+    SDL_SetWindowSize(window, size.x, size.y);
+}
+
+void H2DE_SetWindowMinimumSize(const H2DE_Engine* engine, const H2DE_AbsSize& minimumSize) {
+    static SDL_Window* window = engine->window->getWindow();
+    SDL_SetWindowMinimumSize(window, minimumSize.x, minimumSize.y);
+}
+
+void H2DE_SetWindowMaximumSize(const H2DE_Engine* engine, const H2DE_AbsSize& maximumSize) {
+    static SDL_Window* window = engine->window->getWindow();
+    SDL_SetWindowMaximumSize(window, maximumSize.x, maximumSize.y);
 }

@@ -1,4 +1,4 @@
-#include "H2DE/H2DE_text_object.h"
+#include "H2DE/H2DE_object.h"
 
 // INIT
 H2DE_TextObject::H2DE_TextObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_TextObjectData t) : H2DE_Object(engine, od), tod(t) {
@@ -17,7 +17,7 @@ H2DE_TextObject::~H2DE_TextObject() {
 }
 
 // UPDATE
-void H2DE_TextObject::updateImpl() {
+void H2DE_TextObject::update() {
     
 }
 

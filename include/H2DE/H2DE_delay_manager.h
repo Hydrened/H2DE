@@ -27,7 +27,8 @@ public:
     void update();
 
     friend unsigned int H2DE_Delay(H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, int loop, bool pauseSensitive);
-    friend void H2DE_ResetDelay(H2DE_Engine* engine, unsigned int id);
+    friend void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id);
+    friend void H2DE_StopDelay(H2DE_Engine* engine, unsigned int id, bool call);
 };
 
 #endif

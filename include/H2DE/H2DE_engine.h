@@ -75,13 +75,14 @@ public:
     friend void H2DE_Pause(H2DE_Engine* engine);
     friend void H2DE_Resume(H2DE_Engine* engine);
 
-    friend unsigned int H2DE_Delay(H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, int loop, bool pauseSensitive);
-    friend void H2DE_ResetDelay(H2DE_Engine* engine, unsigned int id);
-
     friend H2DE_AbsPos H2DE_GetWindowPos(const H2DE_Engine* engine);
     friend H2DE_AbsSize H2DE_GetWindowSize(const H2DE_Engine* engine);
     friend bool H2DE_IsWindowFullscreen(const H2DE_Engine* engine);
     friend bool H2DE_IsWindowResizable(const H2DE_Engine* engine);
+    friend void H2DE_SetWindowPos(const H2DE_Engine* engine, const H2DE_AbsPos& pos);
+    friend void H2DE_SetWindowSize(const H2DE_Engine* engine, const H2DE_AbsSize& size);
+    friend void H2DE_SetWindowMinimumSize(const H2DE_Engine* engine, const H2DE_AbsSize& minimumSize);
+    friend void H2DE_SetWindowMaximumSize(const H2DE_Engine* engine, const H2DE_AbsSize& maximumSize);
 
     friend bool H2DE_SettingsAddSection(const H2DE_Engine* engine, const std::string& section);
     friend bool H2DE_SettingsAddKey(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
@@ -89,6 +90,10 @@ public:
     friend std::string H2DE_SettingsGetKeyString(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& defaultValue);
     friend bool H2DE_SettingsGetKeyBool(const H2DE_Engine* engine, const std::string& section, const std::string& key, bool defaultValue);
     friend bool H2DE_SettingsSetKeyValue(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
+
+    friend unsigned int H2DE_Delay(H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, int loop, bool pauseSensitive);
+    friend void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id);
+    friend void H2DE_StopDelay(H2DE_Engine* engine, unsigned int id, bool call);
 
     friend H2DE_LevelPos H2DE_GetCameraPos(const H2DE_Engine* engine);
     friend H2DE_LevelSize H2DE_GetCameraSize(const H2DE_Engine* engine);
@@ -101,6 +106,8 @@ public:
     friend void H2DE_SetCameraLockedToReference(const H2DE_Engine* engine, bool state);
     friend void H2DE_SetCameraPadding(const H2DE_Engine* engine, const H2DE_LevelPadding& padding);
 
+    friend H2DE_LevelPos H2DE_GetMousePos(const H2DE_Engine* engine, bool absolute);
+
     friend class H2DE_Object;
     friend class H2DE_ButtonObject;
     friend H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
@@ -108,12 +115,6 @@ public:
     friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     friend H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     friend void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object);
-    friend void H2DE_SetBarValue(H2DE_Engine* engine, H2DE_BarObject* bar, float value);
-
-    friend H2DE_Surface* H2DE_CreateTexture(H2DE_Engine* engine, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData);
-    friend H2DE_Surface* H2DE_CreateSprite(H2DE_Engine* engine, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData);
-
-    friend H2DE_LevelPos H2DE_GetMousePos(H2DE_Engine* engine, bool absolute);
 };
 
 H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);

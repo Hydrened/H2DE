@@ -1,10 +1,4 @@
 #include "H2DE/H2DE_renderer.h"
-#include "H2DE/H2DE_bar_object.h"
-#include "H2DE/H2DE_basic_object.h"
-#include "H2DE/H2DE_button_object.h"
-#include "H2DE/H2DE_text_object.h"
-#include "H2DE/H2DE_texture.h"
-#include "H2DE/H2DE_sprite.h"
 
 // INIT
 H2DE_Engine::H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, SDL_Renderer* r, std::vector<H2DE_Object*>& o) : engine(e), renderer(r), objects(o) {
@@ -72,9 +66,12 @@ void H2DE_Engine::H2DE_Renderer::renderObjects() const {
 void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
     if (object->od.size.x != 0.0f && object->od.size.y != 0.0f) {
         if (H2DE_CameraContainsObject(engine, object)) {
+
             for (const H2DE_Surface* surface : object->getSurfaces()) {
                 if (surface) {
-                    renderSurface(surface, object->od.pos.makeRect(object->od.size), object->od.absolute);
+                    H2DE_LevelRect rect = object->od.pos.makeRect(object->od.size);
+                    rect.w *= surface->percentage / 100.0f;
+                    renderSurface(surface, rect, object->od.absolute);
                 }
             }
         }

@@ -17,7 +17,6 @@ private:
     int assetsToLoad = -1;
 
     std::vector<std::filesystem::path> getFilesToLoad(const std::filesystem::path& directory) const;
-
     void importFile(const std::filesystem::path& file);
     void importTexture(const std::filesystem::path& file);
     void importSound(const std::filesystem::path& file);

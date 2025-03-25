@@ -14,7 +14,6 @@ private:
     void initSDL() const;
     void create();
     void initSettings() const;
-
     void quitSDL() const;
 
 public:

@@ -63,7 +63,6 @@ void H2DE_Object::snap(const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRe
 // UPDATE
 void H2DE_Object::update() {
     updateCollision();
-    updateImpl();
 }
 
 void H2DE_Object::updateCollision() {
@@ -104,27 +103,27 @@ void H2DE_Object::updateCollision() {
 }
 
 // GETTER
-H2DE_LevelPos H2DE_GetObjectPos(H2DE_Object* object) {
+H2DE_LevelPos H2DE_GetObjectPos(const H2DE_Object* object) {
     return object->od.pos;
 }
 
-H2DE_LevelSize H2DE_GetObjectSize(H2DE_Object* object) {
+H2DE_LevelSize H2DE_GetObjectSize(const H2DE_Object* object) {
     return object->od.size;
 }
 
-std::unordered_map<std::string, H2DE_Hitbox> H2DE_GetObjectHitboxes(H2DE_Object* object) {
+std::unordered_map<std::string, H2DE_Hitbox> H2DE_GetObjectHitboxes(const H2DE_Object* object) {
     return object->od.hitboxes;
 }
 
-int H2DE_GetObjectIndex(H2DE_Object* object) {
+int H2DE_GetObjectIndex(const H2DE_Object* object) {
     return object->od.index;
 }
 
-bool H2DE_IsObjectAbsolute(H2DE_Object* object) {
+bool H2DE_IsObjectAbsolute(const H2DE_Object* object) {
     return object->od.absolute;
 }
 
-bool H2DE_IsObjectHidden(H2DE_Object* object) {
+bool H2DE_IsObjectHidden(const H2DE_Object* object) {
     return object->hidden;
 }
 

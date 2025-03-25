@@ -1,3 +1,14 @@
+## H2DE-3.0.2
+#### ADDED
+- set bar percentage
+- surface set texture name, color, scale mode
+- texture set src rect
+- sprite set starting pos, size, spacing, nb frame, delay and pause sensitive
+- stop delay
+- window set size, min size, max size
+#### FIXED
+- delays > 1000ms (division by 0)
+
 ## H2DE-3.0.1
 #### ADDED
 - collision detection

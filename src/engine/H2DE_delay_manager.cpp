@@ -39,7 +39,7 @@ void H2DE_Engine::H2DE_DelayManager::update() {
 // EVENTS
 unsigned int H2DE_Delay(H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, int loop, bool pauseSensitive) {
     H2DE_Engine::H2DE_DelayManager::Delay delay = H2DE_Engine::H2DE_DelayManager::Delay();
-    delay.max = engine->fps / (1000 / ms);
+    delay.max = (ms == 0) ? 1 : engine->fps / (1000.0f / ms);
     delay.callback = callback;
     delay.loop = loop;
     delay.currentLoop = loop;
@@ -47,15 +47,30 @@ unsigned int H2DE_Delay(H2DE_Engine* engine, unsigned int ms, const std::functio
 
     engine->delayManager->id++;
     engine->delayManager->delays[engine->delayManager->id] = delay;
+
     return engine->delayManager->id;
 }
 
-void H2DE_ResetDelay(H2DE_Engine* engine, unsigned int id) {
+void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id) {
     auto it = engine->delayManager->delays.find(id);
 
     if (it != engine->delayManager->delays.end()) {
         it->second.current = 0;
         it->second.currentLoop = it->second.loop;
         it->second.finished = false;
+    }
+}
+
+void H2DE_StopDelay(H2DE_Engine* engine, unsigned int id, bool call) {
+    auto it = engine->delayManager->delays.find(id);
+
+    if (it != engine->delayManager->delays.end()) {
+        if (call && it->second.callback) {
+            it->second.callback();
+        }
+        
+        it->second.current = it->second.max;
+        it->second.currentLoop = it->second.loop;
+        it->second.finished = true;
     }
 }
