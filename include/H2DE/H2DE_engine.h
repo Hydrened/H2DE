@@ -77,12 +77,15 @@ public:
 
     friend H2DE_AbsPos H2DE_GetWindowPos(const H2DE_Engine* engine);
     friend H2DE_AbsSize H2DE_GetWindowSize(const H2DE_Engine* engine);
-    friend bool H2DE_IsWindowFullscreen(const H2DE_Engine* engine);
-    friend bool H2DE_IsWindowResizable(const H2DE_Engine* engine);
     friend void H2DE_SetWindowPos(const H2DE_Engine* engine, const H2DE_AbsPos& pos);
     friend void H2DE_SetWindowSize(const H2DE_Engine* engine, const H2DE_AbsSize& size);
     friend void H2DE_SetWindowMinimumSize(const H2DE_Engine* engine, const H2DE_AbsSize& minimumSize);
     friend void H2DE_SetWindowMaximumSize(const H2DE_Engine* engine, const H2DE_AbsSize& maximumSize);
+    friend void H2DE_SetWindowTitle(const H2DE_Engine* engine, const std::string& title);
+    friend void H2DE_SetWindowIcon(const H2DE_Engine* engine, const std::string& textureName);
+    friend void H2DE_SetWindowFullscreen(const H2DE_Engine* engine, bool fullscreen);
+    friend void H2DE_SetWindowResizable(const H2DE_Engine* engine, bool resizable);
+    friend void H2DE_SetWindowGrab(const H2DE_Engine* engine, bool grab);
 
     friend bool H2DE_SettingsAddSection(const H2DE_Engine* engine, const std::string& section);
     friend bool H2DE_SettingsAddKey(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);

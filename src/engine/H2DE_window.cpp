@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_window.h"
+#include "H2DE/H2DE_asset_loader.h"
 
 // INIT
 H2DE_Engine::H2DE_Window::H2DE_Window(H2DE_Engine* e, H2DE_WindowData d) : engine(e), data(d) {
@@ -26,7 +27,7 @@ void H2DE_Engine::H2DE_Window::initSDL() const {
 }
 
 void H2DE_Engine::H2DE_Window::create() {
-    SDL_WindowFlags flag = (data.fullscreen) ? SDL_WINDOW_FULLSCREEN : (data.resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
+    SDL_WindowFlags flag = getFlags(data.fullscreen, data.resizable);
 
     int x = H2DE_SettingsGetKeyInteger(engine, "WINDOW", "x", data.pos.x);
     int y = H2DE_SettingsGetKeyInteger(engine, "WINDOW", "y", data.pos.y);
@@ -105,56 +106,69 @@ void H2DE_Engine::H2DE_Window::saveState() const {
 }
 
 // GETTER
-SDL_Window* H2DE_Engine::H2DE_Window::getWindow() const {
-    return window;
-}
-
-SDL_Renderer* H2DE_Engine::H2DE_Window::getRenderer() const {
-    return renderer;
+SDL_WindowFlags H2DE_Engine::H2DE_Window::getFlags(bool fullscreen, bool resizable) const {
+    return (fullscreen) ? SDL_WINDOW_FULLSCREEN : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
 }
 
 H2DE_AbsPos H2DE_GetWindowPos(const H2DE_Engine* engine) {
-    static SDL_Window* window = engine->window->getWindow();
     int x, y;
-    SDL_GetWindowPosition(window, &x, &y);
+    SDL_GetWindowPosition(engine->window->window, &x, &y);
     return H2DE_AbsPos{ x, y };
 }
 
 H2DE_AbsSize H2DE_GetWindowSize(const H2DE_Engine* engine) {
-    static SDL_Window* window = engine->window->getWindow();
     int w, h;
-    SDL_GetWindowSize(window, &w, &h);
+    SDL_GetWindowSize(engine->window->window, &w, &h);
     return H2DE_AbsSize{ w, h };
-}
-
-bool H2DE_IsWindowFullscreen(const H2DE_Engine* engine) {
-    static SDL_Window* window = engine->window->getWindow();
-    Uint32 flags = SDL_GetWindowFlags(window);
-    return (flags & SDL_WINDOW_FULLSCREEN) || (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
-}
-
-bool H2DE_IsWindowResizable(const H2DE_Engine* engine) {
-    static SDL_Window* window = engine->window->getWindow();
-    return SDL_GetWindowFlags(window) & SDL_WINDOW_RESIZABLE;
 }
 
 // SETTER
 void H2DE_SetWindowPos(const H2DE_Engine* engine, const H2DE_AbsPos& pos) {
-    static SDL_Window* window = engine->window->getWindow();
-    SDL_SetWindowPosition(window, pos.x, pos.y);
+    SDL_SetWindowPosition(engine->window->window, pos.x, pos.y);
 }
 
 void H2DE_SetWindowSize(const H2DE_Engine* engine, const H2DE_AbsSize& size) {
-    static SDL_Window* window = engine->window->getWindow();
-    SDL_SetWindowSize(window, size.x, size.y);
+    SDL_SetWindowSize(engine->window->window, size.x, size.y);
 }
 
 void H2DE_SetWindowMinimumSize(const H2DE_Engine* engine, const H2DE_AbsSize& minimumSize) {
-    static SDL_Window* window = engine->window->getWindow();
-    SDL_SetWindowMinimumSize(window, minimumSize.x, minimumSize.y);
+    SDL_SetWindowMinimumSize(engine->window->window, minimumSize.x, minimumSize.y);
 }
 
 void H2DE_SetWindowMaximumSize(const H2DE_Engine* engine, const H2DE_AbsSize& maximumSize) {
-    static SDL_Window* window = engine->window->getWindow();
-    SDL_SetWindowMaximumSize(window, maximumSize.x, maximumSize.y);
+    SDL_SetWindowMaximumSize(engine->window->window, maximumSize.x, maximumSize.y);
+}
+
+void H2DE_SetWindowTitle(const H2DE_Engine* engine, const std::string& title) {
+    SDL_SetWindowTitle(engine->window->window, title.c_str());
+}
+
+void H2DE_SetWindowIcon(const H2DE_Engine* engine, const std::string& textureName) {
+    std::vector<std::filesystem::path> files = engine->assetLoader->getFilesToLoad("assets");
+
+    for (const std::filesystem::path& file : files) {
+        if (file.filename() == textureName) {
+
+            SDL_Surface* surface = IMG_Load(file.string().c_str());
+            if (surface) {
+                SDL_SetWindowIcon(engine->window->window, surface);
+                SDL_FreeSurface(surface);
+            }
+
+            break;
+        }
+    }
+}
+
+void H2DE_SetWindowFullscreen(const H2DE_Engine* engine, bool fullscreen) {
+    SDL_WindowFlags flag = engine->window->getFlags(fullscreen, engine->window->data.resizable);
+    SDL_SetWindowFullscreen(engine->window->window, flag);
+}
+
+void H2DE_SetWindowResizable(const H2DE_Engine* engine, bool resizable) {
+    SDL_SetWindowResizable(engine->window->window, (resizable) ? SDL_TRUE : SDL_FALSE);
+}
+
+void H2DE_SetWindowGrab(const H2DE_Engine* engine, bool grab) {
+    SDL_SetWindowGrab(engine->window->window, (grab) ? SDL_TRUE : SDL_FALSE);
 }

@@ -176,7 +176,7 @@ bool H2DE_SettingsSetKeyValue(const H2DE_Engine* engine, const std::string& sect
 
     std::vector<std::string> lines = engine->settings->getLines();
     
-    for (int i = engine->settings->getLastSectionPosition(section) - 1; i >= 0; i--) {
+    for (int i = engine->settings->getLastSectionPosition(section); i >= 0; i--) {
         if (lines[i] == '[' + section + ']') {
             return false;
         }

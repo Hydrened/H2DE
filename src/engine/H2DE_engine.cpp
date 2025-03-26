@@ -17,8 +17,8 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
 
         settings = new H2DE_Settings();
         window = new H2DE_Window(this, data.window);
-        renderer = new H2DE_Renderer(this, window->getRenderer(), objects);
-        assetLoader = new H2DE_AssetLoader(this, window->getRenderer());
+        renderer = new H2DE_Renderer(this, window->renderer, objects);
+        assetLoader = new H2DE_AssetLoader(this, window->renderer);
         camera = new H2DE_Camera(this, data.camera);
         delayManager = new H2DE_DelayManager(this);
 

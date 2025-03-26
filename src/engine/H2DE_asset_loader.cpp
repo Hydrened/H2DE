@@ -14,12 +14,12 @@ H2DE_Engine::H2DE_AssetLoader::~H2DE_AssetLoader() {
 // LOAD
 void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory) {
     if (!std::filesystem::exists(directory)) {
-        std::cerr << "H2DE => ERROR: Asset directory not found" << std::endl;
+        std::cerr << "H2DE => \033[31mERROR\033[0m: Asset directory not found" << std::endl;
         return;
     }
 
     if (!std::filesystem::is_directory(directory)) {
-        std::cerr << "H2DE => ERROR: Path isn't a directory" << std::endl;
+        std::cerr << "H2DE => \033[31mERROR\033[0m: Path isn't a directory" << std::endl;
         return;
     }
 
@@ -40,9 +40,9 @@ void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory
 void H2DE_Engine::H2DE_AssetLoader::importFile(const std::filesystem::path& file) {
     std::filesystem::path extension = file.extension();
 
-    if (extension == ".png" || extension == ".jpg") {
+    if (std::find(supportedImg.begin(), supportedImg.end(), extension) != supportedImg.end()) {
         importTexture(file);
-    } else if (extension == ".mp3" || extension == ".ogg") {
+    } else if (std::find(supportedSound.begin(), supportedSound.end(), extension) != supportedSound.end()) {
         importSound(file);
     }
 }
@@ -58,7 +58,7 @@ void H2DE_Engine::H2DE_AssetLoader::importTexture(const std::filesystem::path& f
 
         textureBuffer[name] = texture;
         
-    } else std::cerr << "H2DE => ERROR: Texture " << '"' << name << '"' << " can't be loaded" << std::endl;
+    } else std::cerr << "H2DE => \033[31mERROR\033[0m: Texture " << '"' << name << '"' << " can't be loaded: " << SDL_GetError() << std::endl;
     assetImported();
 }
 
@@ -73,7 +73,7 @@ void H2DE_Engine::H2DE_AssetLoader::importSound(const std::filesystem::path& fil
     
         soundBuffer[name] = sound;
 
-    } else std::cerr << "H2DE => ERROR: Sound " << '"' << name << '"' << " can't be loaded" << std::endl;
+    } else std::cerr << "H2DE => \033[31mERROR\033[0m: Sound " << '"' << name << '"' << " can't be loaded" << std::endl;
     assetImported();
 }
 
@@ -93,8 +93,13 @@ std::vector<std::filesystem::path> H2DE_Engine::H2DE_AssetLoader::getFilesToLoad
     for (const auto& entry : std::filesystem::directory_iterator(directory)) {
         if (std::filesystem::is_regular_file(entry.status())) {
             std::string extension = entry.path().extension().string();
-            
-            if (extension == ".png" || extension == ".jpg"  || extension == ".mp3" || extension == ".ogg") {
+
+            bool supported = (
+                std::find(supportedImg.begin(), supportedImg.end(), extension) != supportedImg.end() ||
+                std::find(supportedSound.begin(), supportedSound.end(), extension) != supportedSound.end()
+            );
+
+            if (supported) {
                 res.push_back(entry.path());
             }
 

@@ -5,9 +5,12 @@
 - texture set src rect
 - sprite set starting pos, size, spacing, nb frame, delay and pause sensitive
 - stop delay
-- window set size, min size, max size
+- window set size, min size, max size, set icon, set title, set fullscreen, set resizable, set grab
+- wav files supported
+- jpeg and bmp files supported
 #### FIXED
 - delays > 1000ms (division by 0)
+- last settings line can't be modified
 
 ## H2DE-3.0.1
 #### ADDED

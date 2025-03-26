@@ -13,6 +13,14 @@ private:
     std::unordered_map<std::string, SDL_Texture*> textureBuffer = {};
     std::unordered_map<std::string, Mix_Chunk*> soundBuffer = {};
 
+    std::vector<std::string> supportedImg = {
+        ".png", ".jpg", ".jpeg", ".bmp",
+    };
+
+    std::vector<std::string> supportedSound = {
+        ".mp3", ".ogg", ".wav"
+    };
+
     int loadedAssets = 0;
     int assetsToLoad = -1;
 
@@ -27,6 +35,7 @@ public:
     ~H2DE_AssetLoader();
 
     friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
+    friend void H2DE_SetWindowIcon(const H2DE_Engine* engine, const std::string& textureName);
 };
 
 #endif
