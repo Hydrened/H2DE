@@ -29,8 +29,19 @@ void H2DE_BarObject::update() {
 }
 
 // GETTER
-std::vector<H2DE_Surface*> H2DE_BarObject::getSurfaces() const {
-    return { bod.background, bod.front };
+std::vector<H2DE_SurfaceBuffer> H2DE_BarObject::getSurfaces() const {
+    H2DE_SurfaceBuffer backgroundBuffer = H2DE_SurfaceBuffer();
+    backgroundBuffer.surface = bod.background;
+    backgroundBuffer.offset = { 0.0f, 0.0f };
+    backgroundBuffer.size = od.size;
+
+    H2DE_SurfaceBuffer frontBuffer = H2DE_SurfaceBuffer();
+    frontBuffer.surface = bod.front;
+    frontBuffer.offset = { 0.0f, 0.0f };
+    frontBuffer.size = od.size;
+    frontBuffer.size.x *= percentage;
+
+    return { backgroundBuffer, frontBuffer };
 }
 
 H2DE_Surface* H2DE_GetBarFrontSurface(const H2DE_BarObject* bar) {

@@ -1,8 +1,11 @@
 #ifndef H2DE_OBJECT_H
 #define H2DE_OBJECT_H
 
+#include <sstream>
 #include <H2DE/H2DE_engine.h>
 class H2DE_Engine;
+
+#undef max
 
 class H2DE_Object {
 private:
@@ -18,7 +21,7 @@ protected:
     virtual void update();
     void updateCollision();
     void snap(const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face);
-    virtual std::vector<H2DE_Surface*> getSurfaces() const = 0;
+    virtual std::vector<H2DE_SurfaceBuffer> getSurfaces() const = 0;
 
 public:
     friend void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object);
@@ -53,7 +56,7 @@ private:
     ~H2DE_BarObject() override;
 
     void update() override;
-    std::vector<H2DE_Surface*> getSurfaces() const override;
+    std::vector<H2DE_SurfaceBuffer> getSurfaces() const override;
 
 public:
     friend H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
@@ -72,7 +75,7 @@ private:
     ~H2DE_BasicObject() override;
 
     void update() override;
-    std::vector<H2DE_Surface*> getSurfaces() const override;
+    std::vector<H2DE_SurfaceBuffer> getSurfaces() const override;
 
 public:
     friend H2DE_BasicObject* H2DE_CreateBasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BasicObjectData& basicObjectData);
@@ -90,7 +93,7 @@ private:
     ~H2DE_ButtonObject() override;
 
     void update() override;
-    std::vector<H2DE_Surface*> getSurfaces() const override;
+    std::vector<H2DE_SurfaceBuffer> getSurfaces() const override;
 
 public:
     friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
@@ -102,14 +105,22 @@ class H2DE_TextObject : public H2DE_Object {
 private:
     H2DE_TextObjectData tod;
 
+    std::vector<H2DE_SurfaceBuffer> surfaceBuffers = {};
+
     H2DE_TextObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_TextObjectData tod);
     ~H2DE_TextObject() override;
 
     void update() override;
-    std::vector<H2DE_Surface*> getSurfaces() const override;
+    void destroySurfaces();
+    void resetSurfaces();
+    std::vector<H2DE_SurfaceBuffer> getSurfaces() const override;
+    std::vector<std::string> getWords() const;
+    std::vector<std::vector<std::string>> getLines() const;
+    float getLineStartOffsetX(const std::vector<std::string>& line) const;
 
 public:
     friend H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
+    friend void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size);
 };
 
 #endif

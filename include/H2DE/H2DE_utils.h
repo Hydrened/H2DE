@@ -22,6 +22,17 @@ enum H2DE_Face {
     H2DE_FACE_LEFT,
 };
 
+enum H2DE_WindowRatio {
+    H2DE_WINDOW_RATIO_NO_RATIO,
+    H2DE_WINDOW_RATIO_4_3,
+    H2DE_WINDOW_RATIO_3_2,
+    H2DE_WINDOW_RATIO_5_4,
+    H2DE_WINDOW_RATIO_16_10,
+    H2DE_WINDOW_RATIO_16_9,
+    H2DE_WINDOW_RATIO_21_9,
+    H2DE_WINDOW_RATIO_32_9,
+};
+
 enum H2DE_Flip {
     H2DE_FLIP_NONE,
     H2DE_FLIP_HORIZONTAL,
@@ -38,6 +49,28 @@ enum H2DE_TextAlign {
     H2DE_TEXT_ALIGN_LEFT,
     H2DE_TEXT_ALIGN_RIGHT,
     H2DE_TEXT_ALIGN_CENTER,
+};
+
+enum H2DE_Easing {
+    H2DE_EASING_LINEAR,
+    H2DE_EASING_EASE_IN,
+    H2DE_EASING_EASE_OUT,
+    H2DE_EASING_EASE_IN_OUT,
+    H2DE_EASING_BACK_IN,
+    H2DE_EASING_BACK_OUT,
+    H2DE_EASING_BACK_IN_OUT,
+    H2DE_EASING_ELASTIC_IN,
+    H2DE_EASING_ELASTIC_OUT,
+    H2DE_EASING_ELASTIC_IN_OUT,
+    H2DE_EASING_BOUNCE_IN,
+    H2DE_EASING_BOUNCE_OUT,
+    H2DE_EASING_BOUNCE_IN_OUT,
+    H2DE_EASING_SINE_IN,
+    H2DE_EASING_SINE_OUT,
+    H2DE_EASING_SINE_IN_OUT,
+    H2DE_EASING_EXPO_IN,
+    H2DE_EASING_EXPO_OUT,
+    H2DE_EASING_EXPO_IN_OUT,
 };
 
 template<typename H2DE_Vector2D_T>
@@ -209,6 +242,7 @@ struct H2DE_WindowData {
     bool fullscreen = false;
     bool resizable = false;
     bool saveState = false;
+    H2DE_WindowRatio ratio = H2DE_WINDOW_RATIO_NO_RATIO;
 };
 
 struct H2DE_CameraData {
@@ -233,7 +267,8 @@ struct H2DE_Hitbox {
 
 struct H2DE_Font {
     std::string textureName = "";
-    H2DE_AbsSize charSize = { 1, 1 };
+    H2DE_AbsSize charSize = { 0, 0 };
+    int spacing = 0;
     std::string charOrder = "";
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
 };
@@ -250,6 +285,12 @@ struct H2DE_SurfaceData {
     std::string textureName = "";
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
+};
+
+struct H2DE_SurfaceBuffer {
+    H2DE_Surface* surface = nullptr;
+    H2DE_LevelPos offset = { 0.0f, 0.0f };
+    H2DE_LevelSize size = { 0.0f, 0.0f };
 };
 
 struct H2DE_TextureData {
@@ -288,12 +329,12 @@ struct H2DE_TextObjectData {
     std::string text = "";
     std::string font = "";
     H2DE_LevelSize fontSize = { 1.0f, 1.0f };
-    float spacing = 0.1f;
+    H2DE_LevelSize spacing = { 0.1f, 0.5f };
     H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_LEFT;
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
 };
 
-float H2DE_Lerp(float min, float max, float blend);
+float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing);
 float H2DE_RandomFloatInRange(float min, float max);
 int H2DE_RandomIntegerInRange(int min, int max);
 bool H2DE_RandomBool();

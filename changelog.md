@@ -1,3 +1,9 @@
+## H2DE-3.0.3
+#### ADDED
+- window ratio
+- lerp with easing
+- text rendering
+
 ## H2DE-3.0.2
 #### ADDED
 - set bar percentage

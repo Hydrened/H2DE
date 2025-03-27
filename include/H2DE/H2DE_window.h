@@ -11,6 +11,8 @@ private:
     SDL_Renderer* renderer = nullptr;
     H2DE_WindowData data;
 
+    H2DE_AbsSize oldSize = { 0, 0 };
+
     void initSDL() const;
     void create();
     void initSettings() const;
@@ -21,7 +23,10 @@ public:
     H2DE_Window(H2DE_Engine* engine, H2DE_WindowData data);
     ~H2DE_Window();
 
+    void update();
+
     void saveState() const;
+    void fixRatioSize(const H2DE_AbsSize& size);
 
     friend H2DE_AbsPos H2DE_GetWindowPos(const H2DE_Engine* engine);
     friend H2DE_AbsSize H2DE_GetWindowSize(const H2DE_Engine* engine);
@@ -35,6 +40,7 @@ public:
     friend void H2DE_SetWindowFullscreen(const H2DE_Engine* engine, bool fullscreen);
     friend void H2DE_SetWindowResizable(const H2DE_Engine* engine, bool resizable);
     friend void H2DE_SetWindowGrab(const H2DE_Engine* engine, bool grab);
+    friend void H2DE_SetWindowRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio);
 
     friend class H2DE_Engine;
 };

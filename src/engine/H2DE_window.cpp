@@ -59,6 +59,8 @@ void H2DE_Engine::H2DE_Window::create() {
         SDL_Quit();
         throw std::runtime_error("H2DE-109: Error creating window => SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
     }
+
+    fixRatioSize(H2DE_AbsSize{ w, h });
 }
 
 void H2DE_Engine::H2DE_Window::initSettings() const {
@@ -105,6 +107,52 @@ void H2DE_Engine::H2DE_Window::saveState() const {
     H2DE_SettingsSetKeyValue(engine, "WINDOW", "h", std::to_string(size.y));
 }
 
+// EVENTS
+void H2DE_Engine::H2DE_Window::fixRatioSize(const H2DE_AbsSize& size) {
+    if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+        return;
+    }
+
+    if (oldSize == size) {
+        return;
+    }
+
+    float ratio;
+    switch (data.ratio) {
+        case H2DE_WINDOW_RATIO_4_3: ratio = 4.0f / 3.0f; break;
+        case H2DE_WINDOW_RATIO_3_2: ratio = 3.0f / 2.0f; break;
+        case H2DE_WINDOW_RATIO_5_4: ratio = 5.0f / 4.0f; break;
+        case H2DE_WINDOW_RATIO_16_10: ratio = 16.0f / 10.0f; break;
+        case H2DE_WINDOW_RATIO_16_9: ratio = 16.0f / 9.0f; break;
+        case H2DE_WINDOW_RATIO_21_9: ratio = 21.0f / 9.0f; break;
+        case H2DE_WINDOW_RATIO_32_9: ratio = 32.0f / 9.0f; break;
+        default: return;
+    }
+
+    int wDiff = std::abs(size.x - oldSize.x);
+    int hDiff = std::abs(size.y - oldSize.y);
+
+    bool resizeWidth = (!oldSize.isNull())
+        ? wDiff < hDiff
+        : false;
+
+    H2DE_AbsSize finalSize = size;
+    
+    if (resizeWidth) {
+        finalSize.x = static_cast<int>(size.y * ratio);
+    } else {
+        finalSize.y = static_cast<int>(size.x / ratio);
+    }
+
+    SDL_SetWindowSize(window, finalSize.x, finalSize.y);
+    oldSize = finalSize;
+}
+
+// UPDATE
+void H2DE_Engine::H2DE_Window::update() {
+    oldSize = H2DE_GetWindowSize(engine);
+}
+
 // GETTER
 SDL_WindowFlags H2DE_Engine::H2DE_Window::getFlags(bool fullscreen, bool resizable) const {
     return (fullscreen) ? SDL_WINDOW_FULLSCREEN : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
@@ -129,6 +177,7 @@ void H2DE_SetWindowPos(const H2DE_Engine* engine, const H2DE_AbsPos& pos) {
 
 void H2DE_SetWindowSize(const H2DE_Engine* engine, const H2DE_AbsSize& size) {
     SDL_SetWindowSize(engine->window->window, size.x, size.y);
+    H2DE_SetWindowSize(engine, size);
 }
 
 void H2DE_SetWindowMinimumSize(const H2DE_Engine* engine, const H2DE_AbsSize& minimumSize) {
@@ -171,4 +220,12 @@ void H2DE_SetWindowResizable(const H2DE_Engine* engine, bool resizable) {
 
 void H2DE_SetWindowGrab(const H2DE_Engine* engine, bool grab) {
     SDL_SetWindowGrab(engine->window->window, (grab) ? SDL_TRUE : SDL_FALSE);
+}
+
+void H2DE_SetWindowRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio) {
+    engine->window->data.ratio = ratio;
+
+    if (ratio != H2DE_WINDOW_RATIO_NO_RATIO) {
+        engine->window->fixRatioSize(H2DE_GetWindowSize(engine));
+    }
 }

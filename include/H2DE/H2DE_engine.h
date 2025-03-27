@@ -42,8 +42,8 @@ private:
     bool isRunning = true;
     bool paused = false;
 
-    std::function<void(SDL_Event)> handleEvents = nullptr;
-    std::function<void()> update = nullptr;
+    std::function<void(SDL_Event)> handleEventsCall = nullptr;
+    std::function<void()> updateCall = nullptr;
 
     std::vector<H2DE_Object*> objects = {};
 
@@ -53,6 +53,7 @@ private:
     H2DE_Engine(H2DE_EngineData data);
     ~H2DE_Engine();
 
+    void update();
     void updateObjects();
 
 public:
@@ -66,6 +67,7 @@ public:
     friend void H2DE_SetUpdateCall(H2DE_Engine* engine, const std::function<void()>& call);
 
     friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
+    friend void H2DE_InitFont(H2DE_Engine* engine, const std::string& name, const H2DE_Font& font);
 
     friend unsigned int H2DE_GetCurrentFps(const H2DE_Engine* engine);
     friend unsigned int H2DE_GetFps(const H2DE_Engine* engine);
@@ -86,6 +88,7 @@ public:
     friend void H2DE_SetWindowFullscreen(const H2DE_Engine* engine, bool fullscreen);
     friend void H2DE_SetWindowResizable(const H2DE_Engine* engine, bool resizable);
     friend void H2DE_SetWindowGrab(const H2DE_Engine* engine, bool grab);
+    friend void H2DE_SetWindowRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio);
 
     friend bool H2DE_SettingsAddSection(const H2DE_Engine* engine, const std::string& section);
     friend bool H2DE_SettingsAddKey(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
@@ -113,11 +116,13 @@ public:
 
     friend class H2DE_Object;
     friend class H2DE_ButtonObject;
+    friend class H2DE_TextObject;
     friend H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
     friend H2DE_BasicObject* H2DE_CreateBasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BasicObjectData& basicObjectData);
     friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     friend H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     friend void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object);
+
 };
 
 H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);

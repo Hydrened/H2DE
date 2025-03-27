@@ -31,6 +31,15 @@ void H2DE_Engine::H2DE_Renderer::destroySounds() {
     sounds.clear();
 }
 
+// FONTS
+void H2DE_InitFont(H2DE_Engine* engine, const std::string& name, const H2DE_Font& font) {
+    if (engine->renderer->fonts.find(name) != engine->renderer->fonts.end()) {
+        std::cout << "H2DE => \033[33mWarning\033[0m: Font " << '"' << name << '"' << " has been overridden" << std::endl;
+    }
+
+    engine->renderer->fonts[name] = font;
+}
+
 // RENDER
 void H2DE_Engine::H2DE_Renderer::render() {
     clearRenderer();
@@ -64,14 +73,16 @@ void H2DE_Engine::H2DE_Renderer::renderObjects() const {
 }
 
 void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
-    if (object->od.size.x != 0.0f && object->od.size.y != 0.0f) {
-        if (H2DE_CameraContainsObject(engine, object)) {
+    bool isText = dynamic_cast<H2DE_TextObject*>(object) != nullptr; 
 
-            for (const H2DE_Surface* surface : object->getSurfaces()) {
-                if (surface) {
-                    H2DE_LevelRect rect = object->od.pos.makeRect(object->od.size);
-                    rect.w *= surface->percentage / 100.0f;
-                    renderSurface(surface, rect, object->od.absolute);
+    if ((object->od.size.x != 0.0f && object->od.size.y != 0.0f) || isText) {
+        if (H2DE_CameraContainsObject(engine, object) || isText) {
+
+            for (const H2DE_SurfaceBuffer surfaceBuffer : object->getSurfaces()) {
+                
+                if (surfaceBuffer.surface) {
+                    H2DE_LevelRect rect = (object->od.pos + surfaceBuffer.offset).makeRect(surfaceBuffer.size);
+                    renderSurface(surfaceBuffer.surface, rect, object->od.absolute);
                 }
             }
         }
@@ -203,4 +214,8 @@ H2DE_LevelPos H2DE_Engine::H2DE_Renderer::absToLvl(const H2DE_AbsPos& pos, bool 
         (static_cast<float>(pos.x) + ((absolute) ? 0.0f : absCamPos.x)) / static_cast<float>(blockSize),
         (static_cast<float>(pos.y) + ((absolute) ? 0.0f : absCamPos.y)) / static_cast<float>(blockSize),
     };
+}
+
+const std::unordered_map<std::string, H2DE_Font>& H2DE_Engine::H2DE_Renderer::getFonts() const {
+    return fonts;
 }

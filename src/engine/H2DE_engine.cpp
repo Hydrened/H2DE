@@ -77,22 +77,19 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
                         engine->click = { event.button.x, event.button.y };
                         break;
 
+                    case SDL_WINDOWEVENT:
+                        if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                            engine->window->fixRatioSize(H2DE_AbsSize{ event.window.data1, event.window.data2 });
+                        }
+                        break;
+
                     default: break;
                 }
 
-                if (engine->handleEvents) engine->handleEvents(event);
+                if (engine->handleEventsCall) engine->handleEventsCall(event);
             }
 
-            if (!engine->paused) {
-                engine->delayManager->update();
-                engine->updateObjects();
-
-                if (engine->update) {
-                    engine->update();
-                }
-            }
-
-            engine->click = std::nullopt;
+            engine->update();
 
             engine->renderer->render();
             
@@ -113,6 +110,22 @@ void H2DE_StopEngine(H2DE_Engine* engine) {
 }
 
 // UPDATE
+void H2DE_Engine::update() {
+    window->update();
+
+    if (!paused) {
+        delayManager->update();
+
+        if (updateCall) {
+            updateCall();
+        }
+
+        updateObjects();
+    }
+
+    click = std::nullopt;
+}
+
 void H2DE_Engine::updateObjects() {
     for (H2DE_Object* object : objects) {
         object->update();
@@ -121,11 +134,11 @@ void H2DE_Engine::updateObjects() {
 
 // CALLS
 void H2DE_SetHandleEventsCall(H2DE_Engine* engine, const std::function<void(SDL_Event)>& call) {
-    engine->handleEvents = call;
+    engine->handleEventsCall = call;
 }
 
 void H2DE_SetUpdateCall(H2DE_Engine* engine, const std::function<void()>& call) {
-    engine->update = call;
+    engine->updateCall = call;
 }
 
 // FPS

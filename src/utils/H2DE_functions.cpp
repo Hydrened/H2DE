@@ -1,7 +1,139 @@
 #include "H2DE/H2DE_utils.h"
 
-float H2DE_Lerp(float min, float max, float blend) {
-    return min + blend * (max - min);
+float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EASING_LINEAR) {
+    blend = std::clamp(blend, 0.0f, 1.0f);
+
+    switch (easing) {
+        case H2DE_EASING_EASE_IN: {
+            blend = blend * blend;
+            break;
+        }
+
+        case H2DE_EASING_EASE_OUT: {
+            blend = 1.0f - (1.0f - blend) * (1.0f - blend);
+            break;
+        }
+
+        case H2DE_EASING_EASE_IN_OUT: {
+            blend = (blend < 0.5f) ? 2.0f * blend * blend : 1.0f - powf(-2.0f * blend + 2.0f, 2) / 2.0f;
+            break;
+        }
+
+        // case H2DE_EASING_BACK_IN: {
+        //     blend = blend * blend * (2.70158f * blend - 1.70158f);
+        //     break;
+        // }
+
+        // case H2DE_EASING_BACK_OUT: {
+        //     float c1 = 1.70158f;
+        //     float c3 = c1 + 1.0f;
+        //     blend -= 1.0f;
+        //     blend = 1.0f + blend * blend * (c3 * blend + c1);
+        //     break;
+        // }
+
+        // case H2DE_EASING_BACK_IN_OUT: {
+        //     float c1 = 1.70158f;
+        //     float c2 = c1 * 1.525f;
+        
+        //     if (blend < 0.5f) {
+        //         float t = blend * 2.0f;
+        //         blend = (t * t * ((c2 + 1.0f) * t - c2)) / 2.0f;
+
+        //     } else {
+        //         float t = (blend * 2.0f) - 2.0f;
+        //         blend = (1.0f + (t * t * ((c2 + 1.0f) * t + c2))) / 2.0f;
+        //     }
+        // }
+
+        // case H2DE_EASING_ELASTIC_IN: {
+        //     blend = (blend == 0.0f || blend == 1.0f)
+        //         ? blend
+        //         : -powf(2.0f, 10.0f * (blend - 1.0f)) * sinf((blend - 1.075f) * (2.0f * M_PI) / 0.3f);
+        //     break;
+        // }
+
+        // case H2DE_EASING_ELASTIC_OUT: {
+        //     blend = (blend == 0.0f || blend == 1.0f)
+        //         ? blend
+        //         : powf(2.0f, -10.0f * blend) * sinf((blend - 0.075f) * (2.0f * M_PI) / 0.3f) + 1.0f;
+        //     break;
+        // }
+
+        // case H2DE_EASING_ELASTIC_IN_OUT: {
+        //     blend = (blend == 0.0f || blend == 1.0f)
+        //         ? blend
+        //         : (blend < 0.5f)
+        //             ? -(powf(2.0f, 20.0f * blend - 10.0f) * sinf((20.0f * blend - 11.125f) * (2.0f * M_PI) / 4.5f)) / 2.0f
+        //             : (powf(2.0f, -20.0f * blend + 10.0f) * sinf((20.0f * blend - 11.125f) * (2.0f * M_PI) / 4.5f)) / 2.0f + 1.0f;
+        //     break;
+        // }
+
+        // case H2DE_EASING_BOUNCE_IN: {
+        //     blend = 1.0f - H2DE_Lerp(0.0f, 1.0f, 1.0f - blend, H2DE_EASING_BOUNCE_OUT);
+        //     break;
+        // }
+
+        // case H2DE_EASING_BOUNCE_OUT: {
+        //     if (blend < 1.0f / 2.75f) {
+        //         blend = 7.5625f * blend * blend;
+        //     } else if (blend < 2.0f / 2.75f) {
+        //         blend = 7.5625f * (blend -= 1.5f / 2.75f) * blend + 0.75f;
+        //     } else if (blend < 2.5f / 2.75f) {
+        //         blend = 7.5625f * (blend -= 2.25f / 2.75f) * blend + 0.9375f;
+        //     } else {
+        //         blend = 7.5625f * (blend -= 2.625f / 2.75f) * blend + 0.984375f;
+        //     }
+        //     break;
+        // }
+
+        // case H2DE_EASING_BOUNCE_IN_OUT: {
+        //     blend = (blend < 0.5f)
+        //         ? (1.0f - H2DE_Lerp(0.0f, 1.0f, 1.0f - 2.0f * blend, H2DE_EASING_BOUNCE_OUT)) / 2.0f
+        //         : (1.0f + H2DE_Lerp(0.0f, 1.0f, 2.0f * blend - 1.0f, H2DE_EASING_BOUNCE_OUT)) / 2.0f;
+        //     break;
+        // }
+
+        case H2DE_EASING_SINE_IN: {
+            blend = 1.0f - cosf((blend * M_PI) / 2.0f);
+            break;
+        }
+
+        case H2DE_EASING_SINE_OUT: {
+            blend = sinf((blend * M_PI) / 2.0f);
+            break;
+        }
+
+        case H2DE_EASING_SINE_IN_OUT: {
+            blend = -(cosf(M_PI * blend) - 1.0f) / 2.0f;
+            break;
+        }
+
+        case H2DE_EASING_EXPO_IN: {
+            blend = (blend == 0.0f) ? 0.0f : powf(2.0f, 10.0f * (blend - 1.0f));
+            break;
+        }
+
+        case H2DE_EASING_EXPO_OUT: {
+            blend = (blend == 1.0f) ? 1.0f : 1.0f - powf(2.0f, -10.0f * blend);
+            break;
+        }
+
+        case H2DE_EASING_EXPO_IN_OUT: {
+            blend = (blend == 0.0f)
+                ? 0.0f
+                : (blend == 1.0f)
+                    ? 1.0f
+                    : (blend < 0.5f)
+                        ? powf(2.0f, 20.0f * blend - 10.0f) / 2.0f
+                        : (2.0f - powf(2.0f, -20.0f * blend + 10.0f)) / 2.0f;
+            break;
+        }
+
+        default: break;
+    }
+
+    return min + (max - min) * blend;
 }
 
 float H2DE_RandomFloatInRange(float min, float max) {

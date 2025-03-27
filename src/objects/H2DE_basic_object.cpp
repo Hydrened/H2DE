@@ -24,6 +24,10 @@ void H2DE_BasicObject::update() {
 }
 
 // GETTER
-std::vector<H2DE_Surface*> H2DE_BasicObject::getSurfaces() const {
-    return { bod.surface };
+std::vector<H2DE_SurfaceBuffer> H2DE_BasicObject::getSurfaces() const {
+    H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
+    buffer.surface = bod.surface;
+    buffer.offset = { 0.0f, 0.0f };
+    buffer.size = od.size;
+    return { buffer };
 }

@@ -134,6 +134,11 @@ void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos) {
 
 void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size) {
     object->od.size = size;
+
+    H2DE_TextObject* text = dynamic_cast<H2DE_TextObject*>(object);
+    if (text) {
+        text->resetSurfaces();
+    }
 }
 
 void H2DE_SetObjectIndex(H2DE_Object* object, int index) {

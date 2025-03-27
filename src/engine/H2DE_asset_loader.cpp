@@ -53,7 +53,7 @@ void H2DE_Engine::H2DE_AssetLoader::importTexture(const std::filesystem::path& f
 
     if (texture != nullptr) {
         if (textureBuffer.find(name) != textureBuffer.end()) {
-            std::cout << "H2DE => Warning: Texture " << '"' << name << '"' << " has been overridden" << std::endl;
+            std::cout << "H2DE => \033[33mWarning\033[0m: Texture " << '"' << name << '"' << " has been overridden" << std::endl;
         }
 
         textureBuffer[name] = texture;
@@ -68,7 +68,7 @@ void H2DE_Engine::H2DE_AssetLoader::importSound(const std::filesystem::path& fil
 
     if (sound != nullptr) {
         if (soundBuffer.find(name) != soundBuffer.end()) {
-            std::cout << "H2DE => Warning: Sound " << '"' << name << '"' << " has been overridden" << std::endl;
+            std::cout << "H2DE => \033[33mWarning\033[0m: Sound " << '"' << name << '"' << " has been overridden" << std::endl;
         }
     
         soundBuffer[name] = sound;

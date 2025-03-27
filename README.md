@@ -25,15 +25,18 @@ H2DE is a simple and open-source 2D game engine built with C++. It uses SDL2 for
 1. Create the engine's data 
 ```cpp
 H2DE_EngineData data = H2DE_EngineData();
+
+data.window.title = "Title";
 data.window.fps = 60;
-data.window.fullscreen = false;
 data.window.pos = { 100, 100 };
+data.window.size = { 1280, 720 };
+data.window.fullscreen = false;
 data.window.resizable = true;
 data.window.saveState = true;
-data.window.size = { 1280, 720 };
-data.window.title = "WINDOW";
-data.camera.defaultPos = { 0.0f, 0.0f };
+data.window.ratio = H2DE_WINDOW_RATIO_NO_RATIO;
+
 data.camera.width = 20.0f;
+data.camera.defaultPos = { 0.0f, 0.0f };
 data.camera.padding = { 1.0f, 1.0f, 1.0f, 1.0f };
 data.camera.smoothing = 0.5f;
 ```
@@ -53,6 +56,7 @@ H2DE_LoadAssets(engine, "assets");
 H2DE_SetGameHandleEventCall(engine, [](SDL_Event event) {
     // Handling events code
 });
+
 H2DE_SetGameUpdateCall(engine, []() {
     // Updating code
 });
