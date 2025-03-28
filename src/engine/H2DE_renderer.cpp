@@ -8,7 +8,6 @@ H2DE_Engine::H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, SDL_Renderer* r, std::
 // CLEANUP
 H2DE_Engine::H2DE_Renderer::~H2DE_Renderer() {
     destroyTextures();
-    destroySounds();
 }
 
 void H2DE_Engine::H2DE_Renderer::destroyTextures() {
@@ -19,25 +18,6 @@ void H2DE_Engine::H2DE_Renderer::destroyTextures() {
     }
 
     textures.clear();
-}
-
-void H2DE_Engine::H2DE_Renderer::destroySounds() {
-    for (const auto& [name, sound] : sounds) {
-        if (sound) {
-            // delete sound; // crash -1073740940
-        }
-    }
-
-    sounds.clear();
-}
-
-// FONTS
-void H2DE_InitFont(H2DE_Engine* engine, const std::string& name, const H2DE_Font& font) {
-    if (engine->renderer->fonts.find(name) != engine->renderer->fonts.end()) {
-        std::cout << "H2DE => \033[33mWarning\033[0m: Font " << '"' << name << '"' << " has been overridden" << std::endl;
-    }
-
-    engine->renderer->fonts[name] = font;
 }
 
 // RENDER

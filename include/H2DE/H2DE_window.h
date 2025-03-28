@@ -12,6 +12,7 @@ private:
     H2DE_WindowData data;
 
     H2DE_AbsSize oldSize = { 0, 0 };
+    float customRatio = 0.0f;
 
     void initSDL() const;
     void create();

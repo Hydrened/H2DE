@@ -13,7 +13,7 @@ H2DE_Engine::H2DE_DelayManager::~H2DE_DelayManager() {
 // UPDATE
 void H2DE_Engine::H2DE_DelayManager::update() {
     for (auto& [delayId, delay] : delays) {
-        if ((!delay.pauseSensitive && H2DE_IsPaused(engine)) || delay.finished) {
+        if ((delay.pauseSensitive && H2DE_IsPaused(engine)) || delay.finished) {
             continue;
         }
 

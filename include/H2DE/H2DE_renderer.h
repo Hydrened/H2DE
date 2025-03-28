@@ -11,11 +11,9 @@ private:
     std::vector<H2DE_Object*>& objects;
 
     std::unordered_map<std::string, SDL_Texture*> textures;
-    std::unordered_map<std::string, Mix_Chunk*> sounds;
     std::unordered_map<std::string, H2DE_Font> fonts;
 
     void destroyTextures();
-    void destroySounds();
     
     void clearRenderer() const;
     void sortObjects();

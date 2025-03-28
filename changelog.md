@@ -1,3 +1,12 @@
+## H2DE-3.0.4
+#### ADDED
+- other lerp easing
+- custom window ratio (default size's ratio)
+- play song
+- play sfx
+#### FIXED
+- delay not updating on pause
+
 ## H2DE-3.0.3
 #### ADDED
 - window ratio

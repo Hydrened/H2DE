@@ -1,5 +1,6 @@
 #include "H2DE/H2DE_asset_loader.h"
 #include "H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE_volume.h"
 
 // INIT
 H2DE_Engine::H2DE_AssetLoader::H2DE_AssetLoader(H2DE_Engine* e, SDL_Renderer* r) : engine(e), renderer(r) {
@@ -31,9 +32,17 @@ void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory
     }
 
     engine->renderer->textures = engine->assetLoader->textureBuffer;
-    engine->renderer->sounds = engine->assetLoader->soundBuffer;
+    engine->volume->sounds = engine->assetLoader->soundBuffer;
     
     std::cout << "H2DE => Loading complete" << std::endl;
+}
+
+void H2DE_InitFont(H2DE_Engine* engine, const std::string& name, const H2DE_Font& font) {
+    if (engine->renderer->fonts.find(name) != engine->renderer->fonts.end()) {
+        std::cout << "H2DE => \033[33mWarning\033[0m: Font " << '"' << name << '"' << " has been overridden" << std::endl;
+    }
+
+    engine->renderer->fonts[name] = font;
 }
 
 // IMPORT

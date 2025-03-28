@@ -25,6 +25,7 @@ private:
 
     class H2DE_Window;
     class H2DE_Renderer;
+    class H2DE_Volume;
     class H2DE_AssetLoader;
     class H2DE_Settings;
     class H2DE_Camera;
@@ -32,6 +33,7 @@ private:
 
     H2DE_Window* window = nullptr;
     H2DE_Renderer* renderer = nullptr;
+    H2DE_Volume* volume = nullptr;
     H2DE_AssetLoader* assetLoader = nullptr;
     H2DE_Settings* settings = nullptr;
     H2DE_Camera* camera = nullptr;
@@ -96,6 +98,17 @@ public:
     friend std::string H2DE_SettingsGetKeyString(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& defaultValue);
     friend bool H2DE_SettingsGetKeyBool(const H2DE_Engine* engine, const std::string& section, const std::string& key, bool defaultValue);
     friend bool H2DE_SettingsSetKeyValue(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
+
+    friend void H2DE_PlaySong(const H2DE_Engine* engine, const std::string& songName, int loops, bool pauseSensitive);
+    friend int H2DE_PlaySfx(const H2DE_Engine* engine, const std::string& sfxName, int loops, bool pauseSensitive);
+    friend void H2DE_StopSong(const H2DE_Engine* engine);
+    friend void H2DE_StopSfx(const H2DE_Engine* engine, int sfxId);
+    friend void H2DE_PauseSong(const H2DE_Engine* engine);
+    friend void H2DE_PauseSfx(const H2DE_Engine* engine, int sfxId);
+    friend void H2DE_ResumeSong(const H2DE_Engine* engine);
+    friend void H2DE_ResumeSfx(const H2DE_Engine* engine, int sfxId);
+    friend void H2DE_SetSongVolume(const H2DE_Engine* engine, int volume);
+    friend void H2DE_SetSfxVolume(const H2DE_Engine* engine, int volume);
 
     friend unsigned int H2DE_Delay(H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, int loop, bool pauseSensitive);
     friend void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id);

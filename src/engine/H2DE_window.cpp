@@ -60,6 +60,7 @@ void H2DE_Engine::H2DE_Window::create() {
         throw std::runtime_error("H2DE-109: Error creating window => SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
     }
 
+    customRatio = (H2DE_WINDOW_RATIO_CUSTOM) ? static_cast<float>(data.size.x) / static_cast<float>(data.size.y) : 0.0f;
     fixRatioSize(H2DE_AbsSize{ w, h });
 }
 
@@ -85,9 +86,11 @@ void H2DE_Engine::H2DE_Window::quitSDL() const {
     IMG_Quit();
     Mix_Quit();
     SDL_Quit();
+
     if (window) {
         SDL_DestroyWindow(window);
     }
+    
     if (renderer) {
         SDL_DestroyRenderer(renderer);
     }
@@ -113,12 +116,9 @@ void H2DE_Engine::H2DE_Window::fixRatioSize(const H2DE_AbsSize& size) {
         return;
     }
 
-    if (oldSize == size) {
-        return;
-    }
-
     float ratio;
     switch (data.ratio) {
+        case H2DE_WINDOW_RATIO_CUSTOM: ratio = customRatio; break;
         case H2DE_WINDOW_RATIO_4_3: ratio = 4.0f / 3.0f; break;
         case H2DE_WINDOW_RATIO_3_2: ratio = 3.0f / 2.0f; break;
         case H2DE_WINDOW_RATIO_5_4: ratio = 5.0f / 4.0f; break;
@@ -177,7 +177,7 @@ void H2DE_SetWindowPos(const H2DE_Engine* engine, const H2DE_AbsPos& pos) {
 
 void H2DE_SetWindowSize(const H2DE_Engine* engine, const H2DE_AbsSize& size) {
     SDL_SetWindowSize(engine->window->window, size.x, size.y);
-    H2DE_SetWindowSize(engine, size);
+    engine->window->fixRatioSize(H2DE_GetWindowSize(engine));
 }
 
 void H2DE_SetWindowMinimumSize(const H2DE_Engine* engine, const H2DE_AbsSize& minimumSize) {
@@ -224,8 +224,6 @@ void H2DE_SetWindowGrab(const H2DE_Engine* engine, bool grab) {
 
 void H2DE_SetWindowRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio) {
     engine->window->data.ratio = ratio;
-
-    if (ratio != H2DE_WINDOW_RATIO_NO_RATIO) {
-        engine->window->fixRatioSize(H2DE_GetWindowSize(engine));
-    }
+    engine->window->customRatio = (H2DE_WINDOW_RATIO_CUSTOM) ? static_cast<float>(engine->window->data.size.x) / static_cast<float>(engine->window->data.size.y) : 0.0f;
+    engine->window->fixRatioSize(H2DE_GetWindowSize(engine));
 }

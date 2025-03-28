@@ -1,6 +1,7 @@
 #include "H2DE/H2DE_engine.h"
 #include "H2DE/H2DE_window.h"
 #include "H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE_volume.h"
 #include "H2DE/H2DE_asset_loader.h"
 #include "H2DE/H2DE_settings.h"
 #include "H2DE/H2DE_camera.h"
@@ -18,9 +19,12 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
         settings = new H2DE_Settings();
         window = new H2DE_Window(this, data.window);
         renderer = new H2DE_Renderer(this, window->renderer, objects);
+        volume = new H2DE_Volume(this);
         assetLoader = new H2DE_AssetLoader(this, window->renderer);
         camera = new H2DE_Camera(this, data.camera);
         delayManager = new H2DE_DelayManager(this);
+
+        volume->loadData();
 
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
@@ -42,6 +46,7 @@ H2DE_Engine::~H2DE_Engine() {
     delete delayManager;
     delete camera;
     delete assetLoader;
+    delete volume;
     delete renderer;
     delete window;
     delete settings;
@@ -113,9 +118,9 @@ void H2DE_StopEngine(H2DE_Engine* engine) {
 void H2DE_Engine::update() {
     window->update();
 
-    if (!paused) {
-        delayManager->update();
+    delayManager->update();
 
+    if (!paused) {
         if (updateCall) {
             updateCall();
         }
@@ -161,10 +166,12 @@ bool H2DE_IsPaused(const H2DE_Engine* engine) {
 
 void H2DE_Pause(H2DE_Engine* engine) {
     engine->paused = true;
+    engine->volume->pause();
 }
 
 void H2DE_Resume(H2DE_Engine* engine) {
     engine->paused = false;
+    engine->volume->resume();
 }
 
 // MOUSE
