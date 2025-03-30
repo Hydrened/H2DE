@@ -22,3 +22,15 @@ void H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color) {
 void H2DE_SetSurfaceScaleMode(H2DE_Surface* surface, H2DE_ScaleMode scaleMode) {
     surface->sd.scaleMode = scaleMode;
 }
+
+// void H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation) {
+//     surface->sd.transform.rotation = rotation;
+// }
+
+// void H2DE_SetSurfacePivot(H2DE_Surface* surface, const H2DE_LevelPos& pivot) {
+//     surface->sd.transform.pivot = pivot;
+// }
+
+// void H2DE_SetSurfaceFlip(H2DE_Surface* surface, H2DE_Flip flip) {
+//     surface->sd.transform.flip = flip;
+// }

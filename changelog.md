@@ -1,3 +1,16 @@
+## H2DE-3.0.5
+#### ADDED
+- timeline
+- camera object reference
+- camera padding
+- camera smoothing
+- camera locked to reference
+- camera padding from reference
+#### FIXED
+- object not rendering outside of camera
+#### REMOVED
+- delay loop
+
 ## H2DE-3.0.4
 #### ADDED
 - other lerp easing

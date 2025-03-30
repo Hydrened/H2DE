@@ -5,7 +5,8 @@
 #include "H2DE/H2DE_asset_loader.h"
 #include "H2DE/H2DE_settings.h"
 #include "H2DE/H2DE_camera.h"
-#include "H2DE/H2DE_delay_manager.h"
+#include "H2DE/H2DE_delay.h"
+#include "H2DE/H2DE_timeline.h"
 
 // INIT
 H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
@@ -22,7 +23,8 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
         volume = new H2DE_Volume(this);
         assetLoader = new H2DE_AssetLoader(this, window->renderer);
         camera = new H2DE_Camera(this, data.camera);
-        delayManager = new H2DE_DelayManager(this);
+        delay = new H2DE_Delay(this);
+        timeline = new H2DE_Timeline(this);
 
         volume->loadData();
 
@@ -43,7 +45,7 @@ H2DE_Engine::~H2DE_Engine() {
         H2DE_DestroyObject(this, object);
     }
     
-    delete delayManager;
+    delete delay;
     delete camera;
     delete assetLoader;
     delete volume;
@@ -117,8 +119,9 @@ void H2DE_StopEngine(H2DE_Engine* engine) {
 // UPDATE
 void H2DE_Engine::update() {
     window->update();
-
-    delayManager->update();
+    
+    delay->update();
+    timeline->update();
 
     if (!paused) {
         if (updateCall) {
@@ -126,6 +129,7 @@ void H2DE_Engine::update() {
         }
 
         updateObjects();
+        camera->update();
     }
 
     click = std::nullopt;

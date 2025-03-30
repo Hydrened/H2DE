@@ -39,7 +39,7 @@ std::vector<H2DE_SurfaceBuffer> H2DE_BarObject::getSurfaces() const {
     frontBuffer.surface = bod.front;
     frontBuffer.offset = { 0.0f, 0.0f };
     frontBuffer.size = od.size;
-    frontBuffer.size.x *= percentage;
+    frontBuffer.size.x *= std::clamp(percentage, 0.0f, 100.0f) / 100.0f;
 
     return { backgroundBuffer, frontBuffer };
 }

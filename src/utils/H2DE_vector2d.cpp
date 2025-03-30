@@ -52,6 +52,11 @@ H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator/=(float
     return *this;
 }
 
+template<typename H2DE_Vector2D_T>
+H2DE_Vector2D<H2DE_Vector2D_T>::operator SDL_Point() const {
+    return { static_cast<int>(x), static_cast<int>(y) };
+}
+
 // COMPARISONS
 template<typename H2DE_Vector2D_T>
 const bool H2DE_Vector2D<H2DE_Vector2D_T>::operator==(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {

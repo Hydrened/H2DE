@@ -29,7 +29,8 @@ private:
     class H2DE_AssetLoader;
     class H2DE_Settings;
     class H2DE_Camera;
-    class H2DE_DelayManager;
+    class H2DE_Delay;
+    class H2DE_Timeline;
 
     H2DE_Window* window = nullptr;
     H2DE_Renderer* renderer = nullptr;
@@ -37,7 +38,8 @@ private:
     H2DE_AssetLoader* assetLoader = nullptr;
     H2DE_Settings* settings = nullptr;
     H2DE_Camera* camera = nullptr;
-    H2DE_DelayManager* delayManager = nullptr;
+    H2DE_Delay* delay = nullptr;
+    H2DE_Timeline* timeline = nullptr;
 
     unsigned int fps;
     unsigned int currentFPS = 0;
@@ -99,31 +101,36 @@ public:
     friend bool H2DE_SettingsGetKeyBool(const H2DE_Engine* engine, const std::string& section, const std::string& key, bool defaultValue);
     friend bool H2DE_SettingsSetKeyValue(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value);
 
-    friend void H2DE_PlaySong(const H2DE_Engine* engine, const std::string& songName, int loops, bool pauseSensitive);
-    friend int H2DE_PlaySfx(const H2DE_Engine* engine, const std::string& sfxName, int loops, bool pauseSensitive);
+    friend void H2DE_PlaySong(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive);
+    friend int H2DE_PlaySfx(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive);
     friend void H2DE_StopSong(const H2DE_Engine* engine);
-    friend void H2DE_StopSfx(const H2DE_Engine* engine, int sfxId);
+    friend void H2DE_StopSfx(const H2DE_Engine* engine, int id);
     friend void H2DE_PauseSong(const H2DE_Engine* engine);
-    friend void H2DE_PauseSfx(const H2DE_Engine* engine, int sfxId);
+    friend void H2DE_PauseSfx(const H2DE_Engine* engine, int id);
     friend void H2DE_ResumeSong(const H2DE_Engine* engine);
-    friend void H2DE_ResumeSfx(const H2DE_Engine* engine, int sfxId);
+    friend void H2DE_ResumeSfx(const H2DE_Engine* engine, int id);
     friend void H2DE_SetSongVolume(const H2DE_Engine* engine, int volume);
     friend void H2DE_SetSfxVolume(const H2DE_Engine* engine, int volume);
 
-    friend unsigned int H2DE_Delay(H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, int loop, bool pauseSensitive);
+    friend unsigned int H2DE_Delay(const H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, bool pauseSensitive);
     friend void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id);
-    friend void H2DE_StopDelay(H2DE_Engine* engine, unsigned int id, bool call);
+    friend void H2DE_StopDelay(const H2DE_Engine* engine, unsigned int id, bool call);
+
+    friend unsigned int H2DE_CreateTimeline(const H2DE_Engine* engine, unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive);
+    friend void H2DE_ResetTimeline(const H2DE_Engine* engine, unsigned int id);
+    friend void H2DE_StopTimeline(const H2DE_Engine* engine, unsigned int id, bool call);
 
     friend H2DE_LevelPos H2DE_GetCameraPos(const H2DE_Engine* engine);
     friend H2DE_LevelSize H2DE_GetCameraSize(const H2DE_Engine* engine);
     friend bool H2DE_CameraContainsObject(const H2DE_Engine* engine, H2DE_Object* object);
-    friend bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_Hitbox& hitbox, bool absolute);
+    friend bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute);
     friend void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos);
     friend void H2DE_SetCameraWidth(const H2DE_Engine* engine, float width);
     friend void H2DE_SetCameraSmoothing(const H2DE_Engine* engine, float smoothing);
     friend void H2DE_SetCameraReference(const H2DE_Engine* engine, H2DE_Object* object);
     friend void H2DE_SetCameraLockedToReference(const H2DE_Engine* engine, bool state);
     friend void H2DE_SetCameraPadding(const H2DE_Engine* engine, const H2DE_LevelPadding& padding);
+    friend void H2DE_SetCameraPaddingFromReference(const H2DE_Engine* engine, const H2DE_LevelPadding& padding);
 
     friend H2DE_LevelPos H2DE_GetMousePos(const H2DE_Engine* engine, bool absolute);
 

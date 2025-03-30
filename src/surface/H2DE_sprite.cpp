@@ -16,7 +16,7 @@ void H2DE_Sprite::initDelay() {
 
     delayId = H2DE_Delay(engine, spd.delay, [this]() {
         nextFrame();
-    }, -1, spd.pauseSensitive);
+    }, spd.pauseSensitive);
 }
 
 // CLEANUP

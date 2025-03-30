@@ -101,6 +101,8 @@ struct H2DE_Vector2D {
         return os;
     }
 
+    operator SDL_Point() const;
+
     H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D& size) const;
 
     const bool isNull() const;
@@ -274,10 +276,17 @@ struct H2DE_Font {
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
 };
 
+struct H2DE_Transform {
+    H2DE_LevelPos pivot = { 0.0f, 0.0f };
+    float rotation = 0.0f;
+    H2DE_Flip flip = H2DE_FLIP_NONE;
+};
+
 struct H2DE_ObjectData {
     H2DE_LevelPos pos = { 0.0f, 0.0f };
     H2DE_LevelSize size = { 1.0f, 1.0f };
     std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
+    // H2DE_Transform transform = H2DE_Transform();
     bool absolute = false;
     int index = 0;
 };
@@ -285,6 +294,7 @@ struct H2DE_ObjectData {
 struct H2DE_SurfaceData {
     std::string textureName = "";
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    // H2DE_Transform transform = H2DE_Transform();
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
 };
 

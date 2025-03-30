@@ -41,12 +41,12 @@ void H2DE_Engine::H2DE_Volume::resume() const {
     }
 }
 
-void H2DE_PlaySong(const H2DE_Engine* engine, const std::string& songName, int loops, bool pauseSensitive) {
-    engine->volume->playChunk(true, songName, loops, pauseSensitive);
+void H2DE_PlaySong(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive) {
+    engine->volume->playChunk(true, name, loops, pauseSensitive);
 }
 
-int H2DE_PlaySfx(const H2DE_Engine* engine, const std::string& sfxName, int loops, bool pauseSensitive) {
-    return engine->volume->playChunk(false, sfxName, loops, pauseSensitive);
+int H2DE_PlaySfx(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive) {
+    return engine->volume->playChunk(false, name, loops, pauseSensitive);
 }
 
 int H2DE_Engine::H2DE_Volume::playChunk(bool isSong, const std::string& soundName, int loops, bool pauseSensitive) {
@@ -69,24 +69,24 @@ void H2DE_StopSong(const H2DE_Engine* engine) {
     Mix_HaltChannel(0);
 }
 
-void H2DE_StopSfx(const H2DE_Engine* engine, int sfxId) {
-    Mix_HaltChannel(sfxId);
+void H2DE_StopSfx(const H2DE_Engine* engine, int id) {
+    Mix_HaltChannel(id);
 }
 
 void H2DE_PauseSong(const H2DE_Engine* engine) {
     Mix_Pause(0);
 }
 
-void H2DE_PauseSfx(const H2DE_Engine* engine, int sfxId) {
-    Mix_Pause(sfxId);
+void H2DE_PauseSfx(const H2DE_Engine* engine, int id) {
+    Mix_Pause(id);
 }
 
 void H2DE_ResumeSong(const H2DE_Engine* engine) {
     Mix_Resume(0);
 }
 
-void H2DE_ResumeSfx(const H2DE_Engine* engine, int sfxId) {
-    Mix_Resume(sfxId);
+void H2DE_ResumeSfx(const H2DE_Engine* engine, int id) {
+    Mix_Resume(id);
 }
 
 // GETTER

@@ -73,7 +73,7 @@ void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
 
     for (const auto& [name, hitbox] : H2DE_GetObjectHitboxes(object)) {
         if (isVisible(hitbox.color)) {
-            if (H2DE_CameraContainsHitbox(engine, hitbox, absolute)) {
+            if (H2DE_CameraContainsHitbox(engine, pos, hitbox, absolute)) {
                 renderHitbox(pos, hitbox, absolute);
             }
         }
@@ -90,9 +90,12 @@ void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_Surface* surface, cons
 
     SDL_Rect destRect = lvlToAbs(rect, absolute);
     std::optional<SDL_Rect> srcRect = surface->getSrcRect();
-    int rotation = 0; // temp
-    SDL_Point pivot = { 0, 0 }; // temp
-    SDL_RendererFlip flip = getFlip(H2DE_FLIP_NONE); // temp
+    // float rotation = surface->sd.transform.rotation;
+    // SDL_Point pivot = lvlToAbs(surface->sd.transform.pivot, absolute);
+    // SDL_RendererFlip flip = getFlip(surface->sd.transform.flip);
+    float rotation = 0.0f;
+    SDL_Point pivot = { 0, 0 };
+    SDL_RendererFlip flip = getFlip(H2DE_FLIP_NONE);
 
     SDL_Texture* texture = it->second;
     H2DE_ColorRGB color = surface->sd.color;

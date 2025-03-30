@@ -25,14 +25,14 @@ public:
     void pause() const;
     void resume() const;
 
-    friend void H2DE_PlaySong(const H2DE_Engine* engine, const std::string& songName, int loops, bool pauseSensitive);
-    friend int H2DE_PlaySfx(const H2DE_Engine* engine, const std::string& sfxName, int loops, bool pauseSensitive);
+    friend void H2DE_PlaySong(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive);
+    friend int H2DE_PlaySfx(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive);
     friend void H2DE_StopSong(const H2DE_Engine* engine);
-    friend void H2DE_StopSfx(const H2DE_Engine* engine, int sfxId);
+    friend void H2DE_StopSfx(const H2DE_Engine* engine, int id);
     friend void H2DE_PauseSong(const H2DE_Engine* engine);
-    friend void H2DE_PauseSfx(const H2DE_Engine* engine, int sfxId);
+    friend void H2DE_PauseSfx(const H2DE_Engine* engine, int id);
     friend void H2DE_ResumeSong(const H2DE_Engine* engine);
-    friend void H2DE_ResumeSfx(const H2DE_Engine* engine, int sfxId);
+    friend void H2DE_ResumeSfx(const H2DE_Engine* engine, int id);
 
     friend void H2DE_SetSongVolume(const H2DE_Engine* engine, int volume);
     friend void H2DE_SetSfxVolume(const H2DE_Engine* engine, int volume);
