@@ -20,6 +20,11 @@ void H2DE_Engine::H2DE_Renderer::destroyTextures() {
     textures.clear();
 }
 
+// DEBUG
+void H2DE_DebugObjects(const H2DE_Engine* engine, bool state) {
+    engine->renderer->debug = state;
+}
+
 // RENDER
 void H2DE_Engine::H2DE_Renderer::render() {
     clearRenderer();
@@ -58,7 +63,7 @@ void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
     if ((object->od.size.x != 0.0f && object->od.size.y != 0.0f) || isText) {
         if (H2DE_CameraContainsObject(engine, object) || isText) {
 
-            for (const H2DE_SurfaceBuffer surfaceBuffer : object->getSurfaces()) {
+            for (const H2DE_SurfaceBuffer surfaceBuffer : object->getSurfaceBuffers()) {
                 
                 if (surfaceBuffer.surface) {
                     H2DE_LevelRect rect = (object->od.pos + surfaceBuffer.offset).makeRect(surfaceBuffer.size);
@@ -66,6 +71,10 @@ void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
                 }
             }
         }
+    }
+
+    if (!debug) {
+        return;
     }
 
     H2DE_LevelPos pos = H2DE_GetObjectPos(object);

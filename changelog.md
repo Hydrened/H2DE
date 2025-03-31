@@ -1,3 +1,17 @@
+## H2DE-3.0.6
+#### ADDED
+- hitboxes debug
+- easing effect for set object pos
+- easing effect for set object size
+- easing effect for set bar object value
+- set bar min and max
+- get basic object surface
+- function to call hover, out and click calls for buttons
+- set button onhover, onout and onclick
+- set text object tets, font, font size, spacing, text align and color
+#### FIXED
+- first word is too long in text object
+
 ## H2DE-3.0.5
 #### ADDED
 - timeline

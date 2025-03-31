@@ -142,7 +142,7 @@ public:
     friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     friend H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     friend void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object);
-
+    friend void H2DE_DebugObjects(const H2DE_Engine* engine, bool state);
 };
 
 H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);

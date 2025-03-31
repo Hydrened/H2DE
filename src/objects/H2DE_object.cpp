@@ -132,6 +132,15 @@ void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos) {
     object->od.pos = pos;
 }
 
+void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    const H2DE_LevelPos defaultPos = H2DE_GetObjectPos(object);
+    const H2DE_LevelPos posToAdd = pos - defaultPos;
+
+    H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultPos, posToAdd](float blend) {
+        H2DE_SetObjectPos(object, defaultPos + (posToAdd * blend));
+    }, nullptr, 0, pauseSensitive);
+}
+
 void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size) {
     object->od.size = size;
 
@@ -139,6 +148,15 @@ void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size) {
     if (text) {
         text->resetSurfaces();
     }
+}
+
+void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    const H2DE_LevelSize defaultSize = H2DE_GetObjectSize(object);
+    const H2DE_LevelSize sizeToAdd = size - defaultSize;
+
+    H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultSize, sizeToAdd](float blend) {
+        H2DE_SetObjectSize(object, defaultSize + (sizeToAdd * blend));
+    }, nullptr, 0, pauseSensitive);
 }
 
 void H2DE_SetObjectIndex(H2DE_Object* object, int index) {

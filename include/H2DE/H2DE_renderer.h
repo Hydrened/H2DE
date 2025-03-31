@@ -12,6 +12,7 @@ private:
 
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, H2DE_Font> fonts;
+    bool debug = false;
 
     void destroyTextures();
     
@@ -40,6 +41,8 @@ public:
 
     friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
     friend void H2DE_InitFont(H2DE_Engine* engine, const std::string& name, const H2DE_Font& font);
+    friend void H2DE_DebugObjects(const H2DE_Engine* engine, bool state);
+
     H2DE_LevelPos absToLvl(const H2DE_AbsPos& pos, bool absolute) const;
 
     const std::unordered_map<std::string, H2DE_Font>& getFonts() const;

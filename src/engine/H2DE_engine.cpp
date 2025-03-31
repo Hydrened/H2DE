@@ -5,7 +5,6 @@
 #include "H2DE/H2DE_asset_loader.h"
 #include "H2DE/H2DE_settings.h"
 #include "H2DE/H2DE_camera.h"
-#include "H2DE/H2DE_delay.h"
 #include "H2DE/H2DE_timeline.h"
 
 // INIT
@@ -23,7 +22,6 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
         volume = new H2DE_Volume(this);
         assetLoader = new H2DE_AssetLoader(this, window->renderer);
         camera = new H2DE_Camera(this, data.camera);
-        delay = new H2DE_Delay(this);
         timeline = new H2DE_Timeline(this);
 
         volume->loadData();
@@ -45,7 +43,6 @@ H2DE_Engine::~H2DE_Engine() {
         H2DE_DestroyObject(this, object);
     }
     
-    delete delay;
     delete camera;
     delete assetLoader;
     delete volume;
@@ -120,7 +117,6 @@ void H2DE_StopEngine(H2DE_Engine* engine) {
 void H2DE_Engine::update() {
     window->update();
     
-    delay->update();
     timeline->update();
 
     if (!paused) {
@@ -181,4 +177,17 @@ void H2DE_Resume(H2DE_Engine* engine) {
 // MOUSE
 H2DE_LevelPos H2DE_GetMousePos(const H2DE_Engine* engine, bool absolute) {
     return engine->renderer->absToLvl(engine->mousePos, absolute);
+}
+
+// DELAY
+unsigned int H2DE_Delay(const H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, bool pauseSensitive) {
+    return H2DE_CreateTimeline(engine, ms, H2DE_EASING_LINEAR, nullptr, callback, 0, pauseSensitive);
+}
+
+void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id) {
+    H2DE_ResetTimeline(engine, id);
+}
+
+void H2DE_StopDelay(const H2DE_Engine* engine, unsigned int id, bool call) {
+    H2DE_StopTimeline(engine, id, call);
 }

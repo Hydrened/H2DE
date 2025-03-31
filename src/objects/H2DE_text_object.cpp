@@ -105,7 +105,7 @@ void H2DE_TextObject::resetSurfaces() {
 }
 
 // GETTER
-std::vector<H2DE_SurfaceBuffer> H2DE_TextObject::getSurfaces() const {
+std::vector<H2DE_SurfaceBuffer> H2DE_TextObject::getSurfaceBuffers() const {
     return surfaceBuffers;
 }
 
@@ -146,7 +146,6 @@ std::vector<std::vector<std::string>> H2DE_TextObject::getLines() const {
         const int wordLength = word.length();
 
         if (currentLineLength + wordLength > maxLineLength) {
-
             std::vector<std::string>& currentLine = lines[currentLineIndex];
 
             if (currentLine.size() != 0) {
@@ -161,6 +160,10 @@ std::vector<std::vector<std::string>> H2DE_TextObject::getLines() const {
 
             } else {
                 lines.at(currentLineIndex).push_back(word);
+
+                if (currentLineLength == 0) {
+                    currentLineIndex++;
+                }
                 continue;
             }
         }
@@ -194,4 +197,67 @@ float H2DE_TextObject::getLineStartOffsetX(const std::vector<std::string>& line)
 
         default: return 0.0f;
     }
+}
+
+// SETTER
+void H2DE_SetTextObjectText(H2DE_TextObject* textObject, const std::string& text) {
+    textObject->tod.text = text;
+    textObject->resetSurfaces();
+}
+
+void H2DE_SetTextObjectFont(H2DE_TextObject* textObject, const std::string& font) {
+    textObject->tod.font = font;
+    textObject->resetSurfaces();
+}
+
+void H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSize& fontSize) {
+    textObject->tod.fontSize = fontSize;
+    textObject->resetSurfaces();
+}
+
+void H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSize& fontSize, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    const H2DE_LevelSize defaultFontSize = textObject->tod.fontSize;
+    const H2DE_LevelSize fontSizeToAdd = fontSize - defaultFontSize;
+
+    H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultFontSize, fontSizeToAdd](float blend) {
+        H2DE_SetTextObjectFontSize(textObject, defaultFontSize + (fontSizeToAdd * blend));
+    }, nullptr, 0, pauseSensitive);
+}
+
+void H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize& spacing) {
+    textObject->tod.spacing = spacing;
+    textObject->resetSurfaces();
+}
+
+void H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize& spacing, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    const H2DE_LevelSize defaultSpacing = textObject->tod.spacing;
+    const H2DE_LevelSize spacingToAdd = spacing - defaultSpacing;
+
+    H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultSpacing, spacingToAdd](float blend) {
+        H2DE_SetTextObjectSpacing(textObject, defaultSpacing + (spacingToAdd * blend));
+    }, nullptr, 0, pauseSensitive);
+}
+
+void H2DE_SetTextObjectTextAlign(H2DE_TextObject* textObject, H2DE_TextAlign textAlign) {
+    textObject->tod.textAlign = textAlign;
+    textObject->resetSurfaces();
+}
+
+void H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color) {
+    textObject->tod.color = color;
+    textObject->resetSurfaces();
+}
+
+void H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    const H2DE_ColorRGB defaultColor = textObject->tod.color;
+    
+    H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultColor, color](float blend) {
+        H2DE_ColorRGB interpolatedColor = H2DE_ColorRGB();
+        interpolatedColor.r = static_cast<Uint8>(defaultColor.r + (color.r - defaultColor.r) * blend);
+        interpolatedColor.g = static_cast<Uint8>(defaultColor.g + (color.g - defaultColor.g) * blend);
+        interpolatedColor.b = static_cast<Uint8>(defaultColor.b + (color.b - defaultColor.b) * blend);
+        interpolatedColor.a = static_cast<Uint8>(defaultColor.a + (color.a - defaultColor.a) * blend);
+        
+        H2DE_SetTextObjectColor(textObject, interpolatedColor);
+    }, nullptr, 0, pauseSensitive);
 }
