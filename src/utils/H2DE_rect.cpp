@@ -6,22 +6,42 @@ template struct H2DE_Rect<float>;
 // OPERATIONS
 template<typename H2DE_Rect_T>
 H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator+(const H2DE_Rect<H2DE_Rect_T>& other) const {
-    return H2DE_Rect{ x + other.x, y + other.y, w + other.w, h + other.h };
+    return H2DE_Rect{
+        x + other.x,
+        y + other.y,
+        w + other.w,
+        h + other.h
+    };
 }
 
 template<typename H2DE_Rect_T>
 H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator-(const H2DE_Rect<H2DE_Rect_T>& other) const {
-    return H2DE_Rect{ x - other.x, y - other.y, w - other.w, h - other.h };
+    return H2DE_Rect{
+        x - other.x,
+        y - other.y,
+        w - other.w,
+        h - other.h
+    };
 }
 
 template<typename H2DE_Rect_T>
 H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator*(float multiplier) const {
-    return H2DE_Rect{ static_cast<H2DE_Rect_T>(x * multiplier), static_cast<H2DE_Rect_T>(y * multiplier), static_cast<H2DE_Rect_T>(w * multiplier), static_cast<H2DE_Rect_T>(h * multiplier) };
+    return H2DE_Rect{
+        static_cast<H2DE_Rect_T>(x * multiplier),
+        static_cast<H2DE_Rect_T>(y * multiplier),
+        static_cast<H2DE_Rect_T>(w * multiplier),
+        static_cast<H2DE_Rect_T>(h * multiplier)
+    };
 }
 
 template<typename H2DE_Rect_T>
 H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator/(float divider) const {
-    return H2DE_Rect{ static_cast<H2DE_Rect_T>(x / divider), static_cast<H2DE_Rect_T>(y / divider), static_cast<H2DE_Rect_T>(w / divider), static_cast<H2DE_Rect_T>(h / divider) };
+    return H2DE_Rect{
+        static_cast<H2DE_Rect_T>(x / divider),
+        static_cast<H2DE_Rect_T>(y / divider),
+        static_cast<H2DE_Rect_T>(w / divider),
+        static_cast<H2DE_Rect_T>(h / divider)
+    };
 }
 
 template<typename H2DE_Rect_T>
@@ -62,7 +82,12 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) {
 
 template<typename H2DE_Rect_T>
 H2DE_Rect<H2DE_Rect_T>::operator SDL_Rect() const {
-    return SDL_Rect{ static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
+    return SDL_Rect{
+        static_cast<int>(x),
+        static_cast<int>(y),
+        static_cast<int>(w),
+        static_cast<int>(h)
+    };
 }
 
 // COMPARISONS
@@ -179,10 +204,18 @@ const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2D
 
         float minOverlap = std::min({overlapLeft, overlapRight, overlapTop, overlapBottom});
 
-        if (minOverlap == overlapLeft) return H2DE_FACE_LEFT;
-        else if (minOverlap == overlapRight) return H2DE_FACE_RIGHT;
-        else if (minOverlap == overlapTop) return H2DE_FACE_TOP;
-        else return H2DE_FACE_BOTTOM;
+        if (minOverlap == overlapLeft) {
+            return H2DE_FACE_LEFT;
+            
+        } else if (minOverlap == overlapRight) {
+            return H2DE_FACE_RIGHT;
+
+        } else if (minOverlap == overlapTop) {
+            return H2DE_FACE_TOP;
+
+        } else {
+            return H2DE_FACE_BOTTOM;
+        }
 
     } else return std::nullopt;
 }

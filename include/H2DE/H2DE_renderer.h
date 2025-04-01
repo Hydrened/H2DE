@@ -21,11 +21,12 @@ private:
 
     void renderObjects() const;
     void renderObject(H2DE_Object* object) const;
+    void renderSurfaces(H2DE_Object* object) const;
     void renderSurface(const H2DE_Surface* surface, const H2DE_LevelRect& rect, bool absolute) const;
+    void renderHitboxes(H2DE_Object* object) const;
     void renderHitbox(const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute) const;
 
     static bool isPositionGreater(H2DE_Object* object1, H2DE_Object* object2);
-    static bool isVisible(const H2DE_ColorRGB& color);
     const unsigned int getBlockSize() const;
     SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode) const;
     SDL_RendererFlip getFlip(H2DE_Flip flip) const;

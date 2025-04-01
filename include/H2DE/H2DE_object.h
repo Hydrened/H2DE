@@ -42,6 +42,8 @@ public:
     friend void H2DE_ShowObject(H2DE_Object* object);
     friend void H2DE_HideObject(H2DE_Object* object);
 
+    friend bool H2DE_CameraContainsObject(const H2DE_Engine* engine, const H2DE_Object* object);
+
     friend class H2DE_Engine;
 };
 
@@ -103,6 +105,7 @@ private:
 
 public:
     friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
+    friend H2DE_Surface* H2DE_GetButtonSurface(const H2DE_ButtonObject* button);
     friend void H2DE_HoverButton(const H2DE_ButtonObject* button);
     friend void H2DE_OutButton(const H2DE_ButtonObject* button);
     friend void H2DE_ClickButton(const H2DE_ButtonObject* button);

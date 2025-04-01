@@ -52,25 +52,58 @@ H2DE_LevelSize H2DE_GetCameraSize(const H2DE_Engine* engine) {
     return res;
 }
 
-bool H2DE_CameraContainsObject(const H2DE_Engine* engine, H2DE_Object* object) {
-    H2DE_Hitbox objectHitbox = H2DE_Hitbox();
-    objectHitbox.rect = H2DE_LevelPos{ 0.0f, 0.0f }.makeRect(H2DE_GetObjectSize(object));
-    return H2DE_CameraContainsHitbox(engine, H2DE_GetObjectPos(object), objectHitbox, H2DE_IsObjectAbsolute(object));
+bool H2DE_CameraContainsObject(const H2DE_Engine* engine, const H2DE_Object* object) {
+    const H2DE_LevelPos pos = H2DE_GetObjectPos(object);
+    const H2DE_LevelSize size = H2DE_GetObjectSize(object);
+    const H2DE_LevelRect rect = pos.makeRect(size);
+    const bool absolute = H2DE_IsObjectAbsolute(object);
+
+    if (H2DE_CameraContainsRect(engine, rect, absolute)) {
+        return true;
+    }
+
+    for (const H2DE_SurfaceBuffer& surfaceBuffer : object->getSurfaceBuffers()) {
+        const H2DE_LevelRect surfaceRect = (object->od.pos + surfaceBuffer.offset).makeRect(surfaceBuffer.size);
+
+        if (H2DE_CameraContainsRect(engine, surfaceRect, absolute)) {
+            return true;
+        }
+    }
+
+    for (const auto& [name, hitbox] : H2DE_GetObjectHitboxes(object)) {
+        if (H2DE_CameraContainsHitbox(engine, pos, hitbox, absolute)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
-bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute = false) {
+bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute) {
+    H2DE_LevelRect hitboxRect = hitbox.rect + pos.makeRect({ 0.0f, 0.0f });
+    return H2DE_CameraContainsRect(engine, hitboxRect, absolute);
+}
+
+bool H2DE_CameraContainsRect(const H2DE_Engine* engine, const H2DE_LevelRect& rect, bool absolute) {
     H2DE_LevelRect camHitbox = (absolute)
         ? engine->camera->pos.makeRect(H2DE_GetCameraSize(engine))
         : H2DE_GetCameraPos(engine).makeRect(H2DE_GetCameraSize(engine));
 
-    H2DE_LevelRect hitboxRect = hitbox.rect + pos.makeRect({ 0.0f, 0.0f });
-
-    return camHitbox.collides(hitboxRect);
+    return camHitbox.collides(rect);
 }
 
 // SETTER
 void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos) {
     engine->camera->pos = pos;
+}
+
+void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    const H2DE_LevelPos defaultPos = H2DE_GetCameraPos(engine);
+    const H2DE_LevelPos posToAdd = pos - defaultPos;
+
+    H2DE_CreateTimeline(engine, duration, easing, [engine, defaultPos, posToAdd](float blend) {
+        H2DE_SetCameraPos(engine, defaultPos + (posToAdd * blend));
+    }, nullptr, 0, pauseSensitive);
 }
 
 void H2DE_SetCameraWidth(const H2DE_Engine* engine, float width) {

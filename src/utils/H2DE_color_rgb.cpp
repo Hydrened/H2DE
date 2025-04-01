@@ -18,15 +18,25 @@ H2DE_ColorRGB::operator H2DE_ColorHSV() const {
     if (delta == 0) {
         hsv.h = 0;
         hsv.s = 0;
+        
     } else {
         hsv.s = delta / max;
 
-        if (max == r_f) hsv.h = 60 * (fmod(((g_f - b_f) / delta), 6));
-        else if (max == g_f) hsv.h = 60 * (((b_f - r_f) / delta) + 2);
-        else hsv.h = 60 * (((r_f - g_f) / delta) + 4);
+        if (max == r_f) {
+            hsv.h = 60 * (fmod(((g_f - b_f) / delta), 6));
+
+        } else if (max == g_f) {
+            hsv.h = 60 * (((b_f - r_f) / delta) + 2);
+
+        } else {
+            hsv.h = 60 * (((r_f - g_f) / delta) + 4);
+        }
     }
 
-    if (hsv.h < 0) hsv.h += 360;
+    if (hsv.h < 0) {
+        hsv.h += 360;
+    }
+    
     return hsv;
 }
 
@@ -93,4 +103,9 @@ H2DE_ColorRGB H2DE_ColorRGB::divideSaturation(float divider) const {
 
 H2DE_ColorRGB H2DE_ColorRGB::divideValue(float divider) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).divideValue(divider));
+}
+
+// METHODS
+const bool H2DE_ColorRGB::isVisible() const {
+    return a != 0;
 }

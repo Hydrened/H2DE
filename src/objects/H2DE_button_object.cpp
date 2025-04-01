@@ -88,6 +88,10 @@ std::vector<H2DE_SurfaceBuffer> H2DE_ButtonObject::getSurfaceBuffers() const {
     return { buffer };
 }
 
+H2DE_Surface* H2DE_GetButtonSurface(const H2DE_ButtonObject* button) {
+    return button->bod.surface;
+}
+
 // SETTER
 void H2DE_SetButtonHover(H2DE_ButtonObject* button, const std::function<void()>& onhover) {
     button->bod.onhover = onhover;

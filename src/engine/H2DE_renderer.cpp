@@ -58,33 +58,31 @@ void H2DE_Engine::H2DE_Renderer::renderObjects() const {
 }
 
 void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
-    bool isText = dynamic_cast<H2DE_TextObject*>(object) != nullptr; 
+    renderSurfaces(object);
 
-    if ((object->od.size.x != 0.0f && object->od.size.y != 0.0f) || isText) {
-        if (H2DE_CameraContainsObject(engine, object) || isText) {
-
-            for (const H2DE_SurfaceBuffer surfaceBuffer : object->getSurfaceBuffers()) {
-                
-                if (surfaceBuffer.surface) {
-                    H2DE_LevelRect rect = (object->od.pos + surfaceBuffer.offset).makeRect(surfaceBuffer.size);
-                    renderSurface(surfaceBuffer.surface, rect, object->od.absolute);
-                }
-            }
-        }
+    if (debug) {
+        renderHitboxes(object);
     }
+}
 
-    if (!debug) {
+void H2DE_Engine::H2DE_Renderer::renderSurfaces(H2DE_Object* object) const {
+    bool isText = dynamic_cast<H2DE_TextObject*>(object) != nullptr;
+    bool isSizeNull = object->od.size.x == 0.0f || object->od.size.y == 0.0f;
+    bool absolute = H2DE_IsObjectAbsolute(object);
+
+    if (isSizeNull && !isText) {
         return;
     }
 
-    H2DE_LevelPos pos = H2DE_GetObjectPos(object);
-    bool absolute = H2DE_IsObjectAbsolute(object);
+    for (const H2DE_SurfaceBuffer surfaceBuffer : object->getSurfaceBuffers()) {
+        if (!surfaceBuffer.surface) {
+            continue;
+        }
 
-    for (const auto& [name, hitbox] : H2DE_GetObjectHitboxes(object)) {
-        if (isVisible(hitbox.color)) {
-            if (H2DE_CameraContainsHitbox(engine, pos, hitbox, absolute)) {
-                renderHitbox(pos, hitbox, absolute);
-            }
+        const H2DE_LevelRect rect = (object->od.pos + surfaceBuffer.offset).makeRect(surfaceBuffer.size);
+
+        if (H2DE_CameraContainsRect(engine, rect, absolute) || isText) {
+            renderSurface(surfaceBuffer.surface, rect, object->od.absolute);
         }
     }
 }
@@ -118,6 +116,21 @@ void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_Surface* surface, cons
     } else SDL_RenderCopyEx(renderer, texture, nullptr, &destRect, rotation, &pivot, flip);
 }
 
+void H2DE_Engine::H2DE_Renderer::renderHitboxes(H2DE_Object* object) const {
+    H2DE_LevelPos pos = H2DE_GetObjectPos(object);
+    bool absolute = H2DE_IsObjectAbsolute(object);
+
+    for (const auto& [name, hitbox] : H2DE_GetObjectHitboxes(object)) {
+        if (!hitbox.color.isVisible()) {
+            continue;
+        }
+
+        if (H2DE_CameraContainsHitbox(engine, pos, hitbox, absolute)) {
+            renderHitbox(pos, hitbox, absolute);
+        }
+    }
+}
+
 void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute) const {
     H2DE_AbsPos absPos = lvlToAbs(pos + hitbox.rect.getPos(), absolute);
     H2DE_AbsSize absSize = lvlToAbs(hitbox.rect.getSize());
@@ -140,10 +153,6 @@ bool H2DE_Engine::H2DE_Renderer::isPositionGreater(H2DE_Object* object1, H2DE_Ob
 
     bool equalsX = object1Pos.x == object2Pos.x;
     return (equalsX) ? object1Pos.y < object2Pos.y : object1Pos.x < object2Pos.x;
-}
-
-bool H2DE_Engine::H2DE_Renderer::isVisible(const H2DE_ColorRGB& color) {
-    return color.a != 0;
 }
 
 const unsigned int H2DE_Engine::H2DE_Renderer::getBlockSize() const {

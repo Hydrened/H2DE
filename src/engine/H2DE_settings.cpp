@@ -136,16 +136,20 @@ size_t H2DE_Engine::H2DE_Settings::getLastSectionPosition(const std::string& sec
     for (size_t i = 0; i < lines.size(); i++) {
         std::string line = lines[i];
 
-        if (line == "") {
+        if (line.length() == 0) {
             continue;
         }
 
-        if (line[0] == '[') {
-            if (!eneteredSection) {
-                if (line.substr(1, line.length() - 2) == section) {
-                    eneteredSection = true;
-                }
-            } else return i - 1;
+        if (line[0] != '[') {
+            continue;
+        }
+
+        if (eneteredSection) {
+            return i - 1;
+        }
+
+        if (line.substr(1, line.length() - 2) == section) {
+            eneteredSection = true;
         }
     }
 

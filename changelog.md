@@ -1,3 +1,14 @@
+## H2DE-3.0.7
+#### ADDED
+- set camera pos with easing
+- camera contains rect
+- get button surface
+- create json file
+- read json file
+- write json file
+#### FIXED
+- camera contains object (at least one surface or hitbox on screen)
+
 ## H2DE-3.0.6
 #### ADDED
 - hitboxes debug

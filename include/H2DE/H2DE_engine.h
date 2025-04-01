@@ -13,6 +13,7 @@
 #include <H2DE/H2DE_utils.h>
 #include <H2DE/H2DE_surface.h>
 #include <H2DE/H2DE_object.h>
+#include <H2DE/H2DE_json.h>
 class H2DE_BarObject;
 class H2DE_ButtonObject;
 class H2DE_BasicObject;
@@ -57,6 +58,7 @@ private:
     H2DE_Engine(H2DE_EngineData data);
     ~H2DE_Engine();
 
+    void handleEvents(SDL_Event event);
     void update();
     void updateObjects();
 
@@ -124,7 +126,9 @@ public:
     friend H2DE_LevelSize H2DE_GetCameraSize(const H2DE_Engine* engine);
     friend bool H2DE_CameraContainsObject(const H2DE_Engine* engine, H2DE_Object* object);
     friend bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute);
+    friend bool H2DE_CameraContainsRect(const H2DE_Engine* engine, const H2DE_LevelRect& rect, bool absolute);
     friend void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos);
+    friend void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     friend void H2DE_SetCameraWidth(const H2DE_Engine* engine, float width);
     friend void H2DE_SetCameraSmoothing(const H2DE_Engine* engine, float smoothing);
     friend void H2DE_SetCameraReference(const H2DE_Engine* engine, H2DE_Object* object);

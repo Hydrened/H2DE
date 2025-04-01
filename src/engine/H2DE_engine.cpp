@@ -67,43 +67,19 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
         while (engine->isRunning) {
             now = SDL_GetTicks();
 
-            while (SDL_PollEvent(&event)) {
-                switch (event.type) {
-                    case SDL_QUIT:
-                        engine->isRunning = false;
-                        break;
-
-                    case SDL_MOUSEMOTION:
-                        engine->mousePos = { event.motion.x, event.motion.y };
-                        break;
-
-                    case SDL_MOUSEBUTTONDOWN:
-                        engine->click = { event.button.x, event.button.y };
-                        break;
-
-                    case SDL_WINDOWEVENT:
-                        if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                            engine->window->fixRatioSize(H2DE_AbsSize{ event.window.data1, event.window.data2 });
-                        }
-                        break;
-
-                    default: break;
-                }
-
-                if (engine->handleEventsCall) engine->handleEventsCall(event);
-            }
-
+            engine->handleEvents(event);
             engine->update();
-
             engine->renderer->render();
             
             frameTime = SDL_GetTicks() - now;
             engine->currentFPS = static_cast<unsigned int>(1000.0f / static_cast<float>((frameTime > 0) ? frameTime : 1));
             int timePerFrame = 1000 / engine->fps;
+
             if (timePerFrame >= frameTime) {
                 SDL_Delay(timePerFrame - frameTime);
             }
         }
+        
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
     }
@@ -111,6 +87,37 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
 
 void H2DE_StopEngine(H2DE_Engine* engine) {
     engine->isRunning = false;
+}
+
+// EVENTS
+void H2DE_Engine::handleEvents(SDL_Event event) {
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                isRunning = false;
+                break;
+
+            case SDL_MOUSEMOTION:
+                mousePos = { event.motion.x, event.motion.y };
+                break;
+
+            case SDL_MOUSEBUTTONDOWN:
+                click = { event.button.x, event.button.y };
+                break;
+
+            case SDL_WINDOWEVENT:
+                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                    window->fixRatioSize(H2DE_AbsSize{ event.window.data1, event.window.data2 });
+                }
+                break;
+
+            default: break;
+        }
+
+        if (handleEventsCall) {
+            handleEventsCall(event);
+        }
+    }
 }
 
 // UPDATE

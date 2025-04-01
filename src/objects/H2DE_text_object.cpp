@@ -190,11 +190,8 @@ float H2DE_TextObject::getLineStartOffsetX(const std::vector<std::string>& line)
 
     switch (tod.textAlign) {
         case H2DE_TEXT_ALIGN_LEFT: return 0.0f;
-
         case H2DE_TEXT_ALIGN_CENTER: return od.size.x / 2.0f - lineLength / 2.0f + tod.spacing.x / 2.0f;
-
         case H2DE_TEXT_ALIGN_RIGHT: return od.size.x - lineLength + tod.spacing.x;
-
         default: return 0.0f;
     }
 }

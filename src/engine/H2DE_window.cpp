@@ -196,16 +196,17 @@ void H2DE_SetWindowIcon(const H2DE_Engine* engine, const std::string& textureNam
     std::vector<std::filesystem::path> files = engine->assetLoader->getFilesToLoad("assets");
 
     for (const std::filesystem::path& file : files) {
-        if (file.filename() == textureName) {
-
-            SDL_Surface* surface = IMG_Load(file.string().c_str());
-            if (surface) {
-                SDL_SetWindowIcon(engine->window->window, surface);
-                SDL_FreeSurface(surface);
-            }
-
-            break;
+        if (file.filename() != textureName) {
+            continue;
         }
+
+        SDL_Surface* surface = IMG_Load(file.string().c_str());
+        if (surface) {
+            SDL_SetWindowIcon(engine->window->window, surface);
+            SDL_FreeSurface(surface);
+        }
+
+        break;
     }
 }
 

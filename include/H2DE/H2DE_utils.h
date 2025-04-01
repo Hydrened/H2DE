@@ -195,6 +195,8 @@ struct H2DE_ColorRGB {
     H2DE_ColorRGB divideHue(float divider) const;
     H2DE_ColorRGB divideSaturation(float divider) const;
     H2DE_ColorRGB divideValue(float divider) const;
+
+    const bool isVisible() const;
 };
 
 struct H2DE_ColorHSV {
@@ -228,6 +230,8 @@ struct H2DE_ColorHSV {
     H2DE_ColorHSV divideHue(float divider) const;
     H2DE_ColorHSV divideSaturation(float divider) const;
     H2DE_ColorHSV divideValue(float divider) const;
+
+    const bool isVisible() const;
 };
 
 struct H2DE_LevelPadding {
