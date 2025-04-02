@@ -19,14 +19,17 @@ OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJECT_DIR)/%.o, $(SRC))
 
 all:
 	make engine -j
-	make test
-	make run
+	make tr
 
 engine: $(OBJ)
 	$(CXX) $(CXX_FLAGS) -shared -o $(BIN_DIR)/$(APP_NAME).dll $^ $(LD_FLAGS) $(SDL_FLAGS) $(DLL_FLAG)
 
 $(OBJECT_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXX_FLAGS) -c $< -o $@
+
+tr:
+	make test
+	make run
 
 test:
 	$(CXX) $(CXX_FLAGS) -o $(BIN_DIR)/test.exe $(SRC_DIR)/test.cpp $(LD_FLAGS) -l$(APP_NAME)

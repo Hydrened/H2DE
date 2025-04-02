@@ -35,16 +35,23 @@ void H2DE_BarObject::refreshPercentage() {
 
 // GETTER
 std::vector<H2DE_SurfaceBuffer> H2DE_BarObject::getSurfaceBuffers() const {
+    H2DE_LevelPos surfaceOffset = { 0.0f, 0.0f };
+    surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
+
     H2DE_SurfaceBuffer backgroundBuffer = H2DE_SurfaceBuffer();
     backgroundBuffer.surface = bod.background;
-    backgroundBuffer.offset = { 0.0f, 0.0f };
+    backgroundBuffer.offset = surfaceOffset;
     backgroundBuffer.size = od.size;
+    backgroundBuffer.rotation = od.rotation;
+    backgroundBuffer.flip = od.flip;
 
     H2DE_SurfaceBuffer frontBuffer = H2DE_SurfaceBuffer();
     frontBuffer.surface = bod.front;
-    frontBuffer.offset = { 0.0f, 0.0f };
+    frontBuffer.offset = surfaceOffset;
     frontBuffer.size = od.size;
     frontBuffer.size.x *= std::clamp(percentage, 0.0f, 100.0f) / 100.0f;
+    frontBuffer.rotation = od.rotation;
+    frontBuffer.flip = od.flip;
 
     return { backgroundBuffer, frontBuffer };
 }

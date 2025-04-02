@@ -190,3 +190,19 @@ bool H2DE_RandomBool() {
     std::uniform_int_distribution<int> dist(0, 1);
     return dist(e) == 0;
 }
+
+H2DE_Flip H2DE_AddFlip(H2DE_Flip flip1, H2DE_Flip flip2) {
+    if (flip1 == flip2) {
+        return H2DE_FLIP_NONE;
+    }
+
+    if (flip1 == H2DE_FLIP_XY) {
+        return static_cast<H2DE_Flip>(flip2 ^ 0b11);
+    }
+
+    if (flip2 == H2DE_FLIP_XY) {
+        return static_cast<H2DE_Flip>(flip1 ^ 0b11);
+    }
+
+    return static_cast<H2DE_Flip>(flip1 | flip2);
+}

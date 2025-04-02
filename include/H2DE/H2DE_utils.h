@@ -35,9 +35,10 @@ enum H2DE_WindowRatio {
 };
 
 enum H2DE_Flip {
-    H2DE_FLIP_NONE,
-    H2DE_FLIP_HORIZONTAL,
-    H2DE_FLIP_VERTICAL,
+    H2DE_FLIP_NONE = 0b00,
+    H2DE_FLIP_X = 0b01,
+    H2DE_FLIP_Y = 0b10,
+    H2DE_FLIP_XY = 0b11,
 };
 
 enum H2DE_ScaleMode {
@@ -106,6 +107,7 @@ struct H2DE_Vector2D {
     H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D& size) const;
 
     const bool isNull() const;
+    H2DE_Vector2D<H2DE_Vector2D_T> rotate(const H2DE_Vector2D<H2DE_Vector2D_T>& center, float angle);
     H2DE_Vector2D<H2DE_Vector2D_T> getCenter() const;
 };
 
@@ -167,7 +169,7 @@ struct H2DE_ColorRGB {
     Uint8 r;
     Uint8 g;
     Uint8 b;
-    Uint8 a;
+    Uint8 a = SDL_MAX_UINT8;
 
     explicit operator H2DE_ColorHSV() const;
     explicit operator Uint32() const;
@@ -203,7 +205,7 @@ struct H2DE_ColorHSV {
     float h;
     float s;
     float v;
-    float a;
+    float a = 1.0f;
 
     explicit operator H2DE_ColorRGB() const;
 
@@ -280,17 +282,13 @@ struct H2DE_Font {
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
 };
 
-struct H2DE_Transform {
-    H2DE_LevelPos pivot = { 0.0f, 0.0f };
-    float rotation = 0.0f;
-    H2DE_Flip flip = H2DE_FLIP_NONE;
-};
-
 struct H2DE_ObjectData {
     H2DE_LevelPos pos = { 0.0f, 0.0f };
     H2DE_LevelSize size = { 1.0f, 1.0f };
     std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
-    // H2DE_Transform transform = H2DE_Transform();
+    H2DE_LevelPos pivot = { 0.0f, 0.0f };
+    float rotation = 0.0f;
+    H2DE_Flip flip = H2DE_FLIP_NONE;
     bool absolute = false;
     int index = 0;
 };
@@ -298,7 +296,9 @@ struct H2DE_ObjectData {
 struct H2DE_SurfaceData {
     std::string textureName = "";
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
-    // H2DE_Transform transform = H2DE_Transform();
+    H2DE_LevelPos pivot = { 0.0f, 0.0f };
+    float rotation = 0.0f;
+    H2DE_Flip flip = H2DE_FLIP_NONE;
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
 };
 
@@ -306,6 +306,9 @@ struct H2DE_SurfaceBuffer {
     H2DE_Surface* surface = nullptr;
     H2DE_LevelPos offset = { 0.0f, 0.0f };
     H2DE_LevelSize size = { 0.0f, 0.0f };
+    H2DE_LevelPos pivot = { 0.0f, 0.0f };
+    float rotation = 0.0f;
+    H2DE_Flip flip = H2DE_FLIP_NONE;
 };
 
 struct H2DE_TextureData {
@@ -353,5 +356,6 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing);
 float H2DE_RandomFloatInRange(float min, float max);
 int H2DE_RandomIntegerInRange(int min, int max);
 bool H2DE_RandomBool();
+H2DE_Flip H2DE_AddFlip(H2DE_Flip flip1, H2DE_Flip flip2);
 
 #endif

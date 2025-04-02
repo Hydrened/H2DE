@@ -111,6 +111,18 @@ H2DE_LevelSize H2DE_GetObjectSize(const H2DE_Object* object) {
     return object->od.size;
 }
 
+float H2DE_GetObjectRotation(const H2DE_Object* object) {
+    return object->od.rotation;
+}
+
+H2DE_LevelPos H2DE_GetObjectPivot(const H2DE_Object* object) {
+    return object->od.pivot;
+}
+
+H2DE_Flip H2DE_GetObjectFlip(const H2DE_Object* object) {
+    return object->od.flip;
+}
+
 std::unordered_map<std::string, H2DE_Hitbox> H2DE_GetObjectHitboxes(const H2DE_Object* object) {
     return object->od.hitboxes;
 }
@@ -130,6 +142,11 @@ bool H2DE_IsObjectHidden(const H2DE_Object* object) {
 // SETTER
 void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos) {
     object->od.pos = pos;
+
+    H2DE_TextObject* text = dynamic_cast<H2DE_TextObject*>(object);
+    if (text) {
+        text->resetSurfaces();
+    }
 }
 
 void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
@@ -161,6 +178,42 @@ void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigne
 
 void H2DE_SetObjectIndex(H2DE_Object* object, int index) {
     object->od.index = index;
+}
+
+void H2DE_SetObjectRotation(H2DE_Object* object, float rotation) {
+    object->od.rotation = rotation;
+
+    H2DE_TextObject* text = dynamic_cast<H2DE_TextObject*>(object);
+    if (text) {
+        text->resetSurfaces();
+    }
+}
+
+void H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    const float defaultRotation = H2DE_GetObjectRotation(object);
+    const float rotationToAdd = rotation - defaultRotation;
+
+    H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultRotation, rotationToAdd](float blend) {
+        H2DE_SetObjectRotation(object, defaultRotation + (rotationToAdd * blend));
+    }, nullptr, 0, pauseSensitive);
+}
+
+void H2DE_SetObjectPivot(H2DE_Object* object, const H2DE_LevelPos& pivot) {
+    object->od.pivot = pivot;
+
+    H2DE_TextObject* text = dynamic_cast<H2DE_TextObject*>(object);
+    if (text) {
+        text->resetSurfaces();
+    }
+}
+
+void H2DE_SetObjectFlip(H2DE_Object* object, H2DE_Flip flip) {
+    object->od.flip = flip;
+
+    H2DE_TextObject* text = dynamic_cast<H2DE_TextObject*>(object);
+    if (text) {
+        text->resetSurfaces();
+    }
 }
 
 void H2DE_ShowObject(H2DE_Object* object) {

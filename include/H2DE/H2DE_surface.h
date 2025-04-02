@@ -21,10 +21,12 @@ protected:
 public:
     friend void H2DE_SetSurfaceTextureName(H2DE_Surface* surface, const std::string& textureName);
     friend void H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color);
+    friend void H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     friend void H2DE_SetSurfaceScaleMode(H2DE_Surface* surface, H2DE_ScaleMode scaleMode);
-    // friend void H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation);
-    // friend void H2DE_SetSurfacePivot(H2DE_Surface* surface, const H2DE_LevelPos& pivot);
-    // friend void H2DE_SetSurfaceFlip(H2DE_Surface* surface, H2DE_Flip flip);
+    friend void H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation);
+    friend void H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend void H2DE_SetSurfacePivot(H2DE_Surface* surface, const H2DE_LevelPos& pivot);
+    friend void H2DE_SetSurfaceFlip(H2DE_Surface* surface, H2DE_Flip flip);
 
     friend class H2DE_Engine;
     friend class H2DE_BarObject;

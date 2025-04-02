@@ -53,13 +53,16 @@ void H2DE_TextObject::resetSurfaces() {
     const int charHeight = itFont->second.charSize.y;
     const int charSpacing = itFont->second.spacing;
 
+    const float rotation = od.rotation;
+    const H2DE_LevelPos pivot = od.pivot;
+
     const std::vector<std::vector<std::string>> lines = getLines();
     
     for (int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
         const std::vector<std::string>& line = lines[lineIndex];
 
         int currentLineLength = 0;
-        float lineStartOffsetX = getLineStartOffsetX(line);
+        const float lineStartOffsetX = getLineStartOffsetX(line);
         
         for (int wordIndex = 0; wordIndex < line.size(); wordIndex++) {
             const std::string& word = line[wordIndex];
@@ -67,34 +70,39 @@ void H2DE_TextObject::resetSurfaces() {
             for (int charIndex = 0; charIndex < word.length(); charIndex++) {
                 const char& c = word[charIndex];
 
-                auto itOrder = std::find(order.begin(), order.end(), c);
+                const auto itOrder = std::find(order.begin(), order.end(), c);
                 if (itOrder == order.end() && c != ' ') {
                     continue;
                 }
 
-                int charOrderIndex = order.find(c);
+                const int charOrderIndex = order.find(c);
 
                 H2DE_SurfaceData sd = H2DE_SurfaceData();
                 sd.scaleMode = fontScaleMode;
                 sd.color = tod.color;
                 sd.textureName = textureName;
 
+                H2DE_AbsRect srcRect = H2DE_AbsRect();
+                srcRect.x = charOrderIndex * (charWidth + charSpacing);
+                srcRect.y = 0;
+                srcRect.w = charWidth;
+                srcRect.h = charHeight;
+                
                 H2DE_TextureData td = H2DE_TextureData();
-                td.srcRect = H2DE_AbsRect{
-                    charOrderIndex * (charWidth + charSpacing),
-                    0,
-                    charWidth,
-                    charHeight,
-                };
+                td.srcRect = srcRect;
 
-                float offsetX = lineStartOffsetX + (charIndex + currentLineLength) * (fontSize.x + fontSpacing.x);
-                float offsetY = lineIndex * (fontSize.y + fontSpacing.y);
+                const float offsetX = lineStartOffsetX + (charIndex + currentLineLength) * (fontSize.x + fontSpacing.x);
+                const float offsetY = lineIndex * (fontSize.y + fontSpacing.y);
+
+                H2DE_LevelPos offset = { offsetX, offsetY };
+                offset = offset.rotate(pivot, rotation);
 
                 H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
                 buffer.surface = H2DE_CreateTexture(engine, sd, td);
-                buffer.offset.x = offsetX;
-                buffer.offset.y = offsetY;
+                buffer.offset = offset;
                 buffer.size = fontSize;
+                buffer.rotation = rotation;
+                buffer.flip = H2DE_FLIP_NONE;
                 
                 surfaceBuffers.push_back(buffer);
             }

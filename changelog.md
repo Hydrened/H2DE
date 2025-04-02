@@ -1,3 +1,19 @@
+## H2DE-3.1.0
+#### ADDED
+- surface rotation
+- surface flip
+- 2d vector rotate method
+- yx flip
+- add flip
+- set / get object rotation
+- set / get object pivot
+- set / get object flip
+- objet rotation
+- objet flip
+- set surface color with easing
+#### MODIFIED
+- colors default alpha = max
+
 ## H2DE-3.0.7
 #### ADDED
 - set camera pos with easing

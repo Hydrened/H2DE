@@ -29,6 +29,9 @@ public:
 
     friend H2DE_LevelPos H2DE_GetObjectPos(const H2DE_Object* object);
     friend H2DE_LevelSize H2DE_GetObjectSize(const H2DE_Object* object);
+    friend float H2DE_GetObjectRotation(const H2DE_Object* object);
+    friend H2DE_LevelPos H2DE_GetObjectPivot(const H2DE_Object* object);
+    friend H2DE_Flip H2DE_GetObjectFlip(const H2DE_Object* object);
     friend std::unordered_map<std::string, H2DE_Hitbox> H2DE_GetObjectHitboxes(const H2DE_Object* object);
     friend int H2DE_GetObjectIndex(const H2DE_Object* object);
     friend bool H2DE_IsObjectAbsolute(const H2DE_Object* object);
@@ -39,6 +42,10 @@ public:
     friend void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size);
     friend void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     friend void H2DE_SetObjectIndex(H2DE_Object* object, int index);
+    friend void H2DE_SetObjectRotation(H2DE_Object* object, float rotation);
+    friend void H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend void H2DE_SetObjectPivot(H2DE_Object* object, const H2DE_LevelPos& pivot);
+    friend void H2DE_SetObjectFlip(H2DE_Object* object, H2DE_Flip flip);
     friend void H2DE_ShowObject(H2DE_Object* object);
     friend void H2DE_HideObject(H2DE_Object* object);
 
@@ -135,7 +142,6 @@ private:
 
 public:
     friend H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
-    friend void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size);
     friend void H2DE_SetTextObjectText(H2DE_TextObject* textObject, const std::string& text);
     friend void H2DE_SetTextObjectFont(H2DE_TextObject* textObject, const std::string& font);
     friend void H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSize& fontSize);
@@ -145,6 +151,12 @@ public:
     friend void H2DE_SetTextObjectTextAlign(H2DE_TextObject* textObject, H2DE_TextAlign textAlign);
     friend void H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color);
     friend void H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+
+    friend void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos);
+    friend void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size);
+    friend void H2DE_SetObjectRotation(H2DE_Object* object, float rotation);
+    friend void H2DE_SetObjectPivot(H2DE_Object* object, const H2DE_LevelPos& pivot);
+    friend void H2DE_SetObjectFlip(H2DE_Object* object, H2DE_Flip flip);
 };
 
 #endif

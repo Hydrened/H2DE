@@ -25,10 +25,15 @@ void H2DE_BasicObject::update() {
 
 // GETTER
 std::vector<H2DE_SurfaceBuffer> H2DE_BasicObject::getSurfaceBuffers() const {
+    H2DE_LevelPos surfaceOffset = { 0.0f, 0.0f };
+    surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
+
     H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
     buffer.surface = bod.surface;
-    buffer.offset = { 0.0f, 0.0f };
+    buffer.offset = surfaceOffset;
     buffer.size = od.size;
+    buffer.rotation = od.rotation;
+    buffer.flip = od.flip;
     return { buffer };
 }
 
