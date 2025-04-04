@@ -39,8 +39,8 @@ void H2DE_Engine::H2DE_Renderer::clearRenderer() const {
 
 void H2DE_Engine::H2DE_Renderer::sortObjects() {
     std::sort(objects.begin(), objects.end(), [](H2DE_Object* a, H2DE_Object* b) {
-        int indexA = H2DE_GetObjectIndex(a);
-        int indexB = H2DE_GetObjectIndex(b);
+        const int indexA = H2DE_GetObjectIndex(a);
+        const int indexB = H2DE_GetObjectIndex(b);
 
         if (indexA == indexB) {
             return H2DE_Renderer::isPositionGreater(a, b);
@@ -66,9 +66,9 @@ void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
 }
 
 void H2DE_Engine::H2DE_Renderer::renderSurfaces(H2DE_Object* object) const {
-    bool isText = dynamic_cast<H2DE_TextObject*>(object) != nullptr;
-    bool isSizeNull = object->od.size.x == 0.0f || object->od.size.y == 0.0f;
-    bool absolute = H2DE_IsObjectAbsolute(object);
+    const bool isText = dynamic_cast<H2DE_TextObject*>(object) != nullptr;
+    const bool isSizeNull = object->od.size.x == 0.0f || object->od.size.y == 0.0f;
+    const bool absolute = H2DE_IsObjectAbsolute(object);
 
     if (isSizeNull && !isText) {
         return;
@@ -148,9 +148,10 @@ void H2DE_Engine::H2DE_Renderer::rs_renderFinalTexture(SDL_Texture* tempTexture,
     SDL_DestroyTexture(tempTexture);
 }
 
-void H2DE_Engine::H2DE_Renderer::renderHitboxes(H2DE_Object* object) const {
-    H2DE_LevelPos pos = H2DE_GetObjectPos(object);
-    bool absolute = H2DE_IsObjectAbsolute(object);
+void H2DE_Engine::H2DE_Renderer::renderHitboxes(const H2DE_Object* object) const {
+    const H2DE_LevelPos pos = object->od.pos;
+    const bool absolute = object->od.absolute;
+    const H2DE_LevelRect objRect = pos.makeRect(object->od.size);
 
     for (const auto& [name, hitbox] : H2DE_GetObjectHitboxes(object)) {
         if (!hitbox.color.isVisible()) {
@@ -158,14 +159,16 @@ void H2DE_Engine::H2DE_Renderer::renderHitboxes(H2DE_Object* object) const {
         }
 
         if (H2DE_CameraContainsHitbox(engine, pos, hitbox, absolute)) {
-            renderHitbox(pos, hitbox, absolute);
+            renderHitbox(object, objRect, hitbox, absolute);
         }
     }
 }
 
-void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute) const {
-    H2DE_AbsPos absPos = lvlToAbs(pos + hitbox.rect.getPos(), absolute);
-    H2DE_AbsSize absSize = lvlToAbs(hitbox.rect.getSize());
+void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_Object* object, const H2DE_LevelRect& objRect, const H2DE_Hitbox& hitbox, bool absolute) const {
+    const H2DE_LevelRect flipedHitboxRect = flipHitbox(objRect, hitbox.rect, object->od.flip);
+
+    H2DE_AbsPos absPos = lvlToAbs(objRect.getPos() + flipedHitboxRect.getPos(), absolute);
+    H2DE_AbsSize absSize = lvlToAbs(flipedHitboxRect.getSize());
 
     Sint16 minX = absPos.x;
     Sint16 maxX = absPos.x + absSize.x;
@@ -212,6 +215,20 @@ SDL_RendererFlip H2DE_Engine::H2DE_Renderer::getFlip(H2DE_Flip flip) const {
             : (flip == H2DE_FLIP_X)
                 ? SDL_FLIP_HORIZONTAL
                 : SDL_FLIP_VERTICAL;
+}
+
+H2DE_LevelRect H2DE_Engine::H2DE_Renderer::flipHitbox(const H2DE_LevelRect& objRect, const H2DE_LevelRect& hitboxRect, H2DE_Flip flip) const {
+    H2DE_LevelRect res = hitboxRect;
+
+    if (flip & H2DE_FLIP_X) {
+        res.x = objRect.getSize().x - (hitboxRect.getPos().x + hitboxRect.getSize().x);
+    }
+
+    if (flip & H2DE_FLIP_Y) {
+        res.y = objRect.getSize().y - (hitboxRect.getPos().y + hitboxRect.getSize().y);
+    }
+
+    return res;
 }
 
 H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelPos& pos, bool absolute) const {

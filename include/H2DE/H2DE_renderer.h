@@ -29,9 +29,8 @@ private:
     void rs_renderTempTexture(SDL_Texture* texture, const std::optional<SDL_Rect>& srcRect, float rotation, const SDL_Point* center, SDL_RendererFlip flip) const;
     void rs_renderFinalTexture(SDL_Texture* tempTexture, const SDL_Rect* destRect, float rotation, const SDL_Point* center) const;
 
-    void renderHitboxes(H2DE_Object* object) const;
-    void renderHitbox(const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute) const;
-
+    void renderHitboxes(const H2DE_Object* object) const;
+    void renderHitbox(const H2DE_Object* object, const H2DE_LevelRect& objRect, const H2DE_Hitbox& hitbox, bool absolute) const;
 
     static bool isPositionGreater(H2DE_Object* object1, H2DE_Object* object2);
     const bool isSurfaceValid(const H2DE_Surface* surface) const;
@@ -39,6 +38,8 @@ private:
     const unsigned int getBlockSize() const;
     SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode) const;
     SDL_RendererFlip getFlip(H2DE_Flip flip) const;
+
+    H2DE_LevelRect flipHitbox(const H2DE_LevelRect& objRect, const H2DE_LevelRect& hitboxRect, H2DE_Flip flip) const;
 
     H2DE_AbsPos lvlToAbs(const H2DE_LevelPos& pos, bool absolute) const;
     H2DE_AbsSize lvlToAbs(const H2DE_LevelSize& size) const;

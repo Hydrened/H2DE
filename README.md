@@ -84,6 +84,9 @@ H2DE_RunEngine(engine);
 H2DE_ObjectData object_data = H2DE_ObjectData();
 object_data.pos = { 1.0f, 1.0f };                           // position of the object
 object_data.size = { 5.0f, 5.0f };                          // size of the object
+object_data.pivot = object_data.size.getCenter()            // pivot for rotation
+object_data.rotation = 45.0f;                               // rotation of the object
+object_data.flip = H2DE_FLIP_XY;                            // flip of the object
 object_data.absolute = false;                               // whether the object is absolute (ex. for hud)
 object_data.index = 1;                                      // rendering index (higher = on top)
 

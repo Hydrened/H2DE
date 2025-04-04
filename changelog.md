@@ -1,3 +1,7 @@
+## H2DE-3.1.1
+#### ADDED
+- hitbox flip when object is fliped
+
 ## H2DE-3.1.0
 #### ADDED
 - surface rotation
