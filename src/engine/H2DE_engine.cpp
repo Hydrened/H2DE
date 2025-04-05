@@ -37,23 +37,44 @@ H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data) {
 
 // CLEANUP
 H2DE_Engine::~H2DE_Engine() {
-    window->saveState();
+    if (window) {
+        window->saveState();
+    }
 
     for (H2DE_Object* object : objects) {
         H2DE_DestroyObject(this, object);
     }
     
-    delete camera;
-    delete assetLoader;
-    delete volume;
-    delete renderer;
-    delete window;
-    delete settings;
+    if (camera) {
+        delete camera;
+        camera = nullptr;
+    }
+    if (assetLoader) {
+        delete assetLoader;
+        assetLoader = nullptr;
+    }
+    if (volume) {
+        delete volume;
+        volume = nullptr;
+    }
+    if (renderer) {
+        delete renderer;
+        renderer = nullptr;
+    }
+    if (window) {
+        delete window;
+        window = nullptr;
+    }
+    if (settings) {
+        delete settings;
+        settings = nullptr;
+    }
 }
 
 void H2DE_DestroyEngine(H2DE_Engine* engine) {
     if (engine) {
         delete engine;
+        engine = nullptr;
     }
 }
 

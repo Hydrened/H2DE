@@ -1,3 +1,7 @@
+## H2DE-3.1.2
+#### FIXED
+- crash if H2DE_StopEngine is called two times
+
 ## H2DE-3.1.1
 #### ADDED
 - hitbox flip when object is fliped
