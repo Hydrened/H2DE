@@ -1,3 +1,7 @@
+## H2DE-3.1.3
+#### FIXED
+- absolute object not rendering if camera moved
+
 ## H2DE-3.1.2
 #### FIXED
 - crash if H2DE_StopEngine is called two times

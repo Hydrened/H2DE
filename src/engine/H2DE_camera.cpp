@@ -86,8 +86,8 @@ bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_LevelPos& p
 
 bool H2DE_CameraContainsRect(const H2DE_Engine* engine, const H2DE_LevelRect& rect, bool absolute) {
     H2DE_LevelRect camHitbox = (absolute)
-        ? engine->camera->pos.makeRect(H2DE_GetCameraSize(engine))
-        : H2DE_GetCameraPos(engine).makeRect(H2DE_GetCameraSize(engine));
+        ? H2DE_LevelPos{ 0.0f, 0.0f }.makeRect(H2DE_GetCameraSize(engine))
+        : engine->camera->pos.makeRect(H2DE_GetCameraSize(engine));
 
     return camHitbox.collides(rect);
 }
