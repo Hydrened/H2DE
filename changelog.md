@@ -1,3 +1,8 @@
+## H2DE-3.1.4
+#### FIXED
+- absolute buttons not working if camera moved
+- textures not supporting blend mode
+
 ## H2DE-3.1.3
 #### FIXED
 - absolute object not rendering if camera moved

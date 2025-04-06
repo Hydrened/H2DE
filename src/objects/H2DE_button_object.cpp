@@ -24,7 +24,7 @@ void H2DE_ButtonObject::update() {
         return;
     }
 
-    H2DE_LevelPos mousePos = H2DE_GetMousePos(engine, false);
+    H2DE_LevelPos mousePos = H2DE_GetMousePos(engine, od.absolute);
     H2DE_LevelPos pos = od.pos;
     bool clicked = false;
     bool hovered = false;
