@@ -100,6 +100,14 @@ Mix_Chunk* H2DE_Engine::H2DE_Volume::getChunk(const std::string& soundName) cons
     return it->second;
 }
 
+bool H2DE_IsSongPlaying(const H2DE_Engine* engine) {
+    return H2DE_IsSfxPlaying(engine, 0);
+}
+
+bool H2DE_IsSfxPlaying(const H2DE_Engine* engine, int id) {
+    return Mix_Playing(id) == 1;
+}
+
 // SETTER
 void H2DE_SetSongVolume(const H2DE_Engine* engine, int volume) {
     volume = std::clamp(volume, 0, 128);

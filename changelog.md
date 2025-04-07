@@ -1,3 +1,7 @@
+## H2DE-3.1.5
+#### ADDED
+- is song / sfx playing functions
+
 ## H2DE-3.1.4
 #### FIXED
 - absolute buttons not working if camera moved

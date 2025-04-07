@@ -37,6 +37,9 @@ public:
     friend void H2DE_SetSongVolume(const H2DE_Engine* engine, int volume);
     friend void H2DE_SetSfxVolume(const H2DE_Engine* engine, int volume);
 
+    friend bool H2DE_IsSongPlaying(const H2DE_Engine* engine);
+    friend bool H2DE_IsSfxPlaying(const H2DE_Engine* engine, int id);
+
     friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
 };
 
