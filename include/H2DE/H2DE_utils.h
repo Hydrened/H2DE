@@ -321,7 +321,7 @@ struct H2DE_SpriteData {
     int spacing = 0;
     unsigned int nbFrame = 0;
     unsigned int delay = 200;
-    bool pauseSensitive = false;
+    bool pauseSensitive = true;
 };
 
 struct H2DE_BarObjectData {
@@ -338,9 +338,11 @@ struct H2DE_BasicObjectData {
 
 struct H2DE_ButtonObjectData {
     H2DE_Surface* surface = nullptr;
-    std::function<void()> onclick = nullptr;
-    std::function<void()> onhover = nullptr;
-    std::function<void()> onout = nullptr;
+    std::function<void()> onMouseDown = nullptr;
+    std::function<void()> onMouseUp = nullptr;
+    std::function<void()> onHover = nullptr;
+    std::function<void()> onBlur = nullptr;
+    bool pauseSensitive = true;
 };
 
 struct H2DE_TextObjectData {

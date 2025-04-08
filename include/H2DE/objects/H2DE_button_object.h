@@ -1,0 +1,35 @@
+#ifndef H2DE_BUTTON_OBJECT_H
+#define H2DE_BUTTON_OBJECT_H
+
+#include <H2DE/objects/H2DE_object.h>
+
+class H2DE_ButtonObject : public H2DE_Object {
+private:
+    H2DE_ButtonObjectData bod;
+
+    bool hover = false;
+
+    H2DE_ButtonObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_ButtonObjectData bod);
+    ~H2DE_ButtonObject() override;
+
+    void update() override;
+    std::vector<H2DE_SurfaceBuffer> getSurfaceBuffers() const override;
+
+public:
+    friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
+    friend H2DE_Surface* H2DE_GetButtonSurface(const H2DE_ButtonObject* button);
+    
+    friend void H2DE_ButtonMouseDown(H2DE_ButtonObject* button);
+    friend void H2DE_ButtonMouseUp(H2DE_ButtonObject* button);
+    friend void H2DE_ButtonHover(H2DE_ButtonObject* button);
+    friend void H2DE_ButtonBlur(H2DE_ButtonObject* button);
+
+    friend void H2DE_SetButtonOnMouseDown(H2DE_ButtonObject* button, const std::function<void()>& onMouseDown);
+    friend void H2DE_SetButtonOnMouseUp(H2DE_ButtonObject* button, const std::function<void()>& onMouseUp);
+    friend void H2DE_SetButtonOnHover(H2DE_ButtonObject* button, const std::function<void()>& onHover);
+    friend void H2DE_SetButtonOnBlur(H2DE_ButtonObject* button, const std::function<void()>& onBlur);
+
+    friend class H2DE_Engine;
+};
+
+#endif

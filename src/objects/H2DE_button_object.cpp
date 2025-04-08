@@ -1,4 +1,4 @@
-#include "H2DE/H2DE_object.h"
+#include "H2DE/objects/H2DE_button_object.h"
 
 // INIT
 H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_ButtonObjectData b) : H2DE_Object(engine, od), bod(b) {
@@ -20,62 +20,68 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
 
 // UPDATE
 void H2DE_ButtonObject::update() {
-    if (!bod.onclick && !bod.onhover && !bod.onout) {
-        return;
-    }
+    // if (!bod.onMouseDown&& !bod.onMouseUp && !bod.onHover && !bod.onBlur) {
+    //     return;
+    // }
 
-    H2DE_LevelPos mousePos = H2DE_GetMousePos(engine, od.absolute);
-    H2DE_LevelPos pos = od.pos;
-    bool clicked = false;
-    bool hovered = false;
+    // H2DE_LevelPos mousePos = H2DE_GetMousePos(engine, od.absolute);
+    // H2DE_LevelPos pos = od.pos;
+    // bool clicked = false;
+    // bool hovered = false;
 
-    for (auto [name, hitbox] : od.hitboxes) {
-        if (hitbox.rect.addPos(pos).collides(mousePos)) {
-            if (bod.onclick && !clicked && engine->click.has_value()) {
-                bod.onclick();
-                clicked = true;
-            }
+    // for (auto [name, hitbox] : od.hitboxes) {
+    //     if (hitbox.rect.addPos(pos).collides(mousePos)) {
+    //         if (bod.onclick && !clicked && engine->click.has_value()) {
+    //             bod.onclick();
+    //             clicked = true;
+    //         }
 
-            if (bod.onhover && !hover && !hovered) {
-                hover = true;
-                hovered = true;
-                bod.onhover();
-            }
-        }
-    }
+    //         if (bod.onhover && !hover && !hovered) {
+    //             hover = true;
+    //             hovered = true;
+    //             bod.onhover();
+    //         }
+    //     }
+    // }
 
-    if (!hovered && hover && bod.onout) {
-        int nbOut = 0;
+    // if (!hovered && hover && bod.onout) {
+    //     int nbOut = 0;
 
-        for (auto [name, hitbox] : od.hitboxes) {
-            if (!hitbox.rect.addPos(pos).collides(mousePos)) {
-                nbOut++;
-            }
-        }
+    //     for (auto [name, hitbox] : od.hitboxes) {
+    //         if (!hitbox.rect.addPos(pos).collides(mousePos)) {
+    //             nbOut++;
+    //         }
+    //     }
 
-        if (nbOut >= od.hitboxes.size()) {
-            bod.onout();
-            hover = false;
-        }
-    }
+    //     if (nbOut >= od.hitboxes.size()) {
+    //         bod.onout();
+    //         hover = false;
+    //     }
+    // }
 }
 
 // CALLS
-void H2DE_HoverButton(const H2DE_ButtonObject* button) {
-    if (button->bod.onhover) {
-        button->bod.onhover();
+void H2DE_ButtonMouseDown(H2DE_ButtonObject* button) {
+    if (button->bod.onMouseDown) {
+        button->bod.onMouseDown();
     }
 }
 
-void H2DE_OutButton(const H2DE_ButtonObject* button) {
-    if (button->bod.onout) {
-        button->bod.onout();
+void H2DE_ButtonMouseUp(H2DE_ButtonObject* button) {
+    if (button->bod.onMouseUp) {
+        button->bod.onMouseUp();
     }
 }
 
-void H2DE_ClickButton(const H2DE_ButtonObject* button) {
-    if (button->bod.onclick) {
-        button->bod.onclick();
+void H2DE_ButtonHover(H2DE_ButtonObject* button) {
+    if (button->bod.onHover) {
+        button->bod.onHover();
+    }
+}
+
+void H2DE_ButtonBlur(H2DE_ButtonObject* button) {
+    if (button->bod.onBlur) {
+        button->bod.onBlur();
     }
 }
 
@@ -98,14 +104,18 @@ H2DE_Surface* H2DE_GetButtonSurface(const H2DE_ButtonObject* button) {
 }
 
 // SETTER
-void H2DE_SetButtonHover(H2DE_ButtonObject* button, const std::function<void()>& onhover) {
-    button->bod.onhover = onhover;
+void H2DE_SetButtonOnMouseDown(H2DE_ButtonObject* button, const std::function<void()>& onMouseDown) {
+    button->bod.onMouseDown = onMouseDown;    
 }
 
-void H2DE_SetButtonOut(H2DE_ButtonObject* button, const std::function<void()>& onout) {
-    button->bod.onout = onout;
+void H2DE_SetButtonOnMouseUp(H2DE_ButtonObject* button, const std::function<void()>& onMouseUp) {
+    button->bod.onMouseUp = onMouseUp;
 }
 
-void H2DE_SetButtonClick(H2DE_ButtonObject* button, const std::function<void()>& onclick) {
-    button->bod.onclick = onclick;
+void H2DE_SetButtonOnHover(H2DE_ButtonObject* button, const std::function<void()>& onHover) {
+    button->bod.onHover = onHover;
+}
+
+void H2DE_SetButtonOnBlur(H2DE_ButtonObject* button, const std::function<void()>& onBlur) {
+    button->bod.onBlur = onBlur;
 }

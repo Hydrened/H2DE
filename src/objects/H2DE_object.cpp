@@ -1,4 +1,4 @@
-#include "H2DE/H2DE_object.h"
+#include "H2DE/objects/H2DE_object.h"
 
 // INIT
 H2DE_Object::H2DE_Object(H2DE_Engine* e, H2DE_ObjectData d) : engine(e), od(d) {
@@ -66,6 +66,10 @@ void H2DE_Object::update() {
 }
 
 void H2DE_Object::updateCollision() {
+    if (hidden) {
+        return;
+    }
+
     for (auto [name, hitbox] : od.hitboxes) {
         if (!hitbox.onCollide && !hitbox.snap) {
             continue;

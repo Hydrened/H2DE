@@ -43,7 +43,7 @@ void H2DE_Engine::H2DE_Renderer::sortObjects() {
         const int indexB = H2DE_GetObjectIndex(b);
 
         if (indexA == indexB) {
-            return H2DE_Renderer::isPositionGreater(a, b);
+            return H2DE_Engine::isPositionGreater(a, b);
         }
 
         return indexA < indexB;
@@ -183,14 +183,6 @@ void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_Object* object, const H
 }
 
 // GETTER
-bool H2DE_Engine::H2DE_Renderer::isPositionGreater(H2DE_Object* object1, H2DE_Object* object2) {
-    H2DE_LevelPos object1Pos = H2DE_GetObjectPos(object1);
-    H2DE_LevelPos object2Pos = H2DE_GetObjectPos(object2);
-
-    bool equalsX = object1Pos.x == object2Pos.x;
-    return (equalsX) ? object1Pos.y < object2Pos.y : object1Pos.x < object2Pos.x;
-}
-
 const bool H2DE_Engine::H2DE_Renderer::isSurfaceValid(const H2DE_Surface* surface) const {
     auto it = textures.find(surface->sd.textureName);
     return it != textures.end();

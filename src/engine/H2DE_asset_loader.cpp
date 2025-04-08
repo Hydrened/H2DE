@@ -34,7 +34,7 @@ void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory
     engine->renderer->textures = engine->assetLoader->textureBuffer;
     engine->volume->sounds = engine->assetLoader->soundBuffer;
     
-    std::cout << "H2DE => Loading complete" << std::endl;
+    std::cout << std::endl << "H2DE => Loading complete" << std::endl;
 }
 
 void H2DE_InitFont(H2DE_Engine* engine, const std::string& name, const H2DE_Font& font) {
@@ -87,12 +87,20 @@ void H2DE_Engine::H2DE_AssetLoader::importSound(const std::filesystem::path& fil
 }
 
 void H2DE_Engine::H2DE_AssetLoader::assetImported() {
-    loadedAssets++;
-    float percentage = static_cast<int>(static_cast<float>(loadedAssets) / assetsToLoad * 10000.0f) / 100.0f;
+    constexpr int barWidth = 30;
 
-    std::ostringstream oss;
-    oss << std::fixed << std::setprecision(2) << percentage;
-    std::cout << "H2DE => Loading: " << oss.str() << "%" << std::endl;
+    loadedAssets++;
+    const float blend = static_cast<float>(loadedAssets) / assetsToLoad;
+    const int percentage = static_cast<int>(blend * 100);
+    const int squares = static_cast<int>(blend * barWidth);
+
+    std::cout << "H2DE => Loading: [";
+    for (int i = 0; i < barWidth; i++) {
+        std::cout << ((i <= squares) ? '#' : '.');
+    }
+
+    std::cout << "] " << percentage << "%\r";
+    std::cout.flush();
 }
 
 // GETTER

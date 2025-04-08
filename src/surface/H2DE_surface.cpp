@@ -1,4 +1,4 @@
-#include "H2DE/H2DE_surface.h"
+#include "H2DE/surfaces/H2DE_surface.h"
 
 // INIT
 H2DE_Surface::H2DE_Surface(H2DE_Engine* e, const H2DE_SurfaceData& s) : engine(e), sd(s) {
@@ -39,6 +39,15 @@ void H2DE_SetSurfaceScaleMode(H2DE_Surface* surface, H2DE_ScaleMode scaleMode) {
 
 void H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation) {
     surface->sd.rotation = rotation;
+}
+
+void H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    const float defaultRotation = surface->sd.rotation;
+    
+    H2DE_CreateTimeline(surface->engine, duration, easing, [surface, defaultRotation, rotation](float blend) {
+        const float r = defaultRotation + (rotation - defaultRotation) * blend;
+        H2DE_SetSurfaceRotation(surface, r);
+    }, nullptr, 0, pauseSensitive);
 }
 
 void H2DE_SetSurfacePivot(H2DE_Surface* surface, const H2DE_LevelPos& pivot) {

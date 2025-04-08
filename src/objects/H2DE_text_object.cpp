@@ -1,4 +1,4 @@
-#include "H2DE/H2DE_object.h"
+#include "H2DE/objects/H2DE_text_object.h"
 #include "H2DE/H2DE_renderer.h"
 
 // INIT

@@ -122,10 +122,6 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
                 mousePos = { event.motion.x, event.motion.y };
                 break;
 
-            case SDL_MOUSEBUTTONDOWN:
-                click = { event.button.x, event.button.y };
-                break;
-
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     window->fixRatioSize(H2DE_AbsSize{ event.window.data1, event.window.data2 });
@@ -135,10 +131,156 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
             default: break;
         }
 
+        handleButtonsEvents(event);
+
         if (handleEventsCall) {
             handleEventsCall(event);
         }
     }
+}
+
+void H2DE_Engine::handleButtonsEvents(SDL_Event event) {
+    switch (event.type) {
+        case SDL_MOUSEBUTTONDOWN:
+            handleButtonsMouseDownEvent();
+            break;
+
+        case SDL_MOUSEBUTTONUP:
+            handleButtonsMouseUpEvent();
+            break;
+
+        case SDL_MOUSEMOTION:
+            handleButtonsBlurEvents();
+            handleButtonsHoverEvents();
+            break;
+
+        default: return;
+    }
+}
+
+void H2DE_Engine::handleButtonsMouseDownEvent() {
+    for (H2DE_ButtonObject* button : getValidButtons()) {
+        if (!button->bod.onMouseDown) {
+            continue;
+        }
+
+        for (const auto& [name, hitbox] : button->od.hitboxes) {
+            H2DE_LevelRect buttonRect = button->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
+
+            if (buttonRect.collides(H2DE_GetMousePos(this, button->od.absolute))) {
+                button->bod.onMouseDown();
+                mouseDown = button;
+                return;
+            }
+        }
+    }
+}
+
+void H2DE_Engine::handleButtonsMouseUpEvent() {
+    if (!mouseDown) {
+        return;
+    }
+
+    if (mouseDown->bod.onMouseUp) {
+        mouseDown->bod.onMouseUp();
+        mouseDown = nullptr;
+    }
+}
+
+void H2DE_Engine::handleButtonsBlurEvents() {
+    if (hovered) {
+        bool stillHovering = false;
+
+        for (const auto& [name, hitbox] : hovered->od.hitboxes) {
+            H2DE_LevelRect buttonRect = hovered->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
+
+            if (buttonRect.collides(H2DE_GetMousePos(this, hovered->od.absolute))) {
+                stillHovering = true;
+                break;
+            }
+        }
+
+        if (!stillHovering) {
+            if (hovered->bod.onBlur) {
+                hovered->bod.onBlur();
+            }
+
+            hovered = nullptr;
+        }
+    }
+}
+
+void H2DE_Engine::handleButtonsHoverEvents() {
+    for (H2DE_ButtonObject* button : getValidButtons()) {
+        if (!button->bod.onHover && !button->bod.onBlur) {
+            continue;
+        }
+
+        for (const auto& [name, hitbox] : button->od.hitboxes) {
+            H2DE_LevelRect buttonRect = button->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
+
+            if (!buttonRect.collides(H2DE_GetMousePos(this, button->od.absolute))) {
+                continue;
+            }
+
+            if (hovered) {
+                if (hovered == button) {
+                    continue;
+                }
+
+                if (hovered->od.index > button->od.index) {
+                    continue;
+                }
+
+                if (H2DE_Engine::isPositionGreater(button, hovered)) {
+                    continue;
+                }
+            }
+
+            if (hovered) {
+                if (hovered->bod.onBlur) {
+                    hovered->bod.onBlur();
+                }
+            }
+
+            hovered = button;
+            if (button->bod.onHover) {
+                button->bod.onHover();
+            }
+
+            return;
+        }
+    }
+}
+
+std::vector<H2DE_ButtonObject*> H2DE_Engine::getValidButtons() const {
+    std::vector<H2DE_ButtonObject*> res;
+
+    for (H2DE_Object* object : objects) {
+        H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
+
+        if (button) {
+
+            if (paused && button->bod.pauseSensitive) {
+                continue;
+            }
+
+            res.push_back(button);
+        }
+    }
+
+    std::sort(res.begin(), res.end(), [](H2DE_ButtonObject* a, H2DE_ButtonObject* b) {
+        const int indexA = H2DE_GetObjectIndex(a);
+        const int indexB = H2DE_GetObjectIndex(b);
+
+        if (indexA == indexB) {
+            return H2DE_Engine::isPositionGreater(a, b);
+        }
+
+        return indexA > indexB;
+    });
+
+    return res;
 }
 
 // UPDATE
@@ -155,8 +297,6 @@ void H2DE_Engine::update() {
         updateObjects();
         camera->update();
     }
-
-    click = std::nullopt;
 }
 
 void H2DE_Engine::updateObjects() {
@@ -218,4 +358,13 @@ void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id) {
 
 void H2DE_StopDelay(const H2DE_Engine* engine, unsigned int id, bool call) {
     H2DE_StopTimeline(engine, id, call);
+}
+
+// GETTER
+bool H2DE_Engine::isPositionGreater(H2DE_Object* object1, H2DE_Object* object2) {
+    H2DE_LevelPos object1Pos = H2DE_GetObjectPos(object1);
+    H2DE_LevelPos object2Pos = H2DE_GetObjectPos(object2);
+
+    bool equalsX = object1Pos.x == object2Pos.x;
+    return (equalsX) ? object1Pos.y < object2Pos.y : object1Pos.x < object2Pos.x;
 }

@@ -32,7 +32,6 @@ private:
     void renderHitboxes(const H2DE_Object* object) const;
     void renderHitbox(const H2DE_Object* object, const H2DE_LevelRect& objRect, const H2DE_Hitbox& hitbox, bool absolute) const;
 
-    static bool isPositionGreater(H2DE_Object* object1, H2DE_Object* object2);
     const bool isSurfaceValid(const H2DE_Surface* surface) const;
 
     const unsigned int getBlockSize() const;

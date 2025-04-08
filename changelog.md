@@ -1,3 +1,14 @@
+## H2DE-3.1.6
+#### ADDED
+- set surface rotation with easing
+- button pause sensitive
+- button mouse up
+#### FIXED
+- hidden object can't collide with others
+- button hover 
+#### MODIFIED
+- loading assets loading bar
+
 ## H2DE-3.1.5
 #### ADDED
 - is song / sfx playing functions

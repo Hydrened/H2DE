@@ -11,8 +11,8 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_mixer.h>
 #include <H2DE/H2DE_utils.h>
-#include <H2DE/H2DE_surface.h>
-#include <H2DE/H2DE_object.h>
+#include <H2DE/surfaces/H2DE_surface.h>
+#include <H2DE/objects/H2DE_object.h>
 #include <H2DE/H2DE_json.h>
 class H2DE_BarObject;
 class H2DE_ButtonObject;
@@ -53,14 +53,23 @@ private:
     std::vector<H2DE_Object*> objects = {};
 
     H2DE_AbsPos mousePos = { 0, 0 };
-    std::optional<H2DE_AbsPos> click = std::nullopt;
+    H2DE_ButtonObject* mouseDown = nullptr;
+    H2DE_ButtonObject* hovered = nullptr;
 
     H2DE_Engine(H2DE_EngineData data);
     ~H2DE_Engine();
 
     void handleEvents(SDL_Event event);
+    void handleButtonsEvents(SDL_Event event);
+    void handleButtonsMouseDownEvent();
+    void handleButtonsMouseUpEvent();
+    void handleButtonsBlurEvents();
+    void handleButtonsHoverEvents();
     void update();
     void updateObjects();
+
+    static bool isPositionGreater(H2DE_Object* object1, H2DE_Object* object2);
+    std::vector<H2DE_ButtonObject*> getValidButtons() const;
 
 public:
     friend H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);
