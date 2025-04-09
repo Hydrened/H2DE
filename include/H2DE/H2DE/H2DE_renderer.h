@@ -2,7 +2,7 @@
 #define H2DE_RENDERER_H
 
 #include <map>
-#include <H2DE/H2DE_engine.h>
+#include <H2DE/H2DE/H2DE_engine.h>
 
 class H2DE_Engine::H2DE_Renderer {
 private:
@@ -27,7 +27,7 @@ private:
     void rs_setTextureProperties(SDL_Texture* texture, const H2DE_ColorRGB& color, H2DE_ScaleMode scaleMode) const;
     SDL_Texture* rs_createTempTexture(const SDL_Rect& destRect) const;
     void rs_renderTempTexture(SDL_Texture* texture, const std::optional<SDL_Rect>& srcRect, float rotation, const SDL_Point* center, SDL_RendererFlip flip) const;
-    void rs_renderFinalTexture(SDL_Texture* tempTexture, const SDL_Rect* destRect, float rotation, const SDL_Point* center) const;
+    void rs_renderFinalTexture(SDL_Texture* tempTexture, const SDL_Rect* destRect, float rotation, const SDL_Point* pivot) const;
 
     void renderHitboxes(const H2DE_Object* object) const;
     void renderHitbox(const H2DE_Object* object, const H2DE_LevelRect& objRect, const H2DE_Hitbox& hitbox, bool absolute) const;
@@ -40,9 +40,10 @@ private:
 
     H2DE_LevelRect flipHitbox(const H2DE_LevelRect& objRect, const H2DE_LevelRect& hitboxRect, H2DE_Flip flip) const;
 
-    H2DE_AbsPos lvlToAbs(const H2DE_LevelPos& pos, bool absolute) const;
-    H2DE_AbsSize lvlToAbs(const H2DE_LevelSize& size) const;
-    H2DE_AbsRect lvlToAbs(const H2DE_LevelRect& rect, bool absolute) const;
+    H2DE_AbsPos lvlToAbsPos(const H2DE_LevelPos& pos, bool absolute) const;
+    H2DE_AbsPos lvlToAbsPivot(const H2DE_LevelPos& pos) const;
+    H2DE_AbsSize lvlToAbsSize(const H2DE_LevelSize& size) const;
+    H2DE_AbsRect lvlToAbsRect(const H2DE_LevelRect& rect, bool absolute) const;
 
 public:
     H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer, std::vector<H2DE_Object*>& objects);

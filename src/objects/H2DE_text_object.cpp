@@ -1,5 +1,5 @@
-#include "H2DE/objects/H2DE_text_object.h"
-#include "H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE/objects/H2DE_text_object.h"
+#include "H2DE/H2DE/H2DE_renderer.h"
 
 // INIT
 H2DE_TextObject::H2DE_TextObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_TextObjectData t) : H2DE_Object(engine, od), tod(t) {

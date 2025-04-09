@@ -1,7 +1,7 @@
 #ifndef H2DE_BASIC_OBJECT_H
 #define H2DE_BASIC_OBJECT_H
 
-#include <H2DE/objects/H2DE_object.h>
+#include <H2DE/H2DE/objects/H2DE_object.h>
 
 class H2DE_BasicObject : public H2DE_Object {
     private:

@@ -1,5 +1,5 @@
-#include "H2DE/H2DE_window.h"
-#include "H2DE/H2DE_asset_loader.h"
+#include "H2DE/H2DE/H2DE_window.h"
+#include "H2DE/H2DE/H2DE_asset_loader.h"
 
 // INIT
 H2DE_Engine::H2DE_Window::H2DE_Window(H2DE_Engine* e, H2DE_WindowData d) : engine(e), data(d) {

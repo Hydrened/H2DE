@@ -1,11 +1,11 @@
-#include "H2DE/H2DE_engine.h"
-#include "H2DE/H2DE_window.h"
-#include "H2DE/H2DE_renderer.h"
-#include "H2DE/H2DE_volume.h"
-#include "H2DE/H2DE_asset_loader.h"
-#include "H2DE/H2DE_settings.h"
-#include "H2DE/H2DE_camera.h"
-#include "H2DE/H2DE_timeline.h"
+#include "H2DE/H2DE/H2DE_engine.h"
+#include "H2DE/H2DE/H2DE_window.h"
+#include "H2DE/H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE/H2DE_volume.h"
+#include "H2DE/H2DE/H2DE_asset_loader.h"
+#include "H2DE/H2DE/H2DE_settings.h"
+#include "H2DE/H2DE/H2DE_camera.h"
+#include "H2DE/H2DE/H2DE_timeline.h"
 
 // INIT
 H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
@@ -168,7 +168,7 @@ void H2DE_Engine::handleButtonsMouseDownEvent() {
             H2DE_LevelRect buttonRect = button->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
 
             if (buttonRect.collides(H2DE_GetMousePos(this, button->od.absolute))) {
-                button->bod.onMouseDown();
+                button->bod.onMouseDown(button);
                 mouseDown = button;
                 return;
             }
@@ -182,7 +182,7 @@ void H2DE_Engine::handleButtonsMouseUpEvent() {
     }
 
     if (mouseDown->bod.onMouseUp) {
-        mouseDown->bod.onMouseUp();
+        mouseDown->bod.onMouseUp(mouseDown);
         mouseDown = nullptr;
     }
 }
@@ -202,7 +202,7 @@ void H2DE_Engine::handleButtonsBlurEvents() {
 
         if (!stillHovering) {
             if (hovered->bod.onBlur) {
-                hovered->bod.onBlur();
+                hovered->bod.onBlur(hovered);
             }
 
             hovered = nullptr;
@@ -239,13 +239,13 @@ void H2DE_Engine::handleButtonsHoverEvents() {
 
             if (hovered) {
                 if (hovered->bod.onBlur) {
-                    hovered->bod.onBlur();
+                    hovered->bod.onBlur(hovered);
                 }
             }
 
             hovered = button;
             if (button->bod.onHover) {
-                button->bod.onHover();
+                button->bod.onHover(button);
             }
 
             return;

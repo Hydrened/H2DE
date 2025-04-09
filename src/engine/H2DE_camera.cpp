@@ -1,4 +1,4 @@
-#include "H2DE/H2DE_camera.h"
+#include "H2DE/H2DE/H2DE_camera.h"
 
 // INIT
 H2DE_Engine::H2DE_Camera::H2DE_Camera(H2DE_Engine* e, const H2DE_CameraData& d) : engine(e), data(d), pos(d.defaultPos) {

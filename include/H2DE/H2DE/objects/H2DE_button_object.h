@@ -1,7 +1,7 @@
 #ifndef H2DE_BUTTON_OBJECT_H
 #define H2DE_BUTTON_OBJECT_H
 
-#include <H2DE/objects/H2DE_object.h>
+#include <H2DE/H2DE/objects/H2DE_object.h>
 
 class H2DE_ButtonObject : public H2DE_Object {
 private:
@@ -24,10 +24,10 @@ public:
     friend void H2DE_ButtonHover(H2DE_ButtonObject* button);
     friend void H2DE_ButtonBlur(H2DE_ButtonObject* button);
 
-    friend void H2DE_SetButtonOnMouseDown(H2DE_ButtonObject* button, const std::function<void()>& onMouseDown);
-    friend void H2DE_SetButtonOnMouseUp(H2DE_ButtonObject* button, const std::function<void()>& onMouseUp);
-    friend void H2DE_SetButtonOnHover(H2DE_ButtonObject* button, const std::function<void()>& onHover);
-    friend void H2DE_SetButtonOnBlur(H2DE_ButtonObject* button, const std::function<void()>& onBlur);
+    friend void H2DE_SetButtonOnMouseDown(H2DE_ButtonObject* button, const std::function<void(H2DE_Object*)>& onMouseDown);
+    friend void H2DE_SetButtonOnMouseUp(H2DE_ButtonObject* button, const std::function<void(H2DE_Object*)>& onMouseUp);
+    friend void H2DE_SetButtonOnHover(H2DE_ButtonObject* button, const std::function<void(H2DE_Object*)>& onHover);
+    friend void H2DE_SetButtonOnBlur(H2DE_ButtonObject* button, const std::function<void(H2DE_Object*)>& onBlur);
 
     friend class H2DE_Engine;
 };

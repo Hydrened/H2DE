@@ -1,4 +1,4 @@
-#include "H2DE/objects/H2DE_basic_object.h"
+#include "H2DE/H2DE/objects/H2DE_basic_object.h"
 
 // INIT
 H2DE_BasicObject::H2DE_BasicObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_BasicObjectData b) : H2DE_Object(engine, od), bod(b) {

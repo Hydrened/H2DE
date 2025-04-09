@@ -338,10 +338,10 @@ struct H2DE_BasicObjectData {
 
 struct H2DE_ButtonObjectData {
     H2DE_Surface* surface = nullptr;
-    std::function<void()> onMouseDown = nullptr;
-    std::function<void()> onMouseUp = nullptr;
-    std::function<void()> onHover = nullptr;
-    std::function<void()> onBlur = nullptr;
+    std::function<void(H2DE_Object*)> onMouseDown = nullptr;
+    std::function<void(H2DE_Object*)> onMouseUp = nullptr;
+    std::function<void(H2DE_Object*)> onHover = nullptr;
+    std::function<void(H2DE_Object*)> onBlur = nullptr;
     bool pauseSensitive = true;
 };
 

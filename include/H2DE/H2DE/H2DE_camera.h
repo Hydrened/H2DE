@@ -1,7 +1,7 @@
 #ifndef H2DE_CAMERA_H
 #define H2DE_CAMERA_H
 
-#include <H2DE/H2DE_engine.h>
+#include <H2DE/H2DE/H2DE_engine.h>
 
 #undef min
 #undef max

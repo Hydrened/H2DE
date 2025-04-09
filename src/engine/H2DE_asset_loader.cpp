@@ -1,6 +1,6 @@
-#include "H2DE/H2DE_asset_loader.h"
-#include "H2DE/H2DE_renderer.h"
-#include "H2DE/H2DE_volume.h"
+#include "H2DE/H2DE/H2DE_asset_loader.h"
+#include "H2DE/H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE/H2DE_volume.h"
 
 // INIT
 H2DE_Engine::H2DE_AssetLoader::H2DE_AssetLoader(H2DE_Engine* e, SDL_Renderer* r) : engine(e), renderer(r) {

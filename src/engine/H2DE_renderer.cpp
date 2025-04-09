@@ -1,4 +1,4 @@
-#include "H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE/H2DE_renderer.h"
 
 // INIT
 H2DE_Engine::H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, SDL_Renderer* r, std::vector<H2DE_Object*>& o) : engine(e), renderer(r), objects(o) {
@@ -94,7 +94,7 @@ void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_SurfaceBuffer& surface
     }
 
     SDL_Texture* texture = textures.find(surface->sd.textureName)->second;
-    SDL_Rect destRect = lvlToAbs(rect, absolute);
+    SDL_Rect destRect = lvlToAbsRect(rect, absolute);
 
     rs_setTextureProperties(texture, surface->sd.color, surface->sd.scaleMode);
     
@@ -105,12 +105,12 @@ void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_SurfaceBuffer& surface
 
     H2DE_Flip addedFlips = H2DE_AddFlip(surface->sd.flip, surfaceBuffer.flip);
     float flipRotation = (addedFlips == H2DE_FLIP_XY) ? 180.0f : 0.0f;
-    SDL_Point flipRotationPivot = lvlToAbs(surfaceBuffer.size.getCenter(), absolute);
+    SDL_Point flipRotationPivot = lvlToAbsPivot(surfaceBuffer.size.getCenter());
     SDL_RendererFlip flip = getFlip(addedFlips);
     rs_renderTempTexture(texture, surface->getSrcRect(), flipRotation, &flipRotationPivot, flip);
 
     float rotation = surface->sd.rotation + surfaceBuffer.rotation;
-    SDL_Point pivot = lvlToAbs(surface->sd.pivot, absolute);
+    SDL_Point pivot = lvlToAbsPivot(surface->sd.pivot);
     rs_renderFinalTexture(tempTexture, &destRect, rotation, &pivot);
 }
 
@@ -123,7 +123,7 @@ void H2DE_Engine::H2DE_Renderer::rs_setTextureProperties(SDL_Texture* texture, c
 SDL_Texture* H2DE_Engine::H2DE_Renderer::rs_createTempTexture(const SDL_Rect& destRect) const {
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, destRect.w, destRect.h);
     if (!texture) {
-        SDL_Log("Failed to create render target: %s", SDL_GetError());
+        std::cerr << "H2DE => \033[31mERROR\033[0m: Failed to create render target: " << SDL_GetError() << std::endl;
         return nullptr;
     }
 
@@ -144,8 +144,8 @@ void H2DE_Engine::H2DE_Renderer::rs_renderTempTexture(SDL_Texture* texture, cons
     SDL_SetRenderTarget(renderer, nullptr);
 }
 
-void H2DE_Engine::H2DE_Renderer::rs_renderFinalTexture(SDL_Texture* tempTexture, const SDL_Rect* destRect, float rotation, const SDL_Point* center) const {
-    SDL_RenderCopyEx(renderer, tempTexture, nullptr, destRect, rotation, center, SDL_FLIP_NONE);
+void H2DE_Engine::H2DE_Renderer::rs_renderFinalTexture(SDL_Texture* tempTexture, const SDL_Rect* destRect, float rotation, const SDL_Point* pivot) const {
+    SDL_RenderCopyEx(renderer, tempTexture, nullptr, destRect, rotation, pivot, SDL_FLIP_NONE);
     SDL_DestroyTexture(tempTexture);
 }
 
@@ -168,8 +168,8 @@ void H2DE_Engine::H2DE_Renderer::renderHitboxes(const H2DE_Object* object) const
 void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_Object* object, const H2DE_LevelRect& objRect, const H2DE_Hitbox& hitbox, bool absolute) const {
     const H2DE_LevelRect flipedHitboxRect = flipHitbox(objRect, hitbox.rect, object->od.flip);
 
-    H2DE_AbsPos absPos = lvlToAbs(objRect.getPos() + flipedHitboxRect.getPos(), absolute);
-    H2DE_AbsSize absSize = lvlToAbs(flipedHitboxRect.getSize());
+    H2DE_AbsPos absPos = lvlToAbsPos(objRect.getPos() + flipedHitboxRect.getPos(), absolute);
+    H2DE_AbsSize absSize = lvlToAbsSize(flipedHitboxRect.getSize());
 
     Sint16 minX = absPos.x;
     Sint16 maxX = absPos.x + absSize.x;
@@ -224,7 +224,7 @@ H2DE_LevelRect H2DE_Engine::H2DE_Renderer::flipHitbox(const H2DE_LevelRect& objR
     return res;
 }
 
-H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelPos& pos, bool absolute) const {
+H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbsPos(const H2DE_LevelPos& pos, bool absolute) const {
     H2DE_LevelPos camPos = H2DE_GetCameraPos(engine);
     const unsigned int blockSize = getBlockSize(); 
 
@@ -234,7 +234,16 @@ H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelPos& pos, bool 
     };
 }
 
-H2DE_AbsSize H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelSize& size) const {
+H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbsPivot(const H2DE_LevelPos& pos) const {
+    const unsigned int blockSize = getBlockSize(); 
+
+    return {
+        static_cast<int>(pos.x * blockSize),
+        static_cast<int>(pos.y * blockSize),
+    };
+}
+
+H2DE_AbsSize H2DE_Engine::H2DE_Renderer::lvlToAbsSize(const H2DE_LevelSize& size) const {
     const unsigned int blockSize = getBlockSize(); 
 
     return {
@@ -243,9 +252,9 @@ H2DE_AbsSize H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelSize& size) co
     };
 }
 
-H2DE_AbsRect H2DE_Engine::H2DE_Renderer::lvlToAbs(const H2DE_LevelRect& rect, bool absolute) const {
-    H2DE_AbsPos pos = lvlToAbs(rect.getPos(), absolute);
-    H2DE_AbsSize size = lvlToAbs(rect.getSize());
+H2DE_AbsRect H2DE_Engine::H2DE_Renderer::lvlToAbsRect(const H2DE_LevelRect& rect, bool absolute) const {
+    H2DE_AbsPos pos = lvlToAbsPos(rect.getPos(), absolute);
+    H2DE_AbsSize size = lvlToAbsSize(rect.getSize());
     
     return {
         pos.x,

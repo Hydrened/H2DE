@@ -1,3 +1,9 @@
+## H2DE-3.1.7
+#### FIXED
+- surface rotation
+#### MODIFIED
+- restructured include folder
+
 ## H2DE-3.1.6
 #### ADDED
 - set surface rotation with easing
