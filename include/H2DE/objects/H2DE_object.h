@@ -2,7 +2,7 @@
 #define H2DE_OBJECT_H
 
 #include <sstream>
-#include <H2DE/H2DE/H2DE_engine.h>
+#include <H2DE/H2DE_engine.h>
 class H2DE_Engine;
 
 class H2DE_Object {
@@ -54,9 +54,9 @@ public:
     friend class H2DE_Engine;
 };
 
-#include <H2DE/H2DE/objects/H2DE_bar_object.h>
-#include <H2DE/H2DE/objects/H2DE_basic_object.h>
-#include <H2DE/H2DE/objects/H2DE_button_object.h>
-#include <H2DE/H2DE/objects/H2DE_text_object.h>
+#include <H2DE/objects/H2DE_bar_object.h>
+#include <H2DE/objects/H2DE_basic_object.h>
+#include <H2DE/objects/H2DE_button_object.h>
+#include <H2DE/objects/H2DE_text_object.h>
 
 #endif

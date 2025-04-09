@@ -1,4 +1,4 @@
-#include "H2DE/H2DE/H2DE_utils.h"
+#include "H2DE/H2DE_utils.h"
 
 float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EASING_LINEAR) {
     blend = std::clamp(blend, 0.0f, 1.0f);

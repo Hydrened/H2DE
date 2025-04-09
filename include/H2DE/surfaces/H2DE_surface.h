@@ -35,8 +35,8 @@ public:
     friend class H2DE_TextObject;
 };
 
-#include <H2DE/H2DE/surfaces/H2DE_texture.h>
-#include <H2DE/H2DE/surfaces/H2DE_sprite.h>
+#include <H2DE/surfaces/H2DE_texture.h>
+#include <H2DE/surfaces/H2DE_sprite.h>
 
 H2DE_Surface* H2DE_CreateTexture(H2DE_Engine* engine, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData);
 void H2DE_SetTextureSrcRect(H2DE_Surface* texture, const std::optional<H2DE_AbsRect>& srcRect);

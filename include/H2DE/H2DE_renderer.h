@@ -2,7 +2,7 @@
 #define H2DE_RENDERER_H
 
 #include <map>
-#include <H2DE/H2DE/H2DE_engine.h>
+#include <H2DE/H2DE_engine.h>
 
 class H2DE_Engine::H2DE_Renderer {
 private:

@@ -1,4 +1,4 @@
-#include "H2DE/H2DE/surfaces/H2DE_texture.h"
+#include "H2DE/surfaces/H2DE_texture.h"
 
 // INIT
 H2DE_Texture::H2DE_Texture(H2DE_Engine* engine, const H2DE_SurfaceData& sd, const H2DE_TextureData& t) : H2DE_Surface(engine, sd), ted(t) {

@@ -1,4 +1,4 @@
-#include "H2DE/H2DE/objects/H2DE_button_object.h"
+#include "H2DE/objects/H2DE_button_object.h"
 
 // INIT
 H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_ButtonObjectData b) : H2DE_Object(engine, od), bod(b) {

@@ -10,10 +10,10 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_mixer.h>
-#include <H2DE/H2DE/H2DE_utils.h>
-#include <H2DE/H2DE/surfaces/H2DE_surface.h>
-#include <H2DE/H2DE/objects/H2DE_object.h>
-#include <H2DE/H2DE/H2DE_json.h>
+#include <H2DE/H2DE_utils.h>
+#include <H2DE/surfaces/H2DE_surface.h>
+#include <H2DE/objects/H2DE_object.h>
+#include <H2DE/H2DE_json.h>
 class H2DE_BarObject;
 class H2DE_ButtonObject;
 class H2DE_BasicObject;

@@ -1,11 +1,11 @@
-#include "H2DE/H2DE/H2DE_engine.h"
-#include "H2DE/H2DE/H2DE_window.h"
-#include "H2DE/H2DE/H2DE_renderer.h"
-#include "H2DE/H2DE/H2DE_volume.h"
-#include "H2DE/H2DE/H2DE_asset_loader.h"
-#include "H2DE/H2DE/H2DE_settings.h"
-#include "H2DE/H2DE/H2DE_camera.h"
-#include "H2DE/H2DE/H2DE_timeline.h"
+#include "H2DE/H2DE_engine.h"
+#include "H2DE/H2DE_window.h"
+#include "H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE_volume.h"
+#include "H2DE/H2DE_asset_loader.h"
+#include "H2DE/H2DE_settings.h"
+#include "H2DE/H2DE_camera.h"
+#include "H2DE/H2DE_timeline.h"
 
 // INIT
 H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
