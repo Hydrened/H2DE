@@ -21,6 +21,16 @@ void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object) {
     }
 }
 
+void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
+    for (auto [name, surface] : surfaces) {
+        if (surface) {
+            delete surface;
+            surface = nullptr;
+        }
+    }
+    surfaces.clear();
+}
+
 // EVENTS
 void H2DE_AddHitboxToObject(H2DE_Object* object, const std::string& name, const H2DE_Hitbox& hitbox) {
     if (object->od.hitboxes.find(name) != object->od.hitboxes.end()) {
@@ -89,16 +99,18 @@ void H2DE_Object::updateCollision() {
 
                 H2DE_LevelRect otherRect = otherHitbox.rect.addPos(H2DE_GetObjectPos(otherObject));
 
-                if (rect.collides(otherRect)) {
-                    if (hitbox.onCollide) {
-                        hitbox.onCollide(otherObject);
-                    }
+                if (!rect.collides(otherRect)) {
+                    continue;
+                }
 
-                    if (hitbox.snap) {
-                        std::optional<H2DE_Face> face = rect.getCollidedFace(otherRect);
-                        if (face.has_value()) {
-                            snap(rect, otherRect, face.value());
-                        }
+                if (hitbox.onCollide) {
+                    hitbox.onCollide(otherObject);
+                }
+
+                if (hitbox.snap) {
+                    std::optional<H2DE_Face> face = rect.getCollidedFace(otherRect);
+                    if (face.has_value()) {
+                        snap(rect, otherRect, face.value());
                     }
                 }
             }
@@ -107,6 +119,23 @@ void H2DE_Object::updateCollision() {
 }
 
 // GETTER
+H2DE_Surface* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+    auto it = surfaces.find(name);
+    if (it == surfaces.end()) {
+        std::cerr <<  "H2DE => \033[31mERROR\033[0m: Can't find surface named " << '"' << name << '"' << std::endl;
+    }
+    return it->second;
+}
+
+H2DE_Hitbox& H2DE_Object::getHitbox(const std::string& hitboxName) {
+    auto it = od.hitboxes.find(hitboxName);
+    if (it == od.hitboxes.end()) {
+        std::cerr << "H2DE => \033[31mERROR\033[0m: Hitbox named " << '"' << hitboxName << '"' << " not found" << std::endl;
+    }
+    
+    return it->second;
+}
+
 H2DE_LevelPos H2DE_GetObjectPos(const H2DE_Object* object) {
     return object->od.pos;
 }
@@ -218,6 +247,26 @@ void H2DE_SetObjectFlip(H2DE_Object* object, H2DE_Flip flip) {
     if (text) {
         text->resetSurfaces();
     }
+}
+
+void H2DE_SetObjectHitboxRect(H2DE_Object* object, const std::string& hitboxName, const H2DE_LevelRect& rect) {
+    object->getHitbox(hitboxName).rect = rect;
+}
+
+void H2DE_SetObjectHitboxColor(H2DE_Object* object, const std::string& hitboxName, const H2DE_ColorRGB& color) {
+    object->getHitbox(hitboxName).color = color;
+}
+
+void H2DE_SetObjectHitboxCollisionIndex(H2DE_Object* object, const std::string& hitboxName, int index) {
+    object->getHitbox(hitboxName).collisionIndex = index;
+}
+
+void H2DE_SetObjectHitboxSnap(H2DE_Object* object, const std::string& hitboxName, bool snap) {
+    object->getHitbox(hitboxName).snap = snap;
+}
+
+void H2DE_SetObjectHitboxOnCollide(H2DE_Object* object, const std::string& hitboxName, const std::function<void(H2DE_Object*)>& call) {
+    object->getHitbox(hitboxName).onCollide = call;
 }
 
 void H2DE_ShowObject(H2DE_Object* object) {

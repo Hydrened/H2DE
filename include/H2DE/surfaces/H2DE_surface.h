@@ -8,7 +8,7 @@ class H2DE_Surface {
 private:
     H2DE_SurfaceData sd;
 
-    float percentage = 100.0f;
+    // float percentage = 100.0f;
 
     virtual std::optional<H2DE_AbsRect> getSrcRect() const = 0;
 
@@ -33,6 +33,7 @@ public:
     friend class H2DE_BasicObject;
     friend class H2DE_ButtonObject;
     friend class H2DE_TextObject;
+    friend class H2DE_Object;
 };
 
 #include <H2DE/surfaces/H2DE_texture.h>

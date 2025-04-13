@@ -295,6 +295,7 @@ struct H2DE_ObjectData {
 
 struct H2DE_SurfaceData {
     std::string textureName = "";
+    H2DE_LevelRect rect = { 0.0f, 0.0f, 1.0f, 1.0f };
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
     H2DE_LevelPos pivot = { 0.0f, 0.0f };
     float rotation = 0.0f;
@@ -306,9 +307,9 @@ struct H2DE_SurfaceBuffer {
     H2DE_Surface* surface = nullptr;
     H2DE_LevelPos offset = { 0.0f, 0.0f };
     H2DE_LevelSize size = { 0.0f, 0.0f };
-    H2DE_LevelPos pivot = { 0.0f, 0.0f };
-    float rotation = 0.0f;
-    H2DE_Flip flip = H2DE_FLIP_NONE;
+    // H2DE_LevelPos pivot = { 0.0f, 0.0f };
+    // float rotation = 0.0f;
+    // H2DE_Flip flip = H2DE_FLIP_NONE;
 };
 
 struct H2DE_TextureData {
@@ -325,19 +326,23 @@ struct H2DE_SpriteData {
 };
 
 struct H2DE_BarObjectData {
-    H2DE_Surface* front = nullptr;
-    H2DE_Surface* background = nullptr;
+    // H2DE_Surface* front = nullptr;
+    // H2DE_Surface* background = nullptr;
+    std::unordered_map<std::string, H2DE_Surface*> front = {};
+    std::unordered_map<std::string, H2DE_Surface*> background = {};
     float min = 0.0f;
     float max = 100.0f;
     float defaultValue = 0.0f;
 };
 
 struct H2DE_BasicObjectData {
-    H2DE_Surface* surface = nullptr;
+    // H2DE_Surface* surface = nullptr;
+    std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
 };
 
 struct H2DE_ButtonObjectData {
-    H2DE_Surface* surface = nullptr;
+    // H2DE_Surface* surface = nullptr;
+    std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
     std::function<void(H2DE_Object*)> onMouseDown = nullptr;
     std::function<void(H2DE_Object*)> onMouseUp = nullptr;
     std::function<void(H2DE_Object*)> onHover = nullptr;

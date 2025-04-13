@@ -1,3 +1,7 @@
+## H2DE-3.2.0
+#### ADDED
+- objects have map of surface intead of single surface
+
 ## H2DE-3.1.8
 #### FIXED
 - path include

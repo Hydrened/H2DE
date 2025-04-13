@@ -17,7 +17,7 @@ private:
 
 public:
     friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
-    friend H2DE_Surface* H2DE_GetButtonSurface(const H2DE_ButtonObject* button);
+    friend H2DE_Surface* H2DE_GetButtonSurface(const H2DE_ButtonObject* button, const std::string& name);
     
     friend void H2DE_ButtonMouseDown(H2DE_ButtonObject* button);
     friend void H2DE_ButtonMouseUp(H2DE_ButtonObject* button);

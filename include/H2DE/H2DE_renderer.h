@@ -23,22 +23,25 @@ private:
     void renderObject(H2DE_Object* object) const;
 
     void renderSurfaces(H2DE_Object* object) const;
-    void renderSurface(const H2DE_SurfaceBuffer& surfaceBuffer, const H2DE_LevelRect& rect, bool absolute) const;
-    void rs_setTextureProperties(SDL_Texture* texture, const H2DE_ColorRGB& color, H2DE_ScaleMode scaleMode) const;
-    SDL_Texture* rs_createTempTexture(const SDL_Rect& destRect) const;
-    void rs_renderTempTexture(SDL_Texture* texture, const std::optional<SDL_Rect>& srcRect, float rotation, const SDL_Point* center, SDL_RendererFlip flip) const;
-    void rs_renderFinalTexture(SDL_Texture* tempTexture, const SDL_Rect* destRect, float rotation, const SDL_Point* pivot) const;
+    void renderSurface(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
+    const H2DE_AbsRect renderSurfaceGetDestRect(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
+    void renderSurfaceSetTextureProperties(const H2DE_Surface* surface) const;
+    SDL_Texture* renderSurfaceCreateTempTexture(const SDL_Rect& destRect) const;
+    void renderSurfaceRenderTextureToTarget(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer) const;
+    void renderSurfaceRenderFinalTexture(const H2DE_Object* object, const H2DE_Surface* surface, SDL_Texture* tempTexture, const SDL_Rect& destRect) const;
 
     void renderHitboxes(const H2DE_Object* object) const;
-    void renderHitbox(const H2DE_Object* object, const H2DE_LevelRect& objRect, const H2DE_Hitbox& hitbox, bool absolute) const;
+    void renderHitbox(const H2DE_Object* object, const H2DE_Hitbox& hitbox, bool absolute) const;
 
     const bool isSurfaceValid(const H2DE_Surface* surface) const;
 
     const unsigned int getBlockSize() const;
-    SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode) const;
-    SDL_RendererFlip getFlip(H2DE_Flip flip) const;
+    static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
+    static SDL_RendererFlip getFlip(H2DE_Flip flip);
 
-    H2DE_LevelRect flipHitbox(const H2DE_LevelRect& objRect, const H2DE_LevelRect& hitboxRect, H2DE_Flip flip) const;
+    static H2DE_LevelRect flipRect(const H2DE_LevelRect& objRect, const H2DE_LevelRect& rect, H2DE_Flip flip);
+    static float flipRotation(float rotation, H2DE_Flip flip);
+    static H2DE_LevelPos flipPivot(const H2DE_LevelRect& rect, const H2DE_LevelPos& pivot, H2DE_Flip flip);
 
     H2DE_AbsPos lvlToAbsPos(const H2DE_LevelPos& pos, bool absolute) const;
     H2DE_AbsPos lvlToAbsPivot(const H2DE_LevelPos& pos) const;

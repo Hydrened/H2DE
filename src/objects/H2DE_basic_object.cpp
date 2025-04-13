@@ -13,9 +13,7 @@ H2DE_BasicObject* H2DE_CreateBasicObject(H2DE_Engine* engine, const H2DE_ObjectD
 
 // CLEANUP
 H2DE_BasicObject::~H2DE_BasicObject() {
-    if (bod.surface) {
-        delete bod.surface;
-    }
+    H2DE_Object::destroySurfaces(bod.surfaces);
 }
 
 // UPDATE
@@ -25,18 +23,22 @@ void H2DE_BasicObject::update() {
 
 // GETTER
 std::vector<H2DE_SurfaceBuffer> H2DE_BasicObject::getSurfaceBuffers() const {
-    H2DE_LevelPos surfaceOffset = { 0.0f, 0.0f };
-    surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
+    std::vector<H2DE_SurfaceBuffer> res = {};
 
-    H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
-    buffer.surface = bod.surface;
-    buffer.offset = surfaceOffset;
-    buffer.size = od.size;
-    buffer.rotation = od.rotation;
-    buffer.flip = od.flip;
-    return { buffer };
+    for (const auto& [name, surface] : bod.surfaces) {
+        H2DE_LevelPos surfaceOffset = surface->sd.rect.getPos();
+        surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
+
+        H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
+        buffer.surface = surface;
+        buffer.offset = surfaceOffset;
+        buffer.size = surface->sd.rect.getSize();
+        res.push_back(buffer);
+    }
+
+    return res;
 }
 
-H2DE_Surface* H2DE_GetBasicObjectSurface(const H2DE_BasicObject* basicObject) {
-    return basicObject->bod.surface;
+H2DE_Surface* H2DE_GetBasicObjectSurface(const H2DE_BasicObject* basicObject, const std::string& name) {
+    return H2DE_Object::getSurface(basicObject->bod.surfaces, name);
 }

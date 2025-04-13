@@ -101,8 +101,8 @@ void H2DE_TextObject::resetSurfaces() {
                 buffer.surface = H2DE_CreateTexture(engine, sd, td);
                 buffer.offset = offset;
                 buffer.size = fontSize;
-                buffer.rotation = rotation;
-                buffer.flip = H2DE_FLIP_NONE;
+                // buffer.rotation = rotation;
+                // buffer.flip = H2DE_FLIP_NONE;
                 
                 surfaceBuffers.push_back(buffer);
             }

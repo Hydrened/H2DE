@@ -37,6 +37,7 @@ void H2DE_Engine::H2DE_Renderer::clearRenderer() const {
     SDL_RenderClear(renderer);
 }
 
+// objects
 void H2DE_Engine::H2DE_Renderer::sortObjects() {
     std::sort(objects.begin(), objects.end(), [](H2DE_Object* a, H2DE_Object* b) {
         const int indexA = H2DE_GetObjectIndex(a);
@@ -65,14 +66,10 @@ void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
     }
 }
 
+// surfaces
 void H2DE_Engine::H2DE_Renderer::renderSurfaces(H2DE_Object* object) const {
     const bool isText = dynamic_cast<H2DE_TextObject*>(object) != nullptr;
-    const bool isSizeNull = object->od.size.x == 0.0f || object->od.size.y == 0.0f;
     const bool absolute = H2DE_IsObjectAbsolute(object);
-
-    if (isSizeNull && !isText) {
-        return;
-    }
 
     for (const H2DE_SurfaceBuffer surfaceBuffer : object->getSurfaceBuffers()) {
         if (!surfaceBuffer.surface) {
@@ -82,77 +79,97 @@ void H2DE_Engine::H2DE_Renderer::renderSurfaces(H2DE_Object* object) const {
         const H2DE_LevelRect rect = (object->od.pos + surfaceBuffer.offset).makeRect(surfaceBuffer.size);
 
         if (H2DE_CameraContainsRect(engine, rect, absolute) || isText) {
-            renderSurface(surfaceBuffer, rect, object->od.absolute);
+            renderSurface(object, surfaceBuffer, object->od.absolute);
         }
     }
 }
 
-void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_SurfaceBuffer& surfaceBuffer, const H2DE_LevelRect& rect, bool absolute) const {
+void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const {
     const H2DE_Surface* surface = surfaceBuffer.surface;
-    if (!isSurfaceValid(surface)) {
-        return;
+
+    if (isSurfaceValid(surface)) {
+        const H2DE_AbsRect destRect = renderSurfaceGetDestRect(object, surfaceBuffer, absolute);
+
+        renderSurfaceSetTextureProperties(surface);
+
+        SDL_Texture* tempTexture = renderSurfaceCreateTempTexture(destRect);
+
+        renderSurfaceRenderTextureToTarget(object, surfaceBuffer);
+        renderSurfaceRenderFinalTexture(object, surface, tempTexture, destRect);
     }
-
-    SDL_Texture* texture = textures.find(surface->sd.textureName)->second;
-    SDL_Rect destRect = lvlToAbsRect(rect, absolute);
-
-    rs_setTextureProperties(texture, surface->sd.color, surface->sd.scaleMode);
-    
-    SDL_Texture* tempTexture = rs_createTempTexture(destRect);
-    if (!tempTexture) {
-        return;
-    }
-
-    H2DE_Flip addedFlips = H2DE_AddFlip(surface->sd.flip, surfaceBuffer.flip);
-    float flipRotation = (addedFlips == H2DE_FLIP_XY) ? 180.0f : 0.0f;
-    SDL_Point flipRotationPivot = lvlToAbsPivot(surfaceBuffer.size.getCenter());
-    SDL_RendererFlip flip = getFlip(addedFlips);
-    rs_renderTempTexture(texture, surface->getSrcRect(), flipRotation, &flipRotationPivot, flip);
-
-    float rotation = surface->sd.rotation + surfaceBuffer.rotation;
-    SDL_Point pivot = lvlToAbsPivot(surface->sd.pivot);
-    rs_renderFinalTexture(tempTexture, &destRect, rotation, &pivot);
 }
 
-void H2DE_Engine::H2DE_Renderer::rs_setTextureProperties(SDL_Texture* texture, const H2DE_ColorRGB& color, H2DE_ScaleMode scaleMode) const {
+const H2DE_AbsRect H2DE_Engine::H2DE_Renderer::renderSurfaceGetDestRect(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const {
+    const H2DE_LevelRect surfraceRect = (object->od.pos + surfaceBuffer.offset).makeRect(surfaceBuffer.size);
+    const H2DE_LevelRect objRect = object->od.pos.makeRect(object->od.size);
+
+    H2DE_LevelRect relativeSurfaceRect = surfraceRect;
+    relativeSurfaceRect.substractPos(object->od.pos);
+
+    H2DE_LevelRect flipedRect = H2DE_Engine::H2DE_Renderer::flipRect(objRect, relativeSurfaceRect, object->od.flip);
+    flipedRect = flipedRect.addPos(object->od.pos);
+
+    return lvlToAbsRect(flipedRect, absolute);
+}
+
+void H2DE_Engine::H2DE_Renderer::renderSurfaceSetTextureProperties(const H2DE_Surface* surface) const {
+    SDL_Texture* texture = textures.find(surface->sd.textureName)->second;
+    const H2DE_ColorRGB& color = surface->sd.color;
+    const H2DE_ScaleMode& scaleMode = surface->sd.scaleMode;
+
     SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
     SDL_SetTextureAlphaMod(texture, color.a);
-    SDL_SetTextureScaleMode(texture, getScaleMode(scaleMode));
+    SDL_SetTextureScaleMode(texture, H2DE_Engine::H2DE_Renderer::getScaleMode(scaleMode));
 }
 
-SDL_Texture* H2DE_Engine::H2DE_Renderer::rs_createTempTexture(const SDL_Rect& destRect) const {
-    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, destRect.w, destRect.h);
-    if (!texture) {
-        std::cerr << "H2DE => \033[31mERROR\033[0m: Failed to create render target: " << SDL_GetError() << std::endl;
-        return nullptr;
+SDL_Texture* H2DE_Engine::H2DE_Renderer::renderSurfaceCreateTempTexture(const SDL_Rect& destRect) const {
+    SDL_Texture* tempTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, destRect.w, destRect.h);
+    if (!tempTexture) {
+        throw std::runtime_error("H2DE => \033[31mERROR\033[0m: Failed to create render target: " + std::string(SDL_GetError()));
     }
 
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderTarget(renderer, texture);
+    SDL_SetTextureBlendMode(tempTexture, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderTarget(renderer, tempTexture);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
 
-    return texture;
+    return tempTexture;
 }
 
-void H2DE_Engine::H2DE_Renderer::rs_renderTempTexture(SDL_Texture* texture, const std::optional<SDL_Rect>& srcRect, float rotation, const SDL_Point* center, SDL_RendererFlip flip) const {
+void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderTextureToTarget(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer) const {
+    const H2DE_Surface* surface = surfaceBuffer.surface;
+    SDL_Texture* texture = textures.find(surface->sd.textureName)->second;
+
+    const std::optional<SDL_Rect>& srcRect = surface->getSrcRect();
+
+    const H2DE_Flip addedFlips = H2DE_AddFlip(surface->sd.flip, object->od.flip);
+    const float rotation = (addedFlips == H2DE_FLIP_XY) ? 180.0f : 0.0f;
+
+    const SDL_Point center = lvlToAbsPivot(surfaceBuffer.size.getCenter());
+    const SDL_RendererFlip flip = H2DE_Engine::H2DE_Renderer::getFlip(addedFlips);
+
     if (srcRect.has_value()) {
-        SDL_RenderCopyEx(renderer, texture, &srcRect.value(), nullptr, rotation, center, flip);
+        SDL_RenderCopyEx(renderer, texture, &srcRect.value(), nullptr, rotation, &center, flip);
     } else {
-        SDL_RenderCopyEx(renderer, texture, nullptr, nullptr, rotation, center, flip);
+        SDL_RenderCopyEx(renderer, texture, nullptr, nullptr, rotation, &center, flip);
     }
     SDL_SetRenderTarget(renderer, nullptr);
 }
 
-void H2DE_Engine::H2DE_Renderer::rs_renderFinalTexture(SDL_Texture* tempTexture, const SDL_Rect* destRect, float rotation, const SDL_Point* pivot) const {
-    SDL_RenderCopyEx(renderer, tempTexture, nullptr, destRect, rotation, pivot, SDL_FLIP_NONE);
+void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderFinalTexture(const H2DE_Object* object, const H2DE_Surface* surface, SDL_Texture* tempTexture, const SDL_Rect& destRect) const {
+    const float surfaceRotation = H2DE_Engine::H2DE_Renderer::flipRotation(surface->sd.rotation, object->od.flip);
+    const float objectRotation = H2DE_Engine::H2DE_Renderer::flipRotation(object->od.rotation, object->od.flip);
+    const float rotation = surfaceRotation + objectRotation;
+    const SDL_Point pivot = lvlToAbsPivot(H2DE_Engine::H2DE_Renderer::flipPivot(surface->sd.rect, surface->sd.pivot, object->od.flip));
+
+    SDL_RenderCopyEx(renderer, tempTexture, nullptr, &destRect, rotation, &pivot, SDL_FLIP_NONE);
     SDL_DestroyTexture(tempTexture);
 }
 
+// hitboxes
 void H2DE_Engine::H2DE_Renderer::renderHitboxes(const H2DE_Object* object) const {
     const H2DE_LevelPos pos = object->od.pos;
     const bool absolute = object->od.absolute;
-    const H2DE_LevelRect objRect = pos.makeRect(object->od.size);
 
     for (const auto& [name, hitbox] : H2DE_GetObjectHitboxes(object)) {
         if (!hitbox.color.isVisible()) {
@@ -160,13 +177,14 @@ void H2DE_Engine::H2DE_Renderer::renderHitboxes(const H2DE_Object* object) const
         }
 
         if (H2DE_CameraContainsHitbox(engine, pos, hitbox, absolute)) {
-            renderHitbox(object, objRect, hitbox, absolute);
+            renderHitbox(object, hitbox, absolute);
         }
     }
 }
 
-void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_Object* object, const H2DE_LevelRect& objRect, const H2DE_Hitbox& hitbox, bool absolute) const {
-    const H2DE_LevelRect flipedHitboxRect = flipHitbox(objRect, hitbox.rect, object->od.flip);
+void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_Object* object, const H2DE_Hitbox& hitbox, bool absolute) const {
+    const H2DE_LevelRect objRect = object->od.pos.makeRect(object->od.size);
+    const H2DE_LevelRect flipedHitboxRect = H2DE_Engine::H2DE_Renderer::flipRect(objRect, hitbox.rect, object->od.flip);
 
     H2DE_AbsPos absPos = lvlToAbsPos(objRect.getPos() + flipedHitboxRect.getPos(), absolute);
     H2DE_AbsSize absSize = lvlToAbsSize(flipedHitboxRect.getSize());
@@ -184,6 +202,10 @@ void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_Object* object, const H
 
 // GETTER
 const bool H2DE_Engine::H2DE_Renderer::isSurfaceValid(const H2DE_Surface* surface) const {
+    if (surface == nullptr) {
+        return false;
+    }
+
     auto it = textures.find(surface->sd.textureName);
     return it != textures.end();
 }
@@ -196,11 +218,11 @@ const unsigned int H2DE_Engine::H2DE_Renderer::getBlockSize() const {
     return blockSize;
 }
 
-SDL_ScaleMode H2DE_Engine::H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) const {
+SDL_ScaleMode H2DE_Engine::H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) {
     return (scaleMode == H2DE_SCALE_MODE_LINEAR) ? SDL_ScaleModeLinear : (scaleMode == H2DE_SCALE_MODE_NEAREST) ? SDL_ScaleModeNearest : SDL_ScaleModeBest;
 }
 
-SDL_RendererFlip H2DE_Engine::H2DE_Renderer::getFlip(H2DE_Flip flip) const {
+SDL_RendererFlip H2DE_Engine::H2DE_Renderer::getFlip(H2DE_Flip flip) {
     return (flip == H2DE_FLIP_XY)
         ? SDL_FLIP_NONE
         : (flip == H2DE_FLIP_NONE)
@@ -210,15 +232,49 @@ SDL_RendererFlip H2DE_Engine::H2DE_Renderer::getFlip(H2DE_Flip flip) const {
                 : SDL_FLIP_VERTICAL;
 }
 
-H2DE_LevelRect H2DE_Engine::H2DE_Renderer::flipHitbox(const H2DE_LevelRect& objRect, const H2DE_LevelRect& hitboxRect, H2DE_Flip flip) const {
-    H2DE_LevelRect res = hitboxRect;
+H2DE_LevelRect H2DE_Engine::H2DE_Renderer::flipRect(const H2DE_LevelRect& objRect, const H2DE_LevelRect& rect, H2DE_Flip flip) {
+    H2DE_LevelRect res = rect;
 
     if (flip & H2DE_FLIP_X) {
-        res.x = objRect.getSize().x - (hitboxRect.getPos().x + hitboxRect.getSize().x);
+        res.x = objRect.getSize().x - (rect.getPos().x + rect.getSize().x);
     }
 
     if (flip & H2DE_FLIP_Y) {
-        res.y = objRect.getSize().y - (hitboxRect.getPos().y + hitboxRect.getSize().y);
+        res.y = objRect.getSize().y - (rect.getPos().y + rect.getSize().y);
+    }
+
+    return res;
+}
+
+float H2DE_Engine::H2DE_Renderer::flipRotation(float rotation, H2DE_Flip flip) {
+    float res = rotation;
+
+    switch (flip) {
+        case H2DE_FLIP_X: res = -res; break;
+        case H2DE_FLIP_Y: res = 180.0f - res; break;
+        case H2DE_FLIP_XY: res = 180.0f + res; break;
+        default: break;
+    }
+
+    while (res < 0.0f) {
+        res += 360.0f;
+    }
+    while (res >= 360.0f) {
+        res -= 360.0f;
+    }
+
+    return res;
+}
+
+H2DE_LevelPos H2DE_Engine::H2DE_Renderer::flipPivot(const H2DE_LevelRect& rect, const H2DE_LevelPos& pivot, H2DE_Flip flip) {
+    H2DE_LevelPos res = H2DE_LevelPos();
+
+    if (flip & H2DE_FLIP_X) {
+        res.x = rect.getSize().x - pivot.x;
+    }
+
+    if (flip & H2DE_FLIP_Y) {
+        res.y = rect.getSize().y - pivot.y;
     }
 
     return res;

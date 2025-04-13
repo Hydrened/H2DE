@@ -18,8 +18,8 @@ private:
 
 public:
     friend H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
-    friend H2DE_Surface* H2DE_GetBarFrontSurface(const H2DE_BarObject* bar);
-    friend H2DE_Surface* H2DE_GetBarBackgroundSurface(const H2DE_BarObject* bar);
+    friend H2DE_Surface* H2DE_GetBarFrontSurface(const H2DE_BarObject* bar, const std::string& name);
+    friend H2DE_Surface* H2DE_GetBarBackgroundSurface(const H2DE_BarObject* bar, const std::string& name);
     friend void H2DE_SetBarValue(H2DE_BarObject* bar, float value);
     friend void H2DE_SetBarValue(H2DE_BarObject* bar, float value, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     friend void H2DE_SetBarMin(H2DE_BarObject* bar, float min);

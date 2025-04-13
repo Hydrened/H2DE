@@ -15,7 +15,7 @@ class H2DE_BasicObject : public H2DE_Object {
     
     public:
         friend H2DE_BasicObject* H2DE_CreateBasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BasicObjectData& basicObjectData);
-        friend H2DE_Surface* H2DE_GetBasicObjectSurface(const H2DE_BasicObject* basicObject);
+        friend H2DE_Surface* H2DE_GetBasicObjectSurface(const H2DE_BasicObject* basicObject, const std::string& name);
     };
 
 #endif

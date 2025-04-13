@@ -13,19 +13,15 @@ H2DE_BarObject* H2DE_CreateBarObject(H2DE_Engine* engine, const H2DE_ObjectData&
 
 // CLEANUP
 H2DE_BarObject::~H2DE_BarObject() {
-    if (bod.front) {
-        delete bod.front;
-    }
-    if (bod.background) {
-        delete bod.background;
-    }
+    H2DE_Object::destroySurfaces(bod.front);
+    H2DE_Object::destroySurfaces(bod.background);
 }
 
 // UPDATE
 void H2DE_BarObject::update() {
-    if (bod.front) {
-        bod.front->percentage = percentage;
-    }
+    // if (bod.front) {
+    //     bod.front->percentage = percentage;
+    // }
 }
 
 void H2DE_BarObject::refreshPercentage() {
@@ -35,33 +31,40 @@ void H2DE_BarObject::refreshPercentage() {
 
 // GETTER
 std::vector<H2DE_SurfaceBuffer> H2DE_BarObject::getSurfaceBuffers() const {
-    H2DE_LevelPos surfaceOffset = { 0.0f, 0.0f };
-    surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
+    std::vector<H2DE_SurfaceBuffer> res = {};
 
-    H2DE_SurfaceBuffer backgroundBuffer = H2DE_SurfaceBuffer();
-    backgroundBuffer.surface = bod.background;
-    backgroundBuffer.offset = surfaceOffset;
-    backgroundBuffer.size = od.size;
-    backgroundBuffer.rotation = od.rotation;
-    backgroundBuffer.flip = od.flip;
+    for (const auto& [name, surface] : bod.front) {
+        H2DE_LevelPos surfaceOffset = surface->sd.rect.getPos();
+        surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
 
-    H2DE_SurfaceBuffer frontBuffer = H2DE_SurfaceBuffer();
-    frontBuffer.surface = bod.front;
-    frontBuffer.offset = surfaceOffset;
-    frontBuffer.size = od.size;
-    frontBuffer.size.x *= std::clamp(percentage, 0.0f, 100.0f) / 100.0f;
-    frontBuffer.rotation = od.rotation;
-    frontBuffer.flip = od.flip;
+        H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
+        buffer.surface = surface;
+        buffer.offset = surfaceOffset;
+        buffer.size = surface->sd.rect.getSize();
+        buffer.size.x *= std::clamp(percentage, 0.0f, 100.0f) / 100.0f;
+        res.push_back(buffer);
+    }
 
-    return { backgroundBuffer, frontBuffer };
+    for (const auto& [name, surface] : bod.background) {
+        H2DE_LevelPos surfaceOffset = surface->sd.rect.getPos();
+        surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
+
+        H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
+        buffer.surface = surface;
+        buffer.offset = surfaceOffset;
+        buffer.size = surface->sd.rect.getSize();
+        res.push_back(buffer);
+    }
+
+    return res;
 }
 
-H2DE_Surface* H2DE_GetBarFrontSurface(const H2DE_BarObject* bar) {
-    return bar->bod.front;
+H2DE_Surface* H2DE_GetBarFrontSurface(const H2DE_BarObject* bar, const std::string& name) {
+    return H2DE_Object::getSurface(bar->bod.front, name);
 }
 
-H2DE_Surface* H2DE_GetBarBackgroundSurface(const H2DE_BarObject* bar) {
-    return bar->bod.background;
+H2DE_Surface* H2DE_GetBarBackgroundSurface(const H2DE_BarObject* bar, const std::string& name) {
+    return H2DE_Object::getSurface(bar->bod.background, name);
 }
 
 // SETTER

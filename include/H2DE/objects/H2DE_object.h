@@ -16,10 +16,14 @@ protected:
     H2DE_Object(H2DE_Engine* engine, H2DE_ObjectData od);
     virtual ~H2DE_Object();
 
+    static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
+    static H2DE_Surface* getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
+    
     virtual void update();
     void updateCollision();
     void snap(const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face);
     virtual std::vector<H2DE_SurfaceBuffer> getSurfaceBuffers() const = 0;
+    H2DE_Hitbox& getHitbox(const std::string& hitboxName);
 
 public:
     friend void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object);
@@ -46,6 +50,11 @@ public:
     friend void H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     friend void H2DE_SetObjectPivot(H2DE_Object* object, const H2DE_LevelPos& pivot);
     friend void H2DE_SetObjectFlip(H2DE_Object* object, H2DE_Flip flip);
+    friend void H2DE_SetObjectHitboxRect(H2DE_Object* object, const std::string& hitboxName, const H2DE_LevelRect& rect);
+    friend void H2DE_SetObjectHitboxColor(H2DE_Object* object, const std::string& hitboxName, const H2DE_ColorRGB& color);
+    friend void H2DE_SetObjectHitboxCollisionIndex(H2DE_Object* object, const std::string& hitboxName, int index);
+    friend void H2DE_SetObjectHitboxSnap(H2DE_Object* object, const std::string& hitboxName, bool snap);
+    friend void H2DE_SetObjectHitboxOnCollide(H2DE_Object* object, const std::string& hitboxName, const std::function<void(H2DE_Object*)>& call);
     friend void H2DE_ShowObject(H2DE_Object* object);
     friend void H2DE_HideObject(H2DE_Object* object);
 
