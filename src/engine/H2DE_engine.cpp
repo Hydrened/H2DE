@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_engine.h"
+#include "H2DE/H2DE_error.h"
 #include "H2DE/H2DE_window.h"
 #include "H2DE/H2DE_renderer.h"
 #include "H2DE/H2DE_volume.h"
@@ -12,7 +13,7 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
     try {
         static bool once = false;
         if (once) {
-            throw std::runtime_error("H2DE-101: Can't create more than one engine");
+            H2DE_Error::throwError("Can't create more than one engine");
         }
         once = true;
 
@@ -85,6 +86,8 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
     SDL_Event event;
 
     try {
+        H2DE_Error::checkEngine(engine);
+
         while (engine->isRunning) {
             now = SDL_GetTicks();
 
@@ -107,6 +110,7 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
 }
 
 void H2DE_StopEngine(H2DE_Engine* engine) {
+    H2DE_Error::checkEngine(engine);
     engine->isRunning = false;
 }
 
@@ -160,6 +164,8 @@ void H2DE_Engine::handleButtonsEvents(SDL_Event event) {
 
 void H2DE_Engine::handleButtonsMouseDownEvent() {
     for (H2DE_ButtonObject* button : getValidButtons()) {
+        H2DE_Error::checkObject(button);
+
         if (!button->bod.onMouseDown) {
             continue;
         }
@@ -188,36 +194,40 @@ void H2DE_Engine::handleButtonsMouseUpEvent() {
 }
 
 void H2DE_Engine::handleButtonsBlurEvents() {
-    if (hovered) {
-        bool stillHovering = false;
+    if (!hovered) {
+        return;
+    }
 
-        for (const auto& [name, hitbox] : hovered->od.hitboxes) {
-            H2DE_LevelRect buttonRect = hovered->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
+    bool stillHovering = false;
 
-            if (buttonRect.collides(H2DE_GetMousePos(this, hovered->od.absolute))) {
-                stillHovering = true;
-                break;
-            }
+    for (const auto& [name, hitbox] : hovered->od.hitboxes) {
+        const H2DE_LevelRect buttonRect = hovered->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
+
+        if (buttonRect.collides(H2DE_GetMousePos(this, hovered->od.absolute))) {
+            stillHovering = true;
+            break;
+        }
+    }
+
+    if (!stillHovering) {
+        if (hovered->bod.onBlur) {
+            hovered->bod.onBlur(hovered);
         }
 
-        if (!stillHovering) {
-            if (hovered->bod.onBlur) {
-                hovered->bod.onBlur(hovered);
-            }
-
-            hovered = nullptr;
-        }
+        hovered = nullptr;
     }
 }
 
 void H2DE_Engine::handleButtonsHoverEvents() {
     for (H2DE_ButtonObject* button : getValidButtons()) {
+        H2DE_Error::checkObject(button);
+
         if (!button->bod.onHover && !button->bod.onBlur) {
             continue;
         }
 
         for (const auto& [name, hitbox] : button->od.hitboxes) {
-            H2DE_LevelRect buttonRect = button->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
+            const H2DE_LevelRect buttonRect = button->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
 
             if (!buttonRect.collides(H2DE_GetMousePos(this, button->od.absolute))) {
                 continue;
@@ -257,9 +267,14 @@ std::vector<H2DE_ButtonObject*> H2DE_Engine::getValidButtons() const {
     std::vector<H2DE_ButtonObject*> res;
 
     for (H2DE_Object* object : objects) {
+        H2DE_Error::checkObject(object);
+
         H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
 
         if (button) {
+            if (button->hidden) {
+                continue;
+            }
 
             if (paused && button->bod.pauseSensitive) {
                 continue;
@@ -301,62 +316,77 @@ void H2DE_Engine::update() {
 
 void H2DE_Engine::updateObjects() {
     for (H2DE_Object* object : objects) {
+        H2DE_Error::checkObject(object);
         object->update();
     }
 }
 
 // CALLS
 void H2DE_SetHandleEventsCall(H2DE_Engine* engine, const std::function<void(SDL_Event)>& call) {
+    H2DE_Error::checkEngine(engine);
     engine->handleEventsCall = call;
 }
 
 void H2DE_SetUpdateCall(H2DE_Engine* engine, const std::function<void()>& call) {
+    H2DE_Error::checkEngine(engine);
     engine->updateCall = call;
 }
 
 // FPS
 unsigned int H2DE_GetCurrentFps(const H2DE_Engine* engine) {
+    H2DE_Error::checkEngine(engine);
     return engine->currentFPS;
 }
 
 unsigned int H2DE_GetFps(const H2DE_Engine* engine) {
+    H2DE_Error::checkEngine(engine);
     return engine->fps;
 }
 
 void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps) {
+    H2DE_Error::checkEngine(engine);
     engine->fps = fps;
 }
 
 // PAUSE
 bool H2DE_IsPaused(const H2DE_Engine* engine) {
+    H2DE_Error::checkEngine(engine);
     return engine->paused;
 }
 
 void H2DE_Pause(H2DE_Engine* engine) {
+    H2DE_Error::checkEngine(engine);
+
     engine->paused = true;
     engine->volume->pause();
 }
 
 void H2DE_Resume(H2DE_Engine* engine) {
+    H2DE_Error::checkEngine(engine);
+
     engine->paused = false;
     engine->volume->resume();
 }
 
 // MOUSE
 H2DE_LevelPos H2DE_GetMousePos(const H2DE_Engine* engine, bool absolute) {
+    H2DE_Error::checkEngine(engine);
     return engine->renderer->absToLvl(engine->mousePos, absolute);
 }
 
 // DELAY
 unsigned int H2DE_Delay(const H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, bool pauseSensitive) {
+    H2DE_Error::checkEngine(engine);
     return H2DE_CreateTimeline(engine, ms, H2DE_EASING_LINEAR, nullptr, callback, 0, pauseSensitive);
 }
 
 void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id) {
+    H2DE_Error::checkEngine(engine);
     H2DE_ResetTimeline(engine, id);
 }
 
 void H2DE_StopDelay(const H2DE_Engine* engine, unsigned int id, bool call) {
+    H2DE_Error::checkEngine(engine);
     H2DE_StopTimeline(engine, id, call);
 }
 

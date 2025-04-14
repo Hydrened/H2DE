@@ -1,8 +1,9 @@
 #include "H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE_error.h"
 
 // INIT
 H2DE_Engine::H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, SDL_Renderer* r, std::vector<H2DE_Object*>& o) : engine(e), renderer(r), objects(o) {
-    
+    H2DE_Error::checkEngine(engine);
 }
 
 // CLEANUP
@@ -22,6 +23,7 @@ void H2DE_Engine::H2DE_Renderer::destroyTextures() {
 
 // DEBUG
 void H2DE_DebugObjects(const H2DE_Engine* engine, bool state) {
+    H2DE_Error::checkEngine(engine);
     engine->renderer->debug = state;
 }
 
@@ -40,6 +42,9 @@ void H2DE_Engine::H2DE_Renderer::clearRenderer() const {
 // objects
 void H2DE_Engine::H2DE_Renderer::sortObjects() {
     std::sort(objects.begin(), objects.end(), [](H2DE_Object* a, H2DE_Object* b) {
+        H2DE_Error::checkObject(a);
+        H2DE_Error::checkObject(b);
+
         const int indexA = H2DE_GetObjectIndex(a);
         const int indexB = H2DE_GetObjectIndex(b);
 
@@ -53,6 +58,7 @@ void H2DE_Engine::H2DE_Renderer::sortObjects() {
 
 void H2DE_Engine::H2DE_Renderer::renderObjects() const {
     for (H2DE_Object* object : objects) {
+        H2DE_Error::checkObject(object);
         renderObject(object);
     }
     SDL_RenderPresent(renderer);
@@ -89,11 +95,10 @@ void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_Object* object, const 
 
     if (isSurfaceValid(surface)) {
         const H2DE_AbsRect destRect = renderSurfaceGetDestRect(object, surfaceBuffer, absolute);
-
-        renderSurfaceSetTextureProperties(surface);
-
+        
         SDL_Texture* tempTexture = renderSurfaceCreateTempTexture(destRect);
-
+        renderSurfaceSetTextureProperties(tempTexture, surface);
+        
         renderSurfaceRenderTextureToTarget(object, surfaceBuffer);
         renderSurfaceRenderFinalTexture(object, surface, tempTexture, destRect);
     }
@@ -112,8 +117,7 @@ const H2DE_AbsRect H2DE_Engine::H2DE_Renderer::renderSurfaceGetDestRect(const H2
     return lvlToAbsRect(flipedRect, absolute);
 }
 
-void H2DE_Engine::H2DE_Renderer::renderSurfaceSetTextureProperties(const H2DE_Surface* surface) const {
-    SDL_Texture* texture = textures.find(surface->sd.textureName)->second;
+void H2DE_Engine::H2DE_Renderer::renderSurfaceSetTextureProperties(SDL_Texture* texture, const H2DE_Surface* surface) const {
     const H2DE_ColorRGB& color = surface->sd.color;
     const H2DE_ScaleMode& scaleMode = surface->sd.scaleMode;
 
@@ -202,11 +206,9 @@ void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_Object* object, const H
 
 // GETTER
 const bool H2DE_Engine::H2DE_Renderer::isSurfaceValid(const H2DE_Surface* surface) const {
-    if (surface == nullptr) {
-        return false;
-    }
+    H2DE_Error::checkSurface(surface);
 
-    auto it = textures.find(surface->sd.textureName);
+    const auto it = textures.find(surface->sd.textureName);
     return it != textures.end();
 }
 
@@ -219,17 +221,26 @@ const unsigned int H2DE_Engine::H2DE_Renderer::getBlockSize() const {
 }
 
 SDL_ScaleMode H2DE_Engine::H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) {
-    return (scaleMode == H2DE_SCALE_MODE_LINEAR) ? SDL_ScaleModeLinear : (scaleMode == H2DE_SCALE_MODE_NEAREST) ? SDL_ScaleModeNearest : SDL_ScaleModeBest;
+    if (scaleMode == H2DE_SCALE_MODE_LINEAR) {
+        return SDL_ScaleModeLinear;
+    }
+    if (scaleMode == H2DE_SCALE_MODE_NEAREST) {
+        return SDL_ScaleModeNearest;
+    }
+    return SDL_ScaleModeBest;
 }
 
 SDL_RendererFlip H2DE_Engine::H2DE_Renderer::getFlip(H2DE_Flip flip) {
-    return (flip == H2DE_FLIP_XY)
-        ? SDL_FLIP_NONE
-        : (flip == H2DE_FLIP_NONE)
-            ? SDL_FLIP_NONE
-            : (flip == H2DE_FLIP_X)
-                ? SDL_FLIP_HORIZONTAL
-                : SDL_FLIP_VERTICAL;
+    if (flip == H2DE_FLIP_XY) {
+        return SDL_FLIP_NONE;
+    }
+    if (flip == H2DE_FLIP_NONE) {
+        return SDL_FLIP_NONE;
+    }
+    if (flip == H2DE_FLIP_X) {
+        return SDL_FLIP_HORIZONTAL;
+    }
+    return SDL_FLIP_VERTICAL;
 }
 
 H2DE_LevelRect H2DE_Engine::H2DE_Renderer::flipRect(const H2DE_LevelRect& objRect, const H2DE_LevelRect& rect, H2DE_Flip flip) {
@@ -281,7 +292,7 @@ H2DE_LevelPos H2DE_Engine::H2DE_Renderer::flipPivot(const H2DE_LevelRect& rect, 
 }
 
 H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbsPos(const H2DE_LevelPos& pos, bool absolute) const {
-    H2DE_LevelPos camPos = H2DE_GetCameraPos(engine);
+    const H2DE_LevelPos camPos = H2DE_GetCameraPos(engine);
     const unsigned int blockSize = getBlockSize(); 
 
     return {
@@ -309,8 +320,8 @@ H2DE_AbsSize H2DE_Engine::H2DE_Renderer::lvlToAbsSize(const H2DE_LevelSize& size
 }
 
 H2DE_AbsRect H2DE_Engine::H2DE_Renderer::lvlToAbsRect(const H2DE_LevelRect& rect, bool absolute) const {
-    H2DE_AbsPos pos = lvlToAbsPos(rect.getPos(), absolute);
-    H2DE_AbsSize size = lvlToAbsSize(rect.getSize());
+    const H2DE_AbsPos pos = lvlToAbsPos(rect.getPos(), absolute);
+    const H2DE_AbsSize size = lvlToAbsSize(rect.getSize());
     
     return {
         pos.x,
@@ -323,8 +334,8 @@ H2DE_AbsRect H2DE_Engine::H2DE_Renderer::lvlToAbsRect(const H2DE_LevelRect& rect
 H2DE_LevelPos H2DE_Engine::H2DE_Renderer::absToLvl(const H2DE_AbsPos& pos, bool absolute) const {
     const unsigned int blockSize = getBlockSize(); 
 
-    H2DE_LevelPos levelCamPos = H2DE_GetCameraPos(engine);
-    H2DE_AbsPos absCamPos = {
+    const H2DE_LevelPos levelCamPos = H2DE_GetCameraPos(engine);
+    const H2DE_AbsPos absCamPos = {
         static_cast<int>(levelCamPos.x * blockSize),
         static_cast<int>(levelCamPos.y * blockSize),
     };

@@ -1,12 +1,15 @@
 #include "H2DE/objects/H2DE_text_object.h"
+#include "H2DE/H2DE_error.h"
 #include "H2DE/H2DE_renderer.h"
 
 // INIT
 H2DE_TextObject::H2DE_TextObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_TextObjectData t) : H2DE_Object(engine, od), tod(t) {
-    resetSurfaces();
+    resetSurfaceBuffers();
 }
 
 H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectData& od, const H2DE_TextObjectData& tod) {
+    H2DE_Error::checkEngine(engine);
+
     H2DE_TextObject* object = new H2DE_TextObject(engine, od, tod);
     engine->objects.push_back(object);
     return object;
@@ -14,30 +17,15 @@ H2DE_TextObject* H2DE_CreateTextObject(H2DE_Engine* engine, const H2DE_ObjectDat
 
 // CLEANUP
 H2DE_TextObject::~H2DE_TextObject() {
-    destroySurfaces();
+    clearSurfaceBuffers();
 }
 
-void H2DE_TextObject::destroySurfaces() {
-    for (const H2DE_SurfaceBuffer surfaceBuffer : surfaceBuffers) {
-        if (surfaceBuffer.surface) {
-            delete surfaceBuffer.surface;
-        }
-    }
-
-    surfaceBuffers.clear();
-}
-
-// UPDATE
-void H2DE_TextObject::update() {
-    
-}
-
-void H2DE_TextObject::resetSurfaces() {
-    destroySurfaces();
+// SURFACES
+void H2DE_TextObject::resetSurfaceBuffers() {
+    clearSurfaceBuffers();
 
     const std::unordered_map<std::string, H2DE_Font> fonts = engine->renderer->getFonts();
-    auto itFont = fonts.find(tod.font);
-
+    const auto itFont = fonts.find(tod.font);
     if (itFont == fonts.end()) {
         return;
     }
@@ -101,8 +89,6 @@ void H2DE_TextObject::resetSurfaces() {
                 buffer.surface = H2DE_CreateTexture(engine, sd, td);
                 buffer.offset = offset;
                 buffer.size = fontSize;
-                // buffer.rotation = rotation;
-                // buffer.flip = H2DE_FLIP_NONE;
                 
                 surfaceBuffers.push_back(buffer);
             }
@@ -113,10 +99,6 @@ void H2DE_TextObject::resetSurfaces() {
 }
 
 // GETTER
-std::vector<H2DE_SurfaceBuffer> H2DE_TextObject::getSurfaceBuffers() const {
-    return surfaceBuffers;
-}
-
 std::vector<std::string> H2DE_TextObject::getWords() const {
     std::vector<std::string> words;
     std::string text = tod.text;
@@ -206,21 +188,29 @@ float H2DE_TextObject::getLineStartOffsetX(const std::vector<std::string>& line)
 
 // SETTER
 void H2DE_SetTextObjectText(H2DE_TextObject* textObject, const std::string& text) {
+    H2DE_Error::checkObject(textObject);
+
     textObject->tod.text = text;
-    textObject->resetSurfaces();
+    textObject->resetSurfaceBuffers();
 }
 
 void H2DE_SetTextObjectFont(H2DE_TextObject* textObject, const std::string& font) {
+    H2DE_Error::checkObject(textObject);
+
     textObject->tod.font = font;
-    textObject->resetSurfaces();
+    textObject->resetSurfaceBuffers();
 }
 
 void H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSize& fontSize) {
+    H2DE_Error::checkObject(textObject);
+
     textObject->tod.fontSize = fontSize;
-    textObject->resetSurfaces();
+    textObject->resetSurfaceBuffers();
 }
 
 void H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSize& fontSize, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    H2DE_Error::checkObject(textObject);
+
     const H2DE_LevelSize defaultFontSize = textObject->tod.fontSize;
     const H2DE_LevelSize fontSizeToAdd = fontSize - defaultFontSize;
 
@@ -230,11 +220,15 @@ void H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSiz
 }
 
 void H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize& spacing) {
+    H2DE_Error::checkObject(textObject);
+
     textObject->tod.spacing = spacing;
-    textObject->resetSurfaces();
+    textObject->resetSurfaceBuffers();
 }
 
 void H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize& spacing, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    H2DE_Error::checkObject(textObject);
+
     const H2DE_LevelSize defaultSpacing = textObject->tod.spacing;
     const H2DE_LevelSize spacingToAdd = spacing - defaultSpacing;
 
@@ -244,16 +238,22 @@ void H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize
 }
 
 void H2DE_SetTextObjectTextAlign(H2DE_TextObject* textObject, H2DE_TextAlign textAlign) {
+    H2DE_Error::checkObject(textObject);
+
     textObject->tod.textAlign = textAlign;
-    textObject->resetSurfaces();
+    textObject->resetSurfaceBuffers();
 }
 
 void H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color) {
+    H2DE_Error::checkObject(textObject);
+
     textObject->tod.color = color;
-    textObject->resetSurfaces();
+    textObject->resetSurfaceBuffers();
 }
 
 void H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    H2DE_Error::checkObject(textObject);
+    
     const H2DE_ColorRGB defaultColor = textObject->tod.color;
     
     H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultColor, color](float blend) {

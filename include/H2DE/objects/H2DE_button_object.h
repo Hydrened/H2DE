@@ -12,12 +12,14 @@ private:
     H2DE_ButtonObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_ButtonObjectData bod);
     ~H2DE_ButtonObject() override;
 
-    void update() override;
-    std::vector<H2DE_SurfaceBuffer> getSurfaceBuffers() const override;
+    void resetSurfaceBuffers() override;
 
 public:
     friend H2DE_ButtonObject* H2DE_CreateButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     friend H2DE_Surface* H2DE_GetButtonSurface(const H2DE_ButtonObject* button, const std::string& name);
+
+    friend void H2DE_AddSurfaceToButtonObject(H2DE_ButtonObject* button, H2DE_Surface* surface, const std::string& name);
+    friend void H2DE_RemoveSurfaceFromButtonObject(H2DE_ButtonObject* button, const std::string& name);
     
     friend void H2DE_ButtonMouseDown(H2DE_ButtonObject* button);
     friend void H2DE_ButtonMouseUp(H2DE_ButtonObject* button);

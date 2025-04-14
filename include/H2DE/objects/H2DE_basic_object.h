@@ -10,12 +10,14 @@ class H2DE_BasicObject : public H2DE_Object {
         H2DE_BasicObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_BasicObjectData bod);
         ~H2DE_BasicObject() override;
     
-        void update() override;
-        std::vector<H2DE_SurfaceBuffer> getSurfaceBuffers() const override;
+        void resetSurfaceBuffers() override;
     
     public:
         friend H2DE_BasicObject* H2DE_CreateBasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BasicObjectData& basicObjectData);
         friend H2DE_Surface* H2DE_GetBasicObjectSurface(const H2DE_BasicObject* basicObject, const std::string& name);
+
+        friend void H2DE_AddSurfaceToBasicObject(H2DE_BasicObject* basicObject, H2DE_Surface* surface, const std::string& name);
+        friend void H2DE_RemoveSurfaceFromBasicObject(H2DE_BasicObject* basicObject, const std::string& name);
     };
 
 #endif

@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_json.h"
+#include "H2DE/H2DE_error.h"
 
 // CREATE
 bool H2DE_CreateJsonFile(const std::filesystem::path& path, bool override, bool encode) {
@@ -20,14 +21,14 @@ bool H2DE_CreateJsonFile(const std::filesystem::path& path, const json& data, bo
 // READ
 json H2DE_ReadJsonFile(const std::filesystem::path& path) {
     if (!std::filesystem::exists(path)) {
-        std::cerr << "H2DE => \033[31mERROR\033[0m: File not found: " << path << std::endl;
+        H2DE_Error::logError("File not found:" + path.string());
         return json{};
     }
 
     std::ifstream file(path);
 
     if (!file) {
-        std::cerr <<  "H2DE => \033[31mERROR\033[0m: Failed to open file: " << path << std::endl;
+        H2DE_Error::logError("Failed to open file: " + path.string());
         return json{};
     }
 
@@ -45,14 +46,14 @@ json H2DE_ReadJsonFile(const std::filesystem::path& path) {
         }
 
         if (data.is_discarded()) {
-            std::cerr << "H2DE => \033[31mERROR\033[0m: Invalid JSON format in file: " << path << std::endl;
+            H2DE_Error::logError("Invalid JSON format in file: " + path.string());
             return json{};
         }
 
         return data;
 
     } catch (const std::exception& parseError) {
-        std::cerr << "H2DE => \033[31mERROR\033[0m: Failed to parse JSON: " << parseError.what() << std::endl;
+        H2DE_Error::logError("Failed to parse JSON: " + std::string(parseError.what()));
         return json{};
     }
 }
@@ -61,7 +62,7 @@ json H2DE_ReadJsonFile(const std::filesystem::path& path) {
 bool H2DE_WriteJsonFile(const std::filesystem::path& path, const json& data, bool encode) {
     std::ofstream file(path);
     if (!file) {
-        std::cerr << "H2DE => \033[31mERROR\033[0m: Failed to open file for writing: " << path << std::endl;
+        H2DE_Error::logError("Failed to open file for writing: " + path.string());
         return false;
     }
 
@@ -72,7 +73,7 @@ bool H2DE_WriteJsonFile(const std::filesystem::path& path, const json& data, boo
     }
 
     if (!file.good()) {
-        std::cerr << "H2DE => \033[31mERROR\033[0m: Failed to write JSON to file: " << path << std::endl;
+        H2DE_Error::logError("Failed to write JSON to file: " + path.string());
         return false;
     }
 

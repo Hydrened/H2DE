@@ -1,3 +1,10 @@
+## H2DE-3.2.1
+#### ADDED
+- null pointer error detection
+- add surface to object
+- remove surface to object
+- optimized objects
+
 ## H2DE-3.2.0
 #### ADDED
 - objects have map of surface intead of single surface

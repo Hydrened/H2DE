@@ -307,9 +307,6 @@ struct H2DE_SurfaceBuffer {
     H2DE_Surface* surface = nullptr;
     H2DE_LevelPos offset = { 0.0f, 0.0f };
     H2DE_LevelSize size = { 0.0f, 0.0f };
-    // H2DE_LevelPos pivot = { 0.0f, 0.0f };
-    // float rotation = 0.0f;
-    // H2DE_Flip flip = H2DE_FLIP_NONE;
 };
 
 struct H2DE_TextureData {
@@ -326,8 +323,6 @@ struct H2DE_SpriteData {
 };
 
 struct H2DE_BarObjectData {
-    // H2DE_Surface* front = nullptr;
-    // H2DE_Surface* background = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> front = {};
     std::unordered_map<std::string, H2DE_Surface*> background = {};
     float min = 0.0f;
@@ -336,12 +331,10 @@ struct H2DE_BarObjectData {
 };
 
 struct H2DE_BasicObjectData {
-    // H2DE_Surface* surface = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
 };
 
 struct H2DE_ButtonObjectData {
-    // H2DE_Surface* surface = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
     std::function<void(H2DE_Object*)> onMouseDown = nullptr;
     std::function<void(H2DE_Object*)> onMouseUp = nullptr;

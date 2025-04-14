@@ -135,7 +135,7 @@ public:
 
     friend H2DE_LevelPos H2DE_GetCameraPos(const H2DE_Engine* engine);
     friend H2DE_LevelSize H2DE_GetCameraSize(const H2DE_Engine* engine);
-    friend bool H2DE_CameraContainsObject(const H2DE_Engine* engine, H2DE_Object* object);
+    friend bool H2DE_CameraContainsObject(const H2DE_Engine* engine, const H2DE_Object* object);
     friend bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute);
     friend bool H2DE_CameraContainsRect(const H2DE_Engine* engine, const H2DE_LevelRect& rect, bool absolute);
     friend void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos);

@@ -2,5 +2,4 @@
 bin/*
 !bin/*.dll
 src/test.cpp
-errors.md
 todo.md

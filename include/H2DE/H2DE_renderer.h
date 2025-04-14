@@ -25,7 +25,7 @@ private:
     void renderSurfaces(H2DE_Object* object) const;
     void renderSurface(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
     const H2DE_AbsRect renderSurfaceGetDestRect(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
-    void renderSurfaceSetTextureProperties(const H2DE_Surface* surface) const;
+    void renderSurfaceSetTextureProperties(SDL_Texture* texture, const H2DE_Surface* surface) const;
     SDL_Texture* renderSurfaceCreateTempTexture(const SDL_Rect& destRect) const;
     void renderSurfaceRenderTextureToTarget(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer) const;
     void renderSurfaceRenderFinalTexture(const H2DE_Object* object, const H2DE_Surface* surface, SDL_Texture* tempTexture, const SDL_Rect& destRect) const;

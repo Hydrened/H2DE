@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_volume.h"
+#include "H2DE/H2DE_error.h"
 
 // INIT
 H2DE_Engine::H2DE_Volume::H2DE_Volume(H2DE_Engine* e) : engine(e) {
@@ -42,10 +43,12 @@ void H2DE_Engine::H2DE_Volume::resume() const {
 }
 
 void H2DE_PlaySong(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive) {
+    H2DE_Error::checkEngine(engine);
     engine->volume->playChunk(true, name, loops, pauseSensitive);
 }
 
 int H2DE_PlaySfx(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive) {
+    H2DE_Error::checkEngine(engine);
     return engine->volume->playChunk(false, name, loops, pauseSensitive);
 }
 
@@ -91,7 +94,7 @@ void H2DE_ResumeSfx(const H2DE_Engine* engine, int id) {
 
 // GETTER
 Mix_Chunk* H2DE_Engine::H2DE_Volume::getChunk(const std::string& soundName) const {
-    auto it = engine->volume->sounds.find(soundName);
+    const auto it = engine->volume->sounds.find(soundName);
 
     if (it == engine->volume->sounds.end()) {
         return nullptr;
@@ -110,6 +113,8 @@ bool H2DE_IsSfxPlaying(const H2DE_Engine* engine, int id) {
 
 // SETTER
 void H2DE_SetSongVolume(const H2DE_Engine* engine, int volume) {
+    H2DE_Error::checkEngine(engine);
+
     volume = std::clamp(volume, 0, 128);
     engine->volume->songVolume = volume;
 
@@ -117,6 +122,8 @@ void H2DE_SetSongVolume(const H2DE_Engine* engine, int volume) {
 }
 
 void H2DE_SetSfxVolume(const H2DE_Engine* engine, int volume) {
+    H2DE_Error::checkEngine(engine);
+    
     volume = std::clamp(volume, 0, 128);
     engine->volume->sfxVolume = volume;
 

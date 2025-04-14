@@ -16,6 +16,10 @@ private:
     bool lockedToReference = false;
     H2DE_LevelPadding lockedPadding = { 0.0f, 0.0f, 0.0f, 0.0f };
 
+    bool isObjectRectOnScreen(const H2DE_Object* object) const;
+    bool isASurfaceOfObjectOnScreen(const H2DE_Object* object) const;
+    bool isAHitboxOfObjectOnScreen(const H2DE_Object* object) const;
+
 public:
     H2DE_Camera(H2DE_Engine* engine, const H2DE_CameraData& data);
     ~H2DE_Camera();

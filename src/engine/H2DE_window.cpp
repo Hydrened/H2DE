@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_window.h"
+#include "H2DE/H2DE_error.h"
 #include "H2DE/H2DE_asset_loader.h"
 
 // INIT
@@ -10,19 +11,19 @@ H2DE_Engine::H2DE_Window::H2DE_Window(H2DE_Engine* e, H2DE_WindowData d) : engin
 
 void H2DE_Engine::H2DE_Window::initSDL() const {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        throw std::runtime_error("H2DE-102: SDL_Init_Video failed: " + std::string(SDL_GetError()));
+        H2DE_Error::throwError("SDL_Init_Video failed: " + std::string(SDL_GetError()));
     }
     else if (SDL_Init(SDL_INIT_AUDIO) != 0) {
-        throw std::runtime_error("H2DE-103: SDL_Init_Audio failed: " + std::string(SDL_GetError()));
+        H2DE_Error::throwError("SDL_Init_Audio failed: " + std::string(SDL_GetError()));
     }
     else if (!IMG_Init(IMG_INIT_PNG) && IMG_INIT_PNG) {
-        throw std::runtime_error("H2DE-104: IMG_Init failed: " + std::string(IMG_GetError()));
+        H2DE_Error::throwError("IMG_Init failed: " + std::string(IMG_GetError()));
     }
     else if (!(Mix_Init(MIX_INIT_MP3) & MIX_INIT_MP3)) {
-        throw std::runtime_error("H2DE-105: Mix_Init failed: " + std::string(Mix_GetError()));
+        H2DE_Error::throwError("Mix_Init failed: " + std::string(Mix_GetError()));
     }
     else if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) < 0) {
-        throw std::runtime_error("H2DE-106: Mix_OpenAudio failed: " + std::string(Mix_GetError()));
+        H2DE_Error::throwError("Mix_OpenAudio failed: " + std::string(Mix_GetError()));
     }
 }
 
@@ -37,7 +38,7 @@ void H2DE_Engine::H2DE_Window::create() {
     if (data.fullscreen) {
         SDL_DisplayMode dm;
         if (SDL_GetCurrentDisplayMode(0, &dm) != 0) {
-            throw std::runtime_error("H2DE-107: Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
+            H2DE_Error::throwError("Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
         }
 
         x = 0;
@@ -50,14 +51,14 @@ void H2DE_Engine::H2DE_Window::create() {
     window = SDL_CreateWindow(data.title, x, y, w, h, SDL_WINDOW_SHOWN | flag);
     if (!window) {
         SDL_Quit();
-        throw std::runtime_error("H2DE-108: Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
+        H2DE_Error::throwError("Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
     }
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
         SDL_DestroyWindow(window);
         SDL_Quit();
-        throw std::runtime_error("H2DE-109: Error creating window => SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
+        H2DE_Error::throwError("Error creating window => SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
     }
 
     customRatio = (H2DE_WINDOW_RATIO_CUSTOM) ? static_cast<float>(data.size.x) / static_cast<float>(data.size.y) : 0.0f;
@@ -101,8 +102,8 @@ void H2DE_Engine::H2DE_Window::saveState() const {
         return;
     }
 
-    H2DE_AbsPos pos = H2DE_GetWindowPos(engine);
-    H2DE_AbsSize size = H2DE_GetWindowSize(engine);
+    const H2DE_AbsPos pos = H2DE_GetWindowPos(engine);
+    const H2DE_AbsSize size = H2DE_GetWindowSize(engine);
     
     H2DE_SettingsSetKeyValue(engine, "WINDOW", "x", std::to_string(pos.x));
     H2DE_SettingsSetKeyValue(engine, "WINDOW", "y", std::to_string(pos.y));
@@ -129,10 +130,10 @@ void H2DE_Engine::H2DE_Window::fixRatioSize(const H2DE_AbsSize& size) {
         default: return;
     }
 
-    int wDiff = std::abs(size.x - oldSize.x);
-    int hDiff = std::abs(size.y - oldSize.y);
+    const int wDiff = std::abs(size.x - oldSize.x);
+    const int hDiff = std::abs(size.y - oldSize.y);
 
-    bool resizeWidth = (!oldSize.isNull())
+    const bool resizeWidth = (!oldSize.isNull())
         ? wDiff < hDiff
         : false;
 
@@ -159,12 +160,16 @@ SDL_WindowFlags H2DE_Engine::H2DE_Window::getFlags(bool fullscreen, bool resizab
 }
 
 H2DE_AbsPos H2DE_GetWindowPos(const H2DE_Engine* engine) {
+    H2DE_Error::checkEngine(engine);
+
     int x, y;
     SDL_GetWindowPosition(engine->window->window, &x, &y);
     return H2DE_AbsPos{ x, y };
 }
 
 H2DE_AbsSize H2DE_GetWindowSize(const H2DE_Engine* engine) {
+    H2DE_Error::checkEngine(engine);
+
     int w, h;
     SDL_GetWindowSize(engine->window->window, &w, &h);
     return H2DE_AbsSize{ w, h };
@@ -172,27 +177,35 @@ H2DE_AbsSize H2DE_GetWindowSize(const H2DE_Engine* engine) {
 
 // SETTER
 void H2DE_SetWindowPos(const H2DE_Engine* engine, const H2DE_AbsPos& pos) {
+    H2DE_Error::checkEngine(engine);
     SDL_SetWindowPosition(engine->window->window, pos.x, pos.y);
 }
 
 void H2DE_SetWindowSize(const H2DE_Engine* engine, const H2DE_AbsSize& size) {
+    H2DE_Error::checkEngine(engine);
+
     SDL_SetWindowSize(engine->window->window, size.x, size.y);
     engine->window->fixRatioSize(H2DE_GetWindowSize(engine));
 }
 
 void H2DE_SetWindowMinimumSize(const H2DE_Engine* engine, const H2DE_AbsSize& minimumSize) {
+    H2DE_Error::checkEngine(engine);
     SDL_SetWindowMinimumSize(engine->window->window, minimumSize.x, minimumSize.y);
 }
 
 void H2DE_SetWindowMaximumSize(const H2DE_Engine* engine, const H2DE_AbsSize& maximumSize) {
+    H2DE_Error::checkEngine(engine);
     SDL_SetWindowMaximumSize(engine->window->window, maximumSize.x, maximumSize.y);
 }
 
 void H2DE_SetWindowTitle(const H2DE_Engine* engine, const std::string& title) {
+    H2DE_Error::checkEngine(engine);
     SDL_SetWindowTitle(engine->window->window, title.c_str());
 }
 
 void H2DE_SetWindowIcon(const H2DE_Engine* engine, const std::string& textureName) {
+    H2DE_Error::checkEngine(engine);
+
     std::vector<std::filesystem::path> files = engine->assetLoader->getFilesToLoad("assets");
 
     for (const std::filesystem::path& file : files) {
@@ -211,19 +224,25 @@ void H2DE_SetWindowIcon(const H2DE_Engine* engine, const std::string& textureNam
 }
 
 void H2DE_SetWindowFullscreen(const H2DE_Engine* engine, bool fullscreen) {
+    H2DE_Error::checkEngine(engine);
+
     SDL_WindowFlags flag = engine->window->getFlags(fullscreen, engine->window->data.resizable);
     SDL_SetWindowFullscreen(engine->window->window, flag);
 }
 
 void H2DE_SetWindowResizable(const H2DE_Engine* engine, bool resizable) {
+    H2DE_Error::checkEngine(engine);
     SDL_SetWindowResizable(engine->window->window, (resizable) ? SDL_TRUE : SDL_FALSE);
 }
 
 void H2DE_SetWindowGrab(const H2DE_Engine* engine, bool grab) {
+    H2DE_Error::checkEngine(engine);
     SDL_SetWindowGrab(engine->window->window, (grab) ? SDL_TRUE : SDL_FALSE);
 }
 
 void H2DE_SetWindowRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio) {
+    H2DE_Error::checkEngine(engine);
+    
     engine->window->data.ratio = ratio;
     engine->window->customRatio = (H2DE_WINDOW_RATIO_CUSTOM) ? static_cast<float>(engine->window->data.size.x) / static_cast<float>(engine->window->data.size.y) : 0.0f;
     engine->window->fixRatioSize(H2DE_GetWindowSize(engine));

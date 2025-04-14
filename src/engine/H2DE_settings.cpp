@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_settings.h"
+#include "H2DE/H2DE_error.h"
 
 // INIT
 H2DE_Engine::H2DE_Settings::H2DE_Settings() {
@@ -7,7 +8,7 @@ H2DE_Engine::H2DE_Settings::H2DE_Settings() {
     updateReader();
 
     if (reader->ParseError() != 0) {
-        throw std::runtime_error("H2DE-201: Error reading settings.ini");
+        H2DE_Error::throwError("Error reading settings.ini");
     }
 }
 
@@ -33,7 +34,7 @@ void H2DE_Engine::H2DE_Settings::updateReader() {
 bool H2DE_Engine::H2DE_Settings::addLineAt(const std::string& newLine, size_t position) {
     std::ifstream file(path);
     if (!file) {
-        throw std::runtime_error("H2DE-203: Error reading settings.ini");
+        H2DE_Error::throwError("Error reading settings.ini");
         return false;
     }
 
@@ -51,7 +52,7 @@ bool H2DE_Engine::H2DE_Settings::addLineAt(const std::string& newLine, size_t po
 
     std::ofstream outputFile(path);
     if (!outputFile) {
-        throw std::runtime_error("H2DE-204: Error reading settings.ini");
+        H2DE_Error::throwError("Error reading settings.ini");
         return false;
     }
 
@@ -64,6 +65,8 @@ bool H2DE_Engine::H2DE_Settings::addLineAt(const std::string& newLine, size_t po
 }
 
 bool H2DE_SettingsAddSection(const H2DE_Engine* engine, const std::string& section) {
+    H2DE_Error::checkEngine(engine);
+
     if (engine->settings->hasSection(section)) {
         return false;
     }
@@ -75,6 +78,8 @@ bool H2DE_SettingsAddSection(const H2DE_Engine* engine, const std::string& secti
 }
 
 bool H2DE_SettingsAddKey(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
+    H2DE_Error::checkEngine(engine);
+
     if (!engine->settings->hasSection(section)) {
         return false;
     }
@@ -92,7 +97,7 @@ bool H2DE_SettingsAddKey(const H2DE_Engine* engine, const std::string& section, 
 std::vector<std::string> H2DE_Engine::H2DE_Settings::getLines() const {
     std::ifstream file(path);
     if (!file) {
-        throw std::runtime_error("H2DE-202 => Error reading settings.ini");
+        H2DE_Error::throwError("Error reading settings.ini");
     }
 
     std::vector<std::string> res;
@@ -157,19 +162,24 @@ size_t H2DE_Engine::H2DE_Settings::getLastSectionPosition(const std::string& sec
 }
 
 int H2DE_SettingsGetKeyInteger(const H2DE_Engine* engine, const std::string& section, const std::string& key, int defaultValue) {
+    H2DE_Error::checkEngine(engine);
     return engine->settings->reader->GetInteger(section, key, defaultValue);
 }
 
 std::string H2DE_SettingsGetKeyString(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& defaultValue) {
+    H2DE_Error::checkEngine(engine);
     return engine->settings->reader->GetString(section, key, defaultValue);
 }
 
 bool H2DE_SettingsGetKeyBool(const H2DE_Engine* engine, const std::string& section, const std::string& key, bool defaultValue) {
+    H2DE_Error::checkEngine(engine);
     return engine->settings->reader->GetBoolean(section, key, defaultValue);
 }
 
 // SETTER
 bool H2DE_SettingsSetKeyValue(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
+    H2DE_Error::checkEngine(engine);
+    
     if (!engine->settings->hasSection(section)) {
         return false;
     }
@@ -197,7 +207,7 @@ bool H2DE_SettingsSetKeyValue(const H2DE_Engine* engine, const std::string& sect
 
     std::ofstream outputFile(engine->settings->path);
     if (!outputFile) {
-        throw std::runtime_error("H2DE-205: Error reading settings.ini");
+        H2DE_Error::throwError("Error reading settings.ini");
         return false;
     }
 

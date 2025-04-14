@@ -7,15 +7,11 @@ class H2DE_TextObject : public H2DE_Object {
 private:
     H2DE_TextObjectData tod;
 
-    std::vector<H2DE_SurfaceBuffer> surfaceBuffers = {};
-
     H2DE_TextObject(H2DE_Engine* engine, H2DE_ObjectData od, H2DE_TextObjectData tod);
     ~H2DE_TextObject() override;
 
-    void update() override;
-    void destroySurfaces();
-    void resetSurfaces();
-    std::vector<H2DE_SurfaceBuffer> getSurfaceBuffers() const override;
+    void resetSurfaceBuffers() override;
+
     std::vector<std::string> getWords() const;
     std::vector<std::vector<std::string>> getLines() const;
     float getLineStartOffsetX(const std::vector<std::string>& line) const;

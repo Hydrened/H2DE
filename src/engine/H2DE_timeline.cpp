@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_timeline.h"
+#include "H2DE/H2DE_error.h"
 
 // INIT
 H2DE_Engine::H2DE_Timeline::H2DE_Timeline(H2DE_Engine* e) : engine(e) {
@@ -12,6 +13,8 @@ H2DE_Engine::H2DE_Timeline::~H2DE_Timeline() {
 
 // EVENTS
 unsigned int H2DE_CreateTimeline(const H2DE_Engine* engine, unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive) {
+    H2DE_Error::checkEngine(engine);
+
     H2DE_Engine::H2DE_Timeline::SpecificTimeline timeline = H2DE_Engine::H2DE_Timeline::SpecificTimeline();
     timeline.max = (duration == 0) ? 1 : engine->fps / (1000.0f / duration);
     timeline.loops = loops;
@@ -27,7 +30,9 @@ unsigned int H2DE_CreateTimeline(const H2DE_Engine* engine, unsigned int duratio
 }
 
 void H2DE_ResetTimeline(const H2DE_Engine* engine, unsigned int id) {
-    auto it = engine->timeline->timelines.find(id);
+    H2DE_Error::checkEngine(engine);
+
+    const auto it = engine->timeline->timelines.find(id);
 
     if (it != engine->timeline->timelines.end()) {
         it->second.current = 0;
@@ -36,7 +41,9 @@ void H2DE_ResetTimeline(const H2DE_Engine* engine, unsigned int id) {
 }
 
 void H2DE_StopTimeline(const H2DE_Engine* engine, unsigned int id, bool call) {
-    auto it = engine->timeline->timelines.find(id);
+    H2DE_Error::checkEngine(engine);
+
+    const auto it = engine->timeline->timelines.find(id);
 
     if (it != engine->timeline->timelines.end()) {
 
