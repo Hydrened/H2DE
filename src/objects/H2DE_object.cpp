@@ -12,7 +12,7 @@ H2DE_Object::~H2DE_Object() {
 }
 
 void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object) {
-    if (object) {
+    if (object != nullptr) {
         H2DE_Error::checkEngine(engine);
 
         const auto it = std::find(engine->objects.begin(), engine->objects.end(), object);
@@ -20,6 +20,7 @@ void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object) {
         if (it != engine->objects.end()) {
             engine->objects.erase(it); 
             delete object;
+            object = nullptr;
         }
     }
 }
@@ -32,30 +33,6 @@ void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>
         }
     }
     surfaces.clear();
-}
-
-// EVENTS
-void H2DE_Object::snap(const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face) {
-    switch (face) {
-        case H2DE_FACE_TOP:
-            od.pos.y = otherRect.y + otherRect.h;
-            break;
-
-        case H2DE_FACE_BOTTOM:
-            od.pos.y = otherRect.y - rect.h;
-            break;
-
-        case H2DE_FACE_LEFT:
-            od.pos.x = otherRect.x + otherRect.w;
-            break;
-
-        case H2DE_FACE_RIGHT:
-            od.pos.x = otherRect.x - rect.w;
-            break;
-
-        default: return;
-    }
-    resetSurfaceBuffers();
 }
 
 // HITBOXES
@@ -114,12 +91,14 @@ void H2DE_Object::updateCollision() {
         return;
     }
 
-    for (auto& [name, hitbox] : od.hitboxes) {
+    const H2DE_LevelRect offset = od.pos.makeRect({ 0.0f, 0.0f });
+
+    for (const auto& [name, hitbox] : od.hitboxes) {
         if (!hitbox.onCollide && !hitbox.snap) {
             continue;
         }
 
-        H2DE_LevelRect rect = hitbox.rect.addPos(od.pos);
+        const H2DE_LevelRect rect = hitbox.rect + offset;
 
         for (H2DE_Object* otherObject : engine->objects) {
             H2DE_Error::checkObject(otherObject);
@@ -128,12 +107,14 @@ void H2DE_Object::updateCollision() {
                 continue;
             }
 
-            for (auto& [otherName, otherHitbox] : od.hitboxes) {
+            const H2DE_LevelRect otherOffset = otherObject->od.pos.makeRect({ 0.0f, 0.0f });
+
+            for (const auto& [otherName, otherHitbox] : otherObject->od.hitboxes) {
                 if (otherHitbox.collisionIndex != hitbox.collisionIndex) {
                     continue;
                 }
 
-                H2DE_LevelRect otherRect = otherHitbox.rect.addPos(otherObject->od.pos);
+                const H2DE_LevelRect otherRect = otherHitbox.rect + otherOffset;
 
                 if (!rect.collides(otherRect)) {
                     continue;
@@ -144,14 +125,41 @@ void H2DE_Object::updateCollision() {
                 }
 
                 if (hitbox.snap) {
-                    std::optional<H2DE_Face> face = rect.getCollidedFace(otherRect);
+                    const std::optional<H2DE_Face> face = rect.getCollidedFace(otherRect);
+                    
                     if (face.has_value()) {
-                        snap(rect, otherRect, face.value());
+                        snap(offset.getPos(), rect, otherRect, face.value());
                     }
                 }
             }
         }
     }
+}
+
+void H2DE_Object::snap(const H2DE_LevelPos& offset, const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face) {
+    const H2DE_LevelPos o = offset - rect.getPos();
+
+    switch (face) {
+        case H2DE_FACE_TOP:
+            od.pos.y = otherRect.y + otherRect.h + o.y;
+            break;
+
+        case H2DE_FACE_RIGHT:
+            od.pos.x = otherRect.x - rect.w + o.x;
+            break;
+
+        case H2DE_FACE_BOTTOM:
+            od.pos.y = otherRect.y - rect.h + o.y;
+            break;
+
+        case H2DE_FACE_LEFT:
+            od.pos.x = otherRect.x + otherRect.w + o.x;
+            break;
+
+        default: return;
+    }
+
+    resetSurfaceBuffers();
 }
 
 // GETTER

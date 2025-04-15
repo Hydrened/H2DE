@@ -23,7 +23,7 @@ protected:
     
     void update();
     void updateCollision();
-    void snap(const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face);
+    void snap(const H2DE_LevelPos& offset, const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face);
 
     virtual void resetSurfaceBuffers() = 0;
     void clearSurfaceBuffers();

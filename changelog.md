@@ -1,3 +1,7 @@
+## H2DE-3.2.2
+#### FIXED
+- object collision detection
+
 ## H2DE-3.2.1
 #### ADDED
 - null pointer error detection

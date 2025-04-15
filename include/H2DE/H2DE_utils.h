@@ -16,10 +16,10 @@ class H2DE_Object;
 class H2DE_Surface;
 
 enum H2DE_Face {
-    H2DE_FACE_TOP,
-    H2DE_FACE_RIGHT,
-    H2DE_FACE_BOTTOM,
-    H2DE_FACE_LEFT,
+    H2DE_FACE_TOP = 0b00,
+    H2DE_FACE_RIGHT = 0b01,
+    H2DE_FACE_BOTTOM = 0b10,
+    H2DE_FACE_LEFT = 0b11,
 };
 
 enum H2DE_WindowRatio {

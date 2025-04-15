@@ -3,7 +3,6 @@
 
 #include <filesystem>
 #include <functional>
-#include <future>
 #include <iostream>
 #include <Windows.h>
 #include <SDL2/SDL.h>
