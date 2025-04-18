@@ -63,7 +63,7 @@ public:
     friend void H2DE_SetObjectHitboxColor(H2DE_Object* object, const std::string& hitboxName, const H2DE_ColorRGB& color);
     friend void H2DE_SetObjectHitboxCollisionIndex(H2DE_Object* object, const std::string& hitboxName, int index);
     friend void H2DE_SetObjectHitboxSnap(H2DE_Object* object, const std::string& hitboxName, bool snap);
-    friend void H2DE_SetObjectHitboxOnCollide(H2DE_Object* object, const std::string& hitboxName, const std::function<void(H2DE_Object*)>& call);
+    friend void H2DE_SetObjectHitboxOnCollide(H2DE_Object* object, const std::string& hitboxName, const std::function<void(H2DE_Object*, H2DE_Face)>& call);
     friend void H2DE_ShowObject(H2DE_Object* object);
     friend void H2DE_HideObject(H2DE_Object* object);
 

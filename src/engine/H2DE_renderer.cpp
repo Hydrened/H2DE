@@ -56,20 +56,26 @@ void H2DE_Engine::H2DE_Renderer::sortObjects() {
     });
 }
 
-void H2DE_Engine::H2DE_Renderer::renderObjects() const {
+void H2DE_Engine::H2DE_Renderer::renderObjects() {
     for (H2DE_Object* object : objects) {
         H2DE_Error::checkObject(object);
         renderObject(object);
     }
+
+    renderObjectsHitboxes();
     SDL_RenderPresent(renderer);
 }
 
-void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) const {
+void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) {
     renderSurfaces(object);
 
     if (debug) {
-        renderHitboxes(object);
+        renderObjectAddHitboxesToBuffer(object);
     }
+}
+
+void H2DE_Engine::H2DE_Renderer::renderObjectAddHitboxesToBuffer(H2DE_Object* object) {
+    hitboxesBuffer.push_back(object);
 }
 
 // surfaces
@@ -171,9 +177,19 @@ void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderFinalTexture(const H2DE_Obje
 }
 
 // hitboxes
+void H2DE_Engine::H2DE_Renderer::renderObjectsHitboxes() {
+    for (const H2DE_Object* object : hitboxesBuffer) {
+        if (object->od.hitboxes.size() != 0) {
+            renderHitboxes(object);
+        }
+    }
+        
+    hitboxesBuffer.clear();
+}
+
 void H2DE_Engine::H2DE_Renderer::renderHitboxes(const H2DE_Object* object) const {
     const H2DE_LevelPos pos = object->od.pos;
-    const bool absolute = object->od.absolute;
+    bool absolute = object->od.absolute;
 
     for (const auto& [name, hitbox] : H2DE_GetObjectHitboxes(object)) {
         if (!hitbox.color.isVisible()) {
@@ -194,9 +210,9 @@ void H2DE_Engine::H2DE_Renderer::renderHitbox(const H2DE_Object* object, const H
     H2DE_AbsSize absSize = lvlToAbsSize(flipedHitboxRect.getSize());
 
     Sint16 minX = absPos.x;
-    Sint16 maxX = absPos.x + absSize.x;
+    Sint16 maxX = absPos.x + absSize.x - 1;
     Sint16 minY = absPos.y;
-    Sint16 maxY = absPos.y + absSize.y;
+    Sint16 maxY = absPos.y + absSize.y - 1;
 
     std::vector<Sint16> vx = { minX, maxX, maxX, minX };
     std::vector<Sint16> vy = { minY, minY, maxY, maxY };
@@ -296,8 +312,8 @@ H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbsPos(const H2DE_LevelPos& pos, bo
     const unsigned int blockSize = getBlockSize(); 
 
     return {
-        static_cast<int>((pos.x - ((absolute) ? 0.0f : camPos.x)) * blockSize),
-        static_cast<int>((pos.y - ((absolute) ? 0.0f : camPos.y)) * blockSize),
+        static_cast<int>(std::round((pos.x - ((absolute) ? 0.0f : camPos.x)) * blockSize)),
+        static_cast<int>(std::round((pos.y - ((absolute) ? 0.0f : camPos.y)) * blockSize)),
     };
 }
 
@@ -305,8 +321,8 @@ H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbsPivot(const H2DE_LevelPos& pos) 
     const unsigned int blockSize = getBlockSize(); 
 
     return {
-        static_cast<int>(pos.x * blockSize),
-        static_cast<int>(pos.y * blockSize),
+        static_cast<int>(std::round(pos.x * blockSize)),
+        static_cast<int>(std::round(pos.y * blockSize)),
     };
 }
 
@@ -314,8 +330,8 @@ H2DE_AbsSize H2DE_Engine::H2DE_Renderer::lvlToAbsSize(const H2DE_LevelSize& size
     const unsigned int blockSize = getBlockSize(); 
 
     return {
-        static_cast<int>(size.x * blockSize),
-        static_cast<int>(size.y * blockSize),
+        static_cast<int>(std::round(size.x * blockSize)),
+        static_cast<int>(std::round(size.y * blockSize)),
     };
 }
 

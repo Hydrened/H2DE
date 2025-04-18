@@ -1,3 +1,11 @@
+## H2DE-3.2.3
+#### ADDED
+- hitboxes render on top of everything
+- return collided face on collision
+#### FIXED
+- hitbox size rendering
+- round position instead of ceil for pixel rendering 
+
 ## H2DE-3.2.2
 #### FIXED
 - object collision detection

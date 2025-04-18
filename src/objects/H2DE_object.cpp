@@ -120,16 +120,18 @@ void H2DE_Object::updateCollision() {
                     continue;
                 }
 
+                const std::optional<H2DE_Face> face = rect.getCollidedFace(otherRect);
+
+                if (!face.has_value()) {
+                    continue;
+                }
+
                 if (hitbox.onCollide) {
-                    hitbox.onCollide(otherObject);
+                    hitbox.onCollide(otherObject, face.value());
                 }
 
                 if (hitbox.snap) {
-                    const std::optional<H2DE_Face> face = rect.getCollidedFace(otherRect);
-                    
-                    if (face.has_value()) {
-                        snap(offset.getPos(), rect, otherRect, face.value());
-                    }
+                    snap(offset.getPos(), rect, otherRect, face.value());
                 }
             }
         }
@@ -318,7 +320,7 @@ void H2DE_SetObjectHitboxSnap(H2DE_Object* object, const std::string& hitboxName
     object->getHitbox(hitboxName).snap = snap;
 }
 
-void H2DE_SetObjectHitboxOnCollide(H2DE_Object* object, const std::string& hitboxName, const std::function<void(H2DE_Object*)>& call) {
+void H2DE_SetObjectHitboxOnCollide(H2DE_Object* object, const std::string& hitboxName, const std::function<void(H2DE_Object*, H2DE_Face)>& call) {
     H2DE_Error::checkObject(object);
     object->getHitbox(hitboxName).onCollide = call;
 }

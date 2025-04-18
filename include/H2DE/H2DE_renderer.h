@@ -9,6 +9,7 @@ private:
     H2DE_Engine* engine;
     SDL_Renderer* renderer;
     std::vector<H2DE_Object*>& objects;
+    std::vector<H2DE_Object*> hitboxesBuffer = {}; 
 
     std::unordered_map<std::string, SDL_Texture*> textures;
     std::unordered_map<std::string, H2DE_Font> fonts;
@@ -19,8 +20,9 @@ private:
     void clearRenderer() const;
     void sortObjects();
 
-    void renderObjects() const;
-    void renderObject(H2DE_Object* object) const;
+    void renderObjects();
+    void renderObject(H2DE_Object* object);
+    void renderObjectAddHitboxesToBuffer(H2DE_Object* object);
 
     void renderSurfaces(H2DE_Object* object) const;
     void renderSurface(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
@@ -30,6 +32,7 @@ private:
     void renderSurfaceRenderTextureToTarget(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer) const;
     void renderSurfaceRenderFinalTexture(const H2DE_Object* object, const H2DE_Surface* surface, SDL_Texture* tempTexture, const SDL_Rect& destRect) const;
 
+    void renderObjectsHitboxes();
     void renderHitboxes(const H2DE_Object* object) const;
     void renderHitbox(const H2DE_Object* object, const H2DE_Hitbox& hitbox, bool absolute) const;
 

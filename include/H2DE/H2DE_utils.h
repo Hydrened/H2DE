@@ -271,7 +271,7 @@ struct H2DE_Hitbox {
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
     int collisionIndex = 0;
     bool snap = false;
-    std::function<void(H2DE_Object*)> onCollide = nullptr;
+    std::function<void(H2DE_Object*, H2DE_Face)> onCollide = nullptr;
 };
 
 struct H2DE_Font {
