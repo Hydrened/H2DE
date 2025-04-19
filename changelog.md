@@ -1,3 +1,7 @@
+## H2DE-3.2.4
+#### FIXED
+- surface not refreshing when setting object rotation
+
 ## H2DE-3.2.3
 #### ADDED
 - hitboxes render on top of everything

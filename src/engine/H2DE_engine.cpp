@@ -301,7 +301,6 @@ std::vector<H2DE_ButtonObject*> H2DE_Engine::getValidButtons() const {
 // UPDATE
 void H2DE_Engine::update() {
     window->update();
-    
     timeline->update();
 
     if (!paused) {

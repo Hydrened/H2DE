@@ -275,6 +275,7 @@ void H2DE_SetObjectRotation(H2DE_Object* object, float rotation) {
     H2DE_Error::checkObject(object);
 
     object->od.rotation = rotation;
+    object->resetSurfaceBuffers();
 }
 
 void H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
@@ -292,12 +293,14 @@ void H2DE_SetObjectPivot(H2DE_Object* object, const H2DE_LevelPos& pivot) {
     H2DE_Error::checkObject(object);
 
     object->od.pivot = pivot;
+    object->resetSurfaceBuffers();
 }
 
 void H2DE_SetObjectFlip(H2DE_Object* object, H2DE_Flip flip) {
     H2DE_Error::checkObject(object);
 
     object->od.flip = flip;
+    object->resetSurfaceBuffers();
 }
 
 void H2DE_SetObjectHitboxRect(H2DE_Object* object, const std::string& hitboxName, const H2DE_LevelRect& rect) {
