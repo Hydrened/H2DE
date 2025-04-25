@@ -301,6 +301,8 @@ struct H2DE_SurfaceData {
     float rotation = 0.0f;
     H2DE_Flip flip = H2DE_FLIP_NONE;
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
+    
+    int index = 0;
 };
 
 struct H2DE_SurfaceBuffer {

@@ -36,8 +36,9 @@ void H2DE_RemoveSurfaceFromButtonObject(H2DE_ButtonObject* button, const std::st
 
 void H2DE_ButtonObject::resetSurfaceBuffers() {
     clearSurfaceBuffers();
+    surfaceBuffers.reserve(bod.surfaces.size());
 
-    for (const auto& [name, surface] : bod.surfaces) {
+    for (H2DE_Surface* surface : H2DE_Object::getSortedSurfaces(bod.surfaces)) {
         H2DE_LevelPos surfaceOffset = surface->sd.rect.getPos();
         surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
 

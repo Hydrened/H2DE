@@ -165,6 +165,21 @@ void H2DE_Object::snap(const H2DE_LevelPos& offset, const H2DE_LevelRect& rect, 
 }
 
 // GETTER
+const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
+    std::vector<H2DE_Surface*> res;
+    res.reserve(surfaces.size());
+
+    for (const auto& [name, surface] : surfaces) {
+        res.push_back(surface);
+    }
+
+    std::sort(res.begin(), res.end(), [](H2DE_Surface* a, H2DE_Surface* b) {
+        return a->sd.index < b->sd.index;
+    });
+
+    return res;
+}
+
 H2DE_Surface* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
     const auto it = surfaces.find(name);
     if (it == surfaces.end()) {

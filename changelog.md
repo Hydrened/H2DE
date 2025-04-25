@@ -1,3 +1,7 @@
+## H2DE-3.2.5
+#### ADDED
+- surface index
+
 ## H2DE-3.2.4
 #### FIXED
 - surface not refreshing when setting object rotation

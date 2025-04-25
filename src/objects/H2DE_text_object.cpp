@@ -45,7 +45,7 @@ void H2DE_TextObject::resetSurfaceBuffers() {
     const H2DE_LevelPos pivot = od.pivot;
 
     const std::vector<std::vector<std::string>> lines = getLines();
-    
+
     for (int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
         const std::vector<std::string>& line = lines[lineIndex];
 

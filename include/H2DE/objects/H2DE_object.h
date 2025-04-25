@@ -28,6 +28,7 @@ protected:
     virtual void resetSurfaceBuffers() = 0;
     void clearSurfaceBuffers();
 
+    static const std::vector<H2DE_Surface*> getSortedSurfaces(const std::unordered_map<std::string, H2DE_Surface*>& surfaces);
     std::vector<H2DE_SurfaceBuffer> getSurfaceBuffers() const;
     H2DE_Hitbox& getHitbox(const std::string& hitboxName);
 

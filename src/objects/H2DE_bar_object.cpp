@@ -60,8 +60,9 @@ void H2DE_BarObject::resetSurfaceBuffers() {
     const float blend = std::clamp(percentage, 0.0f, 100.0f) / 100.0f;
 
     clearSurfaceBuffers();
+    surfaceBuffers.reserve(bod.background.size() + bod.front.size());
 
-    for (const auto& [name, surface] : bod.background) {
+    for (H2DE_Surface* surface : H2DE_Object::getSortedSurfaces(bod.background)) {
         H2DE_LevelPos surfaceOffset = { 0.0f, 0.0f };
         surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
 
@@ -72,7 +73,7 @@ void H2DE_BarObject::resetSurfaceBuffers() {
         surfaceBuffers.push_back(buffer);
     }
 
-    for (const auto& [name, surface] : bod.front) {
+    for (H2DE_Surface* surface : H2DE_Object::getSortedSurfaces(bod.front)) {
         H2DE_LevelPos surfaceOffset = { 0.0f, 0.0f };
         surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
 
