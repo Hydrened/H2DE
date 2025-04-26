@@ -1,3 +1,7 @@
+## H2DE-3.2.6
+#### FIXED
+- transparent texture with black default background 
+
 ## H2DE-3.2.5
 #### ADDED
 - surface index

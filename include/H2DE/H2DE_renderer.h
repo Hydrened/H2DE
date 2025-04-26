@@ -26,11 +26,9 @@ private:
 
     void renderSurfaces(H2DE_Object* object) const;
     void renderSurface(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
-    const H2DE_AbsRect renderSurfaceGetDestRect(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
     void renderSurfaceSetTextureProperties(SDL_Texture* texture, const H2DE_Surface* surface) const;
-    SDL_Texture* renderSurfaceCreateTempTexture(const SDL_Rect& destRect) const;
-    void renderSurfaceRenderTextureToTarget(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer) const;
-    void renderSurfaceRenderFinalTexture(const H2DE_Object* object, const H2DE_Surface* surface, SDL_Texture* tempTexture, const SDL_Rect& destRect) const;
+    H2DE_LevelRect renderSurfaceGetRotatedDestRect(const H2DE_Object* object, const H2DE_Surface* surface) const;
+    void renderSurfaceRenderTexture(SDL_Texture* texture, const H2DE_Object* object, const H2DE_Surface* surface, const H2DE_LevelRect& destRect, bool absolute) const;
 
     void renderObjectsHitboxes();
     void renderHitboxes(const H2DE_Object* object) const;
@@ -40,7 +38,11 @@ private:
 
     const unsigned int getBlockSize() const;
     static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
+    static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
     static SDL_RendererFlip getFlip(H2DE_Flip flip);
+
+    static H2DE_LevelRect applyRotationOnRect(const H2DE_LevelRect& rect, const H2DE_LevelPos& pivot, float rotation);
+    static H2DE_LevelPos applyRotationOnPivot(const H2DE_LevelRect& rect, const H2DE_LevelPos& pivot, float rotation);
 
     static H2DE_LevelRect flipRect(const H2DE_LevelRect& objRect, const H2DE_LevelRect& rect, H2DE_Flip flip);
     static float flipRotation(float rotation, H2DE_Flip flip);

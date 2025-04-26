@@ -47,6 +47,15 @@ enum H2DE_ScaleMode {
     H2DE_SCALE_MODE_BEST,
 };
 
+enum H2DE_BlendMode {
+    H2DE_BLEND_MODE_BLEND,
+    H2DE_BLEND_MODE_ADD,
+    H2DE_BLEND_MODE_MOD,
+    H2DE_BLEND_MODE_MUL,
+    H2DE_BLEND_MODE_INVALID,
+    H2DE_BLEND_MODE_NONE,
+};
+
 enum H2DE_TextAlign {
     H2DE_TEXT_ALIGN_LEFT,
     H2DE_TEXT_ALIGN_RIGHT,
@@ -301,7 +310,7 @@ struct H2DE_SurfaceData {
     float rotation = 0.0f;
     H2DE_Flip flip = H2DE_FLIP_NONE;
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
-    
+    H2DE_BlendMode blendMode = H2DE_BLEND_MODE_BLEND;
     int index = 0;
 };
 

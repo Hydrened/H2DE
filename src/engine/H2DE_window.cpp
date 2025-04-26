@@ -156,7 +156,7 @@ void H2DE_Engine::H2DE_Window::update() {
 
 // GETTER
 SDL_WindowFlags H2DE_Engine::H2DE_Window::getFlags(bool fullscreen, bool resizable) const {
-    return (fullscreen) ? SDL_WINDOW_FULLSCREEN : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
+    return (fullscreen) ? SDL_WINDOW_FULLSCREEN_DESKTOP : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
 }
 
 H2DE_AbsPos H2DE_GetWindowPos(const H2DE_Engine* engine) {

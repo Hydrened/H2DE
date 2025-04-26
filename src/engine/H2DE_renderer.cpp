@@ -99,81 +99,64 @@ void H2DE_Engine::H2DE_Renderer::renderSurfaces(H2DE_Object* object) const {
 void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const {
     const H2DE_Surface* surface = surfaceBuffer.surface;
 
-    if (isSurfaceValid(surface)) {
-        const H2DE_AbsRect destRect = renderSurfaceGetDestRect(object, surfaceBuffer, absolute);
-        
-        SDL_Texture* tempTexture = renderSurfaceCreateTempTexture(destRect);
-        renderSurfaceSetTextureProperties(tempTexture, surface);
-        
-        renderSurfaceRenderTextureToTarget(object, surfaceBuffer);
-        renderSurfaceRenderFinalTexture(object, surface, tempTexture, destRect);
+    if (!isSurfaceValid(surface)) {
+        return;
     }
-}
 
-const H2DE_AbsRect H2DE_Engine::H2DE_Renderer::renderSurfaceGetDestRect(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const {
-    const H2DE_LevelRect surfraceRect = (object->od.pos + surfaceBuffer.offset).makeRect(surfaceBuffer.size);
-    const H2DE_LevelRect objRect = object->od.pos.makeRect(object->od.size);
+    SDL_Texture* texture = textures.find(surface->sd.textureName)->second;
 
-    H2DE_LevelRect relativeSurfaceRect = surfraceRect;
-    relativeSurfaceRect.substractPos(object->od.pos);
+    renderSurfaceSetTextureProperties(texture, surface);
+    const H2DE_LevelRect destRect = renderSurfaceGetRotatedDestRect(object, surface);
 
-    H2DE_LevelRect flipedRect = H2DE_Engine::H2DE_Renderer::flipRect(objRect, relativeSurfaceRect, object->od.flip);
-    flipedRect = flipedRect.addPos(object->od.pos);
-
-    return lvlToAbsRect(flipedRect, absolute);
+    renderSurfaceRenderTexture(texture, object, surface, destRect, absolute);
 }
 
 void H2DE_Engine::H2DE_Renderer::renderSurfaceSetTextureProperties(SDL_Texture* texture, const H2DE_Surface* surface) const {
     const H2DE_ColorRGB& color = surface->sd.color;
-    const H2DE_ScaleMode& scaleMode = surface->sd.scaleMode;
+    const SDL_ScaleMode scaleMode = H2DE_Engine::H2DE_Renderer::getScaleMode(surface->sd.scaleMode);
+    const SDL_BlendMode blendMode = H2DE_Engine::H2DE_Renderer::getBlendMode(surface->sd.blendMode);
 
     SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
     SDL_SetTextureAlphaMod(texture, color.a);
-    SDL_SetTextureScaleMode(texture, H2DE_Engine::H2DE_Renderer::getScaleMode(scaleMode));
+    SDL_SetTextureBlendMode(texture, blendMode);
+    SDL_SetTextureScaleMode(texture, scaleMode);
 }
 
-SDL_Texture* H2DE_Engine::H2DE_Renderer::renderSurfaceCreateTempTexture(const SDL_Rect& destRect) const {
-    SDL_Texture* tempTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, destRect.w, destRect.h);
-    if (!tempTexture) {
-        throw std::runtime_error("H2DE => \033[31mERROR\033[0m: Failed to create render target: " + std::string(SDL_GetError()));
-    }
+H2DE_LevelRect H2DE_Engine::H2DE_Renderer::renderSurfaceGetRotatedDestRect(const H2DE_Object* object, const H2DE_Surface* surface) const {
+    const H2DE_LevelRect originalDestRect = object->od.pos.makeRect({ 0.0f, 0.0f }) + surface->sd.rect;
 
-    SDL_SetTextureBlendMode(tempTexture, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderTarget(renderer, tempTexture);
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-    SDL_RenderClear(renderer);
+    const H2DE_LevelPos flipedObjectPivot = H2DE_Engine::H2DE_Renderer::flipPivot(originalDestRect, object->od.pivot, object->od.flip);
+    const float flipedObjectRotation = H2DE_Engine::H2DE_Renderer::flipRotation(object->od.rotation, object->od.flip);
+    const H2DE_LevelRect objectRotatedDestRect = H2DE_Engine::H2DE_Renderer::applyRotationOnRect(originalDestRect, flipedObjectPivot, flipedObjectRotation);
 
-    return tempTexture;
+    const H2DE_Flip addedFlips = H2DE_AddFlip(object->od.flip, surface->sd.flip);
+
+    const H2DE_LevelPos flipedSurfacePivot = H2DE_Engine::H2DE_Renderer::flipPivot(originalDestRect, surface->sd.pivot, surface->sd.flip);
+    const float flipedSurfaceRotation = H2DE_Engine::H2DE_Renderer::flipRotation(surface->sd.rotation, surface->sd.flip);
+    const H2DE_LevelPos objectRotatedPivot = H2DE_Engine::H2DE_Renderer::applyRotationOnPivot(originalDestRect, flipedSurfacePivot, flipedSurfaceRotation);
+
+    return H2DE_Engine::H2DE_Renderer::applyRotationOnRect(objectRotatedDestRect, objectRotatedPivot, surface->sd.rotation);
 }
 
-void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderTextureToTarget(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer) const {
-    const H2DE_Surface* surface = surfaceBuffer.surface;
-    SDL_Texture* texture = textures.find(surface->sd.textureName)->second;
+void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderTexture(SDL_Texture* texture, const H2DE_Object* object, const H2DE_Surface* surface, const H2DE_LevelRect& destRect, bool absolute) const {
+    const H2DE_Flip addedFlips = H2DE_AddFlip(object->od.flip, surface->sd.flip);
+    const float rotationCausedByFlip = (addedFlips == H2DE_FLIP_XY) ? 180.0f : 0.0f;
 
-    const std::optional<SDL_Rect>& srcRect = surface->getSrcRect();
+    const float flipedObjectRotation = H2DE_Engine::H2DE_Renderer::flipRotation(object->od.rotation, object->od.flip);
+    const float flipedSurfaceRotation = H2DE_Engine::H2DE_Renderer::flipRotation(surface->sd.rotation, surface->sd.flip);
+    const float rotation = flipedObjectRotation + flipedSurfaceRotation + rotationCausedByFlip;
 
-    const H2DE_Flip addedFlips = H2DE_AddFlip(surface->sd.flip, object->od.flip);
-    const float rotation = (addedFlips == H2DE_FLIP_XY) ? 180.0f : 0.0f;
-
-    const SDL_Point center = lvlToAbsPivot(surfaceBuffer.size.getCenter());
+    const SDL_Rect dst = static_cast<SDL_Rect>(lvlToAbsRect(destRect, absolute));
+    const SDL_Point center = static_cast<SDL_Point>(lvlToAbsPivot(surface->sd.rect.getSize().getCenter()));
     const SDL_RendererFlip flip = H2DE_Engine::H2DE_Renderer::getFlip(addedFlips);
 
-    if (srcRect.has_value()) {
-        SDL_RenderCopyEx(renderer, texture, &srcRect.value(), nullptr, rotation, &center, flip);
+    const std::optional<SDL_Rect>& src = surface->getSrcRect();
+
+    if (src.has_value()) {
+        SDL_RenderCopyEx(renderer, texture, &src.value(), &dst, rotation, &center, flip);
     } else {
-        SDL_RenderCopyEx(renderer, texture, nullptr, nullptr, rotation, &center, flip);
+        SDL_RenderCopyEx(renderer, texture, nullptr, &dst, rotation, &center, flip);
     }
-    SDL_SetRenderTarget(renderer, nullptr);
-}
-
-void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderFinalTexture(const H2DE_Object* object, const H2DE_Surface* surface, SDL_Texture* tempTexture, const SDL_Rect& destRect) const {
-    const float surfaceRotation = H2DE_Engine::H2DE_Renderer::flipRotation(surface->sd.rotation, object->od.flip);
-    const float objectRotation = H2DE_Engine::H2DE_Renderer::flipRotation(object->od.rotation, object->od.flip);
-    const float rotation = surfaceRotation + objectRotation;
-    const SDL_Point pivot = lvlToAbsPivot(H2DE_Engine::H2DE_Renderer::flipPivot(surface->sd.rect, surface->sd.pivot, object->od.flip));
-
-    SDL_RenderCopyEx(renderer, tempTexture, nullptr, &destRect, rotation, &pivot, SDL_FLIP_NONE);
-    SDL_DestroyTexture(tempTexture);
 }
 
 // hitboxes
@@ -246,6 +229,17 @@ SDL_ScaleMode H2DE_Engine::H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode)
     return SDL_ScaleModeBest;
 }
 
+SDL_BlendMode H2DE_Engine::H2DE_Renderer::getBlendMode(H2DE_BlendMode blendMode) {
+    switch (blendMode) {
+        case H2DE_BLEND_MODE_BLEND: return SDL_BLENDMODE_BLEND;
+        case H2DE_BLEND_MODE_ADD: return SDL_BLENDMODE_ADD;
+        case H2DE_BLEND_MODE_MOD: return SDL_BLENDMODE_MOD;
+        case H2DE_BLEND_MODE_MUL: return SDL_BLENDMODE_MUL;
+        case H2DE_BLEND_MODE_INVALID: return SDL_BLENDMODE_INVALID;
+        default: return SDL_BLENDMODE_NONE;
+    }
+}
+
 SDL_RendererFlip H2DE_Engine::H2DE_Renderer::getFlip(H2DE_Flip flip) {
     if (flip == H2DE_FLIP_XY) {
         return SDL_FLIP_NONE;
@@ -257,6 +251,37 @@ SDL_RendererFlip H2DE_Engine::H2DE_Renderer::getFlip(H2DE_Flip flip) {
         return SDL_FLIP_HORIZONTAL;
     }
     return SDL_FLIP_VERTICAL;
+}
+
+H2DE_LevelRect H2DE_Engine::H2DE_Renderer::applyRotationOnRect(const H2DE_LevelRect& rect, const H2DE_LevelPos& pivot, float rotation) {
+    const H2DE_LevelSize size = rect.getSize();
+    const H2DE_LevelPos center = rect.getCenter();
+
+    const H2DE_LevelPos pivotWorld = rect.getPos() + pivot;
+    const H2DE_LevelPos vecPivot = pivotWorld - center;
+
+    float rad = rotation * static_cast<float>(M_PI / 180.0f);
+    const H2DE_LevelPos rotatedVec = {
+        vecPivot.x * cosf(rad) - vecPivot.y * sinf(rad),
+        vecPivot.x * sinf(rad) + vecPivot.y * cosf(rad),
+    };
+    const H2DE_LevelPos finalCenter = pivotWorld - rotatedVec;
+
+    return H2DE_LevelPos{ finalCenter - size.getCenter() }.makeRect(size);
+}
+
+H2DE_LevelPos H2DE_Engine::H2DE_Renderer::applyRotationOnPivot(const H2DE_LevelRect& rect, const H2DE_LevelPos& pivot, float rotation) {
+    const H2DE_LevelPos pivotWorld = rect.getPos() + pivot;
+    const H2DE_LevelPos vecPivot = pivotWorld - rect.getCenter();
+
+    float rad = rotation * static_cast<float>(M_PI / 180.0f);
+    const H2DE_LevelPos rotatedVec = {
+        vecPivot.x * cosf(rad) - vecPivot.y * sinf(rad),
+        vecPivot.x * sinf(rad) + vecPivot.y * cosf(rad),
+    };
+    const H2DE_LevelPos rotatedPivotWorld = rect.getCenter() + rotatedVec;
+
+    return rotatedPivotWorld - rect.getPos();
 }
 
 H2DE_LevelRect H2DE_Engine::H2DE_Renderer::flipRect(const H2DE_LevelRect& objRect, const H2DE_LevelRect& rect, H2DE_Flip flip) {

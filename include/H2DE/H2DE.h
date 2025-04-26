@@ -7,7 +7,7 @@
  * Hydren 2 Dimensional Engine
  * https://github.com/Hydrened/H2DE
  * 
- * Version: 3.2.5
+ * Version: 3.2.6
  * 
  * Copyright (C) 2024-2025
  */
