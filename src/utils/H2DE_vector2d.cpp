@@ -98,6 +98,11 @@ H2DE_Rect<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::makeRect(const H2DE_V
     return H2DE_Rect<H2DE_Vector2D_T>{ x, y, size.x, size.y };
 }
 
+template<typename H2DE_Vector2D_T>
+H2DE_Rect<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::makeNullRect() const {
+    return H2DE_Rect<H2DE_Vector2D_T>{ x, y, static_cast<H2DE_Vector2D_T>(0.0f), static_cast<H2DE_Vector2D_T>(0.0f) };
+}
+
 // GETTER
 template<typename H2DE_Vector2D_T>
 const bool H2DE_Vector2D<H2DE_Vector2D_T>::isNull() const {

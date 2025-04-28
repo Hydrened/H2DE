@@ -171,7 +171,7 @@ void H2DE_Engine::handleButtonsMouseDownEvent() {
         }
 
         for (const auto& [name, hitbox] : button->od.hitboxes) {
-            H2DE_LevelRect buttonRect = button->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
+            H2DE_LevelRect buttonRect = button->od.pos.makeNullRect() + hitbox.rect;
 
             if (buttonRect.collides(H2DE_GetMousePos(this, button->od.absolute))) {
                 button->bod.onMouseDown(button);
@@ -201,7 +201,7 @@ void H2DE_Engine::handleButtonsBlurEvents() {
     bool stillHovering = false;
 
     for (const auto& [name, hitbox] : hovered->od.hitboxes) {
-        const H2DE_LevelRect buttonRect = hovered->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
+        const H2DE_LevelRect buttonRect = hovered->od.pos.makeNullRect() + hitbox.rect;
 
         if (buttonRect.collides(H2DE_GetMousePos(this, hovered->od.absolute))) {
             stillHovering = true;
@@ -227,7 +227,7 @@ void H2DE_Engine::handleButtonsHoverEvents() {
         }
 
         for (const auto& [name, hitbox] : button->od.hitboxes) {
-            const H2DE_LevelRect buttonRect = button->od.pos.makeRect({ 0.0f, 0.0f }) + hitbox.rect;
+            const H2DE_LevelRect buttonRect = button->od.pos.makeNullRect() + hitbox.rect;
 
             if (!buttonRect.collides(H2DE_GetMousePos(this, button->od.absolute))) {
                 continue;

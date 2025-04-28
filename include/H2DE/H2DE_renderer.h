@@ -6,6 +6,8 @@
 
 class H2DE_Engine::H2DE_Renderer {
 private:
+    using R = H2DE_Engine::H2DE_Renderer;
+
     H2DE_Engine* engine;
     SDL_Renderer* renderer;
     std::vector<H2DE_Object*>& objects;
@@ -41,12 +43,13 @@ private:
     static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
     static SDL_RendererFlip getFlip(H2DE_Flip flip);
 
-    static H2DE_LevelRect applyRotationOnRect(const H2DE_LevelRect& rect, const H2DE_LevelPos& pivot, float rotation);
-    static H2DE_LevelPos applyRotationOnPivot(const H2DE_LevelRect& rect, const H2DE_LevelPos& pivot, float rotation);
+    static H2DE_LevelPos applyRotationOnPos(const H2DE_LevelPos& W_pos, const H2DE_LevelPos& W_pivot, float rotation);
+    static H2DE_LevelRect applyRotationOnRect(const H2DE_LevelRect& W_rect, const H2DE_LevelPos& W_pivot, float rotation);
 
-    static H2DE_LevelRect flipRect(const H2DE_LevelRect& objRect, const H2DE_LevelRect& rect, H2DE_Flip flip);
+    static H2DE_LevelRect flipRect(const H2DE_LevelRect& W_objectRect, const H2DE_LevelRect& L_surfaceRect, H2DE_Flip flip);
     static float flipRotation(float rotation, H2DE_Flip flip);
-    static H2DE_LevelPos flipPivot(const H2DE_LevelRect& rect, const H2DE_LevelPos& pivot, H2DE_Flip flip);
+    static H2DE_LevelPos flipPivot(const H2DE_LevelRect& W_rect, const H2DE_LevelPos& L_pivot, H2DE_Flip flip);
+    static bool isRotationInverted(H2DE_Flip flip);
 
     H2DE_AbsPos lvlToAbsPos(const H2DE_LevelPos& pos, bool absolute) const;
     H2DE_AbsPos lvlToAbsPivot(const H2DE_LevelPos& pos) const;

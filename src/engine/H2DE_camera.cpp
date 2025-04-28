@@ -111,7 +111,7 @@ bool H2DE_Engine::H2DE_Camera::isAHitboxOfObjectOnScreen(const H2DE_Object* obje
 bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute) {
     H2DE_Error::checkEngine(engine);
 
-    const H2DE_LevelRect hitboxRect = hitbox.rect + pos.makeRect({ 0.0f, 0.0f });
+    const H2DE_LevelRect hitboxRect = hitbox.rect + pos.makeNullRect();
     return H2DE_CameraContainsRect(engine, hitboxRect, absolute);
 }
 

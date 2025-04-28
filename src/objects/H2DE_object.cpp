@@ -91,7 +91,7 @@ void H2DE_Object::updateCollision() {
         return;
     }
 
-    const H2DE_LevelRect offset = od.pos.makeRect({ 0.0f, 0.0f });
+    const H2DE_LevelRect offset = od.pos.makeNullRect();
 
     for (const auto& [name, hitbox] : od.hitboxes) {
         if (!hitbox.onCollide && !hitbox.snap) {
@@ -107,7 +107,7 @@ void H2DE_Object::updateCollision() {
                 continue;
             }
 
-            const H2DE_LevelRect otherOffset = otherObject->od.pos.makeRect({ 0.0f, 0.0f });
+            const H2DE_LevelRect otherOffset = otherObject->od.pos.makeNullRect();
 
             for (const auto& [otherName, otherHitbox] : otherObject->od.hitboxes) {
                 if (otherHitbox.collisionIndex != hitbox.collisionIndex) {

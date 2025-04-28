@@ -114,6 +114,7 @@ struct H2DE_Vector2D {
     operator SDL_Point() const;
 
     H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D& size) const;
+    H2DE_Rect<H2DE_Vector2D_T> makeNullRect() const;
 
     const bool isNull() const;
     H2DE_Vector2D<H2DE_Vector2D_T> rotate(const H2DE_Vector2D<H2DE_Vector2D_T>& center, float angle);
