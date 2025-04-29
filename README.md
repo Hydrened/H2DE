@@ -16,9 +16,9 @@ H2DE is a simple and open-source 2D game engine built with C++. It uses SDL2 for
 ### Prerequisites
 - g++: Version 13.2.0 or higher
 - SDL2: Version 2.30.1 or higher
-- SDL_mixer: Version 1.2.7 or higher
-- SDL2_gfx: Version 1.0.1
 - SDL2_image: Version 2.8.2 or higher
+- SDL_mixer: Version 2.8.0 or higher
+- SDL2_gfx: Version 1.0.1
 - Base64: Version 2.rc.09 or higher
 - Inih
 

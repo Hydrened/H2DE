@@ -1,3 +1,10 @@
+## H2DE-3.2.8
+#### FIXED
+- fliped object collision detection
+- rotated surfaces not rendering
+#### MODIFIED
+- object position and size is now a rect
+
 ## H2DE-3.2.7
 #### FIXED
 - flips and rotations

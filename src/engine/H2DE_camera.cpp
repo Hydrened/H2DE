@@ -76,12 +76,12 @@ bool H2DE_CameraContainsObject(const H2DE_Engine* engine, const H2DE_Object* obj
 }
 
 bool H2DE_Engine::H2DE_Camera::isObjectRectOnScreen(const H2DE_Object* object) const {
-    const H2DE_LevelRect rect = object->od.pos.makeRect(object->od.size);
+    const H2DE_LevelRect& rect = object->od.rect;
     return H2DE_CameraContainsRect(engine, rect, object->od.absolute);
 }
 
 bool H2DE_Engine::H2DE_Camera::isASurfaceOfObjectOnScreen(const H2DE_Object* object) const {
-    const H2DE_LevelPos objectPos = object->od.pos;
+    const H2DE_LevelPos objectPos = object->od.rect.getPos();
     const bool absolute = object->od.absolute;
 
     for (const H2DE_SurfaceBuffer& surfaceBuffer : object->getSurfaceBuffers()) {
@@ -96,11 +96,10 @@ bool H2DE_Engine::H2DE_Camera::isASurfaceOfObjectOnScreen(const H2DE_Object* obj
 }
 
 bool H2DE_Engine::H2DE_Camera::isAHitboxOfObjectOnScreen(const H2DE_Object* object) const {
-    const H2DE_LevelPos objectPos = object->od.pos;
-    const bool absolute = object->od.absolute;
+    const H2DE_LevelPos objectPos = object->od.rect.getPos();
 
     for (const auto& [name, hitbox] : object->od.hitboxes) {
-        if (H2DE_CameraContainsHitbox(engine, objectPos, hitbox, absolute)) {
+        if (H2DE_CameraContainsHitbox(engine, object, hitbox, object->od.absolute)) {
             return true;
         }
     }
@@ -108,11 +107,11 @@ bool H2DE_Engine::H2DE_Camera::isAHitboxOfObjectOnScreen(const H2DE_Object* obje
     return false;
 }
 
-bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute) {
+bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_Object* object, const H2DE_Hitbox& hitbox, bool absolute) {
     H2DE_Error::checkEngine(engine);
 
-    const H2DE_LevelRect hitboxRect = hitbox.rect + pos.makeNullRect();
-    return H2DE_CameraContainsRect(engine, hitboxRect, absolute);
+    const H2DE_LevelRect W_hitboxRect = hitbox.rect + H2DE_GetObjectPos(object).makeNullRect();
+    return H2DE_CameraContainsRect(engine, W_hitboxRect, absolute);
 }
 
 bool H2DE_CameraContainsRect(const H2DE_Engine* engine, const H2DE_LevelRect& rect, bool absolute) {

@@ -67,6 +67,11 @@ private:
     void update();
     void updateObjects();
 
+    static H2DE_LevelRect flipRect(const H2DE_LevelRect& W_objectRect, const H2DE_LevelRect& L_surfaceRect, H2DE_Flip flip);
+    static float flipRotation(float rotation, H2DE_Flip flip);
+    static H2DE_LevelPos flipPivot(const H2DE_LevelRect& W_rect, const H2DE_LevelPos& L_pivot, H2DE_Flip flip);
+    static bool isRotationInverted(H2DE_Flip flip);
+
     static bool isPositionGreater(H2DE_Object* object1, H2DE_Object* object2);
     std::vector<H2DE_ButtonObject*> getValidButtons() const;
 
@@ -135,7 +140,7 @@ public:
     friend H2DE_LevelPos H2DE_GetCameraPos(const H2DE_Engine* engine);
     friend H2DE_LevelSize H2DE_GetCameraSize(const H2DE_Engine* engine);
     friend bool H2DE_CameraContainsObject(const H2DE_Engine* engine, const H2DE_Object* object);
-    friend bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_LevelPos& pos, const H2DE_Hitbox& hitbox, bool absolute);
+    friend bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_Object* object, const H2DE_Hitbox& hitbox, bool absolute);
     friend bool H2DE_CameraContainsRect(const H2DE_Engine* engine, const H2DE_LevelRect& rect, bool absolute);
     friend void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos);
     friend void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);

@@ -91,14 +91,12 @@ void H2DE_Object::updateCollision() {
         return;
     }
 
-    const H2DE_LevelRect offset = od.pos.makeNullRect();
-
     for (const auto& [name, hitbox] : od.hitboxes) {
         if (!hitbox.onCollide && !hitbox.snap) {
             continue;
         }
 
-        const H2DE_LevelRect rect = hitbox.rect + offset;
+        const H2DE_LevelRect rect = H2DE_Engine::flipRect(od.rect, hitbox.rect, od.flip);
 
         for (H2DE_Object* otherObject : engine->objects) {
             H2DE_Error::checkObject(otherObject);
@@ -107,14 +105,12 @@ void H2DE_Object::updateCollision() {
                 continue;
             }
 
-            const H2DE_LevelRect otherOffset = otherObject->od.pos.makeNullRect();
-
             for (const auto& [otherName, otherHitbox] : otherObject->od.hitboxes) {
                 if (otherHitbox.collisionIndex != hitbox.collisionIndex) {
                     continue;
                 }
 
-                const H2DE_LevelRect otherRect = otherHitbox.rect + otherOffset;
+                const H2DE_LevelRect otherRect = H2DE_Engine::flipRect(otherObject->od.rect, otherHitbox.rect, otherObject->od.flip);
 
                 if (!rect.collides(otherRect)) {
                     continue;
@@ -131,31 +127,32 @@ void H2DE_Object::updateCollision() {
                 }
 
                 if (hitbox.snap) {
-                    snap(offset.getPos(), rect, otherRect, face.value());
+                    snap(rect, otherRect, face.value());
                 }
             }
         }
     }
 }
 
-void H2DE_Object::snap(const H2DE_LevelPos& offset, const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face) {
-    const H2DE_LevelPos o = offset - rect.getPos();
+void H2DE_Object::snap(const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face) {
+    const H2DE_LevelPos& W_objPos = od.rect.getPos();
+    const H2DE_LevelPos offset = W_objPos - rect.getPos();
 
     switch (face) {
         case H2DE_FACE_TOP:
-            od.pos.y = otherRect.y + otherRect.h + o.y;
+            od.rect.y = otherRect.y + otherRect.h + offset.y;
             break;
 
         case H2DE_FACE_RIGHT:
-            od.pos.x = otherRect.x - rect.w + o.x;
+            od.rect.x = otherRect.x - rect.w + offset.x;
             break;
 
         case H2DE_FACE_BOTTOM:
-            od.pos.y = otherRect.y - rect.h + o.y;
+            od.rect.y = otherRect.y - rect.h + offset.y;
             break;
 
         case H2DE_FACE_LEFT:
-            od.pos.x = otherRect.x + otherRect.w + o.x;
+            od.rect.x = otherRect.x + otherRect.w + offset.x;
             break;
 
         default: return;
@@ -202,22 +199,26 @@ H2DE_Hitbox& H2DE_Object::getHitbox(const std::string& hitboxName) {
 
 H2DE_LevelPos H2DE_GetObjectPos(const H2DE_Object* object) {
     H2DE_Error::checkObject(object);
-    return object->od.pos;
+    return object->od.rect.getPos();
 }
 
 H2DE_LevelSize H2DE_GetObjectSize(const H2DE_Object* object) {
     H2DE_Error::checkObject(object);
-    return object->od.size;
+    return object->od.rect.getSize();
 }
 
-float H2DE_GetObjectRotation(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->od.rotation;
+H2DE_LevelRect H2DE_GetObjectRect(const H2DE_Object* object) {
+    return object->od.rect;
 }
 
 H2DE_LevelPos H2DE_GetObjectPivot(const H2DE_Object* object) {
     H2DE_Error::checkObject(object);
     return object->od.pivot;
+}
+
+float H2DE_GetObjectRotation(const H2DE_Object* object) {
+    H2DE_Error::checkObject(object);
+    return object->od.rotation;
 }
 
 H2DE_Flip H2DE_GetObjectFlip(const H2DE_Object* object) {
@@ -248,14 +249,14 @@ bool H2DE_IsObjectHidden(const H2DE_Object* object) {
 // SETTER
 void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos) {
     H2DE_Error::checkObject(object);
-
-    object->od.pos = pos;
+    object->od.rect.x = pos.x;
+    object->od.rect.y = pos.y;
 }
 
 void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkObject(object);
 
-    const H2DE_LevelPos defaultPos = H2DE_GetObjectPos(object);
+    const H2DE_LevelPos defaultPos = object->od.rect.getPos();
     const H2DE_LevelPos posToAdd = pos - defaultPos;
 
     H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultPos, posToAdd](float blend) {
@@ -266,14 +267,15 @@ void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned i
 void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size) {
     H2DE_Error::checkObject(object);
 
-    object->od.size = size;
+    object->od.rect.w = size.x;
+    object->od.rect.h = size.y;
     object->resetSurfaceBuffers();
 }
 
 void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkObject(object);
 
-    const H2DE_LevelSize defaultSize = H2DE_GetObjectSize(object);
+    const H2DE_LevelSize& defaultSize = object->od.rect.getSize();
     const H2DE_LevelSize sizeToAdd = size - defaultSize;
 
     H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultSize, sizeToAdd](float blend) {
@@ -281,9 +283,37 @@ void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigne
     }, nullptr, 0, pauseSensitive);
 }
 
+void H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect) {
+    H2DE_Error::checkObject(object);
+    object->od.rect = rect;
+}
+
+void H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+    H2DE_Error::checkObject(object);
+
+    const H2DE_LevelRect& defaultRect = object->od.rect;
+    const H2DE_LevelPos posToAdd = rect.getPos() - defaultRect.getPos();
+    const H2DE_LevelSize sizeToAdd = rect.getSize() - defaultRect.getSize();
+
+    H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultRect, posToAdd, sizeToAdd](float blend) {
+        H2DE_LevelRect interpolatedRect = { 0.0f, 0.0f, 0.0f, 0.0f };
+        interpolatedRect.addPos(defaultRect.getPos() + (posToAdd * blend));
+        interpolatedRect.addSize(defaultRect.getSize() + (sizeToAdd * blend));
+
+        H2DE_SetObjectRect(object, interpolatedRect);
+    }, nullptr, 0, pauseSensitive);
+}
+
 void H2DE_SetObjectIndex(H2DE_Object* object, int index) {
     H2DE_Error::checkObject(object);
     object->od.index = index;
+}
+
+void H2DE_SetObjectPivot(H2DE_Object* object, const H2DE_LevelPos& pivot) {
+    H2DE_Error::checkObject(object);
+
+    object->od.pivot = pivot;
+    object->resetSurfaceBuffers();
 }
 
 void H2DE_SetObjectRotation(H2DE_Object* object, float rotation) {
@@ -296,19 +326,12 @@ void H2DE_SetObjectRotation(H2DE_Object* object, float rotation) {
 void H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkObject(object);
 
-    const float defaultRotation = H2DE_GetObjectRotation(object);
+    const float& defaultRotation = object->od.rotation;
     const float rotationToAdd = rotation - defaultRotation;
 
     H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultRotation, rotationToAdd](float blend) {
         H2DE_SetObjectRotation(object, defaultRotation + (rotationToAdd * blend));
     }, nullptr, 0, pauseSensitive);
-}
-
-void H2DE_SetObjectPivot(H2DE_Object* object, const H2DE_LevelPos& pivot) {
-    H2DE_Error::checkObject(object);
-
-    object->od.pivot = pivot;
-    object->resetSurfaceBuffers();
 }
 
 void H2DE_SetObjectFlip(H2DE_Object* object, H2DE_Flip flip) {

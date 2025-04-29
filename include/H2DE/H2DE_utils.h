@@ -293,8 +293,7 @@ struct H2DE_Font {
 };
 
 struct H2DE_ObjectData {
-    H2DE_LevelPos pos = { 0.0f, 0.0f };
-    H2DE_LevelSize size = { 1.0f, 1.0f };
+    H2DE_LevelRect rect = { 0.0f, 0.0f };
     std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
     H2DE_LevelPos pivot = { 0.0f, 0.0f };
     float rotation = 0.0f;

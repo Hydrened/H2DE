@@ -6,7 +6,8 @@
 
 class H2DE_Engine::H2DE_Renderer {
 private:
-    using R = H2DE_Engine::H2DE_Renderer;
+    using E = H2DE_Engine;
+    using R = E::H2DE_Renderer;
 
     H2DE_Engine* engine;
     SDL_Renderer* renderer;
@@ -29,12 +30,13 @@ private:
     void renderSurfaces(H2DE_Object* object) const;
     void renderSurface(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
     void renderSurfaceSetTextureProperties(SDL_Texture* texture, const H2DE_Surface* surface) const;
-    H2DE_LevelRect renderSurfaceGetRotatedDestRect(const H2DE_Object* object, const H2DE_Surface* surface) const;
-    void renderSurfaceRenderTexture(SDL_Texture* texture, const H2DE_Object* object, const H2DE_Surface* surface, const H2DE_LevelRect& destRect, bool absolute) const;
+    void renderSurfaceRenderTexture(SDL_Texture* texture, const H2DE_Object* object, const H2DE_Surface* surface, bool absolute) const;
+    static const H2DE_LevelRect renderSurfaceGetWorldDestRect(const H2DE_Object* object, const H2DE_Surface* surface);
+    static const float renderSurfaceGetWorldRotation(const H2DE_Object* object, const H2DE_Surface* surface);
 
     void renderObjectsHitboxes();
     void renderHitboxes(const H2DE_Object* object) const;
-    void renderHitbox(const H2DE_Object* object, const H2DE_Hitbox& hitbox, bool absolute) const;
+    void renderHitbox(const H2DE_LevelRect& rect, const H2DE_ColorRGB& color, bool absolute) const;
 
     const bool isSurfaceValid(const H2DE_Surface* surface) const;
 
@@ -45,11 +47,6 @@ private:
 
     static H2DE_LevelPos applyRotationOnPos(const H2DE_LevelPos& W_pos, const H2DE_LevelPos& W_pivot, float rotation);
     static H2DE_LevelRect applyRotationOnRect(const H2DE_LevelRect& W_rect, const H2DE_LevelPos& W_pivot, float rotation);
-
-    static H2DE_LevelRect flipRect(const H2DE_LevelRect& W_objectRect, const H2DE_LevelRect& L_surfaceRect, H2DE_Flip flip);
-    static float flipRotation(float rotation, H2DE_Flip flip);
-    static H2DE_LevelPos flipPivot(const H2DE_LevelRect& W_rect, const H2DE_LevelPos& L_pivot, H2DE_Flip flip);
-    static bool isRotationInverted(H2DE_Flip flip);
 
     H2DE_AbsPos lvlToAbsPos(const H2DE_LevelPos& pos, bool absolute) const;
     H2DE_AbsPos lvlToAbsPivot(const H2DE_LevelPos& pos) const;

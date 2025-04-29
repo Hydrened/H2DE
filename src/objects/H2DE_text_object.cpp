@@ -127,7 +127,7 @@ std::vector<std::vector<std::string>> H2DE_TextObject::getLines() const {
     std::vector<std::vector<std::string>> lines = {{}};
 
     const H2DE_LevelSize totalCharSize = tod.fontSize + tod.spacing;
-    const int maxLineLength = std::floor(od.size.x / totalCharSize.x);
+    const int maxLineLength = std::floor(od.rect.w / totalCharSize.x);
 
     int currentLineIndex = 0;
     int currentLineLength = 0;
@@ -180,8 +180,8 @@ float H2DE_TextObject::getLineStartOffsetX(const std::vector<std::string>& line)
 
     switch (tod.textAlign) {
         case H2DE_TEXT_ALIGN_LEFT: return 0.0f;
-        case H2DE_TEXT_ALIGN_CENTER: return od.size.x / 2.0f - lineLength / 2.0f + tod.spacing.x / 2.0f;
-        case H2DE_TEXT_ALIGN_RIGHT: return od.size.x - lineLength + tod.spacing.x;
+        case H2DE_TEXT_ALIGN_CENTER: return od.rect.w / 2.0f - lineLength / 2.0f + tod.spacing.x / 2.0f;
+        case H2DE_TEXT_ALIGN_RIGHT: return od.rect.w - lineLength + tod.spacing.x;
         default: return 0.0f;
     }
 }

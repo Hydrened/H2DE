@@ -56,7 +56,7 @@ void H2DE_BarObject::refreshPercentage() {
 }
 
 void H2DE_BarObject::resetSurfaceBuffers() {
-    const H2DE_LevelSize barSize = od.size; 
+    const H2DE_LevelSize barSize = od.rect.getSize(); 
     const float blend = std::clamp(percentage, 0.0f, 100.0f) / 100.0f;
 
     clearSurfaceBuffers();
