@@ -1,3 +1,9 @@
+## H2DE-3.2.9
+#### FIXED
+- bar object and text object rendering
+- if settings section does not exist when creating a key, section will be automatically created
+- if settings key does not exist when setting its value, key will be automatically created
+
 ## H2DE-3.2.8
 #### FIXED
 - fliped object collision detection

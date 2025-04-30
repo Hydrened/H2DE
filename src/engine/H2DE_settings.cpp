@@ -81,7 +81,7 @@ bool H2DE_SettingsAddKey(const H2DE_Engine* engine, const std::string& section, 
     H2DE_Error::checkEngine(engine);
 
     if (!engine->settings->hasSection(section)) {
-        return false;
+        H2DE_SettingsAddSection(engine, section);
     }
 
     if (engine->settings->hasKey(section, key)) {
@@ -179,13 +179,9 @@ bool H2DE_SettingsGetKeyBool(const H2DE_Engine* engine, const std::string& secti
 // SETTER
 bool H2DE_SettingsSetKeyValue(const H2DE_Engine* engine, const std::string& section, const std::string& key, const std::string& value) {
     H2DE_Error::checkEngine(engine);
-    
-    if (!engine->settings->hasSection(section)) {
-        return false;
-    }
 
     if (!engine->settings->hasKey(section, key)) {
-        return false;
+        return H2DE_SettingsAddKey(engine, section, key, value);
     }
 
     std::vector<std::string> lines = engine->settings->getLines();

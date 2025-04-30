@@ -106,7 +106,7 @@ void H2DE_Engine::H2DE_Renderer::renderSurface(const H2DE_Object* object, const 
 
     SDL_Texture* texture = textures.find(surface->sd.textureName)->second;
     renderSurfaceSetTextureProperties(texture, surface);
-    renderSurfaceRenderTexture(texture, object, surface, absolute);
+    renderSurfaceRenderTexture(texture, object, surfaceBuffer, absolute);
 }
 
 void H2DE_Engine::H2DE_Renderer::renderSurfaceSetTextureProperties(SDL_Texture* texture, const H2DE_Surface* surface) const {
@@ -120,8 +120,9 @@ void H2DE_Engine::H2DE_Renderer::renderSurfaceSetTextureProperties(SDL_Texture* 
     SDL_SetTextureScaleMode(texture, scaleMode);
 }
 
-void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderTexture(SDL_Texture* texture, const H2DE_Object* object, const H2DE_Surface* surface, bool absolute) const {
-    const SDL_Rect W_destRect = static_cast<SDL_Rect>(lvlToAbsRect(R::renderSurfaceGetWorldDestRect(object, surface), absolute));
+void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderTexture(SDL_Texture* texture, const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const {
+    const H2DE_Surface* surface = surfaceBuffer.surface;
+    const SDL_Rect W_destRect = static_cast<SDL_Rect>(lvlToAbsRect(R::renderSurfaceGetWorldDestRect(object, surfaceBuffer), absolute));
     const float W_rotation = R::renderSurfaceGetWorldRotation(object, surface);
     const SDL_Point L_center = static_cast<SDL_Point>(lvlToAbsPivot(surface->sd.rect.getSize().getCenter()));
     const SDL_RendererFlip W_flip = R::getFlip(H2DE_AddFlip(object->od.flip, surface->sd.flip));
@@ -130,9 +131,11 @@ void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderTexture(SDL_Texture* texture
     SDL_RenderCopyEx(renderer, texture, (src.has_value()) ? &src.value() : nullptr, &W_destRect, W_rotation, &L_center, W_flip);
 }
 
-const H2DE_LevelRect H2DE_Engine::H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object, const H2DE_Surface* surface) {
+const H2DE_LevelRect H2DE_Engine::H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer) {
+    const H2DE_Surface* surface = surfaceBuffer.surface;
+
     const H2DE_LevelRect& W_objectRect = object->od.rect;
-    const H2DE_LevelRect& L_surfaceRect = surface->sd.rect;
+    const H2DE_LevelRect& L_surfaceRect = surfaceBuffer.offset.makeRect(surfaceBuffer.size);
 
     const H2DE_LevelPos& L_objectPivot = object->od.pivot;
     const H2DE_LevelPos& L_surfacePivot = surface->sd.pivot;

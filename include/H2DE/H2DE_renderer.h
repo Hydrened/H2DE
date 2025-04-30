@@ -30,8 +30,8 @@ private:
     void renderSurfaces(H2DE_Object* object) const;
     void renderSurface(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
     void renderSurfaceSetTextureProperties(SDL_Texture* texture, const H2DE_Surface* surface) const;
-    void renderSurfaceRenderTexture(SDL_Texture* texture, const H2DE_Object* object, const H2DE_Surface* surface, bool absolute) const;
-    static const H2DE_LevelRect renderSurfaceGetWorldDestRect(const H2DE_Object* object, const H2DE_Surface* surface);
+    void renderSurfaceRenderTexture(SDL_Texture* texture, const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
+    static const H2DE_LevelRect renderSurfaceGetWorldDestRect(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer);
     static const float renderSurfaceGetWorldRotation(const H2DE_Object* object, const H2DE_Surface* surface);
 
     void renderObjectsHitboxes();
