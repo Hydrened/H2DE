@@ -39,8 +39,7 @@ void H2DE_ButtonObject::resetSurfaceBuffers() {
     surfaceBuffers.reserve(bod.surfaces.size());
 
     for (H2DE_Surface* surface : H2DE_Object::getSortedSurfaces(bod.surfaces)) {
-        H2DE_LevelPos surfaceOffset = surface->sd.rect.getPos();
-        surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
+        const H2DE_LevelPos surfaceOffset = surface->sd.rect.getPos();
 
         H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
         buffer.surface = surface;

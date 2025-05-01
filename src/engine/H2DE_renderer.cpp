@@ -124,7 +124,7 @@ void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderTexture(SDL_Texture* texture
     const H2DE_Surface* surface = surfaceBuffer.surface;
     const SDL_Rect W_destRect = static_cast<SDL_Rect>(lvlToAbsRect(R::renderSurfaceGetWorldDestRect(object, surfaceBuffer), absolute));
     const float W_rotation = R::renderSurfaceGetWorldRotation(object, surface);
-    const SDL_Point L_center = static_cast<SDL_Point>(lvlToAbsPivot(surface->sd.rect.getSize().getCenter()));
+    const SDL_Point L_center = static_cast<SDL_Point>(lvlToAbsPivot(surfaceBuffer.size.getCenter()));
     const SDL_RendererFlip W_flip = R::getFlip(H2DE_AddFlip(object->od.flip, surface->sd.flip));
 
     const std::optional<SDL_Rect>& src = surface->getSrcRect();
@@ -135,7 +135,7 @@ const H2DE_LevelRect H2DE_Engine::H2DE_Renderer::renderSurfaceGetWorldDestRect(c
     const H2DE_Surface* surface = surfaceBuffer.surface;
 
     const H2DE_LevelRect& W_objectRect = object->od.rect;
-    const H2DE_LevelRect& L_surfaceRect = surfaceBuffer.offset.makeRect(surfaceBuffer.size);
+    const H2DE_LevelRect L_surfaceRect = surfaceBuffer.offset.makeRect(surfaceBuffer.size);
 
     const H2DE_LevelPos& L_objectPivot = object->od.pivot;
     const H2DE_LevelPos& L_surfacePivot = surface->sd.pivot;

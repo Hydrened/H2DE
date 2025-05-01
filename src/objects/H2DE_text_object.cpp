@@ -83,7 +83,6 @@ void H2DE_TextObject::resetSurfaceBuffers() {
                 const float offsetY = lineIndex * (fontSize.y + fontSpacing.y);
 
                 H2DE_LevelPos offset = { offsetX, offsetY };
-                offset = offset.rotate(pivot, rotation);
 
                 H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
                 buffer.surface = H2DE_CreateTexture(engine, sd, td);

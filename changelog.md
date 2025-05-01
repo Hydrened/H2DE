@@ -1,3 +1,8 @@
+## H2DE-3.2.10
+#### FIXED
+- rotation on objects not working
+- bar object not working
+
 ## H2DE-3.2.9
 #### FIXED
 - bar object and text object rendering

@@ -56,31 +56,28 @@ void H2DE_BarObject::refreshPercentage() {
 }
 
 void H2DE_BarObject::resetSurfaceBuffers() {
-    const H2DE_LevelSize barSize = od.rect.getSize(); 
     const float blend = std::clamp(percentage, 0.0f, 100.0f) / 100.0f;
 
     clearSurfaceBuffers();
     surfaceBuffers.reserve(bod.background.size() + bod.front.size());
 
     for (H2DE_Surface* surface : H2DE_Object::getSortedSurfaces(bod.background)) {
-        H2DE_LevelPos surfaceOffset = { 0.0f, 0.0f };
-        surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
+        const H2DE_LevelPos surfaceOffset = surface->sd.rect.getPos();
 
         H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
         buffer.surface = surface;
         buffer.offset = surfaceOffset;
-        buffer.size = barSize;
+        buffer.size = surface->sd.rect.getSize();
         surfaceBuffers.push_back(buffer);
     }
 
     for (H2DE_Surface* surface : H2DE_Object::getSortedSurfaces(bod.front)) {
-        H2DE_LevelPos surfaceOffset = { 0.0f, 0.0f };
-        surfaceOffset = surfaceOffset.rotate(od.pivot, od.rotation);
+        const H2DE_LevelPos surfaceOffset = surface->sd.rect.getPos();
 
         H2DE_SurfaceBuffer buffer = H2DE_SurfaceBuffer();
         buffer.surface = surface;
         buffer.offset = surfaceOffset;
-        buffer.size = barSize;
+        buffer.size = surface->sd.rect.getSize();
         buffer.size.x *= blend;
         surfaceBuffers.push_back(buffer);
     }
