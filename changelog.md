@@ -1,3 +1,7 @@
+## H2DE-3.2.11
+#### ADDED
+- debug mode (frame per frame)
+
 ## H2DE-3.2.10
 #### FIXED
 - rotation on objects not working

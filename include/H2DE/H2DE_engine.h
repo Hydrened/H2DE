@@ -66,6 +66,8 @@ private:
     bool isRunning = true;
     bool paused = false;
 
+    bool debugMode = false;
+
     std::function<void(SDL_Event)> handleEventsCall = nullptr;
     std::function<void()> updateCall = nullptr;
 
@@ -754,6 +756,29 @@ public:
 	 * @param state `true` to enable debug rendering, `false` to disable it.
 	 */
     friend void H2DE_DebugObjects(const H2DE_Engine* engine, bool state);
+    /**
+     * @brief Toggles the debug mode of the engine.
+     * 
+     * If debug mode is currently disabled, calling this function enables it.
+     * If it's already enabled, the function disables it.
+     * 
+     * In debug mode, the engine pauses its normal update loop and only
+     * progresses when `H2DE_DebugModeNextFrame` is called. This is useful
+     * for frame-by-frame debugging of animations or time-dependent logic.
+     * 
+	 * @param engine A pointer to the H2DE engine instance.
+     */
+    friend void H2DE_ToggleDebugMode(H2DE_Engine* engine);
+    /**
+     * @brief Advances the engine by a single frame in debug mode.
+     * 
+     * This function only has an effect when debug mode is enabled via `H2DE_ToggleDebugMode`.
+     * It forces the engine to process one frame, useful for frame-by-frame debugging
+     * of animations, transitions, or any time-sensitive logic.
+     * 
+	 * @param engine A pointer to the H2DE engine instance.
+     */
+    friend void H2DE_DebugModeNextFrame(H2DE_Engine* engine);
 };
 
 H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);

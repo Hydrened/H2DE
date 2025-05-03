@@ -92,7 +92,9 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
             now = SDL_GetTicks();
 
             engine->handleEvents(event);
-            engine->update();
+            if (!engine->debugMode) {
+                engine->update();
+            }
             engine->renderer->render();
             
             frameTime = SDL_GetTicks() - now;
@@ -387,6 +389,19 @@ void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id) {
 void H2DE_StopDelay(const H2DE_Engine* engine, unsigned int id, bool call) {
     H2DE_Error::checkEngine(engine);
     H2DE_StopTimeline(engine, id, call);
+}
+
+// DEBUG
+void H2DE_ToggleDebugMode(H2DE_Engine* engine) {
+    engine->debugMode = !engine->debugMode;
+}
+
+void H2DE_DebugModeNextFrame(H2DE_Engine* engine) {
+    if (!engine->debugMode) {
+        return;
+    }
+
+    engine->update();
 }
 
 // GETTER
