@@ -44,15 +44,6 @@ H2DE_ColorRGB::operator Uint32() const {
     return (a << 24) | (b << 16) | (g << 8) | r;
 }
 
-// COMPARISONS
-const bool H2DE_ColorRGB::operator==(const H2DE_ColorRGB& other) const {
-    return r == other.r&& g == other.g && b == other.b && a == other.a;
-}
-
-const bool H2DE_ColorRGB::operator!=(const H2DE_ColorRGB& other) const {
-    return !(*this == other);
-}
-
 // ADD
 H2DE_ColorRGB H2DE_ColorRGB::addHue(float hue) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).addHue(hue));
@@ -103,9 +94,4 @@ H2DE_ColorRGB H2DE_ColorRGB::divideSaturation(float divider) const {
 
 H2DE_ColorRGB H2DE_ColorRGB::divideValue(float divider) const {
     return static_cast<H2DE_ColorRGB>(static_cast<H2DE_ColorHSV>(*this).divideValue(divider));
-}
-
-// METHODS
-const bool H2DE_ColorRGB::isVisible() const {
-    return a != 0;
 }

@@ -16,11 +16,6 @@ H2DE_Texture::~H2DE_Texture() {
     
 }
 
-// GETTER
-std::optional<H2DE_AbsRect> H2DE_Texture::getSrcRect() const {
-    return ted.srcRect;
-}
-
 // SETTER
 void H2DE_SetTextureSrcRect(H2DE_Surface* texture, const std::optional<H2DE_AbsRect>& srcRect) {
     H2DE_Error::checkSurface(texture);

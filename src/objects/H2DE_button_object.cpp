@@ -84,6 +84,7 @@ void H2DE_ButtonBlur(H2DE_ButtonObject* button) {
 
 // GETTER
 H2DE_Surface* H2DE_GetButtonSurface(const H2DE_ButtonObject* button, const std::string& name) {
+    H2DE_Error::checkObject(button);
     return H2DE_Object::getSurface(button->bod.surfaces, name);
 }
 

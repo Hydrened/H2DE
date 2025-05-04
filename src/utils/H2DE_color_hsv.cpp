@@ -49,15 +49,6 @@ H2DE_ColorHSV::operator H2DE_ColorRGB() const {
     return rgb;
 }
 
-// COMPARISONS
-const bool H2DE_ColorHSV::operator==(const H2DE_ColorHSV& other) const {
-    return h == other.h && s == other.s && v == other.v, a == other.a;
-}
-
-const bool H2DE_ColorHSV::operator!=(const H2DE_ColorHSV& other) const {
-    return !(*this == other);
-}
-
 // ADD
 H2DE_ColorHSV H2DE_ColorHSV::addHue(float hue) const {
     H2DE_ColorHSV hsv = *this;
@@ -170,9 +161,4 @@ H2DE_ColorHSV H2DE_ColorHSV::divideSaturation(float divider) const {
 
 H2DE_ColorHSV H2DE_ColorHSV::divideValue(float divider) const {
     return multiplyValue(1 / divider);
-}
-
-// METHODS
-const bool H2DE_ColorHSV::isVisible() const {
-    return a != 0;
 }

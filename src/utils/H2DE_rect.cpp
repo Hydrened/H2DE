@@ -5,46 +5,6 @@ template struct H2DE_Rect<float>;
 
 // OPERATIONS
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator+(const H2DE_Rect<H2DE_Rect_T>& other) const {
-    return H2DE_Rect{
-        x + other.x,
-        y + other.y,
-        w + other.w,
-        h + other.h
-    };
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator-(const H2DE_Rect<H2DE_Rect_T>& other) const {
-    return H2DE_Rect{
-        x - other.x,
-        y - other.y,
-        w - other.w,
-        h - other.h
-    };
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator*(float multiplier) const {
-    return H2DE_Rect{
-        static_cast<H2DE_Rect_T>(x * multiplier),
-        static_cast<H2DE_Rect_T>(y * multiplier),
-        static_cast<H2DE_Rect_T>(w * multiplier),
-        static_cast<H2DE_Rect_T>(h * multiplier)
-    };
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::operator/(float divider) const {
-    return H2DE_Rect{
-        static_cast<H2DE_Rect_T>(x / divider),
-        static_cast<H2DE_Rect_T>(y / divider),
-        static_cast<H2DE_Rect_T>(w / divider),
-        static_cast<H2DE_Rect_T>(h / divider)
-    };
-}
-
-template<typename H2DE_Rect_T>
 H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator+=(const H2DE_Rect<H2DE_Rect_T>& other) {
     x += other.x;
     y += other.y;
@@ -78,27 +38,6 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) {
     w /= divider;
     h /= divider;
     return *this;
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T>::operator SDL_Rect() const {
-    return SDL_Rect{
-        static_cast<int>(x),
-        static_cast<int>(y),
-        static_cast<int>(w),
-        static_cast<int>(h)
-    };
-}
-
-// COMPARISONS
-template<typename H2DE_Rect_T>
-const bool H2DE_Rect<H2DE_Rect_T>::operator==(const H2DE_Rect& other) const {
-    return x == other.x && y == other.y && w == other.w && h == other.h;
-}
-
-template<typename H2DE_Rect_T>
-const bool H2DE_Rect<H2DE_Rect_T>::operator!=(const H2DE_Rect& other) const {
-    return !(*this == other);
 }
 
 // METHODS
@@ -159,41 +98,6 @@ H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::divideSize(float divider) {
 }
 
 // GETTER
-template<typename H2DE_Rect_T>
-H2DE_Vector2D<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::getPos() const {
-    return H2DE_Vector2D<H2DE_Rect_T>{ x, y };
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Vector2D<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::getSize() const {
-    return H2DE_Vector2D<H2DE_Rect_T>{ w, h };
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Vector2D<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::getCenter() const {
-    return getPos() + getSize().getCenter();
-}
-
-template<typename H2DE_Rect_T>
-const bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
-    return (
-        rect.x + rect.w > x &&
-        rect.x < x + w &&
-        rect.y + rect.h > y &&
-        rect.y < y + h
-    );
-}
-
-template<typename H2DE_Rect_T>
-const bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& pos) const {
-    return (
-        pos.x >= x &&
-        pos.x <= x + w &&
-        pos.y >= y &&
-        pos.y <= y + h
-    );
-}
-
 template<typename H2DE_Rect_T>
 const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const {
     if (collides(rect)) {

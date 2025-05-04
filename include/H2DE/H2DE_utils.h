@@ -136,19 +136,19 @@ struct H2DE_Vector2D {
     /**
      * @brief Adds two vectors component-wise.
      */
-    H2DE_Vector2D operator+(const H2DE_Vector2D& other) const;
+    inline H2DE_Vector2D operator+(const H2DE_Vector2D& other) const { return H2DE_Vector2D{ x + other.x, y + other.y }; }
     /**
      * @brief Subtracts two vectors component-wise.
      */
-    H2DE_Vector2D operator-(const H2DE_Vector2D& other) const;
+    inline H2DE_Vector2D operator-(const H2DE_Vector2D& other) const { return H2DE_Vector2D{ x - other.x, y - other.y }; }
     /**
      * @brief Multiplies the vector by a scalar.
      */
-    H2DE_Vector2D operator*(float multiplier) const;
+    inline H2DE_Vector2D operator*(float multiplier) const { return H2DE_Vector2D{ static_cast<H2DE_Vector2D_T>(x * multiplier), static_cast<H2DE_Vector2D_T>(y * multiplier) }; }
     /**
      * @brief Divides the vector by a scalar.
      */
-    H2DE_Vector2D operator/(float divider) const;
+    inline H2DE_Vector2D operator/(float divider) const { return H2DE_Vector2D{ static_cast<H2DE_Vector2D_T>(x / divider), static_cast<H2DE_Vector2D_T>(y / divider) }; }
 
     /**
      * @brief Adds another vector to this one.
@@ -170,39 +170,40 @@ struct H2DE_Vector2D {
     /**
      * @brief Checks if two vectors are exactly equal.
      */
-    const bool operator==(const H2DE_Vector2D& other) const;
+    inline bool operator==(const H2DE_Vector2D& other) const { return (x == other.x && y == other.y); }
     /**
      * @brief Checks if two vectors are not equal.
      */
-    const bool operator!=(const H2DE_Vector2D& other) const;
+    inline bool operator!=(const H2DE_Vector2D& other) const { return !(*this == other); }
     /**
      * @brief Checks if this vector's magnitude is strictly greater than the other's.
      *
      * @param other The vector to compare against.
      * @return True if the length of this vector is greater than that of the other.
      */
-    const bool operator>(const H2DE_Vector2D& other) const;
+    inline bool operator>(const H2DE_Vector2D& other) const { return std::abs(x) + std::abs(y) > std::abs(other.x) + std::abs(other.y); }
     /**
      * @brief Checks if this vector's magnitude is greater than or equal to the other's.
      *
      * @param other The vector to compare against.
      * @return True if the length of this vector is greater than or equal to that of the other.
      */
-    const bool operator>=(const H2DE_Vector2D& other) const;
+    inline bool operator>=(const H2DE_Vector2D& other) const { return std::abs(x) + std::abs(y) >= std::abs(other.x) + std::abs(other.y); }
     /**
      * @brief Checks if this vector's magnitude is strictly less than the other's.
      *
      * @param other The vector to compare against.
      * @return True if the length of this vector is less than that of the other.
      */
-    const bool operator<(const H2DE_Vector2D& other) const;
+    inline bool operator<(const H2DE_Vector2D& other) const { return !(*this >= other); 
+    }
     /**
      * @brief Checks if this vector's magnitude is less than or equal to the other's.
      *
      * @param other The vector to compare against.
      * @return True if the length of this vector is less than or equal to that of the other.
      */
-    const bool operator<=(const H2DE_Vector2D& other) const;
+    inline bool operator<=(const H2DE_Vector2D& other) const { return !(*this > other); }
 
     /**
      * @brief Outputs the vector in the format "x: value, y: value".
@@ -215,7 +216,7 @@ struct H2DE_Vector2D {
     /**
      * @brief Converts the vector to an SDL_Point (int).
      */
-    operator SDL_Point() const;
+    inline operator SDL_Point() const { return { static_cast<int>(x), static_cast<int>(y) }; }
 
     /**
      * @brief Creates a rectangle from this position and a given size.
@@ -223,16 +224,16 @@ struct H2DE_Vector2D {
      * @param size The size of the rectangle.
      * @return A rectangle starting at this position.
      */
-    H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D& size) const;
+    inline H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D& size) const { return H2DE_Rect<H2DE_Vector2D_T>{ x, y, size.x, size.y }; }
     /**
      * @brief Creates a zero-sized rectangle at this position.
      */
-    H2DE_Rect<H2DE_Vector2D_T> makeNullRect() const;
+    inline H2DE_Rect<H2DE_Vector2D_T> makeNullRect() const { return H2DE_Rect<H2DE_Vector2D_T>{ x, y, static_cast<H2DE_Vector2D_T>(0.0f), static_cast<H2DE_Vector2D_T>(0.0f) }; }
 
     /**
      * @brief Checks if both x and y are zero.
      */
-    const bool isNull() const;
+    inline bool isNull() const { return (x == 0 && y == 0); }
     /**
      * @brief Rotates the vector around a center point by a given angle in degrees.
      *
@@ -246,7 +247,7 @@ struct H2DE_Vector2D {
      *
      * For example, for a size of (w, h), this returns (w/2, h/2).
      */
-    H2DE_Vector2D<H2DE_Vector2D_T> getCenter() const;
+    inline H2DE_Vector2D<H2DE_Vector2D_T> getCenter() const { return *this / 2; }
 };
 
 /// @brief Absolute pixel position on screen (int-based)
@@ -275,19 +276,47 @@ struct H2DE_Rect {
     /**
      * @brief Adds the position and size of another rectangle to this one.
      */
-    H2DE_Rect operator+(const H2DE_Rect& other) const;
+    inline H2DE_Rect operator+(const H2DE_Rect& other) const {
+        return H2DE_Rect{
+            x + other.x,
+            y + other.y,
+            w + other.w,
+            h + other.h
+        };
+    }
     /**
      * @brief Subtracts the position and size of another rectangle from this one.
      */
-    H2DE_Rect operator-(const H2DE_Rect& other) const;
+    inline H2DE_Rect operator-(const H2DE_Rect& other) const {
+        return H2DE_Rect{
+            x - other.x,
+            y - other.y,
+            w - other.w,
+            h - other.h
+        };
+    }
     /**
      * @brief Multiplies all components of the rectangle by a scalar.
      */
-    H2DE_Rect operator*(float multiplier) const;
+    inline H2DE_Rect operator*(float multiplier) const {
+        return H2DE_Rect{
+            static_cast<H2DE_Rect_T>(x * multiplier),
+            static_cast<H2DE_Rect_T>(y * multiplier),
+            static_cast<H2DE_Rect_T>(w * multiplier),
+            static_cast<H2DE_Rect_T>(h * multiplier)
+        };
+    }
     /**
      * @brief Divides all components of the rectangle by a scalar.
      */
-    H2DE_Rect operator/(float divider) const;
+    inline H2DE_Rect operator/(float divider) const {
+        return H2DE_Rect{
+            static_cast<H2DE_Rect_T>(x / divider),
+            static_cast<H2DE_Rect_T>(y / divider),
+            static_cast<H2DE_Rect_T>(w / divider),
+            static_cast<H2DE_Rect_T>(h / divider)
+        };
+    }
 
     /**
      * @brief Adds all components of another rectangle to this one.
@@ -321,16 +350,23 @@ struct H2DE_Rect {
     /**
      * @brief Checks if all components of both rectangles are equal.
      */
-    const bool operator==(const H2DE_Rect& other) const;
+    inline bool operator==(const H2DE_Rect& other) const { return (x == other.x && y == other.y && w == other.w && h == other.h); }
     /**
      * @brief Checks if any component differs between the rectangles.
      */
-    const bool operator!=(const H2DE_Rect& other) const;
+    inline bool operator!=(const H2DE_Rect& other) const { return !(*this == other); }
 
     /**
      * @brief Converts to SDL_Rect.
      */
-    operator SDL_Rect() const;
+    inline operator SDL_Rect() const {
+        return SDL_Rect{
+            static_cast<int>(x),
+            static_cast<int>(y),
+            static_cast<int>(w),
+            static_cast<int>(h)
+        };
+    }
 
     /**
      * @brief Prints the rectangle in the format: x: ?, y: ?, w: ?, h: ?.
@@ -400,24 +436,38 @@ struct H2DE_Rect {
     /**
      * @brief Returns the position (x, y) of the rectangle.
      */
-    H2DE_Vector2D<H2DE_Rect_T> getPos() const;
+    inline H2DE_Vector2D<H2DE_Rect_T> getPos() const { return H2DE_Vector2D<H2DE_Rect_T>{ x, y }; }
     /**
      * @brief Returns the size (w, h) of the rectangle.
      */
-    H2DE_Vector2D<H2DE_Rect_T> getSize() const;
+    inline H2DE_Vector2D<H2DE_Rect_T> getSize() const { return H2DE_Vector2D<H2DE_Rect_T>{ w, h }; }
     /**
      * @brief Returns the center position of the rectangle.
      */
-    H2DE_Vector2D<H2DE_Rect_T> getCenter() const;
+    inline H2DE_Vector2D<H2DE_Rect_T> getCenter() const  { return getPos() + getSize().getCenter(); }
 
     /**
      * @brief Checks if this rectangle overlaps another rectangle.
      */
-    const bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const;
+    inline bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
+        return (
+            rect.x + rect.w > x &&
+            rect.x < x + w &&
+            rect.y + rect.h > y &&
+            rect.y < y + h
+        );
+    }
     /**
      * @brief Checks if a point is inside this rectangle.
      */
-    const bool collides(const H2DE_Vector2D<H2DE_Rect_T>& pos) const;
+    inline bool collides(const H2DE_Vector2D<H2DE_Rect_T>& pos) const {
+        return (
+            pos.x >= x &&
+            pos.x <= x + w &&
+            pos.y >= y &&
+            pos.y <= y + h
+        );
+    }
     /**
      * @brief Determines the face (side) that was collided with, if any.
      * 
@@ -426,13 +476,9 @@ struct H2DE_Rect {
     const std::optional<H2DE_Face> getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const;
 };
 
-/**
- * @brief A rectangle using integer coordinates, typically used for absolute positions on screen.
- */
+/// @brief A rectangle using integer coordinates, typically used for absolute positions on screen.
 using H2DE_AbsRect = H2DE_Rect<int>;
-/**
- * @brief A rectangle using floating-point coordinates, typically used for subpixel-level positioning and movement.
- */
+/// @brief A rectangle using floating-point coordinates, typically used for subpixel-level positioning and movement.
 using H2DE_LevelRect = H2DE_Rect<float>;
 
 /**
@@ -459,11 +505,11 @@ struct H2DE_ColorRGB {
     /**
      * @brief Checks if two colors are exactly equal.
      */
-    const bool operator==(const H2DE_ColorRGB& other) const;
+    inline bool operator==(const H2DE_ColorRGB& other) const { return (r == other.r&& g == other.g && b == other.b && a == other.a); }
     /**
      * @brief Checks if two colors are not equal.
      */
-    const bool operator!=(const H2DE_ColorRGB& other) const;
+    inline bool operator!=(const H2DE_ColorRGB& other) const { return !(*this == other); }
 
     /**
      * @brief Outputs the color components to a stream in readable format.
@@ -556,7 +602,7 @@ struct H2DE_ColorRGB {
      * @brief Checks if the color is visible (alpha > 0).
      * @return True if alpha is greater than 0, otherwise false.
      */
-    const bool isVisible() const;
+    inline bool isVisible() const { return a != 0; }
 };
 
 /**
@@ -579,11 +625,11 @@ struct H2DE_ColorHSV {
     /**
      * @brief Checks if two colors are exactly equal.
      */
-    const bool operator==(const H2DE_ColorHSV& other) const;
+    inline bool operator==(const H2DE_ColorHSV& other) const { return (h == other.h && s == other.s && v == other.v, a == other.a); }
     /**
      * @brief Checks if two colors are not equal.
      */
-    const bool operator!=(const H2DE_ColorHSV& other) const;
+    inline bool operator!=(const H2DE_ColorHSV& other) const { return !(*this == other); }
 
     /**
      * @brief Outputs the color components to a stream in a readable format.
@@ -676,7 +722,7 @@ struct H2DE_ColorHSV {
      * @brief Checks if the color is visible (alpha > 0).
      * @return True if alpha is greater than 0, otherwise false.
      */
-    const bool isVisible() const;
+    inline bool isVisible() const { return a != 0; }
 };
 
 /**

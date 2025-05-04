@@ -1,4 +1,5 @@
 #include "H2DE/objects/H2DE_object.h"
+#include "H2DE/H2DE_transform.h"
 #include "H2DE/H2DE_error.h"
 
 // INIT
@@ -77,10 +78,6 @@ void H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& 
     }
 }
 
-void H2DE_Object::clearSurfaceBuffers() {
-    surfaceBuffers.clear();
-}
-
 // UPDATE
 void H2DE_Object::update() {
     updateCollision();
@@ -91,12 +88,14 @@ void H2DE_Object::updateCollision() {
         return;
     }
 
+    using T = H2DE_Transform;
+
     for (const auto& [name, hitbox] : od.hitboxes) {
         if (!hitbox.onCollide && !hitbox.snap) {
             continue;
         }
 
-        const H2DE_LevelRect rect = H2DE_Engine::flipRect(od.rect, hitbox.rect, od.flip);
+        const H2DE_LevelRect rect = T::getHitboxWorldDestRect(od.rect, od.pivot, od.rotation, od.flip, hitbox.rect);
 
         for (H2DE_Object* otherObject : engine->objects) {
             H2DE_Error::checkObject(otherObject);
@@ -110,7 +109,8 @@ void H2DE_Object::updateCollision() {
                     continue;
                 }
 
-                const H2DE_LevelRect otherRect = H2DE_Engine::flipRect(otherObject->od.rect, otherHitbox.rect, otherObject->od.flip);
+                const H2DE_ObjectData& otherOd = otherObject->od;
+                const H2DE_LevelRect otherRect = T::getHitboxWorldDestRect(otherOd.rect, otherOd.pivot, otherOd.rotation, otherOd.flip, otherHitbox.rect);
 
                 if (!rect.collides(otherRect)) {
                     continue;
@@ -229,6 +229,26 @@ H2DE_Flip H2DE_GetObjectFlip(const H2DE_Object* object) {
 std::unordered_map<std::string, H2DE_Hitbox> H2DE_GetObjectHitboxes(const H2DE_Object* object) {
     H2DE_Error::checkObject(object);
     return object->od.hitboxes;
+}
+
+H2DE_Hitbox H2DE_GetObjectHitbox(const H2DE_Object* object, const std::string& name) {
+    H2DE_Error::checkObject(object);
+
+    auto it = object->od.hitboxes.find(name);
+    if (it == object->od.hitboxes.end()) {
+        H2DE_Error::logError("Hitbox named \"" + name + "\" not found");
+    }
+
+    return it->second;
+}
+
+H2DE_LevelRect H2DE_GetObjectHitboxWorldRect(const H2DE_Object* object, const std::string& name) {
+    H2DE_Error::checkObject(object);
+
+    const H2DE_LevelRect L_hitboxRect = H2DE_GetObjectHitbox(object, name).rect;
+    const H2DE_ObjectData& od = object->od;
+
+    return H2DE_Transform::getHitboxWorldDestRect(od.rect, od.pivot, od.rotation, od.flip, L_hitboxRect);
 }
 
 int H2DE_GetObjectIndex(const H2DE_Object* object) {

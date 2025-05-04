@@ -3,11 +3,12 @@
 
 #include <map>
 #include <H2DE/H2DE_engine.h>
+class H2DE_Transform;
 
 class H2DE_Engine::H2DE_Renderer {
 private:
-    using E = H2DE_Engine;
-    using R = E::H2DE_Renderer;
+    using T = H2DE_Transform;
+    using R = H2DE_Engine::H2DE_Renderer;
 
     H2DE_Engine* engine;
     SDL_Renderer* renderer;
@@ -45,9 +46,6 @@ private:
     static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
     static SDL_RendererFlip getFlip(H2DE_Flip flip);
 
-    static H2DE_LevelPos applyRotationOnPos(const H2DE_LevelPos& W_pos, const H2DE_LevelPos& W_pivot, float rotation);
-    static H2DE_LevelRect applyRotationOnRect(const H2DE_LevelRect& W_rect, const H2DE_LevelPos& W_pivot, float rotation);
-
     H2DE_AbsPos lvlToAbsPos(const H2DE_LevelPos& pos, bool absolute) const;
     H2DE_AbsPos lvlToAbsPivot(const H2DE_LevelPos& pos) const;
     H2DE_AbsSize lvlToAbsSize(const H2DE_LevelSize& size) const;
@@ -65,7 +63,7 @@ public:
 
     H2DE_LevelPos absToLvl(const H2DE_AbsPos& pos, bool absolute) const;
 
-    const std::unordered_map<std::string, H2DE_Font>& getFonts() const;
+    inline const std::unordered_map<std::string, H2DE_Font>& getFonts() const { return fonts; }
 };
 
 #endif

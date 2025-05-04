@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_renderer.h"
+#include "H2DE/H2DE_transform.h"
 #include "H2DE/H2DE_error.h"
 
 // INIT
@@ -146,25 +147,25 @@ const H2DE_LevelRect H2DE_Engine::H2DE_Renderer::renderSurfaceGetWorldDestRect(c
     const H2DE_Flip& L_objectFlip = object->od.flip;
 
     const H2DE_LevelRect W_objectFliped_objectRect = W_objectRect;
-    const H2DE_LevelRect W_objectFliped_surfaceRect = E::flipRect(W_objectFliped_objectRect, L_surfaceRect, L_objectFlip);
+    const H2DE_LevelRect W_objectFliped_surfaceRect = T::flipRect(W_objectFliped_objectRect, L_surfaceRect, L_objectFlip);
 
-    const H2DE_LevelPos W_objectFliped_objectPivot = E::flipPivot(W_objectFliped_objectRect, L_objectPivot, L_objectFlip);
-    const H2DE_LevelPos W_surfaceFliped_surfacePivot = E::flipPivot(W_objectFliped_surfaceRect, L_surfacePivot, L_objectFlip);
+    const H2DE_LevelPos W_objectFliped_objectPivot = T::flipPivot(W_objectFliped_objectRect, L_objectPivot, L_objectFlip);
+    const H2DE_LevelPos W_surfaceFliped_surfacePivot = T::flipPivot(W_objectFliped_surfaceRect, L_surfacePivot, L_objectFlip);
 
-    const float L_objectFliped_objectRotation = L_objectRotation * (E::isRotationInverted(L_objectFlip) ? -1.0f : 1.0f);
-    const float L_objectFliped_surfaceRotation = L_surfaceRotation * (E::isRotationInverted(L_objectFlip) ? -1.0f : 1.0f);
+    const float L_objectFliped_objectRotation = L_objectRotation * (T::isRotationInverted(L_objectFlip) ? -1.0f : 1.0f);
+    const float L_objectFliped_surfaceRotation = L_surfaceRotation * (T::isRotationInverted(L_objectFlip) ? -1.0f : 1.0f);
 
-    const H2DE_LevelRect W_objectFliped_objectRotated_surfaceRect = R::applyRotationOnRect(W_objectFliped_surfaceRect, W_objectFliped_objectPivot, L_objectFliped_objectRotation);
-    const H2DE_LevelPos W_objectFliped_objectRotated_surfacePivot = R::applyRotationOnPos(W_surfaceFliped_surfacePivot, W_objectFliped_objectPivot, L_objectFliped_objectRotation);
-    return R::applyRotationOnRect(W_objectFliped_objectRotated_surfaceRect, W_objectFliped_objectRotated_surfacePivot, L_objectFliped_surfaceRotation);
+    const H2DE_LevelRect W_objectFliped_objectRotated_surfaceRect = T::applyRotationOnRect(W_objectFliped_surfaceRect, W_objectFliped_objectPivot, L_objectFliped_objectRotation);
+    const H2DE_LevelPos W_objectFliped_objectRotated_surfacePivot = T::applyRotationOnPos(W_surfaceFliped_surfacePivot, W_objectFliped_objectPivot, L_objectFliped_objectRotation);
+    return T::applyRotationOnRect(W_objectFliped_objectRotated_surfaceRect, W_objectFliped_objectRotated_surfacePivot, L_objectFliped_surfaceRotation);
 }
 
 const float H2DE_Engine::H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE_Object* object, const H2DE_Surface* surface) {
     const H2DE_Flip W_flip = H2DE_AddFlip(object->od.flip, surface->sd.flip);
     const float rotationCausedByFlip = (W_flip == H2DE_FLIP_XY) ? 180.0f : 0.0f;
 
-    const float flipedObjectRotation = E::flipRotation(object->od.rotation, object->od.flip);
-    const float flipedSurfaceRotation = E::flipRotation(surface->sd.rotation, W_flip);
+    const float flipedObjectRotation = T::flipRotation(object->od.rotation, object->od.flip);
+    const float flipedSurfaceRotation = T::flipRotation(surface->sd.rotation, W_flip);
     return flipedObjectRotation + flipedSurfaceRotation + rotationCausedByFlip;
 }
 
@@ -188,11 +189,10 @@ void H2DE_Engine::H2DE_Renderer::renderHitboxes(const H2DE_Object* object) const
             continue;
         }
 
-        const H2DE_LevelRect& W_hitboxRect = object->od.rect;
-        const H2DE_LevelRect W_fliped_hitboxRect = E::flipRect(W_hitboxRect, hitbox.rect, object->od.flip);
+        const H2DE_LevelRect destRect = T::getHitboxWorldDestRect(object->od.rect, object->od.pivot, object->od.rotation, object->od.flip, hitbox.rect);
 
-        if (H2DE_CameraContainsRect(engine, W_fliped_hitboxRect, absolute)) {
-            renderHitbox(W_fliped_hitboxRect, hitbox.color, absolute);
+        if (H2DE_CameraContainsRect(engine, destRect, absolute)) {
+            renderHitbox(destRect, hitbox.color, absolute);
         }
     }
 }
@@ -261,35 +261,6 @@ SDL_RendererFlip H2DE_Engine::H2DE_Renderer::getFlip(H2DE_Flip flip) {
     return SDL_FLIP_VERTICAL;
 }
 
-H2DE_LevelPos H2DE_Engine::H2DE_Renderer::applyRotationOnPos(const H2DE_LevelPos& W_pos, const H2DE_LevelPos& W_pivot, float rotation) {
-    const H2DE_LevelPos W_vecToPivot = W_pos - W_pivot;
-
-    const float rad = rotation * static_cast<float>(M_PI / 180.0f);
-    H2DE_LevelPos W_rotatedVec = {
-        W_vecToPivot.x * cosf(rad) - W_vecToPivot.y * sinf(rad),
-        W_vecToPivot.x * sinf(rad) + W_vecToPivot.y * cosf(rad),
-    };
-
-    return W_rotatedVec + W_pivot;
-}
-
-H2DE_LevelRect H2DE_Engine::H2DE_Renderer::applyRotationOnRect(const H2DE_LevelRect& W_rect, const H2DE_LevelPos& W_pivot, float rotation) {
-    const H2DE_LevelSize rectSize = W_rect.getSize();
-    const H2DE_LevelPos W_rectCenter = W_rect.getCenter();
-
-    const H2DE_LevelPos W_vecPivot = W_pivot - W_rectCenter;
-
-    const float rad = rotation * static_cast<float>(M_PI / 180.0f);
-    const H2DE_LevelPos W_rotatedVec = {
-        W_vecPivot.x * cosf(rad) - W_vecPivot.y * sinf(rad),
-        W_vecPivot.x * sinf(rad) + W_vecPivot.y * cosf(rad),
-    };
-
-    const H2DE_LevelPos W_finalRectCenter = W_pivot - W_rotatedVec;
-
-    return H2DE_LevelPos{ W_finalRectCenter - rectSize.getCenter() }.makeRect(rectSize);
-}
-
 H2DE_AbsPos H2DE_Engine::H2DE_Renderer::lvlToAbsPos(const H2DE_LevelPos& pos, bool absolute) const {
     const unsigned int blockSize = getBlockSize(); 
     const H2DE_LevelPos offset = (absolute) ? H2DE_LevelPos{ 0.0f, 0.0f } : H2DE_GetCameraPos(engine);
@@ -343,8 +314,4 @@ H2DE_LevelPos H2DE_Engine::H2DE_Renderer::absToLvl(const H2DE_AbsPos& pos, bool 
         (static_cast<float>(pos.x) + ((absolute) ? 0.0f : absCamPos.x)) / static_cast<float>(blockSize),
         (static_cast<float>(pos.y) + ((absolute) ? 0.0f : absCamPos.y)) / static_cast<float>(blockSize),
     };
-}
-
-const std::unordered_map<std::string, H2DE_Font>& H2DE_Engine::H2DE_Renderer::getFonts() const {
-    return fonts;
 }

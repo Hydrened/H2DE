@@ -81,31 +81,39 @@ void H2DE_DestroyEngine(H2DE_Engine* engine) {
 
 // RUN
 void H2DE_RunEngine(H2DE_Engine* engine) {
-    Uint32 now = SDL_GetTicks();
-    int frameTime;
-    SDL_Event event;
-
     try {
+        Uint64 perfFreq = SDL_GetPerformanceFrequency();
+        Uint64 lastTime = SDL_GetPerformanceCounter();
+        Uint64 lastSec = lastTime;
+        Uint64 frameCount = 0;
+
+        SDL_Event event;
+
         H2DE_Error::checkEngine(engine);
 
         while (engine->isRunning) {
-            now = SDL_GetTicks();
+            Uint64 now = SDL_GetPerformanceCounter();
+            frameCount++;
 
             engine->handleEvents(event);
             if (!engine->debugMode) {
                 engine->update();
             }
             engine->renderer->render();
-            
-            frameTime = SDL_GetTicks() - now;
-            engine->currentFPS = static_cast<unsigned int>(1000.0f / static_cast<float>((frameTime > 0) ? frameTime : 1));
-            int timePerFrame = 1000 / engine->fps;
 
-            if (timePerFrame >= frameTime) {
-                SDL_Delay(timePerFrame - frameTime);
+            const float targetFrameTime = 1.0f / engine->fps;
+
+            while ((SDL_GetPerformanceCounter() - now) / static_cast<float>(perfFreq) < targetFrameTime) {
+                // Spin-wait: This loop will actively wait until the elapsed time exceeds the target frame time.
+            }
+
+            if ((now - lastSec) / static_cast<float>(perfFreq) >= 1.0f) {
+                engine->currentFPS = frameCount;
+                frameCount = 0;
+                lastSec = now;
             }
         }
-        
+
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
     }
@@ -391,6 +399,11 @@ void H2DE_StopDelay(const H2DE_Engine* engine, unsigned int id, bool call) {
     H2DE_StopTimeline(engine, id, call);
 }
 
+void H2DE_TogglePause(H2DE_Engine* engine) {
+    H2DE_Error::checkEngine(engine);
+    engine->paused = !engine->paused;
+}
+
 // DEBUG
 void H2DE_ToggleDebugMode(H2DE_Engine* engine) {
     engine->debugMode = !engine->debugMode;
@@ -411,56 +424,4 @@ bool H2DE_Engine::isPositionGreater(H2DE_Object* object1, H2DE_Object* object2) 
 
     bool equalsX = object1Pos.x == object2Pos.x;
     return (equalsX) ? object1Pos.y < object2Pos.y : object1Pos.x < object2Pos.x;
-}
-
-H2DE_LevelRect H2DE_Engine::flipRect(const H2DE_LevelRect& W_objectRect, const H2DE_LevelRect& L_surfaceRect, H2DE_Flip flip) {
-    H2DE_LevelRect res = L_surfaceRect;
-
-    if (flip & H2DE_FLIP_X) {
-        res.x = W_objectRect.getSize().x - (L_surfaceRect.getPos().x + L_surfaceRect.getSize().x);
-    }
-
-    if (flip & H2DE_FLIP_Y) {
-        res.y = W_objectRect.getSize().y - (L_surfaceRect.getPos().y + L_surfaceRect.getSize().y);
-    }
-
-    return res + W_objectRect.getPos().makeNullRect();
-}
-
-float H2DE_Engine::flipRotation(float rotation, H2DE_Flip flip) {
-    float res = rotation;
-
-    switch (flip) {
-        case H2DE_FLIP_X: res = -res; break;
-        case H2DE_FLIP_Y: res = 180.0f - res; break;
-        case H2DE_FLIP_XY: res = 180.0f + res; break;
-        default: break;
-    }
-
-    while (res < 0.0f) {
-        res += 360.0f;
-    }
-    while (res >= 360.0f) {
-        res -= 360.0f;
-    }
-
-    return res;
-}
-
-H2DE_LevelPos H2DE_Engine::flipPivot(const H2DE_LevelRect& W_rect, const H2DE_LevelPos& L_pivot, H2DE_Flip flip) {
-    H2DE_LevelPos res = L_pivot;
-
-    if (flip & H2DE_FLIP_X) {
-        res.x = W_rect.getSize().x - L_pivot.x;
-    }
-
-    if (flip & H2DE_FLIP_Y) {
-        res.y = W_rect.getSize().y - L_pivot.y;
-    }
-
-    return res + W_rect.getPos();
-}
-
-bool H2DE_Engine::isRotationInverted(H2DE_Flip flip) {
-    return (flip == H2DE_FLIP_X || flip == H2DE_FLIP_Y);
 }

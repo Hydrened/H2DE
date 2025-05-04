@@ -54,7 +54,7 @@ void H2DE_Engine::H2DE_Window::create() {
         H2DE_Error::throwError("Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));
     }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
     if (!renderer) {
         SDL_DestroyWindow(window);
         SDL_Quit();

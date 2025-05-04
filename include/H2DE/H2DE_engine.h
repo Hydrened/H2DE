@@ -89,11 +89,6 @@ private:
     void update();
     void updateObjects();
 
-    static H2DE_LevelRect flipRect(const H2DE_LevelRect& W_objectRect, const H2DE_LevelRect& L_surfaceRect, H2DE_Flip flip);
-    static float flipRotation(float rotation, H2DE_Flip flip);
-    static H2DE_LevelPos flipPivot(const H2DE_LevelRect& W_rect, const H2DE_LevelPos& L_pivot, H2DE_Flip flip);
-    static bool isRotationInverted(H2DE_Flip flip);
-
     static bool isPositionGreater(H2DE_Object* object1, H2DE_Object* object2);
     std::vector<H2DE_ButtonObject*> getValidButtons() const;
 
@@ -241,6 +236,16 @@ public:
      * @param engine A pointer to the H2DE engine instance.
      */
     friend void H2DE_Resume(H2DE_Engine* engine);
+    /**
+     * @brief Toggles the pause state of the engine.
+     * 
+     * This function switches the engine's state between paused and running. If the engine is currently
+     * paused, calling this function will resume it, and if the engine is running, it will pause it. This allows
+     * for a quick way to pause or resume the engine without needing to explicitly check its current state.
+     * 
+     * @param engine A pointer to the H2DE engine instance.
+     */
+    friend void H2DE_TogglePause(H2DE_Engine* engine);
 
     /**
      * @brief Retrieves the current position of the engine window.

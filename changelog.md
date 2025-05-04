@@ -1,3 +1,13 @@
+## H2DE-3.2.12
+#### ADDED
+- json typed value getters
+- toggle pause
+- get specific hitbox from object
+- get specific hitbox world rect from object 
+#### FIXED
+- renderer vsync
+- game loop is 100% accurate to given fps
+
 ## H2DE-3.2.11
 #### ADDED
 - debug mode (frame per frame)

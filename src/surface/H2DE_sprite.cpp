@@ -23,6 +23,7 @@ void H2DE_Sprite::initDelay() {
 
 // CLEANUP
 H2DE_Sprite::~H2DE_Sprite() {
+    
 }
 
 // EVENTS

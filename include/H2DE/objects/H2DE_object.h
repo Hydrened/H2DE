@@ -58,7 +58,7 @@ protected:
     static H2DE_Surface* getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
 
     virtual void resetSurfaceBuffers() = 0;
-    void clearSurfaceBuffers();
+    inline void clearSurfaceBuffers() { surfaceBuffers.clear(); }
 
     static const std::vector<H2DE_Surface*> getSortedSurfaces(const std::unordered_map<std::string, H2DE_Surface*>& surfaces);
 
@@ -163,6 +163,30 @@ public:
 	 * @return A map of hitboxes associated with the object, where the key is the hitbox name.
 	 */
     friend std::unordered_map<std::string, H2DE_Hitbox> H2DE_GetObjectHitboxes(const H2DE_Object* object);
+	/**
+	 * @brief Retrieves a specific hitbox of the object by name.
+	 * 
+	 * This function returns the hitbox associated with the specified name from the object. If the hitbox does not exist,
+	 * the behavior is undefined and may result in an exception or invalid data. It is recommended to verify that the
+	 * hitbox exists before calling this function.
+	 * 
+	 * @param object A pointer to the object containing the hitboxes.
+	 * @param name The name of the hitbox to retrieve.
+	 * @return The `H2DE_Hitbox` associated with the given name.
+	 */
+	friend H2DE_Hitbox H2DE_GetObjectHitbox(const H2DE_Object* object, const std::string& name);
+	/**
+	 * @brief Retrieves the world-space rectangle of a specific hitbox.
+	 * 
+	 * This function returns the rectangle representing the position and size of the specified hitbox in world coordinates.
+	 * It takes into account the object's current position, as well as any transformations applied to the hitbox,
+	 * such as flipping or rotation.
+	 * 
+	 * @param object A pointer to the object containing the hitbox.
+	 * @param name The name of the hitbox to retrieve.
+	 * @return The `H2DE_LevelRect` representing the world-space rectangle of the hitbox.
+	 */
+	friend H2DE_LevelRect H2DE_GetObjectHitboxWorldRect(const H2DE_Object* object, const std::string& name);
     /**
 	 * @brief Retrieves the index of the object.
 	 * 
