@@ -474,6 +474,17 @@ struct H2DE_Rect {
      * @return Optional face of collision (TOP, RIGHT, BOTTOM, LEFT).
      */
     const std::optional<H2DE_Face> getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const;
+    /**
+     * @brief Aligns this rectangle to another rectangle based on the specified collision face.
+     * 
+     * This function adjusts the position of this rectangle so that it "snaps" to the given rectangle along
+     * the specified face (TOP, RIGHT, BOTTOM, or LEFT). It is typically used after a collision is detected
+     * to reposition the rectangle and resolve overlap.
+     * 
+     * @param rect The rectangle to align to.
+     * @param face The face of collision indicating the side to snap against.
+     */
+    void snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face face);
 };
 
 /// @brief A rectangle using integer coordinates, typically used for absolute positions on screen.

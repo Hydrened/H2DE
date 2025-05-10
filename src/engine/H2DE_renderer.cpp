@@ -68,6 +68,10 @@ void H2DE_Engine::H2DE_Renderer::renderObjects() {
 }
 
 void H2DE_Engine::H2DE_Renderer::renderObject(H2DE_Object* object) {
+    if (object->hidden) {
+        return;
+    }
+
     renderSurfaces(object);
 
     if (debug) {

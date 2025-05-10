@@ -97,6 +97,29 @@ H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::divideSize(float divider) {
     return *this;
 }
 
+template<typename H2DE_Rect_T>
+void H2DE_Rect<H2DE_Rect_T>::snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face face) {
+    switch (face) {
+        case H2DE_FACE_TOP:
+            y = rect.y + rect.h;
+            break;
+
+        case H2DE_FACE_RIGHT:
+            x = rect.x - w;
+            break;
+
+        case H2DE_FACE_BOTTOM:
+            y = rect.y - h;
+            break;
+
+        case H2DE_FACE_LEFT:
+            x = rect.x + rect.w;
+            break;
+
+        default: return;
+    }
+}
+
 // GETTER
 template<typename H2DE_Rect_T>
 const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const {

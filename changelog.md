@@ -1,9 +1,16 @@
+## H2DE-3.2.13
+#### ADDED
+- snap rect method
+#### FIXED
+- hide object
+
 ## H2DE-3.2.12
 #### ADDED
 - json typed value getters
 - toggle pause
 - get specific hitbox from object
 - get specific hitbox world rect from object 
+- hitbox rotation (snap every 90 deg)
 #### FIXED
 - renderer vsync
 - game loop is 100% accurate to given fps

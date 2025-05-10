@@ -86,10 +86,16 @@ H2DE_LevelRect H2DE_Transform::getHitboxWorldDestRect(const H2DE_LevelRect& W_ob
     const H2DE_LevelRect W_fliped_hitboxRect = T::flipRect(W_objectRect, L_hitboxRect, objectFlip);
 
     const float rotationCausedByFlip = (objectFlip == H2DE_FLIP_XY) ? 180.0f : 0.0f;
+    const float W_rotation = objectRotation + rotationCausedByFlip;
 
-    const int snapedRotation = std::round((objectRotation + rotationCausedByFlip) / 90.0f) * 90;
-    const int objectFliped_snapedRotation = T::flipRotation(snapedRotation, objectFlip);
+    if (W_rotation != 0.0f) {
+        const int snapedRotation = std::round(W_rotation / 90.0f) * 90;
+        const int objectFliped_snapedRotation = T::flipRotation(snapedRotation, objectFlip);
 
-    const H2DE_LevelPos W_objectFliped_objectPivot = T::flipPivot(W_objectRect, L_objectPivot, objectFlip);
-    return T::applyRotationOnRect(W_fliped_hitboxRect, W_objectFliped_objectPivot, objectFliped_snapedRotation);
+        const H2DE_LevelPos W_objectFliped_objectPivot = T::flipPivot(W_objectRect, L_objectPivot, objectFlip);
+        return T::applyRotationOnRect(W_fliped_hitboxRect, W_objectFliped_objectPivot, objectFliped_snapedRotation);
+
+    } else {
+        return W_fliped_hitboxRect;
+    }
 }
