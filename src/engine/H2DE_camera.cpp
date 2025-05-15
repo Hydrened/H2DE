@@ -130,13 +130,13 @@ void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos) {
     engine->camera->pos = pos;
 }
 
-void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkEngine(engine);
 
     const H2DE_LevelPos defaultPos = H2DE_GetCameraPos(engine);
     const H2DE_LevelPos posToAdd = pos - defaultPos;
 
-    H2DE_CreateTimeline(engine, duration, easing, [engine, defaultPos, posToAdd](float blend) {
+    return H2DE_CreateTimeline(engine, duration, easing, [engine, defaultPos, posToAdd](float blend) {
         H2DE_SetCameraPos(engine, defaultPos + (posToAdd * blend));
     }, nullptr, 0, pauseSensitive);
 }

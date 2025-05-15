@@ -1,3 +1,9 @@
+## H2DE-3.2.14
+#### ADDED
+- easing functions returns created timeline id
+#### FIXED
+- surface flip rendering
+
 ## H2DE-3.2.13
 #### ADDED
 - snap rect method

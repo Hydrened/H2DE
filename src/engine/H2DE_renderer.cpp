@@ -132,8 +132,9 @@ void H2DE_Engine::H2DE_Renderer::renderSurfaceRenderTexture(SDL_Texture* texture
     const SDL_Point L_center = static_cast<SDL_Point>(lvlToAbsPivot(surfaceBuffer.size.getCenter()));
     const SDL_RendererFlip W_flip = R::getFlip(H2DE_AddFlip(object->od.flip, surface->sd.flip));
 
-    const std::optional<SDL_Rect>& src = surface->getSrcRect();
-    SDL_RenderCopyEx(renderer, texture, (src.has_value()) ? &src.value() : nullptr, &W_destRect, W_rotation, &L_center, W_flip);
+    const std::optional<SDL_Rect> possibleSrc = surface->getSrcRect();
+    const SDL_Rect* src = ((possibleSrc.has_value()) ? &possibleSrc.value() : nullptr);
+    SDL_RenderCopyEx(renderer, texture, src, &W_destRect, W_rotation, &L_center, W_flip);
 }
 
 const H2DE_LevelRect H2DE_Engine::H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer) {
@@ -169,7 +170,7 @@ const float H2DE_Engine::H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE
     const float rotationCausedByFlip = (W_flip == H2DE_FLIP_XY) ? 180.0f : 0.0f;
 
     const float flipedObjectRotation = T::flipRotation(object->od.rotation, object->od.flip);
-    const float flipedSurfaceRotation = T::flipRotation(surface->sd.rotation, W_flip);
+    const float flipedSurfaceRotation = T::flipRotation(surface->sd.rotation, object->od.flip);
     return flipedObjectRotation + flipedSurfaceRotation + rotationCausedByFlip;
 }
 

@@ -207,13 +207,13 @@ void H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSiz
     textObject->resetSurfaceBuffers();
 }
 
-void H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSize& fontSize, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSize& fontSize, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkObject(textObject);
 
     const H2DE_LevelSize defaultFontSize = textObject->tod.fontSize;
     const H2DE_LevelSize fontSizeToAdd = fontSize - defaultFontSize;
 
-    H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultFontSize, fontSizeToAdd](float blend) {
+    return H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultFontSize, fontSizeToAdd](float blend) {
         H2DE_SetTextObjectFontSize(textObject, defaultFontSize + (fontSizeToAdd * blend));
     }, nullptr, 0, pauseSensitive);
 }
@@ -225,13 +225,13 @@ void H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize
     textObject->resetSurfaceBuffers();
 }
 
-void H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize& spacing, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize& spacing, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkObject(textObject);
 
     const H2DE_LevelSize defaultSpacing = textObject->tod.spacing;
     const H2DE_LevelSize spacingToAdd = spacing - defaultSpacing;
 
-    H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultSpacing, spacingToAdd](float blend) {
+    return H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultSpacing, spacingToAdd](float blend) {
         H2DE_SetTextObjectSpacing(textObject, defaultSpacing + (spacingToAdd * blend));
     }, nullptr, 0, pauseSensitive);
 }
@@ -250,12 +250,12 @@ void H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& c
     textObject->resetSurfaceBuffers();
 }
 
-void H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkObject(textObject);
     
     const H2DE_ColorRGB defaultColor = textObject->tod.color;
     
-    H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultColor, color](float blend) {
+    return H2DE_CreateTimeline(textObject->engine, duration, easing, [textObject, defaultColor, color](float blend) {
         H2DE_ColorRGB interpolatedColor = H2DE_ColorRGB();
         interpolatedColor.r = static_cast<Uint8>(defaultColor.r + (color.r - defaultColor.r) * blend);
         interpolatedColor.g = static_cast<Uint8>(defaultColor.g + (color.g - defaultColor.g) * blend);

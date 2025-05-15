@@ -22,12 +22,12 @@ void H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color) {
     surface->sd.color = color;
 }
 
-void H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkSurface(surface);
 
     const H2DE_ColorRGB defaultColor = surface->sd.color;
     
-    H2DE_CreateTimeline(surface->engine, duration, easing, [surface, defaultColor, color](float blend) {
+    return H2DE_CreateTimeline(surface->engine, duration, easing, [surface, defaultColor, color](float blend) {
         H2DE_ColorRGB interpolatedColor = H2DE_ColorRGB();
         interpolatedColor.r = static_cast<Uint8>(defaultColor.r + (color.r - defaultColor.r) * blend);
         interpolatedColor.g = static_cast<Uint8>(defaultColor.g + (color.g - defaultColor.g) * blend);
@@ -48,12 +48,12 @@ void H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation) {
     surface->sd.rotation = rotation;
 }
 
-void H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkSurface(surface);
 
     const float defaultRotation = surface->sd.rotation;
     
-    H2DE_CreateTimeline(surface->engine, duration, easing, [surface, defaultRotation, rotation](float blend) {
+    return H2DE_CreateTimeline(surface->engine, duration, easing, [surface, defaultRotation, rotation](float blend) {
         const float r = defaultRotation + (rotation - defaultRotation) * blend;
         H2DE_SetSurfaceRotation(surface, r);
     }, nullptr, 0, pauseSensitive);

@@ -236,8 +236,9 @@ public:
 	 * @param duration The duration of the transition in milliseconds.
 	 * @param easing The easing function to use for the transition.
 	 * @param pauseSensitive Whether the transition should be pause-sensitive.
+     * @return The ID of the created timeline.
 	 */
-    friend void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     /**
 	 * @brief Sets the size of the object.
 	 * 
@@ -258,8 +259,9 @@ public:
 	 * @param duration The duration of the transition in milliseconds.
 	 * @param easing The easing function to use for the transition.
 	 * @param pauseSensitive Whether the transition should be pause-sensitive.
+     * @return The ID of the created timeline.
 	 */
-    friend void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     /**
 	 * @brief Sets the bounding rectangle of the object.
 	 * 
@@ -280,8 +282,9 @@ public:
 	 * @param duration The duration of the transition in milliseconds.
 	 * @param easing The easing function to use for the transition.
 	 * @param pauseSensitive Whether the transition should be pause-sensitive.
+     * @return The ID of the created timeline.
 	 */
-    friend void H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     /**
 	 * @brief Sets the index of the object.
 	 * 
@@ -320,8 +323,9 @@ public:
 	 * @param duration The duration of the transition in milliseconds.
 	 * @param easing The easing function to use for the transition.
 	 * @param pauseSensitive Whether the transition should be pause-sensitive.
+     * @return The ID of the created timeline.
 	 */
-    friend void H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     /**
 	 * @brief Sets the flip status of the object.
 	 * 

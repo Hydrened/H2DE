@@ -102,7 +102,7 @@ void H2DE_SetBarValue(H2DE_BarObject* bar, float value) {
     bar->refreshPercentage();
 }
 
-void H2DE_SetBarValue(H2DE_BarObject* bar, float value, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetBarValue(H2DE_BarObject* bar, float value, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
     H2DE_Error::checkObject(bar);
 
     value = std::clamp(value, bar->bod.min, bar->bod.max);
@@ -110,7 +110,7 @@ void H2DE_SetBarValue(H2DE_BarObject* bar, float value, unsigned int duration, H
     const float defaultValue = bar->value;
     const float valueToAdd = value - defaultValue;
 
-    H2DE_CreateTimeline(bar->engine, duration, easing, [bar, defaultValue, valueToAdd](float blend) {
+    return H2DE_CreateTimeline(bar->engine, duration, easing, [bar, defaultValue, valueToAdd](float blend) {
         H2DE_SetBarValue(bar, defaultValue + (valueToAdd * blend));
     }, nullptr, 0, pauseSensitive);
 }

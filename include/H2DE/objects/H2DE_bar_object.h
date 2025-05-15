@@ -137,8 +137,9 @@ public:
      * @param duration The duration of the animation.
      * @param easing The easing type to use for the animation.
      * @param pauseSensitive If the animation should be sensitive to pause states.
+     * @return The ID of the created timeline.
      */
-    friend void H2DE_SetBarValue(H2DE_BarObject* bar, float value, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetBarValue(H2DE_BarObject* bar, float value, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
     /**
      * @brief Sets the minimum value of the bar.
      * 
