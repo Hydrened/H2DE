@@ -235,10 +235,11 @@ public:
 	 * @param pos The new position to set for the object as an `H2DE_LevelPos` structure.
 	 * @param duration The duration of the transition in milliseconds.
 	 * @param easing The easing function to use for the transition.
+     * @param completed The callback called when the timeline ends
 	 * @param pauseSensitive Whether the transition should be pause-sensitive.
      * @return The ID of the created timeline.
 	 */
-    friend unsigned int H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
 	 * @brief Sets the size of the object.
 	 * 
@@ -258,10 +259,11 @@ public:
 	 * @param size The new size to set for the object as an `H2DE_LevelSize` structure.
 	 * @param duration The duration of the transition in milliseconds.
 	 * @param easing The easing function to use for the transition.
+     * @param completed The callback called when the timeline ends
 	 * @param pauseSensitive Whether the transition should be pause-sensitive.
      * @return The ID of the created timeline.
 	 */
-    friend unsigned int H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
 	 * @brief Sets the bounding rectangle of the object.
 	 * 
@@ -281,10 +283,11 @@ public:
 	 * @param rect The new bounding rectangle to set for the object as an `H2DE_LevelRect` structure.
 	 * @param duration The duration of the transition in milliseconds.
 	 * @param easing The easing function to use for the transition.
+     * @param completed The callback called when the timeline ends
 	 * @param pauseSensitive Whether the transition should be pause-sensitive.
      * @return The ID of the created timeline.
 	 */
-    friend unsigned int H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
 	 * @brief Sets the index of the object.
 	 * 
@@ -322,10 +325,11 @@ public:
 	 * @param rotation The new rotation angle to set for the object, in degrees.
 	 * @param duration The duration of the transition in milliseconds.
 	 * @param easing The easing function to use for the transition.
+     * @param completed The callback called when the timeline ends
 	 * @param pauseSensitive Whether the transition should be pause-sensitive.
      * @return The ID of the created timeline.
 	 */
-    friend unsigned int H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
 	 * @brief Sets the flip status of the object.
 	 * 

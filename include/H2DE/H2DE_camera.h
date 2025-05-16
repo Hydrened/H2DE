@@ -32,7 +32,7 @@ public:
     friend bool H2DE_CameraContainsHitbox(const H2DE_Engine* engine, const H2DE_Object* object, const H2DE_Hitbox& hitbox, bool absolute);
     friend bool H2DE_CameraContainsRect(const H2DE_Engine* engine, const H2DE_LevelRect& rect, bool absolute);
     friend void H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos);
-    friend unsigned int H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     friend void H2DE_SetCameraWidth(const H2DE_Engine* engine, float width);
     friend void H2DE_SetCameraSmoothing(const H2DE_Engine* engine, float smoothing);
     friend void H2DE_SetCameraReference(const H2DE_Engine* engine, H2DE_Object* object);

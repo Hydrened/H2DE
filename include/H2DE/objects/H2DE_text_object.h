@@ -89,10 +89,11 @@ public:
      * @param fontSize The desired font size.
      * @param duration The duration of the animation.
      * @param easing The easing function for the animation.
+     * @param completed The callback called when the timeline ends
      * @param pauseSensitive Whether the animation should pause when the game is paused.
      * @return The ID of the created timeline.
      */
-    friend unsigned int H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSize& fontSize, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetTextObjectFontSize(H2DE_TextObject* textObject, const H2DE_LevelSize& fontSize, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
      * @brief Sets the spacing between characters in the text object.
      * 
@@ -113,10 +114,11 @@ public:
      * @param spacing The desired character spacing.
      * @param duration The duration of the animation.
      * @param easing The easing function for the animation.
+     * @param completed The callback called when the timeline ends
      * @param pauseSensitive Whether the animation should pause when the game is paused.
      * @return The ID of the created timeline.
      */
-    friend unsigned int H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize& spacing, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetTextObjectSpacing(H2DE_TextObject* textObject, const H2DE_LevelSize& spacing, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
      * @brief Sets the text alignment for the text object.
      * 
@@ -146,10 +148,11 @@ public:
      * @param color The desired color in RGB format.
      * @param duration The duration of the animation.
      * @param easing The easing function for the animation.
+     * @param completed The callback called when the timeline ends
      * @param pauseSensitive Whether the animation should pause when the game is paused.
      * @return The ID of the created timeline.
      */
-    friend unsigned int H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetTextObjectColor(H2DE_TextObject* textObject, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
 
     /**
      * @brief Sets the position of the object.

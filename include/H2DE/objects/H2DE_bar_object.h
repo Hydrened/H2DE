@@ -136,10 +136,11 @@ public:
      * @param value The new value to set for the bar.
      * @param duration The duration of the animation.
      * @param easing The easing type to use for the animation.
+     * @param completed The callback called when the timeline ends
      * @param pauseSensitive If the animation should be sensitive to pause states.
      * @return The ID of the created timeline.
      */
-    friend unsigned int H2DE_SetBarValue(H2DE_BarObject* bar, float value, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetBarValue(H2DE_BarObject* bar, float value, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
      * @brief Sets the minimum value of the bar.
      * 

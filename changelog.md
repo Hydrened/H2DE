@@ -1,3 +1,7 @@
+## H2DE-3.2.15
+#### ADDED
+- easing functions take completed function as parameter
+
 ## H2DE-3.2.14
 #### ADDED
 - easing functions returns created timeline id

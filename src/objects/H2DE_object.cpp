@@ -273,7 +273,7 @@ void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos) {
     object->od.rect.y = pos.y;
 }
 
-unsigned int H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     H2DE_Error::checkObject(object);
 
     const H2DE_LevelPos defaultPos = object->od.rect.getPos();
@@ -281,7 +281,7 @@ unsigned int H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, un
 
     return H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultPos, posToAdd](float blend) {
         H2DE_SetObjectPos(object, defaultPos + (posToAdd * blend));
-    }, nullptr, 0, pauseSensitive);
+    }, completed, 0, pauseSensitive);
 }
 
 void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size) {
@@ -292,7 +292,7 @@ void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size) {
     object->resetSurfaceBuffers();
 }
 
-unsigned int H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     H2DE_Error::checkObject(object);
 
     const H2DE_LevelSize& defaultSize = object->od.rect.getSize();
@@ -300,7 +300,7 @@ unsigned int H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size,
 
     return H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultSize, sizeToAdd](float blend) {
         H2DE_SetObjectSize(object, defaultSize + (sizeToAdd * blend));
-    }, nullptr, 0, pauseSensitive);
+    }, completed, 0, pauseSensitive);
 }
 
 void H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect) {
@@ -308,7 +308,7 @@ void H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect) {
     object->od.rect = rect;
 }
 
-unsigned int H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     H2DE_Error::checkObject(object);
 
     const H2DE_LevelRect& defaultRect = object->od.rect;
@@ -321,7 +321,7 @@ unsigned int H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect,
         interpolatedRect.addSize(defaultRect.getSize() + (sizeToAdd * blend));
 
         H2DE_SetObjectRect(object, interpolatedRect);
-    }, nullptr, 0, pauseSensitive);
+    }, completed, 0, pauseSensitive);
 }
 
 void H2DE_SetObjectIndex(H2DE_Object* object, int index) {
@@ -343,7 +343,7 @@ void H2DE_SetObjectRotation(H2DE_Object* object, float rotation) {
     object->resetSurfaceBuffers();
 }
 
-unsigned int H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     H2DE_Error::checkObject(object);
 
     const float& defaultRotation = object->od.rotation;
@@ -351,7 +351,7 @@ unsigned int H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigne
 
     return H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultRotation, rotationToAdd](float blend) {
         H2DE_SetObjectRotation(object, defaultRotation + (rotationToAdd * blend));
-    }, nullptr, 0, pauseSensitive);
+    }, completed, 0, pauseSensitive);
 }
 
 void H2DE_SetObjectFlip(H2DE_Object* object, H2DE_Flip flip) {

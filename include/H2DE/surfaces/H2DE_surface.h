@@ -59,10 +59,11 @@ public:
      * @param color The color to set the surface to.
      * @param duration The duration of the animation.
      * @param easing The easing function for the animation.
+     * @param completed The callback called when the timeline ends
      * @param pauseSensitive Whether the animation should pause when the game is paused.
      * @return The ID of the created timeline.
      */
-    friend unsigned int H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
      * @brief Sets the scaling mode of the surface.
      * 
@@ -90,10 +91,11 @@ public:
      * @param rotation The rotation angle to apply (in degrees).
      * @param duration The duration of the animation.
      * @param easing The easing function for the animation.
+     * @param completed The callback called when the timeline ends
      * @param pauseSensitive Whether the animation should pause when the game is paused.
      * @return The ID of the created timeline.
      */
-    friend unsigned int H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
      * @brief Sets the pivot point of the surface.
      * 

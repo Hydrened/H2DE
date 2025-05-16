@@ -653,10 +653,11 @@ public:
 	 * @param pos The target position.
 	 * @param duration Duration of the transition in milliseconds.
 	 * @param easing The easing function used for the transition.
+     * @param completed The callback called when the timeline ends
 	 * @param pauseSensitive Whether the movement pauses when the engine is paused.
      * @return The ID of the created timeline.
 	 */
-    friend unsigned int H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, bool pauseSensitive);
+    friend unsigned int H2DE_SetCameraPos(const H2DE_Engine* engine, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     /**
 	 * @brief Sets the width of the camera. Height is calculated based on window aspect ratio.
 	 * 

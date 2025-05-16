@@ -22,7 +22,7 @@ void H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color) {
     surface->sd.color = color;
 }
 
-unsigned int H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     H2DE_Error::checkSurface(surface);
 
     const H2DE_ColorRGB defaultColor = surface->sd.color;
@@ -35,7 +35,7 @@ unsigned int H2DE_SetSurfaceColor(H2DE_Surface* surface, const H2DE_ColorRGB& co
         interpolatedColor.a = static_cast<Uint8>(defaultColor.a + (color.a - defaultColor.a) * blend);
 
         H2DE_SetSurfaceColor(surface, interpolatedColor);
-    }, nullptr, 0, pauseSensitive);
+    }, completed, 0, pauseSensitive);
 }
 
 void H2DE_SetSurfaceScaleMode(H2DE_Surface* surface, H2DE_ScaleMode scaleMode) {
@@ -48,7 +48,7 @@ void H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation) {
     surface->sd.rotation = rotation;
 }
 
-unsigned int H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation, unsigned int duration, H2DE_Easing easing, bool pauseSensitive) {
+unsigned int H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     H2DE_Error::checkSurface(surface);
 
     const float defaultRotation = surface->sd.rotation;
@@ -56,7 +56,7 @@ unsigned int H2DE_SetSurfaceRotation(H2DE_Surface* surface, float rotation, unsi
     return H2DE_CreateTimeline(surface->engine, duration, easing, [surface, defaultRotation, rotation](float blend) {
         const float r = defaultRotation + (rotation - defaultRotation) * blend;
         H2DE_SetSurfaceRotation(surface, r);
-    }, nullptr, 0, pauseSensitive);
+    }, completed, 0, pauseSensitive);
 }
 
 void H2DE_SetSurfacePivot(H2DE_Surface* surface, const H2DE_LevelPos& pivot) {
