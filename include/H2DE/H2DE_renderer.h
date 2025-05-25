@@ -1,69 +1,60 @@
 #ifndef H2DE_RENDERER_H
 #define H2DE_RENDERER_H
 
-#include <map>
 #include <H2DE/H2DE_engine.h>
-class H2DE_Transform;
+class H2DE_Engine;
 
-class H2DE_Engine::H2DE_Renderer {
+class H2DE_Renderer {
 private:
-    using T = H2DE_Transform;
-    using R = H2DE_Engine::H2DE_Renderer;
-
     H2DE_Engine* engine;
     SDL_Renderer* renderer;
-    std::vector<H2DE_Object*>& objects;
     std::vector<H2DE_Object*> hitboxesBuffer = {}; 
 
-    std::unordered_map<std::string, SDL_Texture*> textures;
-    std::unordered_map<std::string, H2DE_Font> fonts;
-    bool debug = false;
+    std::unordered_map<std::string, SDL_Texture*> textures = {};
+    std::unordered_map<std::string, H2DE_Font> fonts = {};
 
-    void destroyTextures();
-    
-    void clearRenderer() const;
-    void sortObjects();
+    using R = H2DE_Renderer;
 
-    void renderObjects();
-    void renderObject(H2DE_Object* object);
-    void renderObjectAddHitboxesToBuffer(H2DE_Object* object);
-
-    void renderSurfaces(H2DE_Object* object) const;
-    void renderSurface(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
-    void renderSurfaceSetTextureProperties(SDL_Texture* texture, const H2DE_Surface* surface) const;
-    void renderSurfaceRenderTexture(SDL_Texture* texture, const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer, bool absolute) const;
-    static const H2DE_LevelRect renderSurfaceGetWorldDestRect(const H2DE_Object* object, const H2DE_SurfaceBuffer& surfaceBuffer);
-    static const float renderSurfaceGetWorldRotation(const H2DE_Object* object, const H2DE_Surface* surface);
-
-    void renderObjectsHitboxes();
-    void renderHitboxes(const H2DE_Object* object) const;
-    void renderHitbox(const H2DE_LevelRect& rect, const H2DE_ColorRGB& color, bool absolute) const;
-
-    const bool isSurfaceValid(const H2DE_Surface* surface) const;
-
-    const unsigned int getBlockSize() const;
-    static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
-    static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
-    static SDL_RendererFlip getFlip(H2DE_Flip flip);
-
-    H2DE_AbsPos lvlToAbsPos(const H2DE_LevelPos& pos, bool absolute) const;
-    H2DE_AbsPos lvlToAbsPivot(const H2DE_LevelPos& pos) const;
-    H2DE_AbsSize lvlToAbsSize(const H2DE_LevelSize& size) const;
-    H2DE_AbsRect lvlToAbsRect(const H2DE_LevelRect& rect, bool absolute) const;
-
-public:
-    H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer, std::vector<H2DE_Object*>& objects);
+    H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer);
     ~H2DE_Renderer();
 
-    void render();
+    void destroyTextures();
 
-    friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
-    friend void H2DE_InitFont(H2DE_Engine* engine, const std::string& name, const H2DE_Font& font);
-    friend void H2DE_DebugObjects(const H2DE_Engine* engine, bool state);
+    void render(std::vector<H2DE_Object*>& objects);
 
-    H2DE_LevelPos absToLvl(const H2DE_AbsPos& pos, bool absolute) const;
+    void clearRenderer() const;
+    void sortObjects(std::vector<H2DE_Object*>& objects);
 
-    inline const std::unordered_map<std::string, H2DE_Font>& getFonts() const { return fonts; }
+    void renderObjects(std::vector<H2DE_Object*>& objects);
+    void renderObject(H2DE_Object* object);
+    inline void renderObjectAddHitboxesToBuffer(H2DE_Object* object) { hitboxesBuffer.push_back(object); }
+
+    void renderSurfaces(H2DE_Object* object);
+    void renderSurface(H2DE_Object* object, H2DE_Surface* surface);
+    void renderSurfaceSetProperties(H2DE_Surface* surface, SDL_Texture* texture);
+    void renderSurfaceRenderTexture(H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture);
+    static H2DE_LevelRect renderSurfaceGetWorldDestRect(H2DE_Object* object, H2DE_Surface* surface);
+    static float renderSurfaceGetWorldRotation(H2DE_Object* object, H2DE_Surface* surface);
+    static SDL_RendererFlip renderSurfaceGetWorldFlip(H2DE_Object* object, H2DE_Surface* surface);
+    static std::optional<H2DE_PixelRect> renderSurfaceGetPossibleSrcRect(H2DE_Surface* surface);
+
+    void renderObjectsHitboxes();
+    void renderHitboxes(const H2DE_Object* object);
+    void renderHitbox(const H2DE_LevelRect& world_hitboxRect, const H2DE_ColorRGB& color, bool absolute);
+
+    const unsigned int getBlockSize() const;
+    bool isSurfaceVisible(H2DE_Surface* surface);
+    static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
+    static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
+
+    H2DE_PixelPos levelToAbsPos(const H2DE_LevelRect& world_rect, bool absolute) const;
+    H2DE_PixelPos levelToAbsPos(const H2DE_Translate& local_translate) const;
+    H2DE_PixelSize levelToAbsSize(const H2DE_Scale& world_scale) const;
+    H2DE_PixelRect levelToAbsRect(const H2DE_LevelRect& world_rect, bool absolute) const;
+
+public:
+    friend class H2DE_Engine;
+    friend class H2DE_AssetLoaderManager;
 };
 
 #endif

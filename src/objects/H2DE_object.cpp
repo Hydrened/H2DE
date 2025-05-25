@@ -1,29 +1,15 @@
 #include "H2DE/objects/H2DE_object.h"
-#include "H2DE/H2DE_transform.h"
+#include "H2DE/H2DE_lerp_manager.h"
 #include "H2DE/H2DE_error.h"
 
 // INIT
-H2DE_Object::H2DE_Object(H2DE_Engine* e, H2DE_ObjectData d) : engine(e), od(d) {
-    
+H2DE_Object::H2DE_Object(H2DE_Engine* e, const H2DE_ObjectData& od) : engine(e), objectData(od) {
+
 }
 
 // CLEANUP
 H2DE_Object::~H2DE_Object() {
-    
-}
 
-void H2DE_DestroyObject(H2DE_Engine* engine, H2DE_Object* object) {
-    if (object != nullptr) {
-        H2DE_Error::checkEngine(engine);
-
-        const auto it = std::find(engine->objects.begin(), engine->objects.end(), object);
-
-        if (it != engine->objects.end()) {
-            engine->objects.erase(it); 
-            delete object;
-            object = nullptr;
-        }
-    }
 }
 
 void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
@@ -33,136 +19,139 @@ void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>
             surface = nullptr;
         }
     }
+
     surfaces.clear();
-}
-
-// HITBOXES
-void H2DE_AddHitboxToObject(H2DE_Object* object, const H2DE_Hitbox& hitbox, const std::string& hitboxName) {
-    H2DE_Error::checkObject(object);
-
-    if (object->od.hitboxes.find(hitboxName) != object->od.hitboxes.end()) {
-        H2DE_Error::logWarning("Hitbox \"" + hitboxName + "\" has been overridden");
-    }
-
-    object->od.hitboxes[hitboxName] = hitbox;
-}
-
-void H2DE_RemoveHitboxFromObject(H2DE_Object* object, const std::string& hitboxName) {
-    H2DE_Error::checkObject(object);
-
-    const auto it = object->od.hitboxes.find(hitboxName);
-
-    if (it != object->od.hitboxes.end()) {
-        object->od.hitboxes.erase(it);
-    }
-}
-
-// SURFACES
-void H2DE_Object::addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, H2DE_Surface* surface, const std::string& name) {
-    H2DE_Error::checkSurface(surface);
-
-    if (surfaces.find(name) != surfaces.end()) {
-        H2DE_Error::logWarning("Surface \"" + name + "\" has been overridden");
-    }
-
-    surfaces[name] = surface;
-    resetSurfaceBuffers();
-}
-
-void H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
-    const auto it = surfaces.find(name);
-
-    if (it != surfaces.end()) {
-        surfaces.erase(it);
-        resetSurfaceBuffers();
-    }
 }
 
 // UPDATE
 void H2DE_Object::update() {
-    updateCollision();
+    updateCollisions();
 }
 
-void H2DE_Object::updateCollision() {
+void H2DE_Object::updateCollisions() {
     if (hidden) {
         return;
     }
 
-    using T = H2DE_Transform;
+    // for (const auto& [name, hitbox] : hitboxes) {
+    //     if (!hitbox.onCollide && !hitbox.snap) {
+    //         continue;
+    //     }
 
-    for (const auto& [name, hitbox] : od.hitboxes) {
-        if (!hitbox.onCollide && !hitbox.snap) {
-            continue;
-        }
+    //     const H2DE_LevelRect local_hitboxRect = hitbox.getRect();
+    //     const H2DE_LevelRect world_hitboxRect = local_hitboxRect.addTranslate(objectData.transform.translate);
 
-        const H2DE_LevelRect rect = T::getHitboxWorldDestRect(od.rect, od.pivot, od.rotation, od.flip, hitbox.rect);
+    //     const int& collisionIndex = hitbox.collisionIndex;
 
-        for (H2DE_Object* otherObject : engine->objects) {
-            H2DE_Error::checkObject(otherObject);
+    //     for (H2DE_Object* otherObject : engine->objects) {
+    //         if (otherObject == this) {
+    //             continue;
+    //         }
 
-            if (otherObject == this) {
-                continue;
-            }
+    //         const H2DE_ObjectData& otherObjectData = otherObject->objectData;
 
-            for (const auto& [otherName, otherHitbox] : otherObject->od.hitboxes) {
-                if (otherHitbox.collisionIndex != hitbox.collisionIndex) {
-                    continue;
-                }
+    //         for (const auto& [otherName, otherHitbox] : otherObject->hitboxes) {
+    //             if (collisionIndex != otherHitbox.collisionIndex) {
+    //                 continue;
+    //             }
 
-                const H2DE_ObjectData& otherOd = otherObject->od;
-                const H2DE_LevelRect otherRect = T::getHitboxWorldDestRect(otherOd.rect, otherOd.pivot, otherOd.rotation, otherOd.flip, otherHitbox.rect);
+    //             const H2DE_LevelRect local_otherHitboxRect = otherHitbox.getRect();
+    //             const H2DE_LevelRect world_otherHitboxRect = local_otherHitboxRect.addTranslate(otherObjectData.transform.translate);
 
-                if (!rect.collides(otherRect)) {
-                    continue;
-                }
+    //             if (!world_hitboxRect.collides(world_otherHitboxRect)) {
+    //                 continue;
+    //             }
 
-                const std::optional<H2DE_Face> face = rect.getCollidedFace(otherRect);
+    //             const std::optional<H2DE_Face> possibleCollidedFace = world_hitboxRect.getCollidedFace(world_otherHitboxRect);
+    //             if (!possibleCollidedFace.has_value()) {
+    //                 continue;
+    //             }
 
-                if (!face.has_value()) {
-                    continue;
-                }
+    //             if (hitbox.onCollide) {
+    //                 hitbox.onCollide(otherObject, possibleCollidedFace.value());
+    //             }
 
-                if (hitbox.onCollide) {
-                    hitbox.onCollide(otherObject, face.value());
-                }
-
-                if (hitbox.snap) {
-                    snap(rect, otherRect, face.value());
-                }
-            }
-        }
-    }
+    //             if (hitbox.snap) {
+    //                 snap(world_hitboxRect, world_otherHitboxRect, possibleCollidedFace.value());
+    //             }
+    //         }
+    //     }
+    // }
 }
 
-void H2DE_Object::snap(const H2DE_LevelRect& rect, const H2DE_LevelRect& otherRect, H2DE_Face face) {
-    const H2DE_LevelPos& W_objPos = od.rect.getPos();
-    const H2DE_LevelPos offset = W_objPos - rect.getPos();
+void H2DE_Object::snap(const H2DE_LevelRect& world_hitboxRect, const H2DE_LevelRect& world_otherHitboxRect, H2DE_Face face) {
+    const H2DE_Translate& world_objTranslate = objectData.transform.translate;
+    const H2DE_Translate offset = world_objTranslate - world_hitboxRect.getTranslate();
 
     switch (face) {
         case H2DE_FACE_TOP:
-            od.rect.y = otherRect.y + otherRect.h + offset.y;
-            break;
-
-        case H2DE_FACE_RIGHT:
-            od.rect.x = otherRect.x - rect.w + offset.x;
+            objectData.transform.translate.y = world_otherHitboxRect.y + world_otherHitboxRect.h + offset.y;
             break;
 
         case H2DE_FACE_BOTTOM:
-            od.rect.y = otherRect.y - rect.h + offset.y;
+            objectData.transform.translate.y = world_otherHitboxRect.y - world_otherHitboxRect.h + offset.y;
             break;
 
         case H2DE_FACE_LEFT:
-            od.rect.x = otherRect.x + otherRect.w + offset.x;
+            objectData.transform.translate.x = world_otherHitboxRect.x + world_otherHitboxRect.w + offset.x;
+            break;
+
+        case H2DE_FACE_RIGHT:
+            objectData.transform.translate.x = world_otherHitboxRect.x - world_hitboxRect.w + offset.x;
             break;
 
         default: return;
     }
 
-    resetSurfaceBuffers();
+    updateSurfaceBuffers();
+}
+
+// ACTIONS
+
+// -- surfaces
+H2DE_Texture* H2DE_Object::addTexture(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {
+    H2DE_Texture* texture = new H2DE_Texture(engine, this, surfaceData, textureData);
+    surfaces[name] = texture;
+    updateMaxRadius();
+    updateSurfaceBuffers();
+    return texture;
+}
+
+H2DE_Sprite* H2DE_Object::addSprite(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
+    H2DE_Sprite* sprite = new H2DE_Sprite(engine, this, surfaceData, spriteData);
+    surfaces[name] = sprite;
+    updateMaxRadius();
+    updateSurfaceBuffers();
+    return sprite;
+}
+
+void H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+    auto it = surfaces.find(name);
+
+    if (it != surfaces.end()) {
+        surfaces.erase(it);
+        updateMaxRadius();
+        updateSurfaceBuffers();
+    }
+}
+
+// -- hitboxes
+void H2DE_Object::addHitbox(const std::string& name, const H2DE_Hitbox& hitbox) {
+    hitboxes[name] = hitbox;
+    updateMaxRadius();
+}
+
+void H2DE_Object::removeHitbox(const std::string& name) {
+    auto it = hitboxes.find(name);
+    
+    if (it != hitboxes.end()) {
+        hitboxes.erase(it);
+        updateMaxRadius();
+    }
 }
 
 // GETTER
-const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
+const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
     std::vector<H2DE_Surface*> res;
     res.reserve(surfaces.size());
 
@@ -171,227 +160,203 @@ const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(const std::unord
     }
 
     std::sort(res.begin(), res.end(), [](H2DE_Surface* a, H2DE_Surface* b) {
-        return a->sd.index < b->sd.index;
+        return a->surfaceData.index < b->surfaceData.index;
     });
 
     return res;
 }
 
-H2DE_Surface* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
-    const auto it = surfaces.find(name);
-    if (it == surfaces.end()) {
-        H2DE_Error::logError("Surface named \"" + name + "\" not found");
-    }
-    return it->second;
-}
-
-std::vector<H2DE_SurfaceBuffer> H2DE_Object::getSurfaceBuffers() const {
-    return surfaceBuffers;
-}
-
-H2DE_Hitbox& H2DE_Object::getHitbox(const std::string& hitboxName) {
-    const auto it = od.hitboxes.find(hitboxName);
-    if (it == od.hitboxes.end()) {
-        H2DE_Error::logError("Hitbox named \"" + hitboxName + "\" not found");
-    }
-    return it->second;
-}
-
-H2DE_LevelPos H2DE_GetObjectPos(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->od.rect.getPos();
-}
-
-H2DE_LevelSize H2DE_GetObjectSize(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->od.rect.getSize();
-}
-
-H2DE_LevelRect H2DE_GetObjectRect(const H2DE_Object* object) {
-    return object->od.rect;
-}
-
-H2DE_LevelPos H2DE_GetObjectPivot(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->od.pivot;
-}
-
-float H2DE_GetObjectRotation(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->od.rotation;
-}
-
-H2DE_Flip H2DE_GetObjectFlip(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->od.flip;
-}
-
-std::unordered_map<std::string, H2DE_Hitbox> H2DE_GetObjectHitboxes(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->od.hitboxes;
-}
-
-H2DE_Hitbox H2DE_GetObjectHitbox(const H2DE_Object* object, const std::string& name) {
-    H2DE_Error::checkObject(object);
-
-    auto it = object->od.hitboxes.find(name);
-    if (it == object->od.hitboxes.end()) {
+H2DE_Hitbox H2DE_Object::getHitbox(const std::string& name) const {
+    auto it = hitboxes.find(name);
+    if (it == hitboxes.end()) {
         H2DE_Error::logError("Hitbox named \"" + name + "\" not found");
     }
-
+        
     return it->second;
 }
 
-H2DE_LevelRect H2DE_GetObjectHitboxWorldRect(const H2DE_Object* object, const std::string& name) {
-    H2DE_Error::checkObject(object);
+float H2DE_Object::getMaxHitboxRadius() const {
+    float res = 0.0f;
+    const H2DE_Translate world_objectTranslate = objectData.transform.translate;
 
-    const H2DE_LevelRect L_hitboxRect = H2DE_GetObjectHitbox(object, name).rect;
-    const H2DE_ObjectData& od = object->od;
+    for (const auto& [name, hitbox] : hitboxes) {
+        for (const H2DE_Translate& corner : hitbox.transform.getCorners()) {
 
-    return H2DE_Transform::getHitboxWorldDestRect(od.rect, od.pivot, od.rotation, od.flip, L_hitboxRect);
+            const H2DE_Translate world_hitboxCorner = corner + world_objectTranslate;
+            float distance = std::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
+
+            if (distance > res) {
+                res = distance;
+            }
+        }
+    }
+
+    return std::sqrt(res);
 }
 
-int H2DE_GetObjectIndex(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->od.index;
+float H2DE_Object::getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const {
+    float res = 0.0f;
+    const H2DE_Translate world_objectTranslate = objectData.transform.translate;
+
+    for (const auto& [name, surface] : surfaces) {
+        for (const H2DE_Translate& corner : surface->getTransform().getCorners()) {
+
+            const H2DE_Translate world_hitboxCorner = corner + world_objectTranslate;
+            float distance = std::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
+
+            if (distance > res) {
+                res = distance;
+            }
+        }
+    }
+
+    return std::sqrt(res);
 }
 
-bool H2DE_IsObjectAbsolute(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->od.absolute;
-}
+H2DE_Surface* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+    auto it = surfaces.find(name);
+    if (it == surfaces.end()) {
+        H2DE_Error::throwError("Surface named \"" + name + "\" not found");
+    }
 
-bool H2DE_IsObjectHidden(const H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    return object->hidden;
+    return it->second;
 }
 
 // SETTER
-void H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos) {
-    H2DE_Error::checkObject(object);
-    object->od.rect.x = pos.x;
-    object->od.rect.y = pos.y;
+
+// -- non lerp
+void H2DE_Object::setTranslate(const H2DE_Translate& translate) {
+    objectData.transform.translate = translate;
+    updateSurfaceBuffers();
 }
 
-unsigned int H2DE_SetObjectPos(H2DE_Object* object, const H2DE_LevelPos& pos, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Error::checkObject(object);
-
-    const H2DE_LevelPos defaultPos = object->od.rect.getPos();
-    const H2DE_LevelPos posToAdd = pos - defaultPos;
-
-    return H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultPos, posToAdd](float blend) {
-        H2DE_SetObjectPos(object, defaultPos + (posToAdd * blend));
-    }, completed, 0, pauseSensitive);
+void H2DE_Object::setScale(const H2DE_Scale& scale) {
+    objectData.transform.scale = scale;
+    updateSurfaceBuffers();
 }
 
-void H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size) {
-    H2DE_Error::checkObject(object);
-
-    object->od.rect.w = size.x;
-    object->od.rect.h = size.y;
-    object->resetSurfaceBuffers();
+void H2DE_Object::setRotation(float rotation) {
+    objectData.transform.rotation = rotation;
+    updateSurfaceBuffers();
 }
 
-unsigned int H2DE_SetObjectSize(H2DE_Object* object, const H2DE_LevelSize& size, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Error::checkObject(object);
-
-    const H2DE_LevelSize& defaultSize = object->od.rect.getSize();
-    const H2DE_LevelSize sizeToAdd = size - defaultSize;
-
-    return H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultSize, sizeToAdd](float blend) {
-        H2DE_SetObjectSize(object, defaultSize + (sizeToAdd * blend));
-    }, completed, 0, pauseSensitive);
+void H2DE_Object::setPivot(const H2DE_Pivot& pivot) {
+    objectData.transform.pivot = pivot;
+    updateSurfaceBuffers();
 }
 
-void H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect) {
-    H2DE_Error::checkObject(object);
-    object->od.rect = rect;
+void H2DE_Object::setOpacity(Uint8 opacity) {
+    objectData.opacity = opacity;
+    updateSurfaceBuffers();
 }
 
-unsigned int H2DE_SetObjectRect(H2DE_Object* object, const H2DE_LevelRect& rect, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Error::checkObject(object);
-
-    const H2DE_LevelRect& defaultRect = object->od.rect;
-    const H2DE_LevelPos posToAdd = rect.getPos() - defaultRect.getPos();
-    const H2DE_LevelSize sizeToAdd = rect.getSize() - defaultRect.getSize();
-
-    return H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultRect, posToAdd, sizeToAdd](float blend) {
-        H2DE_LevelRect interpolatedRect = { 0.0f, 0.0f, 0.0f, 0.0f };
-        interpolatedRect.addPos(defaultRect.getPos() + (posToAdd * blend));
-        interpolatedRect.addSize(defaultRect.getSize() + (sizeToAdd * blend));
-
-        H2DE_SetObjectRect(object, interpolatedRect);
-    }, completed, 0, pauseSensitive);
+void H2DE_Object::setAbsolute(bool absolute) {
+    objectData.absolute = absolute;
+    updateSurfaceBuffers();
 }
 
-void H2DE_SetObjectIndex(H2DE_Object* object, int index) {
-    H2DE_Error::checkObject(object);
-    object->od.index = index;
+void H2DE_Object::setIndex(int index) {
+    objectData.index = index;
+    updateSurfaceBuffers();
 }
 
-void H2DE_SetObjectPivot(H2DE_Object* object, const H2DE_LevelPos& pivot) {
-    H2DE_Error::checkObject(object);
-
-    object->od.pivot = pivot;
-    object->resetSurfaceBuffers();
+void H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Translate& translate) {
+    if (hasHitbox(name)) {
+        hitboxes[name].transform.translate = translate;
+        updateMaxRadius();
+    }
 }
 
-void H2DE_SetObjectRotation(H2DE_Object* object, float rotation) {
-    H2DE_Error::checkObject(object);
-
-    object->od.rotation = rotation;
-    object->resetSurfaceBuffers();
+void H2DE_Object::setHitboxScale(const std::string& name, const H2DE_Scale& scale) {
+    if (hasHitbox(name)) {
+        hitboxes[name].transform.scale = scale;
+        updateMaxRadius();
+    }
 }
 
-unsigned int H2DE_SetObjectRotation(H2DE_Object* object, float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Error::checkObject(object);
-
-    const float& defaultRotation = object->od.rotation;
-    const float rotationToAdd = rotation - defaultRotation;
-
-    return H2DE_CreateTimeline(object->engine, duration, easing, [object, defaultRotation, rotationToAdd](float blend) {
-        H2DE_SetObjectRotation(object, defaultRotation + (rotationToAdd * blend));
-    }, completed, 0, pauseSensitive);
+void H2DE_Object::setHitboxRotation(const std::string& name, float rotation) {
+    if (hasHitbox(name)) {
+        hitboxes[name].transform.rotation = rotation;
+        updateMaxRadius();
+    }
 }
 
-void H2DE_SetObjectFlip(H2DE_Object* object, H2DE_Flip flip) {
-    H2DE_Error::checkObject(object);
-
-    object->od.flip = flip;
-    object->resetSurfaceBuffers();
+void H2DE_Object::setHitboxPivot(const std::string& name, const H2DE_Pivot& pivot) {
+    if (hasHitbox(name)) {
+        hitboxes[name].transform.pivot = pivot;
+        updateMaxRadius();
+    }
 }
 
-void H2DE_SetObjectHitboxRect(H2DE_Object* object, const std::string& hitboxName, const H2DE_LevelRect& rect) {
-    H2DE_Error::checkObject(object);
-    object->getHitbox(hitboxName).rect = rect;
+void H2DE_Object::setHitboxColor(const std::string& name, const H2DE_ColorRGB& color) {
+    if (hasHitbox(name)) {
+        hitboxes[name].color = color;
+    }
 }
 
-void H2DE_SetObjectHitboxColor(H2DE_Object* object, const std::string& hitboxName, const H2DE_ColorRGB& color) {
-    H2DE_Error::checkObject(object);
-    object->getHitbox(hitboxName).color = color;
+void H2DE_Object::setHitboxCollisionIndex(const std::string& name, int collisionIndex) {
+    if (hasHitbox(name)) {
+        hitboxes[name].collisionIndex = collisionIndex;
+    }
 }
 
-void H2DE_SetObjectHitboxCollisionIndex(H2DE_Object* object, const std::string& hitboxName, int index) {
-    H2DE_Error::checkObject(object);
-    object->getHitbox(hitboxName).collisionIndex = index;
+void H2DE_Object::setHitboxSnap(const std::string& name, bool snap) {
+    if (hasHitbox(name)) {
+        hitboxes[name].snap = snap;
+    }
 }
 
-void H2DE_SetObjectHitboxSnap(H2DE_Object* object, const std::string& hitboxName, bool snap) {
-    H2DE_Error::checkObject(object);
-    object->getHitbox(hitboxName).snap = snap;
+void H2DE_Object::setHitboxOnCollide(const std::string& name, const std::function<void(H2DE_Object*, H2DE_Face)>& onCollide) {
+    if (hasHitbox(name)) {
+        hitboxes[name].onCollide = onCollide;
+    }
 }
 
-void H2DE_SetObjectHitboxOnCollide(H2DE_Object* object, const std::string& hitboxName, const std::function<void(H2DE_Object*, H2DE_Face)>& call) {
-    H2DE_Error::checkObject(object);
-    object->getHitbox(hitboxName).onCollide = call;
+// -- lerp
+unsigned int H2DE_Object::setTranslate(const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    return H2DE_LerpManager::lerp<H2DE_Translate>(engine, objectData.transform.translate, translate, duration, easing, [this](H2DE_Translate iv) {
+        setTranslate(iv);
+    }, completed, pauseSensitive);
 }
 
-void H2DE_ShowObject(H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    object->hidden = false;
+unsigned int H2DE_Object::setScale(const H2DE_Scale& scale, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    return H2DE_LerpManager::lerp<H2DE_Scale>(engine, objectData.transform.scale, scale, duration, easing, [this](H2DE_Scale iv) {
+        setScale(iv);
+    }, completed, pauseSensitive);
 }
 
-void H2DE_HideObject(H2DE_Object* object) {
-    H2DE_Error::checkObject(object);
-    object->hidden = true;
+unsigned int H2DE_Object::setRotation(float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    return H2DE_LerpManager::lerp<float>(engine, objectData.transform.rotation, rotation, duration, easing, [this](float iv) {
+        setRotation(iv);
+    }, completed, pauseSensitive);
+}
+
+unsigned int H2DE_Object::setOpacity(Uint8 opacity, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    return H2DE_LerpManager::lerp<Uint8>(engine, objectData.opacity, opacity, duration, easing, [this](Uint8 iv) {
+        setRotation(iv);
+    }, completed, pauseSensitive);
+}
+
+unsigned int H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    return H2DE_LerpManager::lerp<H2DE_Translate>(engine, getHitbox(name).transform.translate, translate, duration, easing, [this, name](H2DE_Translate iv) {
+        setHitboxTranslate(name, iv);
+    }, completed, pauseSensitive);
+}
+
+unsigned int H2DE_Object::setHitboxScale(const std::string& name, const H2DE_Scale& scale, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    return H2DE_LerpManager::lerp<H2DE_Scale>(engine, getHitbox(name).transform.scale, scale, duration, easing, [this, name](H2DE_Scale iv) {
+        setHitboxScale(name, iv);
+    }, completed, pauseSensitive);
+}
+
+unsigned int H2DE_Object::setHitboxRotation(const std::string& name, float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    return H2DE_LerpManager::lerp<float>(engine, getHitbox(name).transform.rotation, rotation, duration, easing, [this, name](float iv) {
+        setHitboxRotation(name, iv);
+    }, completed, pauseSensitive);
+}
+
+unsigned int H2DE_Object::setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    return H2DE_LerpManager::lerp(engine, getHitbox(name).color, color, duration, easing, [this, name](H2DE_ColorRGB iv) {
+        setHitboxColor(name, iv);
+    }, completed, pauseSensitive);
 }

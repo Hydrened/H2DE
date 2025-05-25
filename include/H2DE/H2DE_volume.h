@@ -2,8 +2,9 @@
 #define H2DE_VOLUME_H
 
 #include <H2DE/H2DE_engine.h>
+class H2DE_Engine;
 
-class H2DE_Engine::H2DE_Volume {
+class H2DE_Volume {
 private:
     H2DE_Engine* engine;
 
@@ -12,35 +13,44 @@ private:
     int songVolume = -1;
     int sfxVolume = -1;
 
-    void initSettings() const;
-    int playChunk(bool isSong, const std::string& soundName, int loops, bool pauseSensitive);
-    Mix_Chunk* getChunk(const std::string& soundName) const;
-
-public:
     H2DE_Volume(H2DE_Engine* engine);
     ~H2DE_Volume();
 
+    void initSettings() const;
     void loadData();
 
-    void pause() const;
-    void resume() const;
+    void pause();
+    void resume();
 
-    friend void H2DE_PlaySong(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive);
-    friend int H2DE_PlaySfx(const H2DE_Engine* engine, const std::string& name, int loops, bool pauseSensitive);
-    friend void H2DE_StopSong(const H2DE_Engine* engine);
-    friend void H2DE_StopSfx(const H2DE_Engine* engine, int id);
-    friend void H2DE_PauseSong(const H2DE_Engine* engine);
-    friend void H2DE_PauseSfx(const H2DE_Engine* engine, int id);
-    friend void H2DE_ResumeSong(const H2DE_Engine* engine);
-    friend void H2DE_ResumeSfx(const H2DE_Engine* engine, int id);
+    int playChunk(bool isSong, const std::string& soundName, int loops, bool pauseSensitive);
 
-    friend void H2DE_SetSongVolume(const H2DE_Engine* engine, int volume);
-    friend void H2DE_SetSfxVolume(const H2DE_Engine* engine, int volume);
+    Mix_Chunk* getChunk(const std::string& soundName) const;
+    static int lerpVolume(int volume);
 
-    friend bool H2DE_IsSongPlaying(const H2DE_Engine* engine);
-    friend bool H2DE_IsSfxPlaying(const H2DE_Engine* engine, int id);
+public:
+    void playSong(const std::string& name, int loops, bool pauseSensitive);
+    int playSfx(const std::string& name, int loops, bool pauseSensitive);
 
-    friend void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory);
+    inline void stopSong() const { stopSfx(0); }
+    inline void stopSfx(int id) const { Mix_HaltChannel(id); }
+    void stopAll() const;
+
+    inline void pauseSong() const { pauseSfx(0); }
+    inline void pauseSfx(int id) const { Mix_Pause(id); }
+    void pauseAll() const;
+
+    inline void resumeSong() const { resumeSfx(0); }
+    inline void resumeSfx(int id) const { Mix_Resume(id); }
+    void resumeAll() const;
+
+    inline bool isSongPlaying() const { return isSfxPlaying(0); }
+    inline bool isSfxPlaying(int id) const { return (Mix_Playing(id) == 1); }
+
+    void setSongVolume(int volume);
+    void setSfxVolume(int volume);
+
+    friend class H2DE_Engine;
+    friend class H2DE_AssetLoaderManager;
 };
 
 #endif

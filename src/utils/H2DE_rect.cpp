@@ -42,62 +42,6 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) {
 
 // METHODS
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::addPos(const H2DE_Vector2D<H2DE_Rect_T>& pos) {
-    x += pos.x;
-    y += pos.y;
-    return *this;
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::addSize(const H2DE_Vector2D<H2DE_Rect_T>& size) {
-    w += size.x;
-    h += size.y;
-    return *this;
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::substractPos(const H2DE_Vector2D<H2DE_Rect_T>& pos) {
-    x -= pos.x;
-    y -= pos.y;
-    return *this;
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::substractSize(const H2DE_Vector2D<H2DE_Rect_T>& size) {
-    w -= size.x;
-    h -= size.y;
-    return *this;
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::multiplyPos(float multiplier) {
-    x *= multiplier;
-    y *= multiplier;
-    return *this;
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::multiplySize(float multiplier) {
-    w *= multiplier;
-    h *= multiplier;
-    return *this;
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::dividePos(float divider) {
-    x /= divider;
-    y /= divider;
-    return *this;
-}
-
-template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T> H2DE_Rect<H2DE_Rect_T>::divideSize(float divider) {
-    w /= divider;
-    h /= divider;
-    return *this;
-}
-
-template<typename H2DE_Rect_T>
 void H2DE_Rect<H2DE_Rect_T>::snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face face) {
     switch (face) {
         case H2DE_FACE_TOP:
@@ -122,27 +66,35 @@ void H2DE_Rect<H2DE_Rect_T>::snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face 
 
 // GETTER
 template<typename H2DE_Rect_T>
+bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& translate, float radius) const {
+    float closestX = std::max(x, std::min(translate.x, x + w));
+    float closestY = std::max(y, std::min(translate.y, y + h));
+
+    float dx = translate.x - closestX;
+    float dy = translate.y - closestY;
+
+    return ((dx * dx + dy * dy) <= (radius * radius));
+}
+
+template<typename H2DE_Rect_T>
 const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const {
-    if (collides(rect)) {
-        float overlapLeft = rect.x + rect.w - x;
-        float overlapRight = x + w - rect.x;
-        float overlapTop = rect.y + rect.h - y;
-        float overlapBottom = y + h - rect.y;
+    H2DE_Rect_T dx = rect.x - x;
+    H2DE_Rect_T px = (w + rect.w) - std::abs(dx);
 
-        float minOverlap = std::min({overlapLeft, overlapRight, overlapTop, overlapBottom});
+    if (px <= 0) {
+        return std::nullopt;
+    }
 
-        if (minOverlap == overlapLeft) {
-            return H2DE_FACE_LEFT;
-            
-        } else if (minOverlap == overlapRight) {
-            return H2DE_FACE_RIGHT;
+    H2DE_Rect_T dy = rect.y - y;
+    H2DE_Rect_T py = (h + rect.h) - std::abs(dy);
 
-        } else if (minOverlap == overlapTop) {
-            return H2DE_FACE_TOP;
+    if (py <= 0) {
+        return std::nullopt;
+    }
 
-        } else {
-            return H2DE_FACE_BOTTOM;
-        }
-
-    } else return std::nullopt;
+    if (px < py) {
+        return ((dx < 0) ? H2DE_FACE_LEFT : H2DE_FACE_RIGHT);
+    } else {
+        return ((dy < 0) ? H2DE_FACE_TOP : H2DE_FACE_BOTTOM);
+    }
 }

@@ -19,22 +19,3 @@ void H2DE_Error::logError(const std::string& message) {
 void H2DE_Error::throwError(const std::string& message) {
     throw std::runtime_error(message);
 }
-
-// POINTERS
-void H2DE_Error::checkEngine(const H2DE_Engine* engine) {
-    if (engine == nullptr) {
-        H2DE_Error::logError("Engine is null");
-    }
-}
-
-void H2DE_Error::checkObject(const H2DE_Object* object) {
-    if (object == nullptr) {
-        H2DE_Error::logError("Object is null");
-    }
-}
-
-void H2DE_Error::checkSurface(const H2DE_Surface* surface) {
-    if (surface == nullptr) {
-        H2DE_Error::logError("Object is null");
-    }
-}

@@ -1,3 +1,9 @@
+## H2DE-b-4.0.0
+#### REMAKE FROM SCRATCH
+#### MODIFIED
+- positions are center instead of top left
+- classes methods are not friend anymore
+
 ## H2DE-3.2.15
 #### ADDED
 - easing functions take completed function as parameter
@@ -348,10 +354,10 @@
 
 ## H2DE-2.0.22
 #### ADDED
-- += operators for `H2DE_LevelPos`, `H2DE_LevelSize`, `H2DE_LevelVelocity` and `H2DE_LevelRect`
-- -= operators for `H2DE_LevelPos`, `H2DE_LevelSize`, `H2DE_LevelVelocity` and `H2DE_LevelRect`
-- *= operators for `H2DE_LevelPos`, `H2DE_LevelSize` and `H2DE_LevelVelocity`
-- /= operators for `H2DE_LevelPos`, `H2DE_LevelSize` and `H2DE_LevelVelocity`
+- += operators for `H2DE_LevelPos`, `H2DE_LevelSize`, `H2DE_Velocity` and `H2DE_LevelRect`
+- -= operators for `H2DE_LevelPos`, `H2DE_LevelSize`, `H2DE_Velocity` and `H2DE_LevelRect`
+- *= operators for `H2DE_LevelPos`, `H2DE_LevelSize` and `H2DE_Velocity`
+- /= operators for `H2DE_LevelPos`, `H2DE_LevelSize` and `H2DE_Velocity`
 
 ## H2DE-2.0.21
 #### ADDED

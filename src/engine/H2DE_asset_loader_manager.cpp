@@ -1,20 +1,18 @@
-#include "H2DE/H2DE_asset_loader.h"
+#include "H2DE/H2DE_asset_loader_manager.h"
 #include "H2DE/H2DE_error.h"
-#include "H2DE/H2DE_renderer.h"
-#include "H2DE/H2DE_volume.h"
 
 // INIT
-H2DE_Engine::H2DE_AssetLoader::H2DE_AssetLoader(H2DE_Engine* e, SDL_Renderer* r) : engine(e), renderer(r) {
+H2DE_AssetLoaderManager::H2DE_AssetLoaderManager(H2DE_Engine* e, SDL_Renderer* r) : engine(e), renderer(r) {
 
 }
 
 // CLEANUP
-H2DE_Engine::H2DE_AssetLoader::~H2DE_AssetLoader() {
+H2DE_AssetLoaderManager::~H2DE_AssetLoaderManager() {
 
 }
 
-// LOAD
-void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory) {
+// ACTIONS
+void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory) {
     if (!std::filesystem::exists(directory)) {
         H2DE_Error::logWarning("Asset directory not found");
         return;
@@ -25,37 +23,44 @@ void H2DE_LoadAssets(H2DE_Engine* engine, const std::filesystem::path& directory
         return;
     }
 
-    H2DE_Error::checkEngine(engine);
-
-    const std::vector<std::filesystem::path> filesToLoad = engine->assetLoader->getFilesToLoad(directory);
-    engine->assetLoader->assetsToLoad = filesToLoad.size();
+    const std::vector<std::filesystem::path> filesToLoad = getFilesToLoad(directory);
+    assetsToLoad = filesToLoad.size();
 
     for (const std::filesystem::path& file : filesToLoad) {
-        engine->assetLoader->importFile(file);
+        importFile(file);
     }
 
-    engine->renderer->textures = engine->assetLoader->textureBuffer;
-    engine->volume->sounds = engine->assetLoader->soundBuffer;
-    
+    std::unordered_map<std::string, SDL_Texture*>& textures = engine->renderer->textures;
+    for (const auto& [name, texture] : textureBuffer) {
+        auto it = textures.find(name);
+        if (it != textures.end()) {
+            H2DE_Error::logWarning("Texture \"" + name + "\" has been overridden");
+        }
+
+        textures[name] = texture;
+    }
+
+    std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->volume->sounds;
+    for (const auto& [name, sound] : soundBuffer) {
+        auto it = sounds.find(name);
+        if (it != sounds.end()) {
+            H2DE_Error::logWarning("Sound \"" + name + "\" has been overridden");
+        }
+
+        sounds[name] = sound;
+    }
+
+    textureBuffer.clear();
+    soundBuffer.clear();
+
     std::cout << std::endl << "H2DE => Loading complete" << std::endl;
 }
 
-void H2DE_InitFont(H2DE_Engine* engine, const std::string& name, const H2DE_Font& font) {
-    H2DE_Error::checkEngine(engine);
-
-    if (engine->renderer->fonts.find(name) != engine->renderer->fonts.end()) {
-        H2DE_Error::logWarning("Font \"" + name + "\" has been overridden");
-    }
-
-    engine->renderer->fonts[name] = font;
-}
-
-// IMPORT
-void H2DE_Engine::H2DE_AssetLoader::importFile(const std::filesystem::path& file) {
+void H2DE_AssetLoaderManager::importFile(const std::filesystem::path& file) {
     const std::filesystem::path extension = file.extension();
 
-    const bool isImg = std::find(supportedImg.begin(), supportedImg.end(), extension) != supportedImg.end();
-    const bool isSound = std::find(supportedSound.begin(), supportedSound.end(), extension) != supportedSound.end();
+    const bool isImg = (std::find(supportedImg.begin(), supportedImg.end(), extension) != supportedImg.end());
+    const bool isSound = (std::find(supportedSound.begin(), supportedSound.end(), extension) != supportedSound.end());
 
     if (isImg) {
         importTexture(file);
@@ -64,7 +69,7 @@ void H2DE_Engine::H2DE_AssetLoader::importFile(const std::filesystem::path& file
     }
 }
 
-void H2DE_Engine::H2DE_AssetLoader::importTexture(const std::filesystem::path& file) {
+void H2DE_AssetLoaderManager::importTexture(const std::filesystem::path& file) {
     SDL_Texture* texture = IMG_LoadTexture(renderer, file.string().c_str());
     const std::string name = file.filename().string();
 
@@ -82,7 +87,7 @@ void H2DE_Engine::H2DE_AssetLoader::importTexture(const std::filesystem::path& f
     assetImported();
 }
 
-void H2DE_Engine::H2DE_AssetLoader::importSound(const std::filesystem::path& file) {
+void H2DE_AssetLoaderManager::importSound(const std::filesystem::path& file) {
     Mix_Chunk* sound = Mix_LoadWAV(file.string().c_str());
     const std::string name = file.filename().string();
 
@@ -100,7 +105,7 @@ void H2DE_Engine::H2DE_AssetLoader::importSound(const std::filesystem::path& fil
     assetImported();
 }
 
-void H2DE_Engine::H2DE_AssetLoader::assetImported() {
+void H2DE_AssetLoaderManager::assetImported() {
     constexpr int barWidth = 30;
 
     loadedAssets++;
@@ -117,17 +122,25 @@ void H2DE_Engine::H2DE_AssetLoader::assetImported() {
     std::cout.flush();
 }
 
+void H2DE_AssetLoaderManager::loadFont(const std::string& name, const H2DE_Font& font) {
+    if (engine->renderer->fonts.find(name) != engine->renderer->fonts.end()) {
+        H2DE_Error::logWarning("Font \"" + name + "\" has been overridden");
+    }
+
+    engine->renderer->fonts[name] = font;
+}
+
 // GETTER
-std::vector<std::filesystem::path> H2DE_Engine::H2DE_AssetLoader::getFilesToLoad(const std::filesystem::path& directory) const {
+const std::vector<std::filesystem::path> H2DE_AssetLoaderManager::getFilesToLoad(const std::filesystem::path& directory) const {
     std::vector<std::filesystem::path> res = {};
 
     for (const auto& entry : std::filesystem::directory_iterator(directory)) {
         if (std::filesystem::is_regular_file(entry.status())) {
             const std::string extension = entry.path().extension().string();
 
-            const bool isImg = std::find(supportedImg.begin(), supportedImg.end(), extension) != supportedImg.end();
-            const bool isSound = std::find(supportedSound.begin(), supportedSound.end(), extension) != supportedSound.end();
-            const bool supported = isImg || isSound;
+            const bool isImg = (std::find(supportedImg.begin(), supportedImg.end(), extension) != supportedImg.end());
+            const bool isSound = (std::find(supportedSound.begin(), supportedSound.end(), extension) != supportedSound.end());
+            const bool supported = (isImg || isSound);
 
             if (supported) {
                 res.push_back(entry.path());

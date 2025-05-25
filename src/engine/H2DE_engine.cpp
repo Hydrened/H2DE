@@ -1,15 +1,8 @@
 #include "H2DE/H2DE_engine.h"
 #include "H2DE/H2DE_error.h"
-#include "H2DE/H2DE_window.h"
-#include "H2DE/H2DE_renderer.h"
-#include "H2DE/H2DE_volume.h"
-#include "H2DE/H2DE_asset_loader.h"
-#include "H2DE/H2DE_settings.h"
-#include "H2DE/H2DE_camera.h"
-#include "H2DE/H2DE_timeline.h"
 
 // INIT
-H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
+H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fps) {
     try {
         static bool once = false;
         if (once) {
@@ -17,15 +10,13 @@ H2DE_Engine::H2DE_Engine(H2DE_EngineData d) : data(d), fps(data.window.fps) {
         }
         once = true;
 
-        settings = new H2DE_Settings();
+        settings = new H2DE_Settings(this);
         window = new H2DE_Window(this, data.window);
-        renderer = new H2DE_Renderer(this, window->renderer, objects);
+        assetLoaderManager = new H2DE_AssetLoaderManager(this, window->renderer);
+        renderer = new H2DE_Renderer(this, window->renderer);
         volume = new H2DE_Volume(this);
-        assetLoader = new H2DE_AssetLoader(this, window->renderer);
+        timelineManager = new H2DE_TimelineManager(this);
         camera = new H2DE_Camera(this, data.camera);
-        timeline = new H2DE_Timeline(this);
-
-        volume->loadData();
 
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
@@ -38,49 +29,83 @@ H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data) {
 
 // CLEANUP
 H2DE_Engine::~H2DE_Engine() {
-    if (window) {
-        window->saveState();
-    }
+    destroy();
+}
 
-    for (H2DE_Object* object : objects) {
-        H2DE_DestroyObject(this, object);
-    }
-    
-    if (camera) {
-        delete camera;
-        camera = nullptr;
-    }
-    if (assetLoader) {
-        delete assetLoader;
-        assetLoader = nullptr;
-    }
-    if (volume) {
-        delete volume;
-        volume = nullptr;
-    }
-    if (renderer) {
-        delete renderer;
-        renderer = nullptr;
-    }
-    if (window) {
+void H2DE_Engine::destroy() {
+    destroyObjects();
+    destroyDebugModeFrames();
+
+    if (window != nullptr) {
         delete window;
         window = nullptr;
     }
-    if (settings) {
+
+    if (assetLoaderManager != nullptr) {
+        delete assetLoaderManager;
+        assetLoaderManager = nullptr;
+    }
+
+    if (renderer != nullptr) {
+        delete renderer;
+        renderer = nullptr;
+    }
+
+    if (volume != nullptr) {
+        delete volume;
+        volume = nullptr;
+    }
+
+    if (timelineManager != nullptr) {
+        delete timelineManager;
+        timelineManager = nullptr;
+    }
+
+    if (camera != nullptr) {
+        delete camera;
+        camera = nullptr;
+    }
+
+    if (settings != nullptr) {
         delete settings;
         settings = nullptr;
     }
 }
 
+void H2DE_Engine::destroyObjects() {
+    for (H2DE_Object* object : objects) {
+        delete object;
+        object = nullptr;
+    }
+
+    objects.clear();
+}
+
+void H2DE_Engine::destroyDebugModeFrames() {
+    for (const std::vector<H2DE_Object*>& frame : debugModeFrames) {
+        for (H2DE_Object* object : frame) {
+            delete object;
+            object = nullptr;
+        }
+    }
+
+    debugModeFrames.clear();
+}
+
 void H2DE_DestroyEngine(H2DE_Engine* engine) {
-    if (engine) {
+    if (engine != nullptr) {
         delete engine;
-        engine = nullptr;
     }
 }
 
 // RUN
-void H2DE_RunEngine(H2DE_Engine* engine) {
+void H2DE_Engine::run() {
+    if (isRunning) {
+        return;
+    }
+
+    isRunning = true;
+
     try {
         Uint64 perfFreq = SDL_GetPerformanceFrequency();
         Uint64 lastTime = SDL_GetPerformanceCounter();
@@ -89,26 +114,24 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
 
         SDL_Event event;
 
-        H2DE_Error::checkEngine(engine);
-
-        while (engine->isRunning) {
+        while (isRunning) {
             Uint64 now = SDL_GetPerformanceCounter();
             frameCount++;
 
-            engine->handleEvents(event);
-            if (!engine->debugMode) {
-                engine->update();
+            handleEvents(event);
+
+            if (!debugModeEnabled) {
+                update();
+                renderer->render(objects);
             }
-            engine->renderer->render();
 
-            const float targetFrameTime = 1.0f / engine->fps;
-
+            const float targetFrameTime = 1.0f / fps;
             while ((SDL_GetPerformanceCounter() - now) / static_cast<float>(perfFreq) < targetFrameTime) {
                 // Spin-wait: This loop will actively wait until the elapsed time exceeds the target frame time.
             }
 
             if ((now - lastSec) / static_cast<float>(perfFreq) >= 1.0f) {
-                engine->currentFPS = frameCount;
+                currentFPS = frameCount;
                 frameCount = 0;
                 lastSec = now;
             }
@@ -117,11 +140,8 @@ void H2DE_RunEngine(H2DE_Engine* engine) {
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
     }
-}
 
-void H2DE_StopEngine(H2DE_Engine* engine) {
-    H2DE_Error::checkEngine(engine);
-    engine->isRunning = false;
+    destroy();
 }
 
 // EVENTS
@@ -132,20 +152,14 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
                 isRunning = false;
                 break;
 
-            case SDL_MOUSEMOTION:
-                mousePos = { event.motion.x, event.motion.y };
-                break;
-
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                    window->fixRatioSize(H2DE_AbsSize{ event.window.data1, event.window.data2 });
+                    window->fixRatioSize(H2DE_PixelSize{ event.window.data1, event.window.data2 });
                 }
                 break;
 
             default: break;
         }
-
-        handleButtonsEvents(event);
 
         if (handleEventsCall) {
             handleEventsCall(event);
@@ -153,171 +167,16 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
     }
 }
 
-void H2DE_Engine::handleButtonsEvents(SDL_Event event) {
-    switch (event.type) {
-        case SDL_MOUSEBUTTONDOWN:
-            handleButtonsMouseDownEvent();
-            break;
-
-        case SDL_MOUSEBUTTONUP:
-            handleButtonsMouseUpEvent();
-            break;
-
-        case SDL_MOUSEMOTION:
-            handleButtonsBlurEvents();
-            handleButtonsHoverEvents();
-            break;
-
-        default: return;
-    }
-}
-
-void H2DE_Engine::handleButtonsMouseDownEvent() {
-    for (H2DE_ButtonObject* button : getValidButtons()) {
-        H2DE_Error::checkObject(button);
-
-        if (!button->bod.onMouseDown) {
-            continue;
-        }
-
-        for (const auto& [name, hitbox] : button->od.hitboxes) {
-            H2DE_LevelRect buttonRect = button->od.rect.getPos().makeNullRect() + hitbox.rect;
-
-            if (buttonRect.collides(H2DE_GetMousePos(this, button->od.absolute))) {
-                button->bod.onMouseDown(button);
-                mouseDown = button;
-                return;
-            }
-        }
-    }
-}
-
-void H2DE_Engine::handleButtonsMouseUpEvent() {
-    if (!mouseDown) {
-        return;
-    }
-
-    if (mouseDown->bod.onMouseUp) {
-        mouseDown->bod.onMouseUp(mouseDown);
-        mouseDown = nullptr;
-    }
-}
-
-void H2DE_Engine::handleButtonsBlurEvents() {
-    if (!hovered) {
-        return;
-    }
-
-    bool stillHovering = false;
-
-    for (const auto& [name, hitbox] : hovered->od.hitboxes) {
-        const H2DE_LevelRect buttonRect = hovered->od.rect.getPos().makeNullRect() + hitbox.rect;
-
-        if (buttonRect.collides(H2DE_GetMousePos(this, hovered->od.absolute))) {
-            stillHovering = true;
-            break;
-        }
-    }
-
-    if (!stillHovering) {
-        if (hovered->bod.onBlur) {
-            hovered->bod.onBlur(hovered);
-        }
-
-        hovered = nullptr;
-    }
-}
-
-void H2DE_Engine::handleButtonsHoverEvents() {
-    for (H2DE_ButtonObject* button : getValidButtons()) {
-        H2DE_Error::checkObject(button);
-
-        if (!button->bod.onHover && !button->bod.onBlur) {
-            continue;
-        }
-
-        for (const auto& [name, hitbox] : button->od.hitboxes) {
-            const H2DE_LevelRect buttonRect = button->od.rect.getPos().makeNullRect() + hitbox.rect;
-
-            if (!buttonRect.collides(H2DE_GetMousePos(this, button->od.absolute))) {
-                continue;
-            }
-
-            if (hovered) {
-                if (hovered == button) {
-                    continue;
-                }
-
-                if (hovered->od.index > button->od.index) {
-                    continue;
-                }
-
-                if (H2DE_Engine::isPositionGreater(button, hovered)) {
-                    continue;
-                }
-            }
-
-            if (hovered) {
-                if (hovered->bod.onBlur) {
-                    hovered->bod.onBlur(hovered);
-                }
-            }
-
-            hovered = button;
-            if (button->bod.onHover) {
-                button->bod.onHover(button);
-            }
-
-            return;
-        }
-    }
-}
-
-std::vector<H2DE_ButtonObject*> H2DE_Engine::getValidButtons() const {
-    std::vector<H2DE_ButtonObject*> res;
-
-    for (H2DE_Object* object : objects) {
-        H2DE_Error::checkObject(object);
-
-        H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
-
-        if (button) {
-            if (button->hidden) {
-                continue;
-            }
-
-            if (paused && button->bod.pauseSensitive) {
-                continue;
-            }
-
-            res.push_back(button);
-        }
-    }
-
-    std::sort(res.begin(), res.end(), [](H2DE_ButtonObject* a, H2DE_ButtonObject* b) {
-        const int indexA = H2DE_GetObjectIndex(a);
-        const int indexB = H2DE_GetObjectIndex(b);
-
-        if (indexA == indexB) {
-            return H2DE_Engine::isPositionGreater(a, b);
-        }
-
-        return indexA > indexB;
-    });
-
-    return res;
-}
-
 // UPDATE
 void H2DE_Engine::update() {
     window->update();
-    timeline->update();
+    timelineManager->update();
 
     if (!paused) {
         if (updateCall) {
             updateCall();
         }
-
+        
         updateObjects();
         camera->update();
     }
@@ -325,103 +184,173 @@ void H2DE_Engine::update() {
 
 void H2DE_Engine::updateObjects() {
     for (H2DE_Object* object : objects) {
-        H2DE_Error::checkObject(object);
         object->update();
     }
 }
 
-// CALLS
-void H2DE_SetHandleEventsCall(H2DE_Engine* engine, const std::function<void(SDL_Event)>& call) {
-    H2DE_Error::checkEngine(engine);
-    engine->handleEventsCall = call;
+// ACTIONS
+
+// -- assets
+void H2DE_Engine::loadAssets(const std::string& directory) {
+    assetLoaderManager->loadAssets(directory);
 }
 
-void H2DE_SetUpdateCall(H2DE_Engine* engine, const std::function<void()>& call) {
-    H2DE_Error::checkEngine(engine);
-    engine->updateCall = call;
+// -- debug mode
+void H2DE_Engine::debugMode(bool state) {
+    debugModeEnabled = state;
+
+    if (!debugModeEnabled) {
+        debugModeFrameIndex = 0;
+        destroyDebugModeFrames();
+
+    } else {
+        saveCurrentDebugFrame();
+    }
 }
 
-// FPS
-unsigned int H2DE_GetCurrentFps(const H2DE_Engine* engine) {
-    H2DE_Error::checkEngine(engine);
-    return engine->currentFPS;
-}
-
-unsigned int H2DE_GetFps(const H2DE_Engine* engine) {
-    H2DE_Error::checkEngine(engine);
-    return engine->fps;
-}
-
-void H2DE_SetFps(H2DE_Engine* engine, unsigned int fps) {
-    H2DE_Error::checkEngine(engine);
-    engine->fps = fps;
-}
-
-// PAUSE
-bool H2DE_IsPaused(const H2DE_Engine* engine) {
-    H2DE_Error::checkEngine(engine);
-    return engine->paused;
-}
-
-void H2DE_Pause(H2DE_Engine* engine) {
-    H2DE_Error::checkEngine(engine);
-
-    engine->paused = true;
-    engine->volume->pause();
-}
-
-void H2DE_Resume(H2DE_Engine* engine) {
-    H2DE_Error::checkEngine(engine);
-
-    engine->paused = false;
-    engine->volume->resume();
-}
-
-// MOUSE
-H2DE_LevelPos H2DE_GetMousePos(const H2DE_Engine* engine, bool absolute) {
-    H2DE_Error::checkEngine(engine);
-    return engine->renderer->absToLvl(engine->mousePos, absolute);
-}
-
-// DELAY
-unsigned int H2DE_Delay(const H2DE_Engine* engine, unsigned int ms, const std::function<void()>& callback, bool pauseSensitive) {
-    H2DE_Error::checkEngine(engine);
-    return H2DE_CreateTimeline(engine, ms, H2DE_EASING_LINEAR, nullptr, callback, 0, pauseSensitive);
-}
-
-void H2DE_ResetDelay(const H2DE_Engine* engine, unsigned int id) {
-    H2DE_Error::checkEngine(engine);
-    H2DE_ResetTimeline(engine, id);
-}
-
-void H2DE_StopDelay(const H2DE_Engine* engine, unsigned int id, bool call) {
-    H2DE_Error::checkEngine(engine);
-    H2DE_StopTimeline(engine, id, call);
-}
-
-void H2DE_TogglePause(H2DE_Engine* engine) {
-    H2DE_Error::checkEngine(engine);
-    engine->paused = !engine->paused;
-}
-
-// DEBUG
-void H2DE_ToggleDebugMode(H2DE_Engine* engine) {
-    engine->debugMode = !engine->debugMode;
-}
-
-void H2DE_DebugModeNextFrame(H2DE_Engine* engine) {
-    if (!engine->debugMode) {
+void H2DE_Engine::debugModeNextFrame() {
+    if (!debugModeEnabled) {
         return;
     }
 
-    engine->update();
+    debugModeFrameIndex++;
+
+    if (debugModeFrameIndex == debugModeFrames.size()) {
+        update();
+        saveCurrentDebugFrame();
+        renderer->render(objects);
+        
+    } else {
+        displayCurrentDebugFrame();
+    }
+}
+
+void H2DE_Engine::debugModePreviousFrame() {
+    if (!debugModeEnabled) {
+        return;
+    }
+
+    if (debugModeFrameIndex > 0) {
+        debugModeFrameIndex--;
+    }
+
+    displayCurrentDebugFrame();
+}
+
+void H2DE_Engine::saveCurrentDebugFrame() {
+    std::vector<H2DE_Object*> frame = {};
+
+    for (H2DE_Object* object : objects) {
+        H2DE_Object* objectCopy = nullptr;
+
+        H2DE_BarObject* bar = dynamic_cast<H2DE_BarObject*>(object);
+        if (bar) {
+            objectCopy = new H2DE_BarObject(this, bar->objectData, bar->barObjectData);
+        }
+
+        H2DE_BasicObject* basic = dynamic_cast<H2DE_BasicObject*>(object);
+        if (basic) {
+            objectCopy = new H2DE_BasicObject(this, basic->objectData);
+        }
+
+        H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
+        if (button) {
+            objectCopy = new H2DE_ButtonObject(this, button->objectData, button->buttonObjectData);
+        }
+        
+        H2DE_TextObject* text = dynamic_cast<H2DE_TextObject*>(object);
+        if (text) {
+            objectCopy = new H2DE_TextObject(this, text->objectData, text->textObjectData);
+        }
+        
+        if (!bar && !basic && !button && !text) {
+            continue;
+        }
+
+        for (const auto [name, hitbox] : object->hitboxes) {
+            objectCopy->addHitbox(name, hitbox);
+        }
+
+        frame.push_back(objectCopy);
+    }
+
+    debugModeFrames.push_back(frame);
+}
+
+void H2DE_Engine::displayCurrentDebugFrame() {
+    renderer->render(debugModeFrames.at(debugModeFrameIndex));
+}
+
+// -- timeline
+unsigned int H2DE_Engine::createTimeline(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive) {
+    return timelineManager->create(duration, easing, update, completed, loops, pauseSensitive);
+}
+
+void H2DE_Engine::resetTimeline(unsigned int id) {
+    timelineManager->reset(id);
+}
+
+void H2DE_Engine::stopTimeline(unsigned int id, bool callCompleted) {
+    timelineManager->stop(id, callCompleted);
+}
+
+// -- delay
+unsigned int H2DE_Engine::delay(unsigned int duration, const std::function<void()>& callback, bool pauseSensitive) {
+    return timelineManager->create(duration, H2DE_EASING_LINEAR, nullptr, callback, 1, pauseSensitive);
+}
+
+void H2DE_Engine::resetDelay(unsigned int id) {
+    timelineManager->reset(id);
+}
+
+void H2DE_Engine::stopDelay(unsigned int id,  bool callCompleted) {
+    timelineManager->stop(id, callCompleted);
+}
+
+// -- objects
+H2DE_BarObject* H2DE_Engine::createBarObject(const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData) {
+    H2DE_BarObject* object = new H2DE_BarObject(this, objectData, barObjectData);
+    objects.push_back(object);
+    return object;
+}
+
+H2DE_BasicObject* H2DE_Engine::createBasicObject(const H2DE_ObjectData& objectData) {
+    H2DE_BasicObject* object = new H2DE_BasicObject(this, objectData);
+    objects.push_back(object);
+    return object;
+}
+
+H2DE_ButtonObject* H2DE_Engine::createButtonObject(const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData) {
+    H2DE_ButtonObject* object = new H2DE_ButtonObject(this, objectData, buttonObjectData);
+    objects.push_back(object);
+    return object;
+}
+
+H2DE_TextObject* H2DE_Engine::createTextObject(const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData) {
+    H2DE_TextObject* object = new H2DE_TextObject(this, objectData, textObjectData);
+    objects.push_back(object);
+    return object;
+}
+
+bool H2DE_Engine::destroyObject(H2DE_Object* object) {
+    auto it = std::find(objects.begin(), objects.end(), object);
+
+    if (it != objects.end()) {
+        objects.erase(it);
+        return true;
+    }
+
+    return false;
 }
 
 // GETTER
-bool H2DE_Engine::isPositionGreater(H2DE_Object* object1, H2DE_Object* object2) {
-    H2DE_LevelPos object1Pos = H2DE_GetObjectPos(object1);
-    H2DE_LevelPos object2Pos = H2DE_GetObjectPos(object2);
+bool H2DE_Engine::isPositionGreater(H2DE_Object* a, H2DE_Object* b) {
+    const H2DE_Translate aTranslate = a->getTranslate();
+    const H2DE_Translate bTranslate = b->getTranslate();
 
-    bool equalsX = object1Pos.x == object2Pos.x;
-    return (equalsX) ? object1Pos.y < object2Pos.y : object1Pos.x < object2Pos.x;
+    bool equalsX = (aTranslate.x == bTranslate.x);
+
+    return (equalsX)
+        ? (aTranslate.y < bTranslate.y)
+        : (aTranslate.x < bTranslate.x);
 }

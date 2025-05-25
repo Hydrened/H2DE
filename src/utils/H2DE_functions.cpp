@@ -1,5 +1,26 @@
 #include "H2DE/H2DE_utils.h"
 
+int H2DE_RandomIntegerInRange(int min, int max) {
+    static std::random_device rd;
+    static std::default_random_engine e(rd());
+    std::uniform_int_distribution<int> dist(min, max);
+    return dist(e);
+}
+
+float H2DE_RandomFloatInRange(float min, float max) {
+    static std::random_device rd;
+    static std::default_random_engine e(rd());
+    std::uniform_real_distribution<float> dist(min, max);
+    return dist(e);
+}
+
+bool H2DE_RandomBool() {
+    static std::random_device rd;
+    static std::default_random_engine e(rd());
+    std::uniform_int_distribution<int> dist(0, 1);
+    return dist(e) == 0;
+}
+
 float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EASING_LINEAR) {
     blend = std::clamp(blend, 0.0f, 1.0f);
 
@@ -15,7 +36,7 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
         }
 
         case H2DE_EASING_EASE_IN_OUT: {
-            blend = (blend < 0.5f) ? 2.0f * blend * blend : 1.0f - powf(-2.0f * blend + 2.0f, 2) / 2.0f;
+            blend = (blend < 0.5f) ? 2.0f * blend * blend : 1.0f - powf(-2.0f * blend + 2.0f, 2) * 0.5f;
             break;
         }
 
@@ -38,11 +59,11 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
         
             if (blend < 0.5f) {
                 float t = blend * 2.0f;
-                blend = (t * t * ((c2 + 1.0f) * t - c2)) / 2.0f;
+                blend = (t * t * ((c2 + 1.0f) * t - c2)) * 0.5f;
                 
             } else {
                 float t = (blend * 2.0f) - 2.0f;
-                blend = (t * t * ((c2 + 1.0f) * t + c2) + 2.0f) / 2.0f;
+                blend = (t * t * ((c2 + 1.0f) * t + c2) + 2.0f) * 0.5f;
             }
             break;
         }
@@ -82,12 +103,12 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
             if (blend < 0.5f) {
                 amplitude = powf(2.0f, 20.0f * blend - 10.0f);
                 oscillation = sinf(sineFactor * (2.0f * M_PI) / 4.5f);
-                blend = -(amplitude * oscillation) / 2.0f;
+                blend = -(amplitude * oscillation) * 0.5f;
 
             } else {
                 amplitude = powf(2.0f, -20.0f * blend + 10.0f);
                 oscillation = sinf(sineFactor * (2.0f * M_PI) / 4.5f);
-                blend = (amplitude * oscillation) / 2.0f + 1.0f;
+                blend = (amplitude * oscillation) * 0.5f + 1.0f;
             }
         
             break;
@@ -118,28 +139,28 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
             if (blend < 0.5f) {
                 float bounceBlend = 1.0f - 2.0f * blend;
                 float bounceInValue = H2DE_Lerp(0.0f, 1.0f, bounceBlend, H2DE_EASING_BOUNCE_OUT);
-                blend = (1.0f - bounceInValue) / 2.0f;
+                blend = (1.0f - bounceInValue) * 0.5f;
 
             } else {
                 float bounceBlend = 2.0f * blend - 1.0f;
                 float bounceOutValue = H2DE_Lerp(0.0f, 1.0f, bounceBlend, H2DE_EASING_BOUNCE_OUT);
-                blend = (1.0f + bounceOutValue) / 2.0f;
+                blend = (1.0f + bounceOutValue) * 0.5f;
             }
             break;
         }
 
         case H2DE_EASING_SINE_IN: {
-            blend = 1.0f - cosf((blend * M_PI) / 2.0f);
+            blend = 1.0f - cosf((blend * M_PI) * 0.5f);
             break;
         }
 
         case H2DE_EASING_SINE_OUT: {
-            blend = sinf((blend * M_PI) / 2.0f);
+            blend = sinf((blend * M_PI) * 0.5f);
             break;
         }
 
         case H2DE_EASING_SINE_IN_OUT: {
-            blend = -(cosf(M_PI * blend) - 1.0f) / 2.0f;
+            blend = -(cosf(M_PI * blend) - 1.0f) * 0.5f;
             break;
         }
 
@@ -159,8 +180,8 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
                 : (blend == 1.0f)
                     ? 1.0f
                     : (blend < 0.5f)
-                        ? powf(2.0f, 20.0f * blend - 10.0f) / 2.0f
-                        : (2.0f - powf(2.0f, -20.0f * blend + 10.0f)) / 2.0f;
+                        ? powf(2.0f, 20.0f * blend - 10.0f) * 0.5f
+                        : (2.0f - powf(2.0f, -20.0f * blend + 10.0f)) * 0.5f;
             break;
         }
 
@@ -168,41 +189,4 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
     }
 
     return min + (max - min) * blend;
-}
-
-float H2DE_RandomFloatInRange(float min, float max) {
-    static std::random_device rd;
-    static std::default_random_engine e(rd());
-    std::uniform_real_distribution<float> dist(min, max);
-    return dist(e);
-}
-
-int H2DE_RandomIntegerInRange(int min, int max) {
-    static std::random_device rd;
-    static std::default_random_engine e(rd());
-    std::uniform_int_distribution<int> dist(min, max);
-    return dist(e);
-}
-
-bool H2DE_RandomBool() {
-    static std::random_device rd;
-    static std::default_random_engine e(rd());
-    std::uniform_int_distribution<int> dist(0, 1);
-    return dist(e) == 0;
-}
-
-H2DE_Flip H2DE_AddFlip(H2DE_Flip flip1, H2DE_Flip flip2) {
-    if (flip1 == flip2) {
-        return H2DE_FLIP_NONE;
-    }
-
-    if (flip1 == H2DE_FLIP_XY) {
-        return static_cast<H2DE_Flip>(flip2 ^ 0b11);
-    }
-
-    if (flip2 == H2DE_FLIP_XY) {
-        return static_cast<H2DE_Flip>(flip1 ^ 0b11);
-    }
-
-    return static_cast<H2DE_Flip>(flip1 | flip2);
 }
