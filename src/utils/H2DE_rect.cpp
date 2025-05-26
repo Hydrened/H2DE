@@ -67,11 +67,19 @@ void H2DE_Rect<H2DE_Rect_T>::snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face 
 // GETTER
 template<typename H2DE_Rect_T>
 bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& translate, float radius) const {
-    float closestX = std::max(x, std::min(translate.x, x + w));
-    float closestY = std::max(y, std::min(translate.y, y + h));
+    H2DE_Rect_T halfW = w * 0.5f;
+    H2DE_Rect_T halfH = h * 0.5f;
 
-    float dx = translate.x - closestX;
-    float dy = translate.y - closestY;
+    H2DE_Rect_T left   = x - halfW;
+    H2DE_Rect_T right  = x + halfW;
+    H2DE_Rect_T top    = y - halfH;
+    H2DE_Rect_T bottom = y + halfH;
+
+    H2DE_Rect_T closestX = std::clamp(translate.x, left, right);
+    H2DE_Rect_T closestY = std::clamp(translate.y, top, bottom);
+
+    H2DE_Rect_T dx = translate.x - closestX;
+    H2DE_Rect_T dy = translate.y - closestY;
 
     return ((dx * dx + dy * dy) <= (radius * radius));
 }
@@ -79,22 +87,21 @@ bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& translat
 template<typename H2DE_Rect_T>
 const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const {
     H2DE_Rect_T dx = rect.x - x;
-    H2DE_Rect_T px = (w + rect.w) - std::abs(dx);
+    H2DE_Rect_T dy = rect.y - y;
 
+    H2DE_Rect_T px = (w + rect.w) * 0.5f - std::abs(dx);
     if (px <= 0) {
         return std::nullopt;
     }
 
-    H2DE_Rect_T dy = rect.y - y;
-    H2DE_Rect_T py = (h + rect.h) - std::abs(dy);
-
+    H2DE_Rect_T py = (h + rect.h) * 0.5f - std::abs(dy);
     if (py <= 0) {
         return std::nullopt;
     }
 
     if (px < py) {
-        return ((dx < 0) ? H2DE_FACE_LEFT : H2DE_FACE_RIGHT);
+        return (dx < 0) ? H2DE_FACE_LEFT : H2DE_FACE_RIGHT;
     } else {
-        return ((dy < 0) ? H2DE_FACE_TOP : H2DE_FACE_BOTTOM);
+        return (dy < 0) ? H2DE_FACE_TOP : H2DE_FACE_BOTTOM;
     }
 }

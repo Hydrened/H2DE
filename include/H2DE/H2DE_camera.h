@@ -23,7 +23,7 @@ public:
     inline H2DE_CameraData getData() const { return data; }
     inline H2DE_Translate getTranslate() const { return t; }
     H2DE_Scale getScale() const;
-    H2DE_LevelRect getWorldRect() const;
+    inline H2DE_LevelRect getWorldRect() const { return t.makeRect(getScale()); }
     inline float getWidth() const { return data.width; }
     inline float getSmoothing() const { return data.smoothing; }
     inline H2DE_Padding getPadding() const { return data.padding; }

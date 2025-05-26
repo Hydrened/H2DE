@@ -1,5 +1,6 @@
 #include "H2DE/objects/H2DE_object.h"
 #include "H2DE/H2DE_lerp_manager.h"
+#include "H2DE/H2DE_geometry.h"
 #include "H2DE/H2DE_error.h"
 
 // INIT
@@ -33,71 +34,69 @@ void H2DE_Object::updateCollisions() {
         return;
     }
 
-    // for (const auto& [name, hitbox] : hitboxes) {
-    //     if (!hitbox.onCollide && !hitbox.snap) {
-    //         continue;
-    //     }
+    for (const auto& [name, hitbox] : hitboxes) {
+        if (!hitbox.onCollide && !hitbox.snap) {
+            continue;
+        }
 
-    //     const H2DE_LevelRect local_hitboxRect = hitbox.getRect();
-    //     const H2DE_LevelRect world_hitboxRect = local_hitboxRect.addTranslate(objectData.transform.translate);
+        const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(this, hitbox);
+        const int& collisionIndex = hitbox.collisionIndex;
 
-    //     const int& collisionIndex = hitbox.collisionIndex;
+        for (H2DE_Object* otherObject : engine->objects) {
+            if (otherObject == this) {
+                continue;
+            }
 
-    //     for (H2DE_Object* otherObject : engine->objects) {
-    //         if (otherObject == this) {
-    //             continue;
-    //         }
+            const H2DE_ObjectData& otherObjectData = otherObject->objectData;
 
-    //         const H2DE_ObjectData& otherObjectData = otherObject->objectData;
+            for (const auto& [otherName, otherHitbox] : otherObject->hitboxes) {
+                if (collisionIndex != otherHitbox.collisionIndex) {
+                    continue;
+                }
 
-    //         for (const auto& [otherName, otherHitbox] : otherObject->hitboxes) {
-    //             if (collisionIndex != otherHitbox.collisionIndex) {
-    //                 continue;
-    //             }
+                const H2DE_LevelRect world_otherHitboxRect = G::getHitboxRect(otherObject, otherHitbox);
 
-    //             const H2DE_LevelRect local_otherHitboxRect = otherHitbox.getRect();
-    //             const H2DE_LevelRect world_otherHitboxRect = local_otherHitboxRect.addTranslate(otherObjectData.transform.translate);
+                if (!world_hitboxRect.collides(world_otherHitboxRect)) {
+                    continue;
+                }
 
-    //             if (!world_hitboxRect.collides(world_otherHitboxRect)) {
-    //                 continue;
-    //             }
+                const std::optional<H2DE_Face> possibleCollidedFace = world_hitboxRect.getCollidedFace(world_otherHitboxRect);
+                if (!possibleCollidedFace.has_value()) {
+                    continue;
+                }
 
-    //             const std::optional<H2DE_Face> possibleCollidedFace = world_hitboxRect.getCollidedFace(world_otherHitboxRect);
-    //             if (!possibleCollidedFace.has_value()) {
-    //                 continue;
-    //             }
+                if (hitbox.onCollide) {
+                    hitbox.onCollide(otherObject, possibleCollidedFace.value());
+                }
 
-    //             if (hitbox.onCollide) {
-    //                 hitbox.onCollide(otherObject, possibleCollidedFace.value());
-    //             }
-
-    //             if (hitbox.snap) {
-    //                 snap(world_hitboxRect, world_otherHitboxRect, possibleCollidedFace.value());
-    //             }
-    //         }
-    //     }
-    // }
+                if (hitbox.snap) {
+                    snap(world_hitboxRect, world_otherHitboxRect, possibleCollidedFace.value());
+                }
+            }
+        }
+    }
 }
 
 void H2DE_Object::snap(const H2DE_LevelRect& world_hitboxRect, const H2DE_LevelRect& world_otherHitboxRect, H2DE_Face face) {
-    const H2DE_Translate& world_objTranslate = objectData.transform.translate;
-    const H2DE_Translate offset = world_objTranslate - world_hitboxRect.getTranslate();
+    // rajouterr offset en fonction du rect et la position réelle de l'obj
+
+    const H2DE_Translate offset = (world_otherHitboxRect.getScale() + world_hitboxRect.getScale()) * 0.5f;
 
     switch (face) {
         case H2DE_FACE_TOP:
-            objectData.transform.translate.y = world_otherHitboxRect.y + world_otherHitboxRect.h + offset.y;
+            objectData.transform.translate.y = world_otherHitboxRect.y + offset.y;
             break;
 
         case H2DE_FACE_BOTTOM:
-            objectData.transform.translate.y = world_otherHitboxRect.y - world_otherHitboxRect.h + offset.y;
+            objectData.transform.translate.y = world_otherHitboxRect.y - offset.y;
             break;
 
         case H2DE_FACE_LEFT:
-            objectData.transform.translate.x = world_otherHitboxRect.x + world_otherHitboxRect.w + offset.x;
+            objectData.transform.translate.x = world_otherHitboxRect.x + offset.x;
             break;
 
         case H2DE_FACE_RIGHT:
-            objectData.transform.translate.x = world_otherHitboxRect.x - world_hitboxRect.w + offset.x;
+            objectData.transform.translate.x = world_otherHitboxRect.x - offset.x;
             break;
 
         default: return;

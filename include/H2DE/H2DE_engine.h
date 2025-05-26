@@ -53,6 +53,7 @@ private:
 
     unsigned int fps = 0;
     unsigned int currentFPS = 0;
+    float deltaTime = 0.0f;
     bool isRunning = false;
     bool paused = false;
 
@@ -124,6 +125,7 @@ public:
     inline H2DE_Camera* getCamera() const { return camera; }
     inline unsigned int getFPS() const { return fps; }
     inline unsigned int getCurrentFPS() const { return currentFPS; }
+    inline float getDeltaTime() const { return deltaTime; }
     inline bool isPaused() const { return paused; }
 
     inline void setFPS(unsigned int FPS) { fps = FPS; }

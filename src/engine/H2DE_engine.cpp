@@ -116,6 +116,7 @@ void H2DE_Engine::run() {
 
         while (isRunning) {
             Uint64 now = SDL_GetPerformanceCounter();
+            deltaTime = (now - lastTime) / static_cast<float>(perfFreq);
             frameCount++;
 
             handleEvents(event);
@@ -127,7 +128,7 @@ void H2DE_Engine::run() {
 
             const float targetFrameTime = 1.0f / fps;
             while ((SDL_GetPerformanceCounter() - now) / static_cast<float>(perfFreq) < targetFrameTime) {
-                // Spin-wait: This loop will actively wait until the elapsed time exceeds the target frame time.
+                // Spin-wait
             }
 
             if ((now - lastSec) / static_cast<float>(perfFreq) >= 1.0f) {

@@ -163,10 +163,12 @@ float H2DE_Renderer::renderSurfaceGetWorldRotation(H2DE_Object* object, H2DE_Sur
 }
 
 SDL_RendererFlip H2DE_Renderer::renderSurfaceGetWorldFlip(H2DE_Object* object, H2DE_Surface* surface) {
-    SDL_RendererFlip local_objectFlip = G::getFlipFromScale(object->objectData.transform.scale);
-    SDL_RendererFlip local_surfaceFlip = G::getFlipFromScale(surface->surfaceData.transform.scale);
+    // SDL_RendererFlip local_objectFlip = G::getFlipFromScale(object->objectData.transform.scale);
+    // SDL_RendererFlip local_surfaceFlip = G::getFlipFromScale(surface->surfaceData.transform.scale);
 
-    return G::addFlip(local_objectFlip, local_surfaceFlip);
+    // return G::addFlip(local_objectFlip, local_surfaceFlip);
+
+    return SDL_FLIP_NONE;
 }
 
 std::optional<H2DE_PixelRect> H2DE_Renderer::renderSurfaceGetPossibleSrcRect(H2DE_Surface* surface) {
@@ -273,7 +275,7 @@ H2DE_PixelPos H2DE_Renderer::levelToAbsPos(const H2DE_LevelRect& world_rect, boo
     world_translate -= world_rect.getScale() * 0.5;
 
     if (!absolute) {
-        world_translate -= world_cameraRect.getTranslate();
+        world_translate += world_cameraRect.getScale() * 0.5f;
     }
 
     if (xIsInverted) {

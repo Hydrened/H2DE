@@ -19,14 +19,6 @@ void H2DE_Camera::update() {
 }
 
 // GETTER
-H2DE_LevelRect H2DE_Camera::getWorldRect() const {
-    const H2DE_Scale cameraScale = getScale();
-    float cameraHalfWidth = cameraScale.x * 0.5f;
-    float cameraHalfHeight = cameraScale.y * 0.5f;
-
-    return { t.x - cameraHalfWidth, t.x - cameraHalfHeight, cameraScale.x, cameraScale.y };
-}
-
 bool H2DE_Camera::containsObject(const H2DE_Object* object) const {
     const H2DE_LevelRect world_cameraRect = getWorldRect();
     const H2DE_Translate world_objectTranslate = object->getTranslate();

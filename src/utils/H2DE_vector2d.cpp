@@ -34,7 +34,7 @@ H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator/=(float
 
 // GETTER
 template<typename H2DE_Vector2D_T>
-H2DE_Vector2D<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::rotate(const H2DE_Vector2D<H2DE_Vector2D_T>& pivot, float angle) {
+H2DE_Vector2D<H2DE_Vector2D_T> H2DE_Vector2D<H2DE_Vector2D_T>::rotate(const H2DE_Vector2D<H2DE_Vector2D_T>& pivot, float angle) const {
     constexpr float DEG_TO_RAD = M_PI / 180.0f;
     float rad = angle * DEG_TO_RAD;
 

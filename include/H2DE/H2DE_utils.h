@@ -121,7 +121,7 @@ struct H2DE_Vector2D {
     }
 
     inline bool isNull() const { return (x == 0 && y == 0); }
-    H2DE_Vector2D<H2DE_Vector2D_T> rotate(const H2DE_Vector2D<H2DE_Vector2D_T>& pivot, float angle);
+    H2DE_Vector2D<H2DE_Vector2D_T> rotate(const H2DE_Vector2D<H2DE_Vector2D_T>& pivot, float angle) const;
     inline H2DE_Vector2D<H2DE_Vector2D_T> getCenter() const { return *this * 0.5f; }
     inline H2DE_Vector2D_T getDistanceSquared(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
         return std::pow(other.x - x, static_cast<H2DE_Vector2D_T>(2.0f)) + std::pow(other.y - y, static_cast<H2DE_Vector2D_T>(2.0f));
@@ -226,8 +226,8 @@ struct H2DE_Rect {
 
     inline bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
         return (
-            (std::abs(x - rect.x) < w + rect.w) &&
-            (std::abs(y - rect.y) < h + rect.h)
+            (std::abs(x - rect.x) < ((w + rect.w) * 0.5f)) &&
+            (std::abs(y - rect.y) < ((h + rect.h) * 0.5f))
         );
     }
     inline bool collides(const H2DE_Vector2D<H2DE_Rect_T>& translate) const {
