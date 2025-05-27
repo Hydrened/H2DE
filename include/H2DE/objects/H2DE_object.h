@@ -9,6 +9,7 @@ class H2DE_Sprite;
 class H2DE_Object {
 private:
     bool hidden = false;
+    bool isGrid = false;
 
 protected:
     H2DE_Engine* engine;
@@ -21,14 +22,16 @@ protected:
     H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
     virtual ~H2DE_Object();
 
+    static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
+    void clearSurfaceBuffer();
+
     void update();
     void updateCollisions();
     void snap(const H2DE_LevelRect& world_hitboxRect, const H2DE_LevelRect& world_otherHitboxRect, H2DE_Face face);
 
-    virtual void updateSurfaceBuffers() = 0;
+    virtual void updateSurfaceBuffers();
     virtual void updateMaxRadius() = 0;
 
-    static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
     H2DE_Texture* addTexture(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData);
     H2DE_Sprite* addSprite(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData);
     void removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
@@ -36,6 +39,7 @@ protected:
     static H2DE_Surface* getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
 
     static const std::vector<H2DE_Surface*> getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
+    static const std::array<H2DE_Translate, 4> getCorners(const H2DE_Transform& transform);
     inline bool hasHitbox(const std::string& name) const { return (hitboxes.find(name) != hitboxes.end()); }
     float getMaxHitboxRadius() const;
     float getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const;

@@ -15,7 +15,6 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
 void H2DE_ButtonObject::updateSurfaceBuffers() {
     const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::getSortedSurfaces(surfaces);
 
-    surfaceBuffers.clear();
     surfaceBuffers.reserve(sortedSurfaces.size());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
 }

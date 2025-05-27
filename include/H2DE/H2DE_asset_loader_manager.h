@@ -9,8 +9,8 @@ private:
     H2DE_Engine* engine;
     SDL_Renderer* renderer;
 
-    const std::vector<std::string> supportedImg = { ".png", ".jpg", ".jpeg", ".bmp" };
-    const std::vector<std::string> supportedSound = { ".mp3", ".ogg", ".wav" };
+    const std::array<std::string, 4> supportedImg = { ".png", ".jpg", ".jpeg", ".bmp" };
+    const std::array<std::string, 3> supportedSound = { ".mp3", ".ogg", ".wav" };
 
     std::unordered_map<std::string, SDL_Texture*> textureBuffer = {};
     std::unordered_map<std::string, Mix_Chunk*> soundBuffer = {};

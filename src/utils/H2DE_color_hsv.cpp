@@ -1,4 +1,5 @@
 #include "H2DE/H2DE_utils.h"
+#include "H2DE/H2DE_geometry.h"
 
 // CAST
 H2DE_ColorHSV::operator H2DE_ColorRGB() const {
@@ -52,15 +53,7 @@ H2DE_ColorHSV::operator H2DE_ColorRGB() const {
 // ADD
 H2DE_ColorHSV H2DE_ColorHSV::addHue(float hue) const {
     H2DE_ColorHSV hsv = *this;
-    hsv.h += hue;
-
-    while (hsv.h >= 360) {
-        hsv.h -= 360.0f;
-    }
-
-    while (hsv.h < 0.0f) {
-        hsv.h += 360.0f;
-    }
+    hsv.h = G::normalizeRotation(hsv.h + hue);
 
     return hsv;
 }
@@ -109,15 +102,7 @@ H2DE_ColorHSV H2DE_ColorHSV::subtractValue(float value) const {
 // MULTIPLY
 H2DE_ColorHSV H2DE_ColorHSV::multiplyHue(float multiplier) const {
     H2DE_ColorHSV hsv = *this;
-    hsv.h *= multiplier;
-
-    while (hsv.h >= 360) {
-        hsv.h -= 360.0f;
-    }
-
-    while (hsv.h < 0.0f) {
-        hsv.h += 360.0f;
-    }
+    hsv.h = G::normalizeRotation(hsv.h * multiplier);
 
     return hsv;
 }

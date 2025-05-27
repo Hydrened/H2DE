@@ -2,6 +2,7 @@
 #define H2DE_ENGINE_H
 
 #include <algorithm>
+#include <array>
 #include <filesystem>
 #include <fstream>
 #include <functional>
@@ -9,7 +10,7 @@
 #include <optional>
 #include <map>
 #include <vector>
-#include <Windows.h>
+#include <windows.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -60,9 +61,6 @@ private:
     bool debugModeEnabled = false;
     bool debugObjectEnabled = false;
 
-    std::vector<std::vector<H2DE_Object*>> debugModeFrames = {};
-    unsigned int debugModeFrameIndex = 0;
-
     std::function<void(SDL_Event)> handleEventsCall = nullptr;
     std::function<void()> updateCall = nullptr;
 
@@ -77,10 +75,6 @@ private:
 
     void destroy();
     void destroyObjects();
-    void destroyDebugModeFrames();
-
-    void saveCurrentDebugFrame();
-    void displayCurrentDebugFrame();
 
     static bool isPositionGreater(H2DE_Object* a, H2DE_Object* b);
 

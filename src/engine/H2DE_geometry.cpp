@@ -14,16 +14,16 @@ H2DE_LevelRect H2DE_Geometry::getRect(const H2DE_Object* object, const H2DE_Tran
 
     const H2DE_Pivot local_objFliped_objPivot = G::flipPivot(world_objRect, objTransform.pivot, objFlip);
     const H2DE_Pivot world_objFliped_objPivot = local_objFliped_objPivot + objTransform.translate;
-    float objFliped_objRotation = G::snapRotation(G::flipRotation(objTransform.rotation, objFlip), snapAngle);
+    float objFliped_objRotation = G::snapRotation(G::flipRotation(objTransform.rotation, objFlip) + G::getRotationCausedByFlip(objFlip), snapAngle);
 
     const H2DE_LevelRect local_objFliped_hitRect = G::flipRect(world_objRect, local_hitRect, objFlip);
     const H2DE_LevelRect world_objFliped_hitRect = local_objFliped_hitRect.addTranslate(objTransform.translate);
     const H2DE_Pivot local_objFliped_hitPivot = G::flipPivot(local_hitRect, hitTransform.pivot, objFlip);
-    float objFliped_hitRotation = G::snapRotation(G::flipRotation(hitTransform.rotation, objFlip), snapAngle);
+    float objFliped_hitRotation = G::snapRotation(G::flipRotation(hitTransform.rotation, objFlip) + G::getRotationCausedByFlip(objFlip), snapAngle);
 
     const H2DE_Pivot local_hitFliped_objFliped_hitPivot = G::flipPivot(local_hitRect, local_objFliped_hitPivot, hitFlip);
     const H2DE_Pivot world_hitFliped_objFliped_hitPivot = local_hitFliped_objFliped_hitPivot + objTransform.translate;
-    float hitFliped_objFliped_hitRotation = G::flipRotation(objFliped_hitRotation, hitFlip);
+    float hitFliped_objFliped_hitRotation = G::flipRotation(objFliped_hitRotation, hitFlip) + G::getRotationCausedByFlip(hitFlip);
 
     const H2DE_LevelRect world_objRotated_objFliped_hitRect = G::applyRotationOnRect(world_objFliped_hitRect, world_objFliped_objPivot, objFliped_objRotation);
     const H2DE_Pivot world_objRotated_hitFliped_objFliped_hitPivot = G::applyRotationOnPivot(world_hitFliped_objFliped_hitPivot, world_objFliped_objPivot, objFliped_objRotation);

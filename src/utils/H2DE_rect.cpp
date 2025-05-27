@@ -43,21 +43,24 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) {
 // METHODS
 template<typename H2DE_Rect_T>
 void H2DE_Rect<H2DE_Rect_T>::snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face face) {
+    const H2DE_Vector2D<H2DE_Rect_T> halfScale = getScale() * 0.5f;
+    const H2DE_Vector2D<H2DE_Rect_T> rectHalfScale = rect.getScale() * 0.5f;
+
     switch (face) {
         case H2DE_FACE_TOP:
-            y = rect.y + rect.h;
+            y = rect.y + rectHalfScale.y + halfScale.y;
             break;
 
         case H2DE_FACE_RIGHT:
-            x = rect.x - w;
+            x = rect.x - rectHalfScale.x - halfScale.x;
             break;
 
         case H2DE_FACE_BOTTOM:
-            y = rect.y - h;
+            y = rect.y - rectHalfScale.y - halfScale.y;
             break;
 
         case H2DE_FACE_LEFT:
-            x = rect.x + rect.w;
+            x = rect.x + rectHalfScale.x + halfScale.x;
             break;
 
         default: return;
@@ -70,9 +73,9 @@ bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& translat
     H2DE_Rect_T halfW = w * 0.5f;
     H2DE_Rect_T halfH = h * 0.5f;
 
-    H2DE_Rect_T left   = x - halfW;
-    H2DE_Rect_T right  = x + halfW;
-    H2DE_Rect_T top    = y - halfH;
+    H2DE_Rect_T left = x - halfW;
+    H2DE_Rect_T right = x + halfW;
+    H2DE_Rect_T top = y - halfH;
     H2DE_Rect_T bottom = y + halfH;
 
     H2DE_Rect_T closestX = std::clamp(translate.x, left, right);
@@ -104,4 +107,17 @@ const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2D
     } else {
         return (dy < 0) ? H2DE_FACE_TOP : H2DE_FACE_BOTTOM;
     }
+}
+
+template<typename H2DE_Rect_T>
+std::array<H2DE_Vector2D<H2DE_Rect_T>, 4> H2DE_Rect<H2DE_Rect_T>::getCorners() const {
+    H2DE_Rect_T halfW = static_cast<H2DE_Rect_T>(w * 0.5f);
+    H2DE_Rect_T halfH = static_cast<H2DE_Rect_T>(h * 0.5f);
+
+    return {
+        H2DE_Vector2D<H2DE_Rect_T>{ x - halfW, y - halfH },
+        H2DE_Vector2D<H2DE_Rect_T>{ x + halfW, y - halfH },
+        H2DE_Vector2D<H2DE_Rect_T>{ x + halfW, y + halfH },
+        H2DE_Vector2D<H2DE_Rect_T>{ x - halfW, y + halfH }
+    };
 }

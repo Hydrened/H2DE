@@ -19,16 +19,16 @@ void H2DE_TimelineManager::update() {
             ++it;
             continue;
         }
-    
-        timeline.current++;
+
+        timeline.current += engine->getDeltaTime() * 1000;
 
         if (timeline.update) {
-            float blend = std::clamp(timeline.current, 0u, timeline.max) / static_cast<float>(timeline.max);
+            float blend = std::clamp(timeline.current, 0u, timeline.duration) / static_cast<float>(timeline.duration);
             blend = H2DE_Lerp(0.0f, 1.0f, blend, timeline.easing);
             timeline.update(blend);
         }
     
-        if (timeline.current >= timeline.max) {
+        if (timeline.current >= timeline.duration) {
             if (timeline.completed) {
                 timeline.completed();
             }
@@ -53,7 +53,7 @@ void H2DE_TimelineManager::update() {
 // ACIOTNS
 unsigned int H2DE_TimelineManager::create(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive) {
     H2DE_TimelineManager::H2DE_Timeline timeline = H2DE_TimelineManager::H2DE_Timeline();
-    timeline.max = (duration == 0) ? 1 : engine->getFPS() / (1000.0f / duration);
+    timeline.duration = duration;
     timeline.loops = loops;
     timeline.easing = easing;
     timeline.update = update;

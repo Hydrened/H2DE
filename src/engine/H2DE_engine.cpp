@@ -10,10 +10,12 @@ H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fp
         }
         once = true;
 
+        objects.reserve(10000);
+
         settings = new H2DE_Settings(this);
         window = new H2DE_Window(this, data.window);
         assetLoaderManager = new H2DE_AssetLoaderManager(this, window->renderer);
-        renderer = new H2DE_Renderer(this, window->renderer);
+        renderer = new H2DE_Renderer(this, window->renderer, objects);
         volume = new H2DE_Volume(this);
         timelineManager = new H2DE_TimelineManager(this);
         camera = new H2DE_Camera(this, data.camera);
@@ -34,7 +36,6 @@ H2DE_Engine::~H2DE_Engine() {
 
 void H2DE_Engine::destroy() {
     destroyObjects();
-    destroyDebugModeFrames();
 
     if (window != nullptr) {
         delete window;
@@ -81,17 +82,6 @@ void H2DE_Engine::destroyObjects() {
     objects.clear();
 }
 
-void H2DE_Engine::destroyDebugModeFrames() {
-    for (const std::vector<H2DE_Object*>& frame : debugModeFrames) {
-        for (H2DE_Object* object : frame) {
-            delete object;
-            object = nullptr;
-        }
-    }
-
-    debugModeFrames.clear();
-}
-
 void H2DE_DestroyEngine(H2DE_Engine* engine) {
     if (engine != nullptr) {
         delete engine;
@@ -123,7 +113,7 @@ void H2DE_Engine::run() {
 
             if (!debugModeEnabled) {
                 update();
-                renderer->render(objects);
+                renderer->render();
             }
 
             const float targetFrameTime = 1.0f / fps;
@@ -136,6 +126,8 @@ void H2DE_Engine::run() {
                 frameCount = 0;
                 lastSec = now;
             }
+
+            lastTime = now;
         }
 
     } catch (const std::exception& e) {
@@ -199,14 +191,6 @@ void H2DE_Engine::loadAssets(const std::string& directory) {
 // -- debug mode
 void H2DE_Engine::debugMode(bool state) {
     debugModeEnabled = state;
-
-    if (!debugModeEnabled) {
-        debugModeFrameIndex = 0;
-        destroyDebugModeFrames();
-
-    } else {
-        saveCurrentDebugFrame();
-    }
 }
 
 void H2DE_Engine::debugModeNextFrame() {
@@ -214,72 +198,14 @@ void H2DE_Engine::debugModeNextFrame() {
         return;
     }
 
-    debugModeFrameIndex++;
-
-    if (debugModeFrameIndex == debugModeFrames.size()) {
-        update();
-        saveCurrentDebugFrame();
-        renderer->render(objects);
-        
-    } else {
-        displayCurrentDebugFrame();
-    }
+    update();
+    renderer->render();
 }
 
 void H2DE_Engine::debugModePreviousFrame() {
     if (!debugModeEnabled) {
         return;
     }
-
-    if (debugModeFrameIndex > 0) {
-        debugModeFrameIndex--;
-    }
-
-    displayCurrentDebugFrame();
-}
-
-void H2DE_Engine::saveCurrentDebugFrame() {
-    std::vector<H2DE_Object*> frame = {};
-
-    for (H2DE_Object* object : objects) {
-        H2DE_Object* objectCopy = nullptr;
-
-        H2DE_BarObject* bar = dynamic_cast<H2DE_BarObject*>(object);
-        if (bar) {
-            objectCopy = new H2DE_BarObject(this, bar->objectData, bar->barObjectData);
-        }
-
-        H2DE_BasicObject* basic = dynamic_cast<H2DE_BasicObject*>(object);
-        if (basic) {
-            objectCopy = new H2DE_BasicObject(this, basic->objectData);
-        }
-
-        H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
-        if (button) {
-            objectCopy = new H2DE_ButtonObject(this, button->objectData, button->buttonObjectData);
-        }
-        
-        H2DE_TextObject* text = dynamic_cast<H2DE_TextObject*>(object);
-        if (text) {
-            objectCopy = new H2DE_TextObject(this, text->objectData, text->textObjectData);
-        }
-        
-        if (!bar && !basic && !button && !text) {
-            continue;
-        }
-
-        for (const auto [name, hitbox] : object->hitboxes) {
-            objectCopy->addHitbox(name, hitbox);
-        }
-
-        frame.push_back(objectCopy);
-    }
-
-    debugModeFrames.push_back(frame);
-}
-
-void H2DE_Engine::displayCurrentDebugFrame() {
-    renderer->render(debugModeFrames.at(debugModeFrameIndex));
 }
 
 // -- timeline

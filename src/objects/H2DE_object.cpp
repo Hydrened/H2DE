@@ -10,18 +10,27 @@ H2DE_Object::H2DE_Object(H2DE_Engine* e, const H2DE_ObjectData& od) : engine(e),
 
 // CLEANUP
 H2DE_Object::~H2DE_Object() {
-
+    clearSurfaceBuffer();
 }
 
 void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
-    for (auto [name, surface] : surfaces) {
+    for (const auto& [name, surface] : surfaces) {
         if (surface) {
             delete surface;
-            surface = nullptr;
         }
     }
 
     surfaces.clear();
+}
+
+void H2DE_Object::clearSurfaceBuffer() {
+    for (const H2DE_Surface* surface : surfaceBuffers) {
+        if (surface) {
+            delete surface;
+        }
+    }
+
+    surfaceBuffers.clear();
 }
 
 // UPDATE
@@ -30,7 +39,7 @@ void H2DE_Object::update() {
 }
 
 void H2DE_Object::updateCollisions() {
-    if (hidden) {
+    if (hidden || objectData.absolute || isGrid) {
         return;
     }
 
@@ -43,7 +52,7 @@ void H2DE_Object::updateCollisions() {
         const int& collisionIndex = hitbox.collisionIndex;
 
         for (H2DE_Object* otherObject : engine->objects) {
-            if (otherObject == this) {
+            if (otherObject == this || otherObject->objectData.absolute || otherObject->hidden || otherObject->isGrid) {
                 continue;
             }
 
@@ -78,25 +87,24 @@ void H2DE_Object::updateCollisions() {
 }
 
 void H2DE_Object::snap(const H2DE_LevelRect& world_hitboxRect, const H2DE_LevelRect& world_otherHitboxRect, H2DE_Face face) {
-    // rajouterr offset en fonction du rect et la position réelle de l'obj
-
-    const H2DE_Translate offset = (world_otherHitboxRect.getScale() + world_hitboxRect.getScale()) * 0.5f;
+    const H2DE_Translate hitboxOffset = world_hitboxRect.getTranslate() - objectData.transform.translate;
+    const H2DE_Translate hitboxesSizeOffset = (world_otherHitboxRect.getScale() + world_hitboxRect.getScale()) * 0.5f;
 
     switch (face) {
         case H2DE_FACE_TOP:
-            objectData.transform.translate.y = world_otherHitboxRect.y + offset.y;
+            objectData.transform.translate.y = world_otherHitboxRect.y - hitboxOffset.y + hitboxesSizeOffset.y;
             break;
 
         case H2DE_FACE_BOTTOM:
-            objectData.transform.translate.y = world_otherHitboxRect.y - offset.y;
+            objectData.transform.translate.y = world_otherHitboxRect.y - hitboxOffset.y - hitboxesSizeOffset.y;
             break;
 
         case H2DE_FACE_LEFT:
-            objectData.transform.translate.x = world_otherHitboxRect.x + offset.x;
+            objectData.transform.translate.x = world_otherHitboxRect.x - hitboxOffset.x + hitboxesSizeOffset.x;
             break;
 
         case H2DE_FACE_RIGHT:
-            objectData.transform.translate.x = world_otherHitboxRect.x - offset.x;
+            objectData.transform.translate.x = world_otherHitboxRect.x - hitboxOffset.x - hitboxesSizeOffset.x;
             break;
 
         default: return;
@@ -134,6 +142,10 @@ void H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& 
     }
 }
 
+void H2DE_Object::updateSurfaceBuffers() {
+    clearSurfaceBuffer();
+}
+
 // -- hitboxes
 void H2DE_Object::addHitbox(const std::string& name, const H2DE_Hitbox& hitbox) {
     hitboxes[name] = hitbox;
@@ -165,6 +177,28 @@ const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(std::unordered_m
     return res;
 }
 
+const std::array<H2DE_Translate, 4> H2DE_Object::getCorners(const H2DE_Transform& transform) {
+    const H2DE_Translate& translate = transform.translate;
+    const H2DE_Pivot& pivot = transform.pivot;
+    const float& rotation = transform.rotation;
+
+    float offsetX = pivot.x - translate.x;
+    float offsetY = pivot.y - translate.y;
+    
+    float scaledX = translate.x - offsetX;
+    float scaledY = translate.y - offsetY;
+    
+    float halfW = transform.scale.x * 0.5f;
+    float halfH = transform.scale.y * 0.5f;
+    
+    return {
+        H2DE_Translate{ scaledX - halfW, scaledY - halfH }.rotate(pivot, rotation),
+        H2DE_Translate{ scaledX + halfW, scaledY - halfH }.rotate(pivot, rotation),
+        H2DE_Translate{ scaledX + halfW, scaledY + halfH }.rotate(pivot, rotation),
+        H2DE_Translate{ scaledX - halfW, scaledY + halfH }.rotate(pivot, rotation),
+    };
+}
+
 H2DE_Hitbox H2DE_Object::getHitbox(const std::string& name) const {
     auto it = hitboxes.find(name);
     if (it == hitboxes.end()) {
@@ -179,7 +213,7 @@ float H2DE_Object::getMaxHitboxRadius() const {
     const H2DE_Translate world_objectTranslate = objectData.transform.translate;
 
     for (const auto& [name, hitbox] : hitboxes) {
-        for (const H2DE_Translate& corner : hitbox.transform.getCorners()) {
+        for (const H2DE_Translate& corner : H2DE_Object::getCorners(hitbox.transform)) {
 
             const H2DE_Translate world_hitboxCorner = corner + world_objectTranslate;
             float distance = std::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
@@ -198,7 +232,7 @@ float H2DE_Object::getMaxSurfaceRadius(const std::unordered_map<std::string, H2D
     const H2DE_Translate world_objectTranslate = objectData.transform.translate;
 
     for (const auto& [name, surface] : surfaces) {
-        for (const H2DE_Translate& corner : surface->getTransform().getCorners()) {
+        for (const H2DE_Translate& corner : H2DE_Object::getCorners(surface->getTransform())) {
 
             const H2DE_Translate world_hitboxCorner = corner + world_objectTranslate;
             float distance = std::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));

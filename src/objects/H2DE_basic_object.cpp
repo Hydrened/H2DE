@@ -9,14 +9,13 @@ H2DE_BasicObject::H2DE_BasicObject(H2DE_Engine* e, const H2DE_ObjectData& od) : 
 
 // CLEANUP
 H2DE_BasicObject::~H2DE_BasicObject() {
-
+    H2DE_Object::destroySurfaces(surfaces);
 }
 
 // ACTIONS
 void H2DE_BasicObject::updateSurfaceBuffers() {
     const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::getSortedSurfaces(surfaces);
 
-    surfaceBuffers.clear();
     surfaceBuffers.reserve(sortedSurfaces.size());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
 }

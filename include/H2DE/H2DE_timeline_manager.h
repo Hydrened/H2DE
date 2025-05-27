@@ -10,7 +10,7 @@ private:
 
     struct H2DE_Timeline {
         unsigned int current = 0;
-        unsigned int max;
+        unsigned int duration;
         int loops;
         unsigned int currentLoop = 0;
         H2DE_Easing easing;

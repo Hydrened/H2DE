@@ -219,10 +219,11 @@ struct H2DE_Rect {
     inline H2DE_Vector2D<H2DE_Rect_T> getScale() const { return H2DE_Vector2D<H2DE_Rect_T>{ w, h }; }
     inline H2DE_Vector2D<H2DE_Rect_T> getCenter() const { return getTranslate() + getScale().getCenter(); }
 
-    inline H2DE_Rect_T getMinX() const { return x; }
-    inline H2DE_Rect_T getMaxX() const { return x + w; }
-    inline H2DE_Rect_T getMinY() const { return y; }
-    inline H2DE_Rect_T getMaxY() const { return y + h; }
+    inline H2DE_Rect_T getMinX() const { return x - static_cast<H2DE_Rect_T>(w * 0.5f); }
+    inline H2DE_Rect_T getMaxX() const { return x + static_cast<H2DE_Rect_T>(w * 0.5f); }
+    inline H2DE_Rect_T getMinY() const { return y - static_cast<H2DE_Rect_T>(h * 0.5f); }
+    inline H2DE_Rect_T getMaxY() const { return y + static_cast<H2DE_Rect_T>(h * 0.5f); }
+
 
     inline bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
         return (
@@ -241,6 +242,8 @@ struct H2DE_Rect {
     bool collides(const H2DE_Vector2D<H2DE_Rect_T>& translate, float radius) const;
     const std::optional<H2DE_Face> getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const;
     void snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face face);
+
+    std::array<H2DE_Vector2D<H2DE_Rect_T>, 4> getCorners() const;
 };
 
 using H2DE_PixelRect = H2DE_Rect<int>;
@@ -336,12 +339,14 @@ struct H2DE_WindowData {
 };
 
 struct H2DE_CameraData {
-    H2DE_Translate defaultTranslate = { 0.0f, 0.0f };
-    float width = 20.0f;
+    H2DE_Translate translate = { 0.0f, 0.0f };
+    float gameWidth = 20.0f;
+    float interfaceWidth = 20.0f;
     float smoothing = 0.0f;
     H2DE_Padding padding = { 0.0f, 0.0f, 0.0f, 0.0f };
     H2DE_Face xOrigin = H2DE_FACE_LEFT;
     H2DE_Face yOrigin = H2DE_FACE_TOP;
+    bool grid = true;
 };
 
 struct H2DE_EngineData {
@@ -354,8 +359,6 @@ struct H2DE_Transform {
     H2DE_Scale scale = { 1.0f, 1.0f };
     float rotation = 0.0f;
     H2DE_Pivot pivot = { 0.0f, 0.0f };
-
-    std::vector<H2DE_Translate> getCorners() const;
 };
 
 struct H2DE_Hitbox {

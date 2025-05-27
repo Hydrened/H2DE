@@ -1,8 +1,35 @@
+## H2DE-b-4.0.2
+#### ADDED
+- camera with for game objects
+- camera with for interface objects
+- camera grid
+#### FIXED
+- block size not accurate
+- camera translate
+- object collision detection
+- min max rect getters
+- delta time
+- timeline and delay precision
+
+## H2DE-b-4.0.1
+#### ADDED
+- delta time
+- hitbox display
+- debug mode (next frame, previous frame)
+#### FIXED
+- hitbox collisions
+- hitbox snap
+- camera object detection
+
 ## H2DE-b-4.0.0
 #### REMAKE FROM SCRATCH
 #### MODIFIED
 - positions are center instead of top left
 - classes methods are not friend anymore
+
+
+
+
 
 ## H2DE-3.2.15
 #### ADDED

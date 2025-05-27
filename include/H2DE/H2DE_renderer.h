@@ -8,6 +8,8 @@ class H2DE_Renderer {
 private:
     H2DE_Engine* engine;
     SDL_Renderer* renderer;
+    std::vector<H2DE_Object*>& objects;
+     
     std::vector<H2DE_Object*> hitboxesBuffer = {}; 
 
     std::unordered_map<std::string, SDL_Texture*> textures = {};
@@ -15,17 +17,17 @@ private:
 
     using R = H2DE_Renderer;
 
-    H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer);
+    H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer, std::vector<H2DE_Object*>& objects);
     ~H2DE_Renderer();
 
     void destroyTextures();
 
-    void render(std::vector<H2DE_Object*>& objects);
+    void render();
 
     void clearRenderer() const;
-    void sortObjects(std::vector<H2DE_Object*>& objects);
+    void sortObjects();
 
-    void renderObjects(std::vector<H2DE_Object*>& objects);
+    void renderObjects();
     void renderObject(H2DE_Object* object);
     inline void renderObjectAddHitboxesToBuffer(H2DE_Object* object) { hitboxesBuffer.push_back(object); }
 
@@ -42,14 +44,16 @@ private:
     void renderHitboxes(const H2DE_Object* object);
     void renderHitbox(const H2DE_LevelRect& world_hitboxRect, const H2DE_ColorRGB& color, bool absolute);
 
-    const unsigned int getBlockSize() const;
+    const float getBlockSize(float width) const;
+    const float getGameBlockSize() const;
+    const float getInterfaceBlockSize() const;
     bool isSurfaceVisible(H2DE_Surface* surface);
     static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
     static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
 
     H2DE_PixelPos levelToAbsPos(const H2DE_LevelRect& world_rect, bool absolute) const;
-    H2DE_PixelPos levelToAbsPos(const H2DE_Translate& local_translate) const;
-    H2DE_PixelSize levelToAbsSize(const H2DE_Scale& world_scale) const;
+    H2DE_PixelPos levelToAbsPos(const H2DE_Translate& local_translate, bool absolute) const;
+    H2DE_PixelSize levelToAbsSize(const H2DE_Scale& world_scale, bool absolute) const;
     H2DE_PixelRect levelToAbsRect(const H2DE_LevelRect& world_rect, bool absolute) const;
 
 public:

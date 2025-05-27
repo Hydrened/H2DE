@@ -20,7 +20,7 @@ public:
         return H2DE_Geometry::getRect(object, hitbox.transform, 90.0f);
     }
     inline static H2DE_LevelRect getSurfaceRect(const H2DE_Object* object, const H2DE_Transform& transform) {
-        return H2DE_Geometry::getRect(object, transform, 0.0f);
+        return H2DE_Geometry::getRect(object, transform, 1.0f);
     }
 
     static H2DE_Geometry::H2DE_Flip getFlipFromScale(const H2DE_Scale& scale);
