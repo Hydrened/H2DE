@@ -398,7 +398,6 @@ struct H2DE_ButtonObjectData {
     std::function<void(H2DE_Object*)> onHover = nullptr;
     std::function<void(H2DE_Object*)> onBlur = nullptr;
     bool pauseSensitive = true;
-
 };
 
 struct H2DE_TextObjectData {

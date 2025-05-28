@@ -19,8 +19,8 @@ private:
     void handleEvents(SDL_Event event);
     void handleMouseDownEvents(SDL_Event event);
     void handleMouseUpEvents(SDL_Event event);
-    void handleBlurEvents(SDL_Event event);
     void handleHoverEvents(SDL_Event event);
+    void handleBlurEvents(SDL_Event event);
 
     void updateButtonBuffer(const std::vector<H2DE_Object*>& objects);
 

@@ -15,12 +15,12 @@ private:
 
 public:
     inline H2DE_TextObjectData getTextData() const { return textObjectData; }
-    inline std::string getText() const { return textObjectData.text; }
-    inline std::string getFont() const { return textObjectData.font; }
-    inline H2DE_Scale getFontSize() const { return textObjectData.fontSize; }
-    inline H2DE_Scale getSpacing() const { return textObjectData.spacing; }
-    inline H2DE_TextAlign getTextAlign() const { return textObjectData.textAlign; }
-    inline H2DE_ColorRGB getColor() const { return textObjectData.color; }
+    inline std::string getText() const { return textObjectData.text.text; }
+    inline std::string getFont() const { return textObjectData.text.font; }
+    inline H2DE_Scale getFontSize() const { return textObjectData.text.fontSize; }
+    inline H2DE_Scale getSpacing() const { return textObjectData.text.spacing; }
+    inline H2DE_TextAlign getTextAlign() const { return textObjectData.text.textAlign; }
+    inline H2DE_ColorRGB getColor() const { return textObjectData.text.color; }
 
     void setText(const std::string& text);
     void setFont(const std::string& font);

@@ -65,35 +65,6 @@ void H2DE_ButtonManager::handleMouseUpEvents(SDL_Event event) {
     }
 }
 
-void H2DE_ButtonManager::handleBlurEvents(SDL_Event event) {
-    if (!hovered) {
-        return;
-    }
-
-    bool stillHovering = false;
-
-    const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
-    const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
-    const H2DE_Translate mousePos = (hovered->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
-
-    for (const auto& [name, hitbox] : hovered->hitboxes) {
-        const H2DE_LevelRect buttonRect = G::getHitboxRect(hovered, hitbox);
-
-        if (buttonRect.collides(mousePos)) {
-            stillHovering = true;
-            break;
-        }
-    }
-
-    if (!stillHovering) {
-        if (hovered->buttonObjectData.onBlur) {
-            hovered->buttonObjectData.onBlur(hovered);
-        }
-
-        hovered = nullptr;
-    }
-}
-
 void H2DE_ButtonManager::handleHoverEvents(SDL_Event event) {
     const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
@@ -139,6 +110,35 @@ void H2DE_ButtonManager::handleHoverEvents(SDL_Event event) {
 
             return;
         }
+    }
+}
+
+void H2DE_ButtonManager::handleBlurEvents(SDL_Event event) {
+    if (!hovered) {
+        return;
+    }
+
+    bool stillHovering = false;
+
+    const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
+    const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
+    const H2DE_Translate mousePos = (hovered->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
+
+    for (const auto& [name, hitbox] : hovered->hitboxes) {
+        const H2DE_LevelRect buttonRect = G::getHitboxRect(hovered, hitbox);
+
+        if (buttonRect.collides(mousePos)) {
+            stillHovering = true;
+            break;
+        }
+    }
+
+    if (!stillHovering) {
+        if (hovered->buttonObjectData.onBlur) {
+            hovered->buttonObjectData.onBlur(hovered);
+        }
+
+        hovered = nullptr;
     }
 }
 

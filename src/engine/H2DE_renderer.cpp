@@ -78,6 +78,8 @@ void H2DE_Renderer::renderObject(H2DE_Object* object) {
 
 // -- surfaces
 void H2DE_Renderer::renderSurfaces(H2DE_Object* object) {
+    // std::cout << 1 << " ";
+
     // const H2DE_Translate world_objectTranslate = object->getTranslate();
     // bool objectIsAbsolute = object->isAbsolute();
 
