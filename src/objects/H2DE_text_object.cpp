@@ -1,5 +1,5 @@
 #include "H2DE/objects/H2DE_text_object.h"
-#include "H2DE/H2DE_lerp_manager.h"
+#include "H2DE/engine/H2DE_lerp_manager.h"
 
 // INIT
 H2DE_TextObject::H2DE_TextObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TextObjectData& bod) : H2DE_Object(e, od), textObjectData(bod) {

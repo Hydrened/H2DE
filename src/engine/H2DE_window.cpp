@@ -1,5 +1,5 @@
-#include "H2DE/H2DE_window.h"
-#include "H2DE/H2DE_error.h"
+#include "H2DE/engine/H2DE_window.h"
+#include "H2DE/engine/H2DE_error.h"
 
 // INIT
 H2DE_Window::H2DE_Window(H2DE_Engine* e, const H2DE_WindowData& d) : engine(e), data(d) {

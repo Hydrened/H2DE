@@ -44,6 +44,7 @@ public:
     inline void setPauseSensitive(bool pauseSensitive) { buttonObjectData.pauseSensitive = pauseSensitive; }
 
     friend class H2DE_Engine;
+    friend class H2DE_ButtonManager;
 };
 
 #endif

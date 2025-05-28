@@ -1,5 +1,5 @@
-#include "H2DE/H2DE_renderer.h"
-#include "H2DE/H2DE_geometry.h"
+#include "H2DE/engine/H2DE_renderer.h"
+#include "H2DE/engine/H2DE_geometry.h"
 #undef max
 
 // INIT
@@ -62,7 +62,7 @@ void H2DE_Renderer::renderObject(H2DE_Object* object) {
         return;
     }
 
-    if (!engine->camera->containsObject(object)) {
+    if (!engine->camera->containsObject(object) && !object->objectData.absolute) {
         return;
     }
 
@@ -205,7 +205,7 @@ void H2DE_Renderer::renderHitboxes(const H2DE_Object* object) {
         }
 
         const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(object, hitbox);
-        if (!engine->camera->containsRect(world_hitboxRect)) {
+        if (!engine->camera->containsRect(world_hitboxRect) && !objectIsAbsolute) {
             continue;
         }
 
@@ -214,7 +214,7 @@ void H2DE_Renderer::renderHitboxes(const H2DE_Object* object) {
 }
 
 void H2DE_Renderer::renderHitbox(const H2DE_LevelRect& world_hitboxRect, const H2DE_ColorRGB& color, bool absolute) {
-    const H2DE_PixelRect absRect = levelToAbsRect(world_hitboxRect, absolute);
+    const H2DE_PixelRect absRect = levelToPixelRect(world_hitboxRect, absolute);
 
     Sint16 minX = absRect.x;
     Sint16 maxX = absRect.x + absRect.w - 1;
@@ -274,30 +274,33 @@ SDL_BlendMode H2DE_Renderer::getBlendMode(H2DE_BlendMode blendMode) {
     }
 }
 
-// -- level to abs
-H2DE_PixelPos H2DE_Renderer::levelToAbsPos(const H2DE_LevelRect& world_rect, bool absolute) const {
+// -- level to pixel
+H2DE_PixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     bool xIsInverted = (engine->camera->getXOrigin() == H2DE_FACE_RIGHT);
     bool yIsInverted = (engine->camera->getYOrigin() == H2DE_FACE_BOTTOM);
 
-    const H2DE_LevelRect world_cameraRect = engine->camera->getWorldRect();
+    H2DE_LevelRect world_cameraRect = engine->camera->getWorldRect();
     H2DE_Translate world_translate = world_rect.getTranslate();
-    world_translate -= world_rect.getScale() * 0.5;
-
-    if (!absolute) {
-        world_translate += world_cameraRect.getScale() * 0.5f - world_cameraRect.getTranslate();
-    } else {
-
-    }
 
     if (xIsInverted) {
-        world_translate.x = world_cameraRect.w - world_translate.x - world_rect.w;
+        world_translate.x *= -1;
+        world_cameraRect.x *= -1;
     }
 
     if (yIsInverted) {
-        world_translate.y = world_cameraRect.h - world_translate.y - world_rect.h;
+        world_translate.y *= -1;
+        world_cameraRect.y *= -1;
     }
+
+    if (absolute) {
+        world_translate += engine->camera->getInterfaceScale() * 0.5f;
+    } else {
+        world_translate += world_cameraRect.getScale() * 0.5f - world_cameraRect.getTranslate();
+    }
+    
+    world_translate -= world_rect.getScale() * 0.5;
 
     return {
         static_cast<int>(std::round(world_translate.x * blockSize)),
@@ -305,11 +308,11 @@ H2DE_PixelPos H2DE_Renderer::levelToAbsPos(const H2DE_LevelRect& world_rect, boo
     };
 }
 
-H2DE_PixelPos H2DE_Renderer::levelToAbsPos(const H2DE_Translate& local_translate, bool absolute) const {
-    return R::levelToAbsSize({ local_translate.x, local_translate.y }, absolute);
+H2DE_PixelPos H2DE_Renderer::levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const {
+    return R::levelToPixelSize({ local_translate.x, local_translate.y }, absolute);
 }
 
-H2DE_PixelSize H2DE_Renderer::levelToAbsSize(const H2DE_Scale& world_scale, bool absolute) const {
+H2DE_PixelSize H2DE_Renderer::levelToPixelSize(const H2DE_Scale& world_scale, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     return {
@@ -318,8 +321,38 @@ H2DE_PixelSize H2DE_Renderer::levelToAbsSize(const H2DE_Scale& world_scale, bool
     };
 }
 
-H2DE_PixelRect H2DE_Renderer::levelToAbsRect(const H2DE_LevelRect& world_rect, bool absolute) const {
-    const H2DE_PixelPos pos = levelToAbsPos(world_rect, absolute);
-    const H2DE_PixelSize size = levelToAbsSize(world_rect.getScale(), absolute);
+H2DE_PixelRect H2DE_Renderer::levelToPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const {
+    const H2DE_PixelPos pos = levelToPixelPos(world_rect, absolute);
+    const H2DE_PixelSize size = levelToPixelSize(world_rect.getScale(), absolute);
     return H2DE_PixelRect{ pos.x, pos.y, size.x, size.y };
+}
+
+// -- pixel to level
+H2DE_Translate H2DE_Renderer::pixelToLevel(const H2DE_PixelPos& pos, bool absolute) const {
+    const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
+    H2DE_Translate res = H2DE_Translate{ static_cast<float>(pos.x), static_cast<float>(pos.y) };
+
+    const H2DE_Scale cameraHalfScale = (absolute)
+        ? engine->getCamera()->getInterfaceScale() * 0.5f
+        : engine->getCamera()->getGameScale() * 0.5f;
+
+    res /= blockSize;
+    res -= cameraHalfScale;
+
+    bool xIsInverted = (engine->camera->getXOrigin() == H2DE_FACE_RIGHT);
+    bool yIsInverted = (engine->camera->getYOrigin() == H2DE_FACE_BOTTOM);
+
+    if (xIsInverted) {
+        res.x *= -1;
+    }
+
+    if (yIsInverted) {
+        res.y *= -1;
+    }
+
+    if (!absolute) {
+        res += engine->getCamera()->getTranslate();
+    }
+
+    return res;
 }

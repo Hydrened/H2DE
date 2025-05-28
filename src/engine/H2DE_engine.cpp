@@ -1,5 +1,5 @@
-#include "H2DE/H2DE_engine.h"
-#include "H2DE/H2DE_error.h"
+#include "H2DE/engine/H2DE_engine.h"
+#include "H2DE/engine/H2DE_error.h"
 
 // INIT
 H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fps) {
@@ -19,6 +19,7 @@ H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fp
         volume = new H2DE_Volume(this);
         timelineManager = new H2DE_TimelineManager(this);
         camera = new H2DE_Camera(this, data.camera);
+        buttonManager = new H2DE_ButtonManager(this);
 
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
@@ -35,8 +36,6 @@ H2DE_Engine::~H2DE_Engine() {
 }
 
 void H2DE_Engine::destroy() {
-    destroyObjects();
-
     if (window != nullptr) {
         delete window;
         window = nullptr;
@@ -66,6 +65,13 @@ void H2DE_Engine::destroy() {
         delete camera;
         camera = nullptr;
     }
+
+    if (buttonManager != nullptr) {
+        delete buttonManager;
+        buttonManager = nullptr;
+    }
+
+    destroyObjects();
 
     if (settings != nullptr) {
         delete settings;
@@ -151,12 +157,18 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
                 }
                 break;
 
+            case SDL_MOUSEMOTION:
+                mousePos = { event.button.x, event.button.y };
+                break;
+
             default: break;
         }
 
         if (handleEventsCall) {
             handleEventsCall(event);
         }
+
+        buttonManager->handleEvents(event);
     }
 }
 
@@ -250,6 +262,7 @@ H2DE_BasicObject* H2DE_Engine::createBasicObject(const H2DE_ObjectData& objectDa
 H2DE_ButtonObject* H2DE_Engine::createButtonObject(const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData) {
     H2DE_ButtonObject* object = new H2DE_ButtonObject(this, objectData, buttonObjectData);
     objects.push_back(object);
+    buttonManager->updateButtonBuffer(objects);
     return object;
 }
 
@@ -262,12 +275,22 @@ H2DE_TextObject* H2DE_Engine::createTextObject(const H2DE_ObjectData& objectData
 bool H2DE_Engine::destroyObject(H2DE_Object* object) {
     auto it = std::find(objects.begin(), objects.end(), object);
 
+    bool isButton = (dynamic_cast<H2DE_ButtonObject*>(object) != nullptr);
+    if (isButton) {
+        buttonManager->updateButtonBuffer(objects);
+    }
+
     if (it != objects.end()) {
         objects.erase(it);
         return true;
     }
 
     return false;
+}
+
+// -- mouse
+const H2DE_Translate H2DE_Engine::getMousePos(bool absolute) const {
+    return renderer->pixelToLevel(mousePos, absolute);
 }
 
 // GETTER

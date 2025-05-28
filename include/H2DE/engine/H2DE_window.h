@@ -1,7 +1,7 @@
 #ifndef H2DE_WINDOW_H
 #define H2DE_WINDOW_H
 
-#include <H2DE/H2DE_engine.h>
+#include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
 
 class H2DE_Window {

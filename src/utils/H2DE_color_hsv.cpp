@@ -1,5 +1,5 @@
-#include "H2DE/H2DE_utils.h"
-#include "H2DE/H2DE_geometry.h"
+#include "H2DE/utils/H2DE_utils.h"
+#include "H2DE/engine/H2DE_geometry.h"
 
 // CAST
 H2DE_ColorHSV::operator H2DE_ColorRGB() const {

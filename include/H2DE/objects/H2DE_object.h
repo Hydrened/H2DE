@@ -1,7 +1,7 @@
 #ifndef H2DE_OBJECT_H
 #define H2DE_OBJECT_H
 
-#include <H2DE/H2DE_engine.h>
+#include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
 class H2DE_Texture;
 class H2DE_Sprite;
@@ -96,6 +96,7 @@ public:
     friend class H2DE_Renderer;
     friend class H2DE_Camera;
     friend class H2DE_Surface;
+    friend class H2DE_ButtonManager;
 };
 
 #include <H2DE/objects/H2DE_bar_object.h>

@@ -1,7 +1,7 @@
 #ifndef H2DE_CAMERA_H
 #define H2DE_CAMERA_H
 
-#include <H2DE/H2DE_engine.h>
+#include <H2DE/engine/H2DE_engine.h>
 #include <string>
 #include <limits>
 class H2DE_Engine;
@@ -24,6 +24,8 @@ private:
     void update();
     void updateGrid();
 
+    H2DE_Scale getScale(float width) const;
+
 public:
     bool containsObject(const H2DE_Object* object) const;
     inline bool containsRect(const H2DE_LevelRect& rect) const { return getWorldRect().collides(rect); }
@@ -31,8 +33,9 @@ public:
 
     inline H2DE_CameraData getData() const { return data; }
     inline H2DE_Translate getTranslate() const { return data.translate; }
-    H2DE_Scale getScale() const;
-    inline H2DE_LevelRect getWorldRect() const { return data.translate.makeRect(getScale()); }
+    inline H2DE_Scale getGameScale() const { return getScale(data.gameWidth); }
+    inline H2DE_Scale getInterfaceScale() const { return getScale(data.interfaceWidth); }
+    inline H2DE_LevelRect getWorldRect() const { return data.translate.makeRect(getGameScale()); }
     inline float getGameWidth() const { return data.gameWidth; }
     inline float getInterfaceWidth() const { return data.interfaceWidth; }
     inline float getSmoothing() const { return data.smoothing; }

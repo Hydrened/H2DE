@@ -1,6 +1,6 @@
-#include "H2DE/H2DE_geometry.h"
+#include "H2DE/engine/H2DE_geometry.h"
 
-// HITBOX
+// RECT
 H2DE_LevelRect H2DE_Geometry::getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle) {
     const H2DE_Transform objTransform = object->getTransform();
     const H2DE_Transform hitTransform = transform;

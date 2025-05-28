@@ -1,7 +1,7 @@
 #include "H2DE/objects/H2DE_object.h"
-#include "H2DE/H2DE_lerp_manager.h"
-#include "H2DE/H2DE_geometry.h"
-#include "H2DE/H2DE_error.h"
+#include "H2DE/engine/H2DE_lerp_manager.h"
+#include "H2DE/engine/H2DE_geometry.h"
+#include "H2DE/engine/H2DE_error.h"
 
 // INIT
 H2DE_Object::H2DE_Object(H2DE_Engine* e, const H2DE_ObjectData& od) : engine(e), objectData(od) {

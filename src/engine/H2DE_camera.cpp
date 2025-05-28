@@ -1,5 +1,5 @@
-#include "H2DE/H2DE_camera.h"
-#include "H2DE/H2DE_lerp_manager.h"
+#include "H2DE/engine/H2DE_camera.h"
+#include "H2DE/engine/H2DE_lerp_manager.h"
 #undef min
 #undef max
 
@@ -132,11 +132,11 @@ bool H2DE_Camera::containsObject(const H2DE_Object* object) const {
     return world_cameraRect.collides(world_objectTranslate, object->maxRadius);
 }
 
-H2DE_Scale H2DE_Camera::getScale() const {
+H2DE_Scale H2DE_Camera::getScale(float width) const {
     H2DE_Scale res;
 
-    res.x = data.gameWidth;
-    res.y = static_cast<float>(engine->data.window.size.y) / static_cast<float>(engine->data.window.size.x) * data.gameWidth;
+    res.x = width;
+    res.y = static_cast<float>(engine->data.window.size.y) / static_cast<float>(engine->data.window.size.x) * width;
 
     return res;
 }

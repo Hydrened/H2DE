@@ -1,7 +1,7 @@
 #ifndef H2DE_RENDERER_H
 #define H2DE_RENDERER_H
 
-#include <H2DE/H2DE_engine.h>
+#include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
 
 class H2DE_Renderer {
@@ -51,10 +51,12 @@ private:
     static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
     static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
 
-    H2DE_PixelPos levelToAbsPos(const H2DE_LevelRect& world_rect, bool absolute) const;
-    H2DE_PixelPos levelToAbsPos(const H2DE_Translate& local_translate, bool absolute) const;
-    H2DE_PixelSize levelToAbsSize(const H2DE_Scale& world_scale, bool absolute) const;
-    H2DE_PixelRect levelToAbsRect(const H2DE_LevelRect& world_rect, bool absolute) const;
+    H2DE_PixelPos levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const;
+    H2DE_PixelPos levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const;
+    H2DE_PixelSize levelToPixelSize(const H2DE_Scale& world_scale, bool absolute) const;
+    H2DE_PixelRect levelToPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const;
+
+    H2DE_Translate pixelToLevel(const H2DE_PixelPos& pos, bool absolute) const;
 
 public:
     friend class H2DE_Engine;

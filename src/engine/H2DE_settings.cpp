@@ -1,5 +1,5 @@
-#include "H2DE/H2DE_settings.h"
-#include "H2DE/H2DE_error.h"
+#include "H2DE/engine/H2DE_settings.h"
+#include "H2DE/engine/H2DE_error.h"
 
 // INIT
 H2DE_Settings::H2DE_Settings(H2DE_Engine* e) : engine(e) {

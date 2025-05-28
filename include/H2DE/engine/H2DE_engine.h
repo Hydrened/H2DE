@@ -17,14 +17,15 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_mixer.h>
 
-#include <H2DE/H2DE_utils.h>
-#include <H2DE/H2DE_settings.h>
-#include <H2DE/H2DE_window.h>
-#include <H2DE/H2DE_asset_loader_manager.h>
-#include <H2DE/H2DE_renderer.h>
-#include <H2DE/H2DE_volume.h>
-#include <H2DE/H2DE_timeline_manager.h>
-#include <H2DE/H2DE_camera.h>
+#include <H2DE/utils/H2DE_utils.h>
+#include <H2DE/engine/H2DE_settings.h>
+#include <H2DE/engine/H2DE_window.h>
+#include <H2DE/engine/H2DE_asset_loader_manager.h>
+#include <H2DE/engine/H2DE_renderer.h>
+#include <H2DE/engine/H2DE_volume.h>
+#include <H2DE/engine/H2DE_timeline_manager.h>
+#include <H2DE/engine/H2DE_camera.h>
+#include <H2DE/engine/H2DE_button_manager.h>
 #include <H2DE/surfaces/H2DE_surface.h>
 #include <H2DE/objects/H2DE_object.h>
 
@@ -35,6 +36,7 @@ class H2DE_Renderer;
 class H2DE_Volume;
 class H2DE_TimelineManager;
 class H2DE_Camera;
+class H2DE_ButtonManager;
 class H2DE_BarObject;
 class H2DE_BasicObject;
 class H2DE_ButtonObject;
@@ -51,6 +53,7 @@ private:
     H2DE_Volume* volume = nullptr;
     H2DE_TimelineManager* timelineManager = nullptr;
     H2DE_Camera* camera = nullptr;
+    H2DE_ButtonManager* buttonManager = nullptr;
 
     unsigned int fps = 0;
     unsigned int currentFPS = 0;
@@ -66,6 +69,8 @@ private:
 
     std::vector<H2DE_Object*> objects = {};
 
+    H2DE_PixelPos mousePos = { 0, 0 };
+
     H2DE_Engine(const H2DE_EngineData& data);
     ~H2DE_Engine();
 
@@ -75,6 +80,8 @@ private:
 
     void destroy();
     void destroyObjects();
+
+    const H2DE_Translate getMousePos(bool absolute) const;
 
     static bool isPositionGreater(H2DE_Object* a, H2DE_Object* b);
 
@@ -88,6 +95,7 @@ public:
 
     void debugMode(bool state);
     inline void toggleDebugMode() { debugMode(!debugModeEnabled); }
+
     inline void debugObjects(bool state) { debugObjectEnabled = state; }
     inline void toggleDebugObject() { debugObjectEnabled = !debugObjectEnabled; }
 
@@ -122,6 +130,9 @@ public:
     inline float getDeltaTime() const { return deltaTime; }
     inline bool isPaused() const { return paused; }
 
+    inline const H2DE_Translate getMouseGamePos() const { return getMousePos(false); }
+    inline const H2DE_Translate getMouseInterfacePos() const { return getMousePos(true); }
+
     inline void setFPS(unsigned int FPS) { fps = FPS; }
     inline void setHandleEventCall(const std::function<void(SDL_Event)>& call) { handleEventsCall = call; }
     inline void setUpdateCall(const std::function<void()>& call) { updateCall = call; }
@@ -131,6 +142,7 @@ public:
     friend class H2DE_Renderer;
     friend class H2DE_Volume;
     friend class H2DE_Camera;
+    friend class H2DE_ButtonManager;
     friend class H2DE_Object;
 };
 

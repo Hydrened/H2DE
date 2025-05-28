@@ -15,15 +15,15 @@ struct H2DE_Rect;
 struct H2DE_ColorHSV;
 
 enum H2DE_WindowRatio {
-    H2DE_WINDOW_RATIO_NO_RATIO,     //< No ratio constraint (free resize)
-    H2DE_WINDOW_RATIO_CUSTOM,       //< User-defined custom ratio
-    H2DE_WINDOW_RATIO_4_3,          //< 4:3 ratio (standard)
-    H2DE_WINDOW_RATIO_3_2,          //< 3:2 ratio
-    H2DE_WINDOW_RATIO_5_4,          //< 5:4 ratio
-    H2DE_WINDOW_RATIO_16_10,        //< 16:10 ratio (widescreen)
-    H2DE_WINDOW_RATIO_16_9,         //< 16:9 ratio (HD widescreen)
-    H2DE_WINDOW_RATIO_21_9,         //< 21:9 ratio (ultrawide)
-    H2DE_WINDOW_RATIO_32_9,         //< 32:9 ratio (super ultrawide)
+    H2DE_WINDOW_RATIO_NO_RATIO,
+    H2DE_WINDOW_RATIO_CUSTOM,
+    H2DE_WINDOW_RATIO_4_3,
+    H2DE_WINDOW_RATIO_3_2,
+    H2DE_WINDOW_RATIO_5_4,
+    H2DE_WINDOW_RATIO_16_10,
+    H2DE_WINDOW_RATIO_16_9,
+    H2DE_WINDOW_RATIO_21_9,
+    H2DE_WINDOW_RATIO_32_9,
 };
 
 enum H2DE_Easing {
@@ -49,31 +49,31 @@ enum H2DE_Easing {
 };
 
 enum H2DE_Face {
-    H2DE_FACE_TOP = 0b00,           //< Top face
-    H2DE_FACE_RIGHT = 0b01,         //< Right face
-    H2DE_FACE_BOTTOM = 0b10,        //< Bottom face
-    H2DE_FACE_LEFT = 0b11,          //< Left face
+    H2DE_FACE_TOP = 0b00,
+    H2DE_FACE_RIGHT = 0b01,
+    H2DE_FACE_BOTTOM = 0b10,
+    H2DE_FACE_LEFT = 0b11,
 };
 
 enum H2DE_TextAlign {
-    H2DE_TEXT_ALIGN_LEFT,           //< Align text to the left
-    H2DE_TEXT_ALIGN_RIGHT,          //< Align text to the right
-    H2DE_TEXT_ALIGN_CENTER,         //< Center the text horizontally
+    H2DE_TEXT_ALIGN_LEFT,
+    H2DE_TEXT_ALIGN_RIGHT,
+    H2DE_TEXT_ALIGN_CENTER,
 };
 
 enum H2DE_ScaleMode {
-    H2DE_SCALE_MODE_NEAREST,        //< Nearest-neighbor scaling (fastest, pixelated)
-    H2DE_SCALE_MODE_LINEAR,         //< Linear interpolation (smooth)
-    H2DE_SCALE_MODE_BEST,           //< Best quality available (may be hardware-dependent)
+    H2DE_SCALE_MODE_NEAREST,
+    H2DE_SCALE_MODE_LINEAR,
+    H2DE_SCALE_MODE_BEST,
 };
 
 enum H2DE_BlendMode {
-    H2DE_BLEND_MODE_BLEND,          //< Standard alpha blending
-    H2DE_BLEND_MODE_ADD,            //< Additive blending
-    H2DE_BLEND_MODE_MOD,            //< Modulation blending (multiplicative color)
-    H2DE_BLEND_MODE_MUL,            //< True multiplicative blending
-    H2DE_BLEND_MODE_INVALID,        //< Invalid or undefined blending mode
-    H2DE_BLEND_MODE_NONE,           //< No blending (overwrite)
+    H2DE_BLEND_MODE_BLEND,
+    H2DE_BLEND_MODE_ADD,
+    H2DE_BLEND_MODE_MOD,
+    H2DE_BLEND_MODE_MUL,
+    H2DE_BLEND_MODE_INVALID,
+    H2DE_BLEND_MODE_NONE,
 };
 
 template<typename H2DE_Vector2D_T>
@@ -112,6 +112,7 @@ struct H2DE_Vector2D {
     }
 
     inline operator SDL_Point() const { return { static_cast<int>(x), static_cast<int>(y) }; }
+
 
     inline H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D<H2DE_Vector2D_T>& scale) const{
         return H2DE_Rect<H2DE_Vector2D_T>{ x, y, scale.x, scale.y };   
@@ -186,8 +187,8 @@ struct H2DE_Rect {
 
     inline operator SDL_Rect() const {
         return SDL_Rect{
-            static_cast<int>(x),
-            static_cast<int>(y),
+            static_cast<int>(x - w * 0.5f),
+            static_cast<int>(y - h * 0.5f),
             static_cast<int>(w),
             static_cast<int>(h)
         };
@@ -217,13 +218,11 @@ struct H2DE_Rect {
 
     inline H2DE_Vector2D<H2DE_Rect_T> getTranslate() const { return H2DE_Vector2D<H2DE_Rect_T>{ x, y }; }
     inline H2DE_Vector2D<H2DE_Rect_T> getScale() const { return H2DE_Vector2D<H2DE_Rect_T>{ w, h }; }
-    inline H2DE_Vector2D<H2DE_Rect_T> getCenter() const { return getTranslate() + getScale().getCenter(); }
 
     inline H2DE_Rect_T getMinX() const { return x - static_cast<H2DE_Rect_T>(w * 0.5f); }
     inline H2DE_Rect_T getMaxX() const { return x + static_cast<H2DE_Rect_T>(w * 0.5f); }
     inline H2DE_Rect_T getMinY() const { return y - static_cast<H2DE_Rect_T>(h * 0.5f); }
     inline H2DE_Rect_T getMaxY() const { return y + static_cast<H2DE_Rect_T>(h * 0.5f); }
-
 
     inline bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
         return (
@@ -233,10 +232,10 @@ struct H2DE_Rect {
     }
     inline bool collides(const H2DE_Vector2D<H2DE_Rect_T>& translate) const {
         return (
-            (translate.x >= x - w) &&
-            (translate.x <= x + w) &&
-            (translate.y >= y - h) &&
-            (translate.y <= y + h)
+            (translate.x >= x - w * 0.5f) &&
+            (translate.x <= x + w * 0.5f) &&
+            (translate.y >= y - h * 0.5f) &&
+            (translate.y <= y + h * 0.5f)
         );
     }
     bool collides(const H2DE_Vector2D<H2DE_Rect_T>& translate, float radius) const;
@@ -369,6 +368,16 @@ struct H2DE_Hitbox {
     std::function<void(H2DE_Object*, H2DE_Face)> onCollide = nullptr;
 };
 
+struct H2DE_Text {
+    std::string text = "";
+    std::string font = "";
+    H2DE_Scale fontSize = { 1.0f, 1.0f };
+    H2DE_Scale spacing = { 0.1f, 0.3f };
+    H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_LEFT;
+    H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    H2DE_Padding padding = { 0.0f, 0.0f, 0.0f, 0.0f };
+};
+
 struct H2DE_ObjectData {
     H2DE_Transform transform = H2DE_Transform();
     Uint8 opacity = UINT8_MAX;
@@ -383,20 +392,17 @@ struct H2DE_BarObjectData {
 };
 
 struct H2DE_ButtonObjectData {
+    H2DE_Text text = H2DE_Text();
     std::function<void(H2DE_Object*)> onMouseDown = nullptr;
     std::function<void(H2DE_Object*)> onMouseUp = nullptr;
     std::function<void(H2DE_Object*)> onHover = nullptr;
     std::function<void(H2DE_Object*)> onBlur = nullptr;
     bool pauseSensitive = true;
+
 };
 
 struct H2DE_TextObjectData {
-    std::string text = "";
-    std::string font = "";
-    H2DE_Scale fontSize = { 1.0f, 1.0f };
-    H2DE_Scale spacing = { 0.1f, 0.5f };
-    H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_LEFT;
-    H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    H2DE_Text text = H2DE_Text();
 };
 
 struct H2DE_SurfaceData {

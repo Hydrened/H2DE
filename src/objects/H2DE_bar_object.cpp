@@ -1,5 +1,5 @@
 #include "H2DE/objects/H2DE_bar_object.h"
-#include "H2DE/H2DE_lerp_manager.h"
+#include "H2DE/engine/H2DE_lerp_manager.h"
 #undef max
 
 // INIT
