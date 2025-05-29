@@ -23,6 +23,9 @@ public:
     inline H2DE_Sprite* addSpriteToFront(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
         return H2DE_Object::addSprite(frontSurfaces, name, surfaceData, spriteData);
     }
+    inline H2DE_Color* addColorToFront(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) {
+        return H2DE_Object::addColor(frontSurfaces, name, surfaceData, colorData);
+    }
     inline void removeSurfaceFromFront(const std::string& name) {
         H2DE_Object::removeSurface(frontSurfaces, name);
     }
@@ -32,6 +35,9 @@ public:
     }
     inline H2DE_Sprite* addSpriteToBackground(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
         return H2DE_Object::addSprite(backgroundSurfaces, name, surfaceData, spriteData);
+    }
+    inline H2DE_Color* addColorToBackground(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) {
+        return H2DE_Object::addColor(backgroundSurfaces, name, surfaceData, colorData);
     }
     inline void removeSurfaceFromBackground(const std::string& name) {
         H2DE_Object::removeSurface(backgroundSurfaces, name);

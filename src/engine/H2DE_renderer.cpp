@@ -78,21 +78,14 @@ void H2DE_Renderer::renderObject(H2DE_Object* object) {
 
 // -- surfaces
 void H2DE_Renderer::renderSurfaces(H2DE_Object* object) {
-    // std::cout << 1 << " ";
+    const H2DE_Translate world_objectTranslate = object->getTranslate();
+    bool objectIsAbsolute = object->isAbsolute();
 
-    // const H2DE_Translate world_objectTranslate = object->getTranslate();
-    // bool objectIsAbsolute = object->isAbsolute();
-
-    // for (H2DE_Surface* surface : object->surfaceBuffers) {
-    //     const H2DE_Transform& surfaceTransform = surface->surfaceData.transform;
-
-    //     const H2DE_LevelRect local_surfaceRect = surfaceTransform.translate.makeRect(surfaceTransform.scale);
-    //     const H2DE_LevelRect world_surfaceRect = local_surfaceRect.addTranslate(world_objectTranslate);
-
-    //     if (engine->camera->containsRect(world_surfaceRect)) {
-    //         renderSurface(object, surface);
-    //     }
-    // }
+    // les sort par index d'abords
+    for (H2DE_Surface* surface : object->surfaceBuffers) {
+        renderSurface(object, surface);
+        // faire la detection de la cam
+    }
 }
 
 void H2DE_Renderer::renderSurface(H2DE_Object* object, H2DE_Surface* surface) {
@@ -117,63 +110,61 @@ void H2DE_Renderer::renderSurfaceSetProperties(H2DE_Surface* surface, SDL_Textur
 }
 
 void H2DE_Renderer::renderSurfaceRenderTexture(H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture) {
-    // SDL_Rect world_surfaceRect = static_cast<SDL_Rect>(levelToAbsRect(R::renderSurfaceGetWorldDestRect(object, surface), object->objectData.absolute));
-    // float world_surfaceRotation = R::renderSurfaceGetWorldRotation(object, surface);
-    // SDL_Point local_surfaceCenter = static_cast<SDL_Point>(R::levelToAbsPos(surface->surfaceData.transform.scale * 0.5f));
-    // SDL_RendererFlip world_surfaceFlip = R::renderSurfaceGetWorldFlip(object, surface);
+    SDL_Rect world_surfaceRect = R::renderSurfaceGetWorldDestRect(object, surface);
+    float world_surfaceRotation = R::renderSurfaceGetWorldRotation(object, surface);
+    SDL_Point local_surfaceCenter = R::renderSurfaceGetLocalPivot(object, surface);
+    SDL_RendererFlip world_surfaceFlip = R::renderSurfaceGetWorldFlip(object, surface);
 
-    // std::optional<SDL_Rect> possibleSrcRect = renderSurfaceGetPossibleSrcRect(surface);
-    // SDL_Rect* srcRect = ((possibleSrcRect.has_value()) ? &possibleSrcRect.value() : nullptr);
+    std::optional<SDL_Rect> possibleSrcRect = renderSurfaceGetPossibleSrcRect(surface);
+    SDL_Rect* srcRect = ((possibleSrcRect.has_value()) ? &possibleSrcRect.value() : nullptr);
 
-    // SDL_RenderCopyEx(renderer, texture, srcRect, &world_surfaceRect, world_surfaceRotation, &local_surfaceCenter, world_surfaceFlip);
+    SDL_RenderCopyEx(renderer, texture, srcRect, &world_surfaceRect, world_surfaceRotation, &local_surfaceCenter, world_surfaceFlip);
 }
 
-H2DE_LevelRect H2DE_Renderer::renderSurfaceGetWorldDestRect(H2DE_Object* object, H2DE_Surface* surface) {
-    // const H2DE_Transform& objectTransform = object->objectData.transform;
-    // const H2DE_Transform& surfaceTransform = surface->surfaceData.transform;
+SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(H2DE_Object* object, H2DE_Surface* surface) {
+    H2DE_LevelRect worldRect = G::getSurfaceRect(object, surface);
+    // worldRect.w = std::abs(worldRect.w);
+    // worldRect.h = std::abs(worldRect.h);
+    // worldRect.x += worldRect.w * 0.5f;
+    // worldRect.y += worldRect.h * 0.5f;
 
-    // const H2DE_LevelRect world_objectRect = objectTransform.translate.makeRect(objectTransform.scale);
-    // const H2DE_LevelRect local_surfaceRect = surfaceTransform.translate.makeRect(surfaceTransform.scale);
-
-    // SDL_RendererFlip objectFlip = G::getFlipFromScale(objectTransform.scale);
-
-    // const H2DE_LevelRect world_objectFliped_surfaceRect = G::getWorldFlipedRect(world_objectRect, local_surfaceRect, objectFlip);
-
-
-
-
-
-    return H2DE_LevelRect();
-
-    
-    // return world_objectFliped_surfaceRect;
+    return static_cast<SDL_Rect>(levelToPixelRect(worldRect, object->objectData.absolute));
 }
 
 float H2DE_Renderer::renderSurfaceGetWorldRotation(H2DE_Object* object, H2DE_Surface* surface) {
-    // float local_objectRotation = object->objectData.transform.rotation;
-    // float local_surfaceRotation = surface->surfaceData.transform.rotation;
 
-    // SDL_RendererFlip local_objectFlip = G::getFlipFromScale(object->objectData.transform.scale);
-    // SDL_RendererFlip local_surfaceFlip = G::getFlipFromScale(surface->surfaceData.transform.scale);
-    // SDL_RendererFlip world_surfaceFlip = G::addFlip(local_objectFlip, local_surfaceFlip);
+    return G::getSurfaceRotation(object, surface);
 
-    // float local_objectFliped_objectRotation = G::flipRotation(local_objectRotation, local_objectFlip);
-    // float local_surfaceFliped_objectFliped_surfaceRotation = G::flipRotation(local_surfaceRotation, world_surfaceFlip);
+    // float objectRotation = object->objectData.transform.rotation;
+    // float surfaceRotation = surface->surfaceData.transform.rotation;
 
-    // float rotationCausedByFlip = ((R::renderSurfaceIstextureRotatedByFlip(object, surface)) ? 180.0f : 0.0f);
+    // H2DE_Flip objFlip = G::getFlipFromScale(object->objectData.transform.scale);
+    // H2DE_Flip surFlip = G::getFlipFromScale(surface->surfaceData.transform.scale);
 
-    // return local_objectFliped_objectRotation + local_surfaceFliped_objectFliped_surfaceRotation + rotationCausedByFlip;
+    // float objFliped_objRotation = G::flipRotation(objectRotation, objFlip);
+    // float objFliped_surRotation = G::flipRotation(surfaceRotation, objFlip);
+    // float surFliped_objFliped_surRotation = G::flipRotation(objFliped_surRotation, surFlip);
 
-    return 0.0f;
+    // return objFliped_objRotation + surFliped_objFliped_surRotation;
+}
+
+SDL_Point H2DE_Renderer::renderSurfaceGetLocalPivot(H2DE_Object* object, H2DE_Surface* surface) {
+    bool objIsAbsolute = object->objectData.absolute;
+    const H2DE_PixelSize pixel_surfaceScale = R::levelToPixelSize(surface->surfaceData.transform.scale * 0.5f, objIsAbsolute);
+
+    return static_cast<SDL_Point>(pixel_surfaceScale);
 }
 
 SDL_RendererFlip H2DE_Renderer::renderSurfaceGetWorldFlip(H2DE_Object* object, H2DE_Surface* surface) {
-    // SDL_RendererFlip local_objectFlip = G::getFlipFromScale(object->objectData.transform.scale);
-    // SDL_RendererFlip local_surfaceFlip = G::getFlipFromScale(surface->surfaceData.transform.scale);
+    H2DE_Flip objFlip = G::getFlipFromScale(object->objectData.transform.scale);
+    H2DE_Flip surFlip = G::getFlipFromScale(surface->surfaceData.transform.scale);
+    H2DE_Flip addedFlip = G::addFlip(objFlip, surFlip);
 
-    // return G::addFlip(local_objectFlip, local_surfaceFlip);
-
-    return SDL_FLIP_NONE;
+    switch (addedFlip) {
+        case H2DE_FLIP_X: return SDL_FLIP_HORIZONTAL;
+        case H2DE_FLIP_Y: return SDL_FLIP_VERTICAL;
+        default: return SDL_FLIP_NONE;
+    }
 }
 
 std::optional<H2DE_PixelRect> H2DE_Renderer::renderSurfaceGetPossibleSrcRect(H2DE_Surface* surface) {
@@ -216,7 +207,7 @@ void H2DE_Renderer::renderHitboxes(const H2DE_Object* object) {
 }
 
 void H2DE_Renderer::renderHitbox(const H2DE_LevelRect& world_hitboxRect, const H2DE_ColorRGB& color, bool absolute) {
-    const H2DE_PixelRect absRect = levelToPixelRect(world_hitboxRect, absolute);
+    SDL_Rect absRect = static_cast<SDL_Rect>(levelToPixelRect(world_hitboxRect, absolute));
 
     Sint16 minX = absRect.x;
     Sint16 maxX = absRect.x + absRect.w - 1;

@@ -22,6 +22,9 @@ public:
     inline H2DE_Sprite* addSprite(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
         return H2DE_Object::addSprite(surfaces, name, surfaceData, spriteData);
     }
+    inline H2DE_Color* addColor(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) {
+        return H2DE_Object::addColor(surfaces, name, surfaceData, colorData);
+    }
     inline void removeSurface(const std::string& name) {
         H2DE_Object::removeSurface(surfaces, name);
     }

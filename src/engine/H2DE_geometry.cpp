@@ -2,51 +2,102 @@
 
 // RECT
 H2DE_LevelRect H2DE_Geometry::getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle) {
-    const H2DE_Transform objTransform = object->getTransform();
-    const H2DE_Transform hitTransform = transform;
+    const H2DE_Transform parentTransform = object->getTransform();
+    const H2DE_Transform childTransform = transform;
+    
+    const H2DE_LevelRect world_parentRect = parentTransform.translate.makeRect(parentTransform.scale);
+    const H2DE_LevelRect local_childRect = childTransform.translate.makeRect(childTransform.scale);
 
-    const H2DE_LevelRect world_objRect = objTransform.translate.makeRect(objTransform.scale);
-    const H2DE_LevelRect local_hitRect = hitTransform.translate.makeRect(hitTransform.scale);
+    H2DE_Flip parentFlip = G::getFlipFromScale(parentTransform.scale);
+    H2DE_Flip childFlip = G::getFlipFromScale(childTransform.scale);
 
-    G::H2DE_Flip objFlip = G::getFlipFromScale(objTransform.scale);
-    G::H2DE_Flip hitFlip = G::getFlipFromScale(hitTransform.scale);
-    G::H2DE_Flip addedFlips = G::addFlip(objFlip, hitFlip);
+    // 1 => FLIP PARENT
+    // -- 1 => flip parent pivot in parent rect with parent flip
+    const H2DE_Pivot local_parentFliped_parentPivot = G::flipPivot(world_parentRect, parentTransform.pivot, parentFlip);
+    const H2DE_Pivot world_parentFliped_parentPivot = local_parentFliped_parentPivot + parentTransform.translate;
+    // -- 2 => flip parent rotation with parent flip
+    const float local_parentFliped_parentRotation = G::snapRotation(G::flipRotation(parentTransform.rotation, parentFlip), snapAngle);
+    // -- 3 => flip child rect in parent rect woth parent flip
+    const H2DE_LevelRect local_parentFliped_childRect = G::flipRect(local_childRect, parentFlip);
+    const H2DE_LevelRect world_parentFliped_childRect = local_parentFliped_childRect.addTranslate(parentTransform.translate);
+    // -- 4 => flip child pivot in child rect with parent flip
+    const H2DE_Pivot local_parentFliped_childPivot = G::flipPivot(world_parentRect, childTransform.pivot, parentFlip);
+    // -- 5 => flip child rotation with parent flip
+    const float local_parentFliped_childRotation = G::snapRotation(G::flipRotation(childTransform.rotation, parentFlip), snapAngle);
 
-    const H2DE_Pivot local_objFliped_objPivot = G::flipPivot(world_objRect, objTransform.pivot, objFlip);
-    const H2DE_Pivot world_objFliped_objPivot = local_objFliped_objPivot + objTransform.translate;
-    float objFliped_objRotation = G::snapRotation(G::flipRotation(objTransform.rotation, objFlip) + G::getRotationCausedByFlip(objFlip), snapAngle);
+    // 2 => FLIP CHILD
+    // -- 1 => flip child pivot in child rect with child flip
+    const H2DE_Pivot local_childFliped_parentFliped_childPivot = G::flipPivot(local_parentFliped_childRect, local_parentFliped_childPivot, childFlip);
+    const H2DE_Pivot world_childFliped_parentFliped_childPivot = local_childFliped_parentFliped_childPivot + world_parentFliped_childRect.getTranslate();
+    // -- 2 => flip child rotation with child flip
+    const float local_childFliped_parentFliped_childRotation = G::snapRotation(G::flipRotation(local_parentFliped_childRotation, childFlip), snapAngle);
 
-    const H2DE_LevelRect local_objFliped_hitRect = G::flipRect(world_objRect, local_hitRect, objFlip);
-    const H2DE_LevelRect world_objFliped_hitRect = local_objFliped_hitRect.addTranslate(objTransform.translate);
-    const H2DE_Pivot local_objFliped_hitPivot = G::flipPivot(local_hitRect, hitTransform.pivot, objFlip);
-    float objFliped_hitRotation = G::snapRotation(G::flipRotation(hitTransform.rotation, objFlip) + G::getRotationCausedByFlip(objFlip), snapAngle);
 
-    const H2DE_Pivot local_hitFliped_objFliped_hitPivot = G::flipPivot(local_hitRect, local_objFliped_hitPivot, hitFlip);
-    const H2DE_Pivot world_hitFliped_objFliped_hitPivot = local_hitFliped_objFliped_hitPivot + objTransform.translate;
-    float hitFliped_objFliped_hitRotation = G::flipRotation(objFliped_hitRotation, hitFlip) + G::getRotationCausedByFlip(hitFlip);
 
-    const H2DE_LevelRect world_objRotated_objFliped_hitRect = G::applyRotationOnRect(world_objFliped_hitRect, world_objFliped_objPivot, objFliped_objRotation);
-    const H2DE_Pivot world_objRotated_hitFliped_objFliped_hitPivot = G::applyRotationOnPivot(world_hitFliped_objFliped_hitPivot, world_objFliped_objPivot, objFliped_objRotation);
+    if (childTransform.scale.x == 0.8f) {
+        std::cout << world_parentFliped_parentPivot << std::endl;
+    }
 
-    return G::applyRotationOnRect(world_objRotated_objFliped_hitRect, world_objRotated_hitFliped_objFliped_hitPivot, hitFliped_objFliped_hitRotation);
+
+
+    // 3 => ROTATE PARENT
+    // -- 1 => rotate parent rect with parent pivot and parent rotation
+    const H2DE_LevelRect world_parentRotated_parentRect = G::applyRotationOnRect(world_parentRect, world_parentFliped_parentPivot, local_parentFliped_parentRotation);
+    // -- 2 => rotate child rect with parent pivot and parent rotation
+    const H2DE_LevelRect world_parentRotated_parentFliped_childRect = G::applyRotationOnRect(world_parentFliped_childRect, world_parentFliped_parentPivot, local_parentFliped_parentRotation);
+    // -- 3 => rotate child pivot with parent pivot and parent rotation
+    const H2DE_Pivot world_parentRotated_childFliped_parentFliped_childPivot = G::applyRotationOnPivot(world_childFliped_parentFliped_childPivot, world_parentFliped_parentPivot, local_parentFliped_parentRotation);
+
+    // 4 => ROTATE CHILD
+    // -- 1 => rotate child rect with child pivot and child rotation
+    const H2DE_LevelRect world_childRotated_parentRotated_parentFliped_childRect = G::applyRotationOnRect(world_parentRotated_parentFliped_childRect, world_parentRotated_childFliped_parentFliped_childPivot, local_childFliped_parentFliped_childRotation);
+
+    return world_childRotated_parentRotated_parentFliped_childRect;
 }
 
+// ROTATION
+float H2DE_Geometry::getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle) {
+    const H2DE_Transform parentTransform = object->getTransform();
+    const H2DE_Transform childTransform = transform;
+    
+    H2DE_Flip parentFlip = G::getFlipFromScale(parentTransform.scale);
+    H2DE_Flip childFlip = G::getFlipFromScale(childTransform.scale);
+
+    const float local_parentFliped_parentRotation = G::snapRotation(G::flipRotation(parentTransform.rotation, parentFlip), snapAngle);
+    const float local_parentFliped_childRotation = G::snapRotation(G::flipRotation(childTransform.rotation, parentFlip), snapAngle);
+    const float local_childFliped_parentFliped_childRotation = G::snapRotation(G::flipRotation(local_parentFliped_childRotation, childFlip), snapAngle);
+
+    return G::normalizeRotation(G::snapRotation(local_parentFliped_parentRotation + local_childFliped_parentFliped_childRotation, snapAngle));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 // FLIP
-H2DE_LevelRect H2DE_Geometry::flipRect(const H2DE_LevelRect& world_parentRect, const H2DE_LevelRect& local_childRect, G::H2DE_Flip flip) {
+H2DE_LevelRect H2DE_Geometry::flipRect(const H2DE_LevelRect& local_childRect, H2DE_Flip flip) {
     H2DE_LevelRect res = local_childRect;
 
     if (flip & H2DE_FLIP_X) {
-        res.x = -res.x;
+        res.x *= -1;
     }
 
     if (flip & H2DE_FLIP_Y) {
-        res.y = -res.y;
+        res.y *= -1;
     }
 
     return res;
 }
 
-float H2DE_Geometry::flipRotation(float rotation, G::H2DE_Flip flip) {
+float H2DE_Geometry::flipRotation(float rotation, H2DE_Flip flip) {
     float res = rotation;
 
     switch (flip) {
@@ -56,45 +107,45 @@ float H2DE_Geometry::flipRotation(float rotation, G::H2DE_Flip flip) {
         default: break;
     }
 
-    return G::normalizeRotation(res);
+    return G::normalizeRotation(res + G::getRotationCausedByFlip(flip));
 }
 
-H2DE_Pivot H2DE_Geometry::flipPivot(const H2DE_LevelRect& world_parentRect, const H2DE_Pivot& local_pivot, G::H2DE_Flip flip) {
+H2DE_Pivot H2DE_Geometry::flipPivot(const H2DE_LevelRect& world_parentRect, const H2DE_Pivot& local_pivot, H2DE_Flip flip) {
     H2DE_Pivot res = local_pivot;
 
     if (flip & H2DE_FLIP_X) {
-        res.x = -local_pivot.x;
+        res.x *= -1;
     }
 
     if (flip & H2DE_FLIP_Y) {
-        res.y = -local_pivot.y;
+        res.y *= -1;
     }
 
     return res;
 }
 
 // -- getter
-G::H2DE_Flip H2DE_Geometry::getFlipFromScale(const H2DE_Scale& scale) {
-    G::H2DE_Flip res = H2DE_FLIP_NONE;
+H2DE_Flip H2DE_Geometry::getFlipFromScale(const H2DE_Scale& scale) {
+    H2DE_Flip res = H2DE_FLIP_NONE;
 
     if (scale.x < 0.0f) {
-        res = static_cast<G::H2DE_Flip>(res | H2DE_FLIP_X);
+        res = static_cast<H2DE_Flip>(res | H2DE_FLIP_X);
     }
 
     if (scale.y < 0.0f) {
-        res = static_cast<G::H2DE_Flip>(res | H2DE_FLIP_Y);
+        res = static_cast<H2DE_Flip>(res | H2DE_FLIP_Y);
     }
 
     return res;
 }
 
 // -- operations
-G::H2DE_Flip H2DE_Geometry::addFlip(G::H2DE_Flip flip1, G::H2DE_Flip flip2) {
+H2DE_Flip H2DE_Geometry::addFlip(H2DE_Flip flip1, H2DE_Flip flip2) {
     if (flip1 == flip2) {
         return H2DE_FLIP_NONE;
     }
 
-    return static_cast<G::H2DE_Flip>(flip1 | flip2);
+    return static_cast<H2DE_Flip>(flip1 | flip2);
 }
 
 // ROTATE

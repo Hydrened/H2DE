@@ -187,8 +187,8 @@ struct H2DE_Rect {
 
     inline operator SDL_Rect() const {
         return SDL_Rect{
-            static_cast<int>(x - w * 0.5f),
-            static_cast<int>(y - h * 0.5f),
+            static_cast<int>(std::round(x - w * 0.5f)),
+            static_cast<int>(std::round(y - h * 0.5f)),
             static_cast<int>(w),
             static_cast<int>(h)
         };
@@ -424,6 +424,10 @@ struct H2DE_SpriteData {
     unsigned int nbFrame = 0;
     unsigned int delay = 200;
     bool pauseSensitive = true;
+};
+
+struct H2DE_ColorData {
+    H2DE_ColorRGB color = { 255, 255, 255, 255 };
 };
 
 struct H2DE_Font {

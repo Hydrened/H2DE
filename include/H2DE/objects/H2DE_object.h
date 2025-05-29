@@ -5,6 +5,7 @@
 class H2DE_Engine;
 class H2DE_Texture;
 class H2DE_Sprite;
+class H2DE_Color;
 
 class H2DE_Object {
 private:
@@ -32,8 +33,23 @@ protected:
     virtual void updateSurfaceBuffers();
     virtual void updateMaxRadius() = 0;
 
-    H2DE_Texture* addTexture(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData);
-    H2DE_Sprite* addSprite(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData);
+    template<typename H2DE_Surface_T, typename H2DE_SurfaceData_T>
+    H2DE_Surface_T* addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SurfaceData_T& specificData) {
+        H2DE_Surface_T* surface = new H2DE_Surface_T(engine, this, surfaceData, specificData);
+        surfaces[name] = surface;
+        updateMaxRadius();
+        updateSurfaceBuffers();
+        return surface;
+    }
+    inline H2DE_Texture* addTexture(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {
+        return addSurface<H2DE_Texture, H2DE_TextureData>(surfaces, name, surfaceData, textureData);
+    }
+    inline H2DE_Sprite* addSprite(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
+        return addSurface<H2DE_Sprite, H2DE_SpriteData>(surfaces, name, surfaceData, spriteData);
+    }
+    inline H2DE_Color* addColor(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) {
+        return addSurface<H2DE_Color, H2DE_ColorData>(surfaces, name, surfaceData, colorData);
+    }
     void removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
 
     static H2DE_Surface* getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);

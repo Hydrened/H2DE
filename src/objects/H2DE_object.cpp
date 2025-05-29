@@ -15,21 +15,13 @@ H2DE_Object::~H2DE_Object() {
 
 void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
     for (const auto& [name, surface] : surfaces) {
-        if (surface) {
-            delete surface;
-        }
+        delete surface;
     }
 
     surfaces.clear();
 }
 
 void H2DE_Object::clearSurfaceBuffer() {
-    for (const H2DE_Surface* surface : surfaceBuffers) {
-        if (surface) {
-            delete surface;
-        }
-    }
-
     surfaceBuffers.clear();
 }
 
@@ -116,22 +108,6 @@ void H2DE_Object::snap(const H2DE_LevelRect& world_hitboxRect, const H2DE_LevelR
 // ACTIONS
 
 // -- surfaces
-H2DE_Texture* H2DE_Object::addTexture(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {
-    H2DE_Texture* texture = new H2DE_Texture(engine, this, surfaceData, textureData);
-    surfaces[name] = texture;
-    updateMaxRadius();
-    updateSurfaceBuffers();
-    return texture;
-}
-
-H2DE_Sprite* H2DE_Object::addSprite(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
-    H2DE_Sprite* sprite = new H2DE_Sprite(engine, this, surfaceData, spriteData);
-    surfaces[name] = sprite;
-    updateMaxRadius();
-    updateSurfaceBuffers();
-    return sprite;
-}
-
 void H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
     auto it = surfaces.find(name);
 

@@ -57,5 +57,6 @@ public:
 
 #include <H2DE/surfaces/H2DE_texture.h>
 #include <H2DE/surfaces/H2DE_sprite.h>
+#include <H2DE/surfaces/H2DE_color.h>
 
 #endif

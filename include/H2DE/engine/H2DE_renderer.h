@@ -35,8 +35,9 @@ private:
     void renderSurface(H2DE_Object* object, H2DE_Surface* surface);
     void renderSurfaceSetProperties(H2DE_Surface* surface, SDL_Texture* texture);
     void renderSurfaceRenderTexture(H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture);
-    static H2DE_LevelRect renderSurfaceGetWorldDestRect(H2DE_Object* object, H2DE_Surface* surface);
+    SDL_Rect renderSurfaceGetWorldDestRect(H2DE_Object* object, H2DE_Surface* surface);
     static float renderSurfaceGetWorldRotation(H2DE_Object* object, H2DE_Surface* surface);
+    SDL_Point renderSurfaceGetLocalPivot(H2DE_Object* object, H2DE_Surface* surface);
     static SDL_RendererFlip renderSurfaceGetWorldFlip(H2DE_Object* object, H2DE_Surface* surface);
     static std::optional<H2DE_PixelRect> renderSurfaceGetPossibleSrcRect(H2DE_Surface* surface);
 
