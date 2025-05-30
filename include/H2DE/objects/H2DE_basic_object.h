@@ -10,8 +10,8 @@ private:
     H2DE_BasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
     ~H2DE_BasicObject() override;
 
-    void updateSurfaceBuffers() override;
-    void updateMaxRadius() override;
+    void refreshSurfaceBuffers() override;
+    void refreshMaxRadius() override;
 
 public:
     inline H2DE_Texture* addTexture(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {

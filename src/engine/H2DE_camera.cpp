@@ -57,69 +57,50 @@ void H2DE_Camera::updateGrid() {
 
     constexpr H2DE_ColorRGB secondGridColor = { 20, 20, 20, 255 };
     constexpr H2DE_ColorRGB mainGridColor = { 69, 69, 69, 255 };
+    constexpr H2DE_ColorRGB centerGridColor = { 200, 200, 200, 255 };
 
     grid->setTranslate(cameraTranslate);
     grid->setScale(cameraScale);
 
+    H2DE_Hitbox centerhitboxW = H2DE_Hitbox();
+    centerhitboxW.transform.scale = { 0.5f, 0.0f };
+    centerhitboxW.color = { 255, 255, 255, 255 };
+    grid->addHitbox("cw", centerhitboxW);
+
+    H2DE_Hitbox centerhitboxH = H2DE_Hitbox();
+    centerhitboxH.transform.scale = { 0.0f, 0.5f };
+    centerhitboxH.color = { 255, 255, 255, 255 };
+    grid->addHitbox("ch", centerhitboxH);
+
     float step = std::max(std::floor(data.gameWidth / 50.0f) * 2.0f, 1.0f);
 
-    for (float x = -cameraTranslate.x; x < cameraHalfScale.x; x += step) {
-        float absX = x + cameraTranslate.x;
-        if (absX < minX) {
-            continue;
-        }
+    for (float x = std::floor(minX); x < std::floor(minX) + cameraScale.x; x += step) {
+        const H2DE_ColorRGB& color = (x == 0.0f)
+            ? centerGridColor
+            : (std::abs(std::fmod(x, step * 5.0f)) < 0.001f)
+                ? mainGridColor : secondGridColor;
 
-        bool isMain = (std::abs(std::fmod(absX, step * 5.0f)) < 0.001f);
+        float localX = x - cameraTranslate.x;
 
         H2DE_Hitbox hitbox = H2DE_Hitbox();
-        hitbox.transform.translate = { x, 0.0f };
-        hitbox.transform.scale = { 0.0f, cameraScale.x };
-        hitbox.color = (isMain) ? mainGridColor : secondGridColor;
+        hitbox.transform.translate = { localX, 0.0f };
+        hitbox.transform.scale = { 0.0f, cameraScale.y };
+        hitbox.color = color;
         grid->addHitbox("x-" + std::to_string(x), hitbox);
     }
 
-    for (float x = -cameraTranslate.x; x > -cameraHalfScale.x; x -= step) {
-        float absX = x + cameraTranslate.x;
-        if (absX > maxX) {
-            continue;
-        }
+    for (float y = std::floor(minY); y < std::floor(minY) + cameraScale.y; y += step) {
+        const H2DE_ColorRGB& color = (y == 0.0f)
+            ? centerGridColor
+            : (std::abs(std::fmod(y, step * 5.0f)) < 0.001f)
+                ? mainGridColor : secondGridColor;
 
-        bool isMain = (std::abs(std::fmod(absX, step * 5.0f)) < 0.001f);
+        float localY = y - cameraTranslate.y;
 
         H2DE_Hitbox hitbox = H2DE_Hitbox();
-        hitbox.transform.translate = { x, 0.0f };
-        hitbox.transform.scale = { 0.0f, cameraScale.x };
-        hitbox.color = (isMain) ? mainGridColor : secondGridColor;
-        grid->addHitbox("x-" + std::to_string(x), hitbox);
-    }
-
-    for (float y = -cameraTranslate.y; y < cameraHalfScale.y; y += step) {
-        float absY = y + cameraTranslate.y;
-        if (absY < minY) {
-            continue;
-        }
-
-        bool isMain = (std::abs(std::fmod(absY, step * 5.0f)) < 0.001f);
-        
-        H2DE_Hitbox hitbox = H2DE_Hitbox();
-        hitbox.transform.translate = { 0.0f, y };
+        hitbox.transform.translate = { 0.0f , localY};
         hitbox.transform.scale = { cameraScale.x, 0.0f };
-        hitbox.color = (isMain) ? mainGridColor : secondGridColor;
-        grid->addHitbox("y-" + std::to_string(y), hitbox);
-    }
-
-    for (float y = -cameraTranslate.y; y > -cameraHalfScale.y; y -= step) {
-        float absY = y + cameraTranslate.y;
-        if (absY > maxY) {
-            continue;
-        }
-
-        bool isMain = (std::abs(std::fmod(absY, step * 5.0f)) < 0.001f);
-        
-        H2DE_Hitbox hitbox = H2DE_Hitbox();
-        hitbox.transform.translate = { 0.0f, y };
-        hitbox.transform.scale = { cameraScale.x, 0.0f };
-        hitbox.color = (isMain) ? mainGridColor : secondGridColor;
+        hitbox.color = color;
         grid->addHitbox("y-" + std::to_string(y), hitbox);
     }
 }

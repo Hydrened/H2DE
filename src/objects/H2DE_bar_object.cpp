@@ -4,8 +4,8 @@
 
 // INIT
 H2DE_BarObject::H2DE_BarObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_BarObjectData& bod) : H2DE_Object(e, od), barObjectData(bod) {
-    updateSurfaceBuffers();
-    updateMaxRadius();
+    refreshSurfaceBuffers();
+    refreshMaxRadius();
 }
 
 // CLEANUP
@@ -15,16 +15,17 @@ H2DE_BarObject::~H2DE_BarObject() {
 }
 
 // ACTIONS
-void H2DE_BarObject::updateSurfaceBuffers() {
+void H2DE_BarObject::refreshSurfaceBuffers() {
     const std::vector<H2DE_Surface*> sortedBackgroundSurfaces = H2DE_Object::getSortedSurfaces(backgroundSurfaces);
     const std::vector<H2DE_Surface*> sortedFrontSurfaces = H2DE_Object::getSortedSurfaces(frontSurfaces);
 
+    surfaceBuffers.clear();
     surfaceBuffers.reserve(sortedFrontSurfaces.size() + sortedBackgroundSurfaces.size());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedBackgroundSurfaces.begin(), sortedBackgroundSurfaces.end());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedFrontSurfaces.begin(), sortedFrontSurfaces.end());
 }
 
-void H2DE_BarObject::updateMaxRadius() {
+void H2DE_BarObject::refreshMaxRadius() {
     float maxHitboxesRadius = getMaxHitboxRadius();
     float maxFrontSurfaceRadius = getMaxSurfaceRadius(frontSurfaces);
     float maxBackgroundSurfaceRadius = getMaxSurfaceRadius(backgroundSurfaces);
@@ -37,17 +38,17 @@ void H2DE_BarObject::updateMaxRadius() {
 // -- no lerp
 void H2DE_BarObject::setMin(float min) {
     barObjectData.min = min;
-    updateSurfaceBuffers();
+    refreshSurfaceBuffers();
 }
 
 void H2DE_BarObject::setMax(float max) {
     barObjectData.max = max;
-    updateSurfaceBuffers();
+    refreshSurfaceBuffers();
 }
 
 void H2DE_BarObject::setValue(float value) {
     barObjectData.value = value;
-    updateSurfaceBuffers();
+    refreshSurfaceBuffers();
 }
 
 // -- lerp

@@ -30,15 +30,15 @@ protected:
     void updateCollisions();
     void snap(const H2DE_LevelRect& world_hitboxRect, const H2DE_LevelRect& world_otherHitboxRect, H2DE_Face face);
 
-    virtual void updateSurfaceBuffers();
-    virtual void updateMaxRadius() = 0;
+    virtual void refreshSurfaceBuffers() = 0;
+    virtual void refreshMaxRadius() = 0;
 
     template<typename H2DE_Surface_T, typename H2DE_SurfaceData_T>
     H2DE_Surface_T* addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SurfaceData_T& specificData) {
         H2DE_Surface_T* surface = new H2DE_Surface_T(engine, this, surfaceData, specificData);
         surfaces[name] = surface;
-        updateMaxRadius();
-        updateSurfaceBuffers();
+        refreshMaxRadius();
+        refreshSurfaceBuffers();
         return surface;
     }
     inline H2DE_Texture* addTexture(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {
@@ -112,6 +112,9 @@ public:
     friend class H2DE_Renderer;
     friend class H2DE_Camera;
     friend class H2DE_Surface;
+    friend class H2DE_Texture;
+    friend class H2DE_Sprite;
+    friend class H2DE_Color;
     friend class H2DE_ButtonManager;
 };
 

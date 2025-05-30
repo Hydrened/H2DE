@@ -10,11 +10,13 @@ private:
     H2DE_Color(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData);
     ~H2DE_Color() override;
 
+    inline std::string getTextureName() const override { return "/"; }
     inline std::optional<H2DE_PixelRect> getSrcRect() const override { return std::nullopt; };
+    bool isVisible() const override;
 
 public:
     inline H2DE_ColorData getColorData() const { return colorData; }
-    inline H2DE_ColorRGB getColor() const { return colorData.color; }
+    inline H2DE_ColorRGB getColor() const override { return colorData.color; }
 
     inline void setColor(const H2DE_ColorRGB& color) { colorData.color = color; }
 

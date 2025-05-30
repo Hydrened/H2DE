@@ -13,8 +13,8 @@ private:
     H2DE_BarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
     ~H2DE_BarObject() override;
 
-    void updateSurfaceBuffers() override;
-    void updateMaxRadius() override;
+    void refreshSurfaceBuffers() override;
+    void refreshMaxRadius() override;
 
 public:
     inline H2DE_Texture* addTextureToFront(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {

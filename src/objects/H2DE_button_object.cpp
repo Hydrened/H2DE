@@ -3,8 +3,8 @@
 
 // INIT
 H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod) : H2DE_Object(e, od), buttonObjectData(bod) {
-    updateSurfaceBuffers();
-    updateMaxRadius();
+    refreshSurfaceBuffers();
+    refreshMaxRadius();
 }
 
 // CLEANUP
@@ -12,15 +12,16 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
     H2DE_Object::destroySurfaces(surfaces);
 }
 
-void H2DE_ButtonObject::updateSurfaceBuffers() {
+void H2DE_ButtonObject::refreshSurfaceBuffers() {
     const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::getSortedSurfaces(surfaces);
 
+    surfaceBuffers.clear();
     surfaceBuffers.reserve(sortedSurfaces.size());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
 }
 
 // ACTIONS
-void H2DE_ButtonObject::updateMaxRadius() {
+void H2DE_ButtonObject::refreshMaxRadius() {
     float maxHitboxesRadius = getMaxHitboxRadius();
     float maxSurfaceRadius = getMaxSurfaceRadius(surfaces);
     

@@ -17,9 +17,12 @@ private:
     void nextFrame();
 
     std::optional<H2DE_PixelRect> getSrcRect() const override;
+    bool isVisible() const override;
 
 public:
     inline H2DE_SpriteData getSpriteData() const { return spriteData; }
+    inline std::string getTextureName() const override { return spriteData.textureName; }
+    inline H2DE_ColorRGB getColor() const override { return spriteData.color; }
     inline H2DE_PixelPos getStartingPos() const { return spriteData.startingPos; }
     inline H2DE_PixelSize getSize() const { return spriteData.size; }
     inline int getSpacing() const { return spriteData.spacing; }
@@ -27,12 +30,16 @@ public:
     inline unsigned int getDelay() const { return spriteData.delay; }
     inline bool isPauseSensitive() const { return spriteData.pauseSensitive; }
 
-    inline void setStartingPos(const H2DE_PixelPos& startingPos) { spriteData.startingPos = startingPos; }
-    inline void setSize(const H2DE_PixelSize& size) { spriteData.size = size; }
-    inline void setSpacing(int spacing) { spriteData.spacing = spacing; }
-    inline void setNbFrame(unsigned int nbFrame) { spriteData.nbFrame = nbFrame; }
-    inline void setDelay(unsigned int delay) { spriteData.delay = delay; }
-    inline void setPauseSensitive(bool pauseSensitive) { spriteData.pauseSensitive = pauseSensitive; }
+    void setTextureName(const std::string& textureName);
+    void setColor(const H2DE_ColorRGB& color);
+    void setStartingPos(const H2DE_PixelPos& startingPos);
+    void setSize(const H2DE_PixelSize& size);
+    void setSpacing(int spacing);
+    void setNbFrame(unsigned int nbFrame);
+    void setDelay(unsigned int delay);
+    void setPauseSensitive(bool pauseSensitive);
+
+    unsigned int setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
 
     friend class H2DE_Object;
 };

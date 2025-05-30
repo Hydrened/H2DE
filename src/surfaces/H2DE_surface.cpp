@@ -16,22 +16,41 @@ H2DE_Surface::~H2DE_Surface() {
 // -- no lerp
 void H2DE_Surface::setTranslate(const H2DE_Translate& translate) {
     surfaceData.transform.translate = translate;
-    object->updateMaxRadius();
+    object->refreshSurfaceBuffers();
+    object->refreshMaxRadius();
 }
 
 void H2DE_Surface::setScale(const H2DE_Scale& scale) {
     surfaceData.transform.scale = scale;
-    object->updateMaxRadius();
+    object->refreshSurfaceBuffers();
+    object->refreshMaxRadius();
 }
 
 void H2DE_Surface::setRotation(float rotation) {
     surfaceData.transform.rotation = rotation;
-    object->updateMaxRadius();
+    object->refreshSurfaceBuffers();
+    object->refreshMaxRadius();
 }
 
 void H2DE_Surface::setPivot(const H2DE_Pivot& pivot) {
     surfaceData.transform.pivot = pivot;
-    object->updateMaxRadius();
+    object->refreshSurfaceBuffers();
+    object->refreshMaxRadius();
+}
+
+void H2DE_Surface::setScaleMode(H2DE_ScaleMode scaleMode) {
+    surfaceData.scaleMode = scaleMode;
+    object->refreshSurfaceBuffers();
+}
+
+void H2DE_Surface::setBlendMode(H2DE_BlendMode blendMode) {
+    surfaceData.blendMode = blendMode;
+    object->refreshSurfaceBuffers();
+}
+
+void H2DE_Surface::setIndex(int index) {
+    surfaceData.index = index;
+    object->refreshSurfaceBuffers();
 }
 
 // -- lerp
@@ -50,11 +69,5 @@ unsigned int H2DE_Surface::setScale(const H2DE_Scale& scale, unsigned int durati
 unsigned int H2DE_Surface::setRotation(float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<float>(engine, surfaceData.transform.rotation, rotation, duration, easing, [this](float iv) {
         setRotation(iv);
-    }, completed, pauseSensitive);
-}
-
-unsigned int H2DE_Surface::setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp(engine, surfaceData.color, color, duration, easing, [this](H2DE_ColorRGB iv) {
-        setColor(iv);
     }, completed, pauseSensitive);
 }

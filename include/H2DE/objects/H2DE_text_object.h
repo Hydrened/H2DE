@@ -10,8 +10,8 @@ private:
     H2DE_TextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     ~H2DE_TextObject() override;
 
-    void updateSurfaceBuffers() override;
-    void updateMaxRadius() override;
+    void refreshSurfaceBuffers() override;
+    void refreshMaxRadius() override;
 
 public:
     inline H2DE_TextObjectData getTextData() const { return textObjectData; }

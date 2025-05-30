@@ -1,3 +1,13 @@
+## H2DE-4.0.1
+#### ADDED
+- camera grid crosshair
+- camera grid world center axis distinct color
+- color surface rendering
+#### FIXED
+- surface / hitbox rendering
+- grid rendering
+- optimized camera grid
+
 ## H2DE-4.0.0
 #### ADDED
 - color surface

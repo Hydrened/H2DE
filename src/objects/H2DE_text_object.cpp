@@ -3,8 +3,8 @@
 
 // INIT
 H2DE_TextObject::H2DE_TextObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TextObjectData& bod) : H2DE_Object(e, od), textObjectData(bod) {
-    updateSurfaceBuffers();
-    updateMaxRadius();
+    refreshSurfaceBuffers();
+    refreshMaxRadius();
 }
 
 // CLEANUP
@@ -13,11 +13,11 @@ H2DE_TextObject::~H2DE_TextObject() {
 }
 
 // ACTIONS
-void H2DE_TextObject::updateSurfaceBuffers() {
+void H2DE_TextObject::refreshSurfaceBuffers() {
 
 }
 
-void H2DE_TextObject::updateMaxRadius() {
+void H2DE_TextObject::refreshMaxRadius() {
     float maxHitboxesRadius = getMaxHitboxRadius();
     maxRadius = maxHitboxesRadius;
 }
@@ -27,32 +27,32 @@ void H2DE_TextObject::updateMaxRadius() {
 // -- no lerp
 void H2DE_TextObject::setText(const std::string& text) {
     textObjectData.text.text = text;
-    updateSurfaceBuffers();
+    refreshSurfaceBuffers();
 }
 
 void H2DE_TextObject::setFont(const std::string& font) {
     textObjectData.text.font = font;
-    updateSurfaceBuffers();
+    refreshSurfaceBuffers();
 }
 
 void H2DE_TextObject::setFontSize(const H2DE_Scale& fontSize) {
     textObjectData.text.fontSize = fontSize;
-    updateSurfaceBuffers();
+    refreshSurfaceBuffers();
 }
 
 void H2DE_TextObject::setSpacing(const H2DE_Scale& spacing) {
     textObjectData.text.spacing = spacing;
-    updateSurfaceBuffers();
+    refreshSurfaceBuffers();
 }
 
 void H2DE_TextObject::setTextAlign(H2DE_TextAlign textAlign) {
     textObjectData.text.textAlign = textAlign;
-    updateSurfaceBuffers();
+    refreshSurfaceBuffers();
 }
 
 void H2DE_TextObject::setColor(const H2DE_ColorRGB& color) {
     textObjectData.text.color = color;
-    updateSurfaceBuffers();
+    refreshSurfaceBuffers();
 }
 
 // -- lerp

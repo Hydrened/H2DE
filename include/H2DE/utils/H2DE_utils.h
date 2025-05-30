@@ -132,9 +132,9 @@ struct H2DE_Vector2D {
 
 using H2DE_PixelPos = H2DE_Vector2D<int>;
 using H2DE_PixelSize = H2DE_Vector2D<int>;
+using H2DE_PixelPivot = H2DE_Vector2D<int>;
 using H2DE_Translate = H2DE_Vector2D<float>;
 using H2DE_Scale = H2DE_Vector2D<float>;
-using H2DE_Velocity = H2DE_Vector2D<float>;
 using H2DE_Pivot = H2DE_Vector2D<float>;
 
 template<typename H2DE_Rect_T>
@@ -405,19 +405,21 @@ struct H2DE_TextObjectData {
 };
 
 struct H2DE_SurfaceData {
-    std::string textureName = "";
     H2DE_Transform transform = H2DE_Transform();
-    H2DE_ColorRGB color = { 255, 255, 255, 255 };
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
     H2DE_BlendMode blendMode = H2DE_BLEND_MODE_BLEND;
     int index = 0;
 };
 
 struct H2DE_TextureData {
+    std::string textureName = "";
+    H2DE_ColorRGB color = { 255, 255, 255, 255 };
     std::optional<H2DE_PixelRect> srcRect = std::nullopt;
 };
 
 struct H2DE_SpriteData {
+    std::string textureName = "";
+    H2DE_ColorRGB color = { 255, 255, 255, 255 };
     H2DE_PixelPos startingPos = { 0, 0 };
     H2DE_PixelSize size = { 1, 1 };
     int spacing = 0;

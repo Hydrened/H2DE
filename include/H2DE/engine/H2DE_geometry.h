@@ -32,34 +32,10 @@ public:
         return H2DE_Geometry::getRotation(object, surface->getTransform(), 1.0f);
     }
 
-
-
-
-
-
-
-
-    static H2DE_Pivot flipPivot(const H2DE_LevelRect& world_parentRect, const H2DE_Pivot& local_pivot, H2DE_Flip flip);
-
-    inline static float snapRotation(float rotation, float angle) {
-        return std::round(rotation  / angle) * angle;
-    }
-
-
-
-
-
-
-
-
-    static H2DE_Flip getFlipFromScale(const H2DE_Scale& scale);
-    static inline float getRotationCausedByFlip(H2DE_Flip flip) {
-        return ((flip == H2DE_FLIP_XY) ? 180.0f : 0.0f);
-    }
-
     static H2DE_LevelRect flipRect(const H2DE_LevelRect& local_childRect, H2DE_Flip flip);
     static float flipRotation(float rotation, H2DE_Flip flip);
-
+    static H2DE_Pivot flipPivot(const H2DE_LevelRect& world_parentRect, const H2DE_Pivot& local_pivot, H2DE_Flip flip);
+    static H2DE_Flip getFlipFromScale(const H2DE_Scale& scale);
     static H2DE_Flip addFlip(H2DE_Flip flip1, H2DE_Flip flip2);
 
     static H2DE_LevelRect applyRotationOnRect(const H2DE_LevelRect& world_rect, const H2DE_Pivot& world_pivot, float rotation);
@@ -69,9 +45,15 @@ public:
     inline static float applyRotationOnRotation(float defaultRotation, float rotation) {
         return H2DE_Geometry::normalizeRotation(defaultRotation + rotation);
     }
-    
+
     static float normalizeRotation(float rotation);
 
+    static inline float getRotationCausedByFlip(H2DE_Flip flip) {
+        return ((flip == H2DE_FLIP_XY) ? 180.0f : 0.0f);
+    }
+    inline static float snapRotation(float rotation, float angle) {
+        return std::round(rotation  / angle) * angle;
+    }
 };
 
 using G = H2DE_Geometry;
