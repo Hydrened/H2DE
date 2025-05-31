@@ -10,7 +10,7 @@ H2DE_Object::H2DE_Object(H2DE_Engine* e, const H2DE_ObjectData& od) : engine(e),
 
 // CLEANUP
 H2DE_Object::~H2DE_Object() {
-    clearSurfaceBuffer();
+    
 }
 
 void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
@@ -19,10 +19,6 @@ void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>
     }
 
     surfaces.clear();
-}
-
-void H2DE_Object::clearSurfaceBuffer() {
-    surfaceBuffers.clear();
 }
 
 // UPDATE

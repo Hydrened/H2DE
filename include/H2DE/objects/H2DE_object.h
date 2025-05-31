@@ -24,7 +24,6 @@ protected:
     virtual ~H2DE_Object();
 
     static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
-    void clearSurfaceBuffer();
 
     void update();
     void updateCollisions();

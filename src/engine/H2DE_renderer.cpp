@@ -37,13 +37,6 @@ void H2DE_Renderer::clearRenderer() const {
 // -- objects
 void H2DE_Renderer::sortObjects() {
     std::sort(objects.begin(), objects.end(), [](H2DE_Object* a, H2DE_Object* b) {
-        if (a->isGrid) {
-            return true;
-        }
-        if (b->isGrid) {
-            return false;
-        }
-        
         int indexA = a->getIndex();
         int indexB = b->getIndex();
 
@@ -56,15 +49,19 @@ void H2DE_Renderer::sortObjects() {
 }
 
 void H2DE_Renderer::renderObjects() {
-    for (H2DE_Object* object : objects) {
+    renderGrid();
+
+    for (const H2DE_Object* object : objects) {
         renderObject(object);
     }
 
     renderObjectsHitboxes();
+    renderCrosshair();
+
     SDL_RenderPresent(renderer);
 }
 
-void H2DE_Renderer::renderObject(H2DE_Object* object) {
+void H2DE_Renderer::renderObject(const H2DE_Object* object) {
     if (object->isHidden()) {
         return;
     }
@@ -75,16 +72,49 @@ void H2DE_Renderer::renderObject(H2DE_Object* object) {
 
     renderSurfaces(object);
 
-    bool isNormalObjectAndNotRenderGrid = (engine->debugObjectEnabled && !object->isGrid);
-    bool isGridAndRenderGrid = (object->isGrid && engine->camera->getData().grid);
-
-    if (isNormalObjectAndNotRenderGrid || isGridAndRenderGrid) {
+    if (engine->debugObjectEnabled && !object->isGrid) {
         renderObjectAddHitboxesToBuffer(object);
     }
 }
 
+// -- grid
+void H2DE_Renderer::renderGrid() {
+    if (!engine->camera->getData().grid) {
+        return;
+    }
+
+    H2DE_Object* grid = engine->camera->grid;
+
+    for (const auto& [name, hitbox] : grid->hitboxes) {
+        if (name.substr(0, 1) == "c") {
+            continue;
+        }
+
+        const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(grid, hitbox);
+        renderHitbox(world_hitboxRect, hitbox.color, grid->isAbsolute());
+    }
+}
+
+void H2DE_Renderer::renderCrosshair() {
+    if (!engine->camera->getData().grid) {
+        return;
+    }
+
+    H2DE_Object* grid = engine->camera->grid;
+
+    const H2DE_Hitbox crosshairHitboxW = grid->getHitbox("cw");
+    const H2DE_Hitbox crosshairHitboxH = grid->getHitbox("ch");
+
+    bool grisIsAbsolute = grid->isAbsolute();
+
+    const H2DE_LevelRect world_crosshairHitboxRectW = G::getHitboxRect(grid, crosshairHitboxW);
+    const H2DE_LevelRect world_crosshairHitboxRectH = G::getHitboxRect(grid, crosshairHitboxH);
+    renderHitbox(world_crosshairHitboxRectW, crosshairHitboxW.color, grisIsAbsolute);
+    renderHitbox(world_crosshairHitboxRectH, crosshairHitboxH.color, grisIsAbsolute);
+}
+
 // -- surfaces
-void H2DE_Renderer::renderSurfaces(H2DE_Object* object) {
+void H2DE_Renderer::renderSurfaces(const H2DE_Object* object) const {
     for (H2DE_Surface* surface : object->surfaceBuffers) {
         if (isSurfaceVisible(surface)) {
             renderSurface(object, surface);
@@ -92,7 +122,7 @@ void H2DE_Renderer::renderSurfaces(H2DE_Object* object) {
     }
 }
 
-void H2DE_Renderer::renderSurface(H2DE_Object* object, H2DE_Surface* surface) {
+void H2DE_Renderer::renderSurface(const H2DE_Object* object, H2DE_Surface* surface) const {
     bool isTexture = (dynamic_cast<H2DE_Color*>(surface) == nullptr);
 
     if (isTexture) {
@@ -103,13 +133,13 @@ void H2DE_Renderer::renderSurface(H2DE_Object* object, H2DE_Surface* surface) {
 }
 
 // -- -- textures
-void H2DE_Renderer::renderTexture(H2DE_Object* object, H2DE_Surface* surface) {
+void H2DE_Renderer::renderTexture(const H2DE_Object* object, H2DE_Surface* surface) const {
     SDL_Texture* texture = textures.find(surface->getTextureName())->second;
     renderTextureSetProperties(surface, texture);
     renderTextureRenderTexture(object, surface, texture);
 }
 
-void H2DE_Renderer::renderTextureSetProperties(H2DE_Surface* surface, SDL_Texture* texture) {
+void H2DE_Renderer::renderTextureSetProperties(H2DE_Surface* surface, SDL_Texture* texture) const {
     const H2DE_ColorRGB color = surface->getColor();
     const SDL_ScaleMode scaleMode = R::getScaleMode(surface->surfaceData.scaleMode);
     const SDL_BlendMode blendMode = R::getBlendMode(surface->surfaceData.blendMode);
@@ -120,7 +150,7 @@ void H2DE_Renderer::renderTextureSetProperties(H2DE_Surface* surface, SDL_Textur
     SDL_SetTextureScaleMode(texture, scaleMode);
 }
 
-void H2DE_Renderer::renderTextureRenderTexture(H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture) {
+void H2DE_Renderer::renderTextureRenderTexture(const H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture) const {
     SDL_Rect world_surfaceRect = R::renderSurfaceGetWorldDestRect(object, surface);
     float world_surfaceRotation = R::renderSurfaceGetWorldRotation(object, surface);
     SDL_Point local_surfaceCenter = R::renderSurfaceGetLocalPivot(object, surface);
@@ -133,7 +163,7 @@ void H2DE_Renderer::renderTextureRenderTexture(H2DE_Object* object, H2DE_Surface
 }
 
 // -- -- colors
-void H2DE_Renderer::renderColor(H2DE_Object* object, H2DE_Surface* surface) {
+void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface) const {
     SDL_Rect world_surfaceRect = R::renderSurfaceGetWorldDestRect(object, surface);
     float world_surfaceRotation = R::renderSurfaceGetWorldRotation(object, surface);
     
@@ -149,21 +179,21 @@ void H2DE_Renderer::renderColor(H2DE_Object* object, H2DE_Surface* surface) {
     }
 
     const std::vector<Sint16> vx = {
-        static_cast<Sint16>(corners[0].x), static_cast<Sint16>(corners[1].x), static_cast<Sint16>(corners[2].x), static_cast<Sint16>(corners[3].x)
+        static_cast<Sint16>(corners[0].x), static_cast<Sint16>(corners[1].x - 1), static_cast<Sint16>(corners[2].x - 1), static_cast<Sint16>(corners[3].x)
     };
     const std::vector<Sint16> vy = {
-        static_cast<Sint16>(corners[0].y), static_cast<Sint16>(corners[1].y), static_cast<Sint16>(corners[2].y), static_cast<Sint16>(corners[3].y)
+        static_cast<Sint16>(corners[0].y), static_cast<Sint16>(corners[1].y), static_cast<Sint16>(corners[2].y - 1), static_cast<Sint16>(corners[3].y - 1)
     };
 
     filledPolygonColor(renderer, vx.data(), vy.data(), 4, static_cast<Uint32>(surface->getColor()));
 }
 
 // -- -- getters
-SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(H2DE_Object* object, H2DE_Surface* surface) {
+SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object, H2DE_Surface* surface) const {
     return static_cast<SDL_Rect>(levelToPixelRect(G::getSurfaceRect(object, surface), object->objectData.absolute));
 }
 
-float H2DE_Renderer::renderSurfaceGetWorldRotation(H2DE_Object* object, H2DE_Surface* surface) {
+float H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE_Object* object, H2DE_Surface* surface) const {
     bool xIsInverted = (engine->camera->getXOrigin() == H2DE_FACE_RIGHT);
     bool yIsInverted = (engine->camera->getYOrigin() == H2DE_FACE_BOTTOM);
 
@@ -180,14 +210,14 @@ float H2DE_Renderer::renderSurfaceGetWorldRotation(H2DE_Object* object, H2DE_Sur
     return res;
 }
 
-SDL_Point H2DE_Renderer::renderSurfaceGetLocalPivot(H2DE_Object* object, H2DE_Surface* surface) {
+SDL_Point H2DE_Renderer::renderSurfaceGetLocalPivot(const H2DE_Object* object, H2DE_Surface* surface) const {
     bool objIsAbsolute = object->objectData.absolute;
     const H2DE_PixelSize pixel_surfaceScale = R::levelToPixelSize(surface->surfaceData.transform.scale * 0.5f, objIsAbsolute);
 
     return static_cast<SDL_Point>(pixel_surfaceScale);
 }
 
-SDL_RendererFlip H2DE_Renderer::renderSurfaceGetWorldFlip(H2DE_Object* object, H2DE_Surface* surface) {
+SDL_RendererFlip H2DE_Renderer::renderSurfaceGetWorldFlip(const H2DE_Object* object, H2DE_Surface* surface) {
     H2DE_Flip objFlip = G::getFlipFromScale(object->objectData.transform.scale);
     H2DE_Flip surFlip = G::getFlipFromScale(surface->surfaceData.transform.scale);
     H2DE_Flip addedFlip = G::addFlip(objFlip, surFlip);
@@ -199,11 +229,12 @@ SDL_RendererFlip H2DE_Renderer::renderSurfaceGetWorldFlip(H2DE_Object* object, H
     }
 }
 
-std::optional<H2DE_PixelRect> H2DE_Renderer::renderSurfaceGetPossibleSrcRect(H2DE_Surface* surface) {
+std::optional<SDL_Rect> H2DE_Renderer::renderSurfaceGetPossibleSrcRect(H2DE_Surface* surface) {
     const std::optional<H2DE_PixelRect> possibleSrcRect = surface->getSrcRect();
 
     if (possibleSrcRect.has_value()) {
-        return possibleSrcRect.value();
+        H2DE_PixelRect value = possibleSrcRect.value();
+        return SDL_Rect{ value.x, value.y, value.w, value.h };
     }
 
     return std::nullopt;
@@ -271,7 +302,7 @@ const float H2DE_Renderer::getInterfaceBlockSize() const {
     return getBlockSize(engine->camera->getInterfaceWidth());
 }
 
-bool H2DE_Renderer::isSurfaceVisible(H2DE_Surface* surface) {
+bool H2DE_Renderer::isSurfaceVisible(const H2DE_Surface* surface) const {
     bool surfaceIsValid = (textures.find(surface->getTextureName()) != textures.end() || surface->getTextureName() == "/");
     return (surfaceIsValid && surface->isVisible());
 }

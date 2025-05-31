@@ -23,6 +23,9 @@ private:
 
     void update();
     void updateGrid();
+    void updateGridObjectTransform();
+    void updateGridObjectHitboxes();
+    void updateCrosshair();
 
     H2DE_Scale getScale(float width) const;
 
@@ -56,6 +59,7 @@ public:
     unsigned int setInterfaceWidth(float width, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
 
     friend class H2DE_Engine;
+    friend class H2DE_Renderer;
 };
 
 #endif

@@ -39,16 +39,26 @@ void H2DE_Camera::update() {
 }
 
 void H2DE_Camera::updateGrid() {
-    if (!data.grid) {
-        return;
-    }
-
     destroyGridHitboxes();
 
+    if (data.grid) {
+        updateGridObjectTransform();
+        updateCrosshair();
+        updateGridObjectHitboxes();
+    }
+}
+
+void H2DE_Camera::updateGridObjectTransform() {
+    const H2DE_LevelRect world_cameraRect = getWorldRect();
+
+    grid->setTranslate(world_cameraRect.getTranslate());
+    grid->setScale(world_cameraRect.getScale());
+}
+
+void H2DE_Camera::updateGridObjectHitboxes() {
     const H2DE_LevelRect world_cameraRect = getWorldRect();
     const H2DE_Scale cameraTranslate = world_cameraRect.getTranslate();
     const H2DE_Scale cameraScale = world_cameraRect.getScale();
-    const H2DE_Scale cameraHalfScale = cameraScale * 0.5f;
 
     float minX = world_cameraRect.getMinX();
     float maxX = world_cameraRect.getMaxX();
@@ -57,24 +67,13 @@ void H2DE_Camera::updateGrid() {
 
     constexpr H2DE_ColorRGB secondGridColor = { 20, 20, 20, 255 };
     constexpr H2DE_ColorRGB mainGridColor = { 69, 69, 69, 255 };
-    constexpr H2DE_ColorRGB centerGridColor = { 200, 200, 200, 255 };
-
-    grid->setTranslate(cameraTranslate);
-    grid->setScale(cameraScale);
-
-    H2DE_Hitbox centerhitboxW = H2DE_Hitbox();
-    centerhitboxW.transform.scale = { 0.5f, 0.0f };
-    centerhitboxW.color = { 255, 255, 255, 255 };
-    grid->addHitbox("cw", centerhitboxW);
-
-    H2DE_Hitbox centerhitboxH = H2DE_Hitbox();
-    centerhitboxH.transform.scale = { 0.0f, 0.5f };
-    centerhitboxH.color = { 255, 255, 255, 255 };
-    grid->addHitbox("ch", centerhitboxH);
+    constexpr H2DE_ColorRGB centerGridColor = { 150, 150, 150, 255 };
 
     float step = std::max(std::floor(data.gameWidth / 50.0f) * 2.0f, 1.0f);
 
-    for (float x = std::floor(minX); x < std::floor(minX) + cameraScale.x; x += step) {
+    float startX = std::round(minX) + std::abs(std::round(std::fmod(minX, step)));
+
+    for (float x = startX; x < maxX; x += step) {
         const H2DE_ColorRGB& color = (x == 0.0f)
             ? centerGridColor
             : (std::abs(std::fmod(x, step * 5.0f)) < 0.001f)
@@ -89,7 +88,9 @@ void H2DE_Camera::updateGrid() {
         grid->addHitbox("x-" + std::to_string(x), hitbox);
     }
 
-    for (float y = std::floor(minY); y < std::floor(minY) + cameraScale.y; y += step) {
+    float startY = std::round(minY) + std::abs(std::round(std::fmod(minY, step)));
+
+    for (float y = startY; y < maxY; y += step) {
         const H2DE_ColorRGB& color = (y == 0.0f)
             ? centerGridColor
             : (std::abs(std::fmod(y, step * 5.0f)) < 0.001f)
@@ -103,6 +104,18 @@ void H2DE_Camera::updateGrid() {
         hitbox.color = color;
         grid->addHitbox("y-" + std::to_string(y), hitbox);
     }
+}
+
+void H2DE_Camera::updateCrosshair() {
+    H2DE_Hitbox crossHairW = H2DE_Hitbox();
+    crossHairW.transform.scale = { data.gameWidth * 0.025f, 0.0f };
+    crossHairW.color = { 255, 255, 255, 255 };
+    grid->addHitbox("cw", crossHairW);
+
+    H2DE_Hitbox crossHairH = H2DE_Hitbox();
+    crossHairH.transform.scale = { 0.0f, data.gameWidth * 0.025f };
+    crossHairH.color = { 255, 255, 255, 255 };
+    grid->addHitbox("ch", crossHairH);
 }
 
 // GETTER

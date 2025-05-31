@@ -56,7 +56,7 @@ private:
     H2DE_ButtonManager* buttonManager = nullptr;
 
     unsigned int fps = 0;
-    unsigned int currentFPS = 0;
+    float currentFPS = 0;
     float deltaTime = 0.0f;
     bool isRunning = false;
     bool paused = false;
@@ -67,6 +67,7 @@ private:
     std::function<void(SDL_Event)> handleEventsCall = nullptr;
     std::function<void()> updateCall = nullptr;
 
+    std::unordered_map<std::string, H2DE_Font> fonts = {};
     std::vector<H2DE_Object*> objects = {};
 
     H2DE_PixelPos mousePos = { 0, 0 };
@@ -92,6 +93,7 @@ public:
     void run();
 
     void loadAssets(const std::string& directory);
+    void loadFont(const std::string& name, const H2DE_Font& font);
 
     void debugMode(bool state);
     inline void toggleDebugMode() { debugMode(!debugModeEnabled); }
@@ -126,7 +128,7 @@ public:
     inline H2DE_Volume* getVolume() const { return volume; }
     inline H2DE_Camera* getCamera() const { return camera; }
     inline unsigned int getFPS() const { return fps; }
-    inline unsigned int getCurrentFPS() const { return currentFPS; }
+    inline float getCurrentFPS(bool round = true) const { return (round) ? std::round(currentFPS) : currentFPS; }
     inline float getDeltaTime() const { return deltaTime; }
     inline bool isPaused() const { return paused; }
 
@@ -144,6 +146,7 @@ public:
     friend class H2DE_Camera;
     friend class H2DE_ButtonManager;
     friend class H2DE_Object;
+    friend class H2DE_TextObject;
 };
 
 H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);

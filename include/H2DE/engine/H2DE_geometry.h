@@ -38,7 +38,7 @@ public:
     static H2DE_Flip getFlipFromScale(const H2DE_Scale& scale);
     static H2DE_Flip addFlip(H2DE_Flip flip1, H2DE_Flip flip2);
 
-    static H2DE_LevelRect applyRotationOnRect(const H2DE_LevelRect& world_rect, const H2DE_Pivot& world_pivot, float rotation);
+    static H2DE_LevelRect applyRotationOnRect(const H2DE_LevelRect& world_rect, const H2DE_Pivot& world_pivot, float rotation, float snapAngle);
     inline static H2DE_Pivot applyRotationOnPivot(const H2DE_Pivot& world_defaultPivot, const H2DE_Pivot& world_pivot, float rotation) {
         return world_defaultPivot.rotate(world_pivot, rotation);
     }

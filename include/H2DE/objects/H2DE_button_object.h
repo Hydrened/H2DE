@@ -2,16 +2,19 @@
 #define H2DE_BUTTON_OBJECT_H
 
 #include <H2DE/objects/H2DE_object.h>
+class H2DE_TextObject;
 
 class H2DE_ButtonObject : public H2DE_Object {
 private:
     H2DE_ButtonObjectData buttonObjectData;
 
+    H2DE_TextObject* textObject = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     ~H2DE_ButtonObject() override;
 
+    void refreshTextObject();
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
 

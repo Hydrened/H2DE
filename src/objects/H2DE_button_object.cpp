@@ -7,12 +7,30 @@ H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, 
     refreshMaxRadius();
 }
 
+void H2DE_ButtonObject::refreshTextObject() {
+    if (textObject != nullptr) {
+        engine->destroyObject(textObject);
+        textObject = nullptr;
+    }
+
+    H2DE_ObjectData od = objectData;
+    od.index++;
+
+    H2DE_TextObjectData tod = H2DE_TextObjectData();
+    tod.text = buttonObjectData.text;
+
+    textObject = engine->createTextObject(od, tod);
+}
+
 // CLEANUP
 H2DE_ButtonObject::~H2DE_ButtonObject() {
+    engine->destroyObject(textObject);
     H2DE_Object::destroySurfaces(surfaces);
 }
 
 void H2DE_ButtonObject::refreshSurfaceBuffers() {
+    refreshTextObject();
+
     const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::getSortedSurfaces(surfaces);
 
     surfaceBuffers.clear();

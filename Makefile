@@ -33,8 +33,7 @@ $(OBJECT_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXX_FLAGS) -c $< -o $@
 
 tr:
-	make test
-	make run
+	if exist "$(SRC_DIR)/test.cpp" make test && make run
 
 test:
 	$(CXX) $(CXX_FLAGS) -o $(BIN_DIR)/test.exe $(SRC_DIR)/test.cpp $(LD_FLAGS) -l$(APP_NAME)

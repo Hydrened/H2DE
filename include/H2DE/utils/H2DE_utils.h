@@ -8,6 +8,7 @@
 #include <SDL2/SDL_video.h>
 
 class H2DE_Object;
+class H2DE_ButtonObject;
 class H2DE_Surface;
 
 template<typename H2DE_Rect_T>
@@ -56,9 +57,15 @@ enum H2DE_Face {
 };
 
 enum H2DE_TextAlign {
-    H2DE_TEXT_ALIGN_LEFT,
-    H2DE_TEXT_ALIGN_RIGHT,
-    H2DE_TEXT_ALIGN_CENTER,
+    H2DE_TEXT_ALIGN_TOP_LEFT        = 0b00001001,
+    H2DE_TEXT_ALIGN_TOP_CENTER      = 0b00001010,
+    H2DE_TEXT_ALIGN_TOP_RIGHT       = 0b00001100,
+    H2DE_TEXT_ALIGN_CENTER_LEFT     = 0b00010001,
+    H2DE_TEXT_ALIGN_CENTER_CENTER   = 0b00010010,
+    H2DE_TEXT_ALIGN_CENTER_RIGHT    = 0b00010100,
+    H2DE_TEXT_ALIGN_BOTTOM_LEFT     = 0b00100001,
+    H2DE_TEXT_ALIGN_BOTTOM_CENTER   = 0b00100010,
+    H2DE_TEXT_ALIGN_BOTTOM_RIGHT    = 0b00100100,
 };
 
 enum H2DE_ScaleMode {
@@ -373,7 +380,7 @@ struct H2DE_Text {
     std::string font = "";
     H2DE_Scale fontSize = { 1.0f, 1.0f };
     H2DE_Scale spacing = { 0.1f, 0.3f };
-    H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_LEFT;
+    H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_CENTER_CENTER;
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
     H2DE_Padding padding = { 0.0f, 0.0f, 0.0f, 0.0f };
 };
@@ -393,10 +400,10 @@ struct H2DE_BarObjectData {
 
 struct H2DE_ButtonObjectData {
     H2DE_Text text = H2DE_Text();
-    std::function<void(H2DE_Object*)> onMouseDown = nullptr;
-    std::function<void(H2DE_Object*)> onMouseUp = nullptr;
-    std::function<void(H2DE_Object*)> onHover = nullptr;
-    std::function<void(H2DE_Object*)> onBlur = nullptr;
+    std::function<void(H2DE_ButtonObject*)> onMouseDown = nullptr;
+    std::function<void(H2DE_ButtonObject*)> onMouseUp = nullptr;
+    std::function<void(H2DE_ButtonObject*)> onHover = nullptr;
+    std::function<void(H2DE_ButtonObject*)> onBlur = nullptr;
     bool pauseSensitive = true;
 };
 
@@ -438,6 +445,7 @@ struct H2DE_Font {
     int spacing = 0;
     std::string charOrder = "";
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
+    H2DE_BlendMode blendMode = H2DE_BLEND_MODE_BLEND;
 };
 
 int H2DE_RandomIntegerInRange(int min, int max);

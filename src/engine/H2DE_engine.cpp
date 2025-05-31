@@ -106,14 +106,13 @@ void H2DE_Engine::run() {
         Uint64 perfFreq = SDL_GetPerformanceFrequency();
         Uint64 lastTime = SDL_GetPerformanceCounter();
         Uint64 lastSec = lastTime;
-        Uint64 frameCount = 0;
 
         SDL_Event event;
 
         while (isRunning) {
             Uint64 now = SDL_GetPerformanceCounter();
             deltaTime = (now - lastTime) / static_cast<float>(perfFreq);
-            frameCount++;
+            currentFPS = (deltaTime > 0.0f) ? 1.0f / deltaTime : 0.0f;
 
             handleEvents(event);
 
@@ -128,8 +127,6 @@ void H2DE_Engine::run() {
             }
 
             if ((now - lastSec) / static_cast<float>(perfFreq) >= 1.0f) {
-                currentFPS = frameCount;
-                frameCount = 0;
                 lastSec = now;
             }
 
@@ -198,6 +195,10 @@ void H2DE_Engine::updateObjects() {
 // -- assets
 void H2DE_Engine::loadAssets(const std::string& directory) {
     assetLoaderManager->loadAssets(directory);
+}
+
+void H2DE_Engine::loadFont(const std::string& name, const H2DE_Font& font) {
+    assetLoaderManager->loadFont(name, font);
 }
 
 // -- debug mode

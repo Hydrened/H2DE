@@ -1,3 +1,15 @@
+## H2DE-4.0.2
+#### ADDED
+- text surface rendering
+- camera crosshair absolute size
+- button text
+#### FIXED
+- color surface 1px overflow
+- get current fps engine method is more accurate
+- surface rotation rendering
+- camera grid resizing
+- button calls give pointer to button instead of object
+
 ## H2DE-4.0.1
 #### ADDED
 - camera grid crosshair

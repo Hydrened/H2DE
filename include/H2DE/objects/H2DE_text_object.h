@@ -13,6 +13,16 @@ private:
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
 
+    const std::vector<std::string> getWords() const;
+    const std::vector<std::vector<std::string>> getLines() const;
+
+    static int getLineLength(const std::vector<std::string>& line);
+
+    float getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const;
+    float getStartingOffsetX(const std::vector<std::string>& line) const;
+
+    inline bool isTextNull() const { return (textObjectData.text.text == ""); }
+
 public:
     inline H2DE_TextObjectData getTextData() const { return textObjectData; }
     inline std::string getText() const { return textObjectData.text.text; }

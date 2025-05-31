@@ -123,11 +123,11 @@ void H2DE_AssetLoaderManager::assetImported() {
 }
 
 void H2DE_AssetLoaderManager::loadFont(const std::string& name, const H2DE_Font& font) {
-    if (engine->renderer->fonts.find(name) != engine->renderer->fonts.end()) {
+    if (engine->fonts.find(name) != engine->fonts.end()) {
         H2DE_Error::logWarning("Font \"" + name + "\" has been overridden");
     }
 
-    engine->renderer->fonts[name] = font;
+    engine->fonts[name] = font;
 }
 
 // GETTER
