@@ -13,16 +13,16 @@ enum H2DE_Flip {
 
 class H2DE_Geometry {
 private:
-    static H2DE_LevelRect getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle);
+    static H2DE_LevelRect getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle, bool xIsInverted, bool yIsInverted);
 
     static float getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle);
 
 public:
-    inline static H2DE_LevelRect getHitboxRect(const H2DE_Object* object, const H2DE_Hitbox& hitbox) {
-        return H2DE_Geometry::getRect(object, hitbox.transform, 90.0f);
+    inline static H2DE_LevelRect getHitboxRect(const H2DE_Object* object, const H2DE_Hitbox& hitbox, bool xIsInverted = false, bool yIsInverted = false) {
+        return H2DE_Geometry::getRect(object, hitbox.transform, 90.0f, xIsInverted, yIsInverted);
     }
-    inline static H2DE_LevelRect getSurfaceRect(const H2DE_Object* object, H2DE_Surface* surface) {
-        return H2DE_Geometry::getRect(object, surface->getTransform(), 1.0f);
+    inline static H2DE_LevelRect getSurfaceRect(const H2DE_Object* object, H2DE_Surface* surface, bool xIsInverted = false, bool yIsInverted = false) {
+        return H2DE_Geometry::getRect(object, surface->getTransform(), 1.0f, xIsInverted, yIsInverted);
     }
 
     inline static float getHitboxRotation(const H2DE_Object* object, const H2DE_Hitbox& hitbox) {

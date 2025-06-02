@@ -371,7 +371,6 @@ struct H2DE_Hitbox {
     H2DE_Transform transform = H2DE_Transform();
     H2DE_ColorRGB color = { 255, 255, 255, 255 };
     int collisionIndex = 0;
-    bool snap = false;
     std::function<void(H2DE_Object*, H2DE_Face)> onCollide = nullptr;
 };
 

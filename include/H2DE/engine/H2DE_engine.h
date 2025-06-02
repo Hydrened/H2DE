@@ -92,6 +92,11 @@ public:
 
     void run();
 
+    /**
+     * Loads the assets from a directory.
+     * 
+     * @param directory Directory containing the assets
+     */
     void loadAssets(const std::string& directory);
     void loadFont(const std::string& name, const H2DE_Font& font);
 

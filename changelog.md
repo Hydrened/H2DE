@@ -1,3 +1,13 @@
+## H2DE-4.0.3
+#### ADDED
+- camera grid on top
+#### FIXED
+- button's text memory leak 
+- camera origins flips
+- camera grid resizing on window resize
+## REMOVED
+- hitbox snap
+
 ## H2DE-4.0.2
 #### ADDED
 - text surface rendering

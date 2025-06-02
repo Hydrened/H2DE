@@ -24,10 +24,10 @@ protected:
     virtual ~H2DE_Object();
 
     static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
+    static void destroySurfaces(std::vector<H2DE_Surface*>& surfaces);
 
     void update();
     void updateCollisions();
-    void snap(const H2DE_LevelRect& world_hitboxRect, const H2DE_LevelRect& world_otherHitboxRect, H2DE_Face face);
 
     virtual void refreshSurfaceBuffers() = 0;
     virtual void refreshMaxRadius() = 0;
@@ -99,7 +99,6 @@ public:
     void setHitboxPivot(const std::string& name, const H2DE_Pivot& pivot);
     void setHitboxColor(const std::string& name, const H2DE_ColorRGB& color);
     void setHitboxCollisionIndex(const std::string& name, int collisionIndex);
-    void setHitboxSnap(const std::string& name, bool snap);
     void setHitboxOnCollide(const std::string& name, const std::function<void(H2DE_Object*, H2DE_Face)>& onCollide);
 
     unsigned int setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);

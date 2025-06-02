@@ -1,9 +1,17 @@
 #include "H2DE/engine/H2DE_geometry.h"
 
 // GETTERS
-H2DE_LevelRect H2DE_Geometry::getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle) {
-    const H2DE_Transform parentTransform = object->getTransform();
+H2DE_LevelRect H2DE_Geometry::getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle, bool xIsInverted, bool yIsInverted) {
+    H2DE_Transform parentTransform = object->getTransform();
     const H2DE_Transform childTransform = transform;
+
+    if (xIsInverted) {
+        parentTransform.translate.x *= -1;
+    }
+
+    if (yIsInverted) {
+        parentTransform.translate.y *= -1;
+    }
     
     H2DE_LevelRect world_parentRect = parentTransform.translate.makeRect(parentTransform.scale);
     world_parentRect.w = std::abs(world_parentRect.w);

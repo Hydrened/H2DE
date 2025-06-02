@@ -150,7 +150,8 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
 
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                    window->fixRatioSize(H2DE_PixelSize{ event.window.data1, event.window.data2 });
+                    window->setSize(H2DE_PixelSize{ event.window.data1, event.window.data2 });
+                    camera->updateGrid();
                 }
                 break;
 

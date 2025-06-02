@@ -10,11 +10,19 @@ H2DE_Object::H2DE_Object(H2DE_Engine* e, const H2DE_ObjectData& od) : engine(e),
 
 // CLEANUP
 H2DE_Object::~H2DE_Object() {
-    
+
 }
 
 void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
     for (const auto& [name, surface] : surfaces) {
+        delete surface;
+    }
+
+    surfaces.clear();
+}
+
+void H2DE_Object::destroySurfaces(std::vector<H2DE_Surface*>& surfaces) {
+    for (H2DE_Surface* surface : surfaces) {
         delete surface;
     }
 
@@ -31,12 +39,15 @@ void H2DE_Object::updateCollisions() {
         return;
     }
 
+    bool xIsInverted = (engine->camera->getXOrigin() == H2DE_FACE_RIGHT);
+    bool yIsInverted = (engine->camera->getYOrigin() == H2DE_FACE_BOTTOM);
+
     for (const auto& [name, hitbox] : hitboxes) {
-        if (!hitbox.onCollide && !hitbox.snap) {
+        if (!hitbox.onCollide) {
             continue;
         }
 
-        const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(this, hitbox);
+        const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(this, hitbox, xIsInverted, yIsInverted);
         const int& collisionIndex = hitbox.collisionIndex;
 
         for (H2DE_Object* otherObject : engine->objects) {
@@ -51,7 +62,7 @@ void H2DE_Object::updateCollisions() {
                     continue;
                 }
 
-                const H2DE_LevelRect world_otherHitboxRect = G::getHitboxRect(otherObject, otherHitbox);
+                const H2DE_LevelRect world_otherHitboxRect = G::getHitboxRect(otherObject, otherHitbox, xIsInverted, yIsInverted);
 
                 if (!world_hitboxRect.collides(world_otherHitboxRect)) {
                     continue;
@@ -65,40 +76,9 @@ void H2DE_Object::updateCollisions() {
                 if (hitbox.onCollide) {
                     hitbox.onCollide(otherObject, possibleCollidedFace.value());
                 }
-
-                if (hitbox.snap) {
-                    snap(world_hitboxRect, world_otherHitboxRect, possibleCollidedFace.value());
-                }
             }
         }
     }
-}
-
-void H2DE_Object::snap(const H2DE_LevelRect& world_hitboxRect, const H2DE_LevelRect& world_otherHitboxRect, H2DE_Face face) {
-    const H2DE_Translate hitboxOffset = world_hitboxRect.getTranslate() - objectData.transform.translate;
-    const H2DE_Translate hitboxesSizeOffset = (world_otherHitboxRect.getScale() + world_hitboxRect.getScale()) * 0.5f;
-
-    switch (face) {
-        case H2DE_FACE_TOP:
-            objectData.transform.translate.y = world_otherHitboxRect.y - hitboxOffset.y + hitboxesSizeOffset.y;
-            break;
-
-        case H2DE_FACE_BOTTOM:
-            objectData.transform.translate.y = world_otherHitboxRect.y - hitboxOffset.y - hitboxesSizeOffset.y;
-            break;
-
-        case H2DE_FACE_LEFT:
-            objectData.transform.translate.x = world_otherHitboxRect.x - hitboxOffset.x + hitboxesSizeOffset.x;
-            break;
-
-        case H2DE_FACE_RIGHT:
-            objectData.transform.translate.x = world_otherHitboxRect.x - hitboxOffset.x - hitboxesSizeOffset.x;
-            break;
-
-        default: return;
-    }
-
-    refreshSurfaceBuffers();
 }
 
 // ACTIONS
@@ -298,12 +278,6 @@ void H2DE_Object::setHitboxColor(const std::string& name, const H2DE_ColorRGB& c
 void H2DE_Object::setHitboxCollisionIndex(const std::string& name, int collisionIndex) {
     if (hasHitbox(name)) {
         hitboxes[name].collisionIndex = collisionIndex;
-    }
-}
-
-void H2DE_Object::setHitboxSnap(const std::string& name, bool snap) {
-    if (hasHitbox(name)) {
-        hitboxes[name].snap = snap;
     }
 }
 

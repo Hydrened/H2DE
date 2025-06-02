@@ -129,8 +129,10 @@ bool H2DE_Camera::containsObject(const H2DE_Object* object) const {
 H2DE_Scale H2DE_Camera::getScale(float width) const {
     H2DE_Scale res;
 
+    const H2DE_PixelSize windowSize = engine->window->getSize();
+
     res.x = width;
-    res.y = static_cast<float>(engine->data.window.size.y) / static_cast<float>(engine->data.window.size.x) * width;
+    res.y = static_cast<float>(windowSize.y) / static_cast<float>(windowSize.x) * width;
 
     return res;
 }

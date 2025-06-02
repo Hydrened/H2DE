@@ -26,7 +26,7 @@ void H2DE_Volume::loadData() {
 
 // CLEANUP
 H2DE_Volume::~H2DE_Volume() {
-    
+
 }
 
 // ACTIONS

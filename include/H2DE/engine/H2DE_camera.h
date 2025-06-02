@@ -5,13 +5,15 @@
 #include <string>
 #include <limits>
 class H2DE_Engine;
+class H2DE_BasicObject;
 
 class H2DE_Camera {
 private:
     H2DE_Engine* engine;
     H2DE_CameraData data;
 
-    H2DE_Object* grid = nullptr;
+    H2DE_BasicObject* grid = nullptr;
+    bool onTop = false;
 
     H2DE_Camera(H2DE_Engine* engine, const H2DE_CameraData& data);
     ~H2DE_Camera();
@@ -53,6 +55,7 @@ public:
     inline void setPadding(const H2DE_Padding& padding) { data.padding = padding; }
     inline void setXOrigin(H2DE_Face xOrigin) { data.xOrigin = xOrigin; }
     inline void setYOrigin(H2DE_Face yOrigin) { data.yOrigin = yOrigin; }
+    inline void setGridOnTop(bool state) { onTop = state; }
 
     unsigned int setTranslate(const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
     unsigned int setGameWidth(float width, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);

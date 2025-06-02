@@ -44,6 +44,7 @@ public:
     unsigned int setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
 
     friend class H2DE_Engine;
+    friend class H2DE_ButtonObject;
 };
 
 #endif

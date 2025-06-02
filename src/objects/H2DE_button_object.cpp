@@ -9,8 +9,9 @@ H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, 
 
 void H2DE_ButtonObject::refreshTextObject() {
     if (textObject != nullptr) {
-        engine->destroyObject(textObject);
-        textObject = nullptr;
+        if (engine->destroyObject(textObject)) {
+            textObject = nullptr;
+        }
     }
 
     H2DE_ObjectData od = objectData;

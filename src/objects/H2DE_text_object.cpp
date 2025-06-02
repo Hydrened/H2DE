@@ -10,11 +10,12 @@ H2DE_TextObject::H2DE_TextObject(H2DE_Engine* e, const H2DE_ObjectData& od, cons
 
 // CLEANUP
 H2DE_TextObject::~H2DE_TextObject() {
-    
+    H2DE_Object::destroySurfaces(surfaceBuffers);
 }
 
 // ACTIONS
 void H2DE_TextObject::refreshSurfaceBuffers() {
+    H2DE_Object::destroySurfaces(surfaceBuffers);
     surfaceBuffers.clear();
 
     if (isTextNull()) {
