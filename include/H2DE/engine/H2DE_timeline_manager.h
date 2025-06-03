@@ -27,7 +27,7 @@ private:
 
     void update();
 
-    unsigned int create(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive);
+    unsigned int create(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive = true);
     void reset(unsigned int id);
     void stop(unsigned int id, bool callCompleted);
 

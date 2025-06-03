@@ -22,14 +22,14 @@ private:
     void pause();
     void resume();
 
-    int playChunk(bool isSong, const std::string& soundName, int loops, bool pauseSensitive);
+    int playChunk(bool isSong, const std::string& soundName, int loops, bool pauseSensitive = true);
 
     Mix_Chunk* getChunk(const std::string& soundName) const;
     static int lerpVolume(int volume);
 
 public:
-    void playSong(const std::string& name, int loops, bool pauseSensitive);
-    int playSfx(const std::string& name, int loops, bool pauseSensitive);
+    void playSong(const std::string& name, int loops, bool pauseSensitive = true);
+    int playSfx(const std::string& name, int loops, bool pauseSensitive = true);
 
     inline void stopSong() const { stopSfx(0); }
     inline void stopSfx(int id) const { Mix_HaltChannel(id); }

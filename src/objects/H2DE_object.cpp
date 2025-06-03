@@ -39,8 +39,8 @@ void H2DE_Object::updateCollisions() {
         return;
     }
 
-    bool xIsInverted = (engine->camera->getXOrigin() == H2DE_FACE_RIGHT);
-    bool yIsInverted = (engine->camera->getYOrigin() == H2DE_FACE_BOTTOM);
+    bool xIsInverted = engine->camera->isXOriginInverted();
+    bool yIsInverted = engine->camera->isYOriginInverted();
 
     for (const auto& [name, hitbox] : hitboxes) {
         if (!hitbox.onCollide) {

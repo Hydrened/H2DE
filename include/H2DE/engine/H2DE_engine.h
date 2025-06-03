@@ -92,11 +92,6 @@ public:
 
     void run();
 
-    /**
-     * Loads the assets from a directory.
-     * 
-     * @param directory Directory containing the assets
-     */
     void loadAssets(const std::string& directory);
     void loadFont(const std::string& name, const H2DE_Font& font);
 
@@ -113,11 +108,11 @@ public:
     inline void resume() { paused = false; }
     inline void togglePause() { paused = !paused; }
 
-    unsigned int createTimeline(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive);
+    unsigned int createTimeline(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive = true);
     void resetTimeline(unsigned int id);
     void stopTimeline(unsigned int id, bool callCompleted);
 
-    unsigned int delay(unsigned int duration, const std::function<void()>& callback, bool pauseSensitive);
+    unsigned int delay(unsigned int duration, const std::function<void()>& callback, bool pauseSensitive = true);
     void resetDelay(unsigned int id);
     void stopDelay(unsigned int id,  bool callCompleted);
 
@@ -136,6 +131,10 @@ public:
     inline float getCurrentFPS(bool round = true) const { return (round) ? std::round(currentFPS) : currentFPS; }
     inline float getDeltaTime() const { return deltaTime; }
     inline bool isPaused() const { return paused; }
+
+    unsigned int getObjectsRenderedNumber() const;
+    unsigned int getSurfacesRenderedNumber() const;
+    unsigned int getHitboxesRenderedNumber() const;
 
     inline const H2DE_Translate getMouseGamePos() const { return getMousePos(false); }
     inline const H2DE_Translate getMouseInterfacePos() const { return getMousePos(true); }

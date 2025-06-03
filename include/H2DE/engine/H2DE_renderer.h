@@ -14,6 +14,10 @@ private:
 
     std::unordered_map<std::string, SDL_Texture*> textures = {};
 
+    unsigned int objectsRendered = 0;
+    unsigned int surfacesRendered = 0;
+    unsigned int hitboxesRendered = 0;
+
     using R = H2DE_Renderer;
 
     H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer, std::vector<H2DE_Object*>& objects);
@@ -24,6 +28,7 @@ private:
     void render();
 
     void clearRenderer() const;
+    void resetCounts();
     void sortObjects();
 
     void renderGrid();
@@ -33,8 +38,8 @@ private:
     void renderObject(const H2DE_Object* object);
     inline void renderObjectAddHitboxesToBuffer(const H2DE_Object* object) { hitboxesBuffer.push_back(object); }
 
-    void renderSurfaces(const H2DE_Object* object) const;
-    void renderSurface(const H2DE_Object* object, H2DE_Surface* surface) const;
+    void renderSurfaces(const H2DE_Object* object);
+    void renderSurface(const H2DE_Object* object, H2DE_Surface* surface);
 
     void renderTexture(const H2DE_Object* object, H2DE_Surface* surface) const;
     void renderTextureSetProperties(H2DE_Surface* surface, SDL_Texture* texture) const;

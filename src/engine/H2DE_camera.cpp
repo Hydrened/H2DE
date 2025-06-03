@@ -121,7 +121,15 @@ void H2DE_Camera::updateCrosshair() {
 // GETTER
 bool H2DE_Camera::containsObject(const H2DE_Object* object) const {
     const H2DE_LevelRect world_cameraRect = getWorldRect();
-    const H2DE_Translate world_objectTranslate = object->getTranslate();
+    H2DE_Translate world_objectTranslate = object->getTranslate();
+
+    if (engine->camera->isXOriginInverted()) {
+        world_objectTranslate.x *= -1;
+    }
+
+    if (engine->camera->isYOriginInverted()) {
+        world_objectTranslate.y *= -1;
+    }
 
     return world_cameraRect.collides(world_objectTranslate, object->maxRadius);
 }
@@ -133,6 +141,20 @@ H2DE_Scale H2DE_Camera::getScale(float width) const {
 
     res.x = width;
     res.y = static_cast<float>(windowSize.y) / static_cast<float>(windowSize.x) * width;
+
+    return res;
+}
+
+H2DE_Translate H2DE_Camera::getTranslate() const {
+    H2DE_Translate res = data.translate;
+
+    if (isXOriginInverted()) {
+        res.x *= -1;
+    }
+
+    if (isYOriginInverted()) {
+        res.y *= -1;
+    }
 
     return res;
 }
@@ -151,7 +173,7 @@ void H2DE_Camera::setGameWidth(float width) {
 }
 
 // lerp
-unsigned int H2DE_Camera::setTranslate(const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed,bool pauseSensitive) {
+unsigned int H2DE_Camera::setTranslate(const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Translate>(engine, data.translate, translate, duration, easing, [this](H2DE_Translate iv) {
         setTranslate(iv);
     }, completed, pauseSensitive);

@@ -37,16 +37,18 @@ public:
     inline bool containsPoint(const H2DE_Translate& translate) const { return getWorldRect().collides(translate); }
 
     inline H2DE_CameraData getData() const { return data; }
-    inline H2DE_Translate getTranslate() const { return data.translate; }
+    H2DE_Translate getTranslate() const;
     inline H2DE_Scale getGameScale() const { return getScale(data.gameWidth); }
     inline H2DE_Scale getInterfaceScale() const { return getScale(data.interfaceWidth); }
-    inline H2DE_LevelRect getWorldRect() const { return data.translate.makeRect(getGameScale()); }
+    inline H2DE_LevelRect getWorldRect() const { return getTranslate().makeRect(getGameScale()); }
     inline float getGameWidth() const { return data.gameWidth; }
     inline float getInterfaceWidth() const { return data.interfaceWidth; }
     inline float getSmoothing() const { return data.smoothing; }
     inline H2DE_Padding getPadding() const { return data.padding; }
     inline H2DE_Face getXOrigin() const { return data.xOrigin; }
     inline H2DE_Face getYOrigin() const { return data.yOrigin; }
+    inline bool isXOriginInverted() const { return (data.xOrigin == H2DE_FACE_RIGHT); }
+    inline bool isYOriginInverted() const { return (data.yOrigin == H2DE_FACE_BOTTOM); }
 
     void setTranslate(const H2DE_Translate& translate);
     void setGameWidth(float width);
@@ -57,9 +59,9 @@ public:
     inline void setYOrigin(H2DE_Face yOrigin) { data.yOrigin = yOrigin; }
     inline void setGridOnTop(bool state) { onTop = state; }
 
-    unsigned int setTranslate(const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
-    unsigned int setGameWidth(float width, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
-    unsigned int setInterfaceWidth(float width, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
+    unsigned int setTranslate(const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    unsigned int setGameWidth(float width, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    unsigned int setInterfaceWidth(float width, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     friend class H2DE_Engine;
     friend class H2DE_Renderer;

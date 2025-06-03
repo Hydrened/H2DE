@@ -1,3 +1,13 @@
+## H2DE-4.0.4
+#### ADDED
+- rendered objects, surfaces and hitboxes getters
+- button's text object getter
+#### FIXED
+- camera translate when changing origins
+- object not rendering sometimes when changing origins
+#### MODIFIED
+- all pause sensitive parameters are true by default
+
 ## H2DE-4.0.3
 #### ADDED
 - camera grid on top
@@ -5,7 +15,7 @@
 - button's text memory leak 
 - camera origins flips
 - camera grid resizing on window resize
-## REMOVED
+#### REMOVED
 - hitbox snap
 
 ## H2DE-4.0.2

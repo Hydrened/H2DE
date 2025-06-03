@@ -306,3 +306,15 @@ bool H2DE_Engine::isPositionGreater(H2DE_Object* a, H2DE_Object* b) {
         ? (aTranslate.y < bTranslate.y)
         : (aTranslate.x < bTranslate.x);
 }
+
+unsigned int H2DE_Engine::getObjectsRenderedNumber() const {
+    return renderer->objectsRendered;
+}
+
+unsigned int H2DE_Engine::getSurfacesRenderedNumber() const {
+    return renderer->surfacesRendered;
+}
+
+unsigned int H2DE_Engine::getHitboxesRenderedNumber() const {
+    return renderer->hitboxesRendered;
+}

@@ -42,6 +42,7 @@ public:
 
     inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const { return surfaces; }
     inline H2DE_Surface* getSurface(const std::string& name) const { return H2DE_Object::getSurface(surfaces, name); }
+    inline H2DE_TextObject* getTextObject() const { return textObject; }
 
     inline void setMouseDown(const std::function<void(H2DE_Object*)>& onMouseDown) { buttonObjectData.onMouseDown = onMouseDown; }
     inline void setMouseUp(const std::function<void(H2DE_Object*)>& onMouseUp) { buttonObjectData.onMouseUp = onMouseUp; }

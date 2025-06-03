@@ -57,9 +57,9 @@ public:
     void setMax(float max);
     void setValue(float value);
 
-    unsigned int setMin(float min, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
-    unsigned int setMax(float max, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
-    unsigned int setValue(float value, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
+    unsigned int setMin(float min, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    unsigned int setMax(float max, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    unsigned int setValue(float value, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     friend class H2DE_Engine;
 };

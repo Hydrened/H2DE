@@ -39,7 +39,7 @@ public:
     void setDelay(unsigned int delay);
     void setPauseSensitive(bool pauseSensitive);
 
-    unsigned int setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
+    unsigned int setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     friend class H2DE_Object;
 };

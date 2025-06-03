@@ -22,9 +22,16 @@ void H2DE_Renderer::destroyTextures() {
     textures.clear();
 }
 
+void H2DE_Renderer::resetCounts() {
+    objectsRendered = 0;
+    surfacesRendered = 0;
+    hitboxesRendered = 0;
+}
+
 // RENDER
 void H2DE_Renderer::render() {
     clearRenderer();
+    resetCounts();
     sortObjects();
     renderObjects();
 }
@@ -77,6 +84,10 @@ void H2DE_Renderer::renderObject(const H2DE_Object* object) {
         return;
     }
 
+    if (!object->isGrid) {
+        objectsRendered++;
+    }
+
     renderSurfaces(object);
 
     if (engine->debugObjectEnabled && !object->isGrid) {
@@ -121,7 +132,7 @@ void H2DE_Renderer::renderCrosshair() {
 }
 
 // -- surfaces
-void H2DE_Renderer::renderSurfaces(const H2DE_Object* object) const {
+void H2DE_Renderer::renderSurfaces(const H2DE_Object* object) {
     for (H2DE_Surface* surface : object->surfaceBuffers) {
         if (isSurfaceVisible(surface)) {
             renderSurface(object, surface);
@@ -129,7 +140,9 @@ void H2DE_Renderer::renderSurfaces(const H2DE_Object* object) const {
     }
 }
 
-void H2DE_Renderer::renderSurface(const H2DE_Object* object, H2DE_Surface* surface) const {
+void H2DE_Renderer::renderSurface(const H2DE_Object* object, H2DE_Surface* surface) {
+    surfacesRendered++;
+
     bool isTexture = (dynamic_cast<H2DE_Color*>(surface) == nullptr);
 
     if (isTexture) {
@@ -197,8 +210,8 @@ void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface
 
 // -- -- getters
 SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object, H2DE_Surface* surface) const {
-    bool xIsInverted = (engine->camera->getXOrigin() == H2DE_FACE_RIGHT);
-    bool yIsInverted = (engine->camera->getYOrigin() == H2DE_FACE_BOTTOM);
+    bool xIsInverted = engine->camera->isXOriginInverted();
+    bool yIsInverted = engine->camera->isYOriginInverted();
     
     return static_cast<SDL_Rect>(levelToPixelRect(G::getSurfaceRect(object, surface, xIsInverted, yIsInverted), object->objectData.absolute));
 }
@@ -252,8 +265,8 @@ void H2DE_Renderer::renderHitboxes(const H2DE_Object* object) {
     const H2DE_Translate objectTranslate = object->getTranslate();
     bool objectIsAbsolute = object->isAbsolute();
 
-    bool xIsInverted = (engine->camera->getXOrigin() == H2DE_FACE_RIGHT);
-    bool yIsInverted = (engine->camera->getYOrigin() == H2DE_FACE_BOTTOM);
+    bool xIsInverted = engine->camera->isXOriginInverted();
+    bool yIsInverted = engine->camera->isYOriginInverted();
 
     for (const auto& [name, hitbox] : object->getHitboxes()) {
         if (!hitbox.color.isVisible()) {
@@ -263,6 +276,10 @@ void H2DE_Renderer::renderHitboxes(const H2DE_Object* object) {
         const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(object, hitbox, xIsInverted, yIsInverted);
         if (!engine->camera->containsRect(world_hitboxRect) && !objectIsAbsolute) {
             continue;
+        }
+
+        if (!object->isGrid) {
+            hitboxesRendered++;
         }
 
         renderHitbox(world_hitboxRect, hitbox.color, objectIsAbsolute);
@@ -376,14 +393,14 @@ H2DE_Translate H2DE_Renderer::pixelToLevel(const H2DE_PixelPos& pos, bool absolu
     H2DE_Translate res = H2DE_Translate{ static_cast<float>(pos.x), static_cast<float>(pos.y) };
 
     const H2DE_Scale cameraHalfScale = (absolute)
-        ? engine->getCamera()->getInterfaceScale() * 0.5f
-        : engine->getCamera()->getGameScale() * 0.5f;
+        ? engine->camera->getInterfaceScale() * 0.5f
+        : engine->camera->getGameScale() * 0.5f;
 
     res /= blockSize;
     res -= cameraHalfScale;
-
-    bool xIsInverted = (engine->camera->getXOrigin() == H2DE_FACE_RIGHT);
-    bool yIsInverted = (engine->camera->getYOrigin() == H2DE_FACE_BOTTOM);
+    
+    bool xIsInverted = engine->camera->isXOriginInverted();
+    bool yIsInverted = engine->camera->isYOriginInverted();
 
     if (xIsInverted) {
         res.x *= -1;
@@ -394,7 +411,7 @@ H2DE_Translate H2DE_Renderer::pixelToLevel(const H2DE_PixelPos& pos, bool absolu
     }
 
     if (!absolute) {
-        res += engine->getCamera()->getTranslate();
+        res += engine->camera->getTranslate();
     }
 
     return res;
