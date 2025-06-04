@@ -276,19 +276,19 @@ void H2DE_TextObject::setColor(const H2DE_ColorRGB& color) {
 }
 
 // -- lerp
-unsigned int H2DE_TextObject::setFontSize(const H2DE_Scale& fontSize, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_TextObject::setFontSize(const H2DE_Scale& fontSize, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.fontSize, fontSize, duration, easing, [this](H2DE_Scale iv) {
         setFontSize(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_TextObject::setSpacing(const H2DE_Scale& spacing, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_TextObject::setSpacing(const H2DE_Scale& spacing, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.spacing, spacing, duration, easing, [this](H2DE_Scale iv) {
         setSpacing(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_TextObject::setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_TextObject::setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp(engine, textObjectData.text.color, color, duration, easing, [this](H2DE_ColorRGB iv) {
         setColor(iv);
     }, completed, pauseSensitive);

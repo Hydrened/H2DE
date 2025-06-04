@@ -30,11 +30,11 @@ H2DE_Volume::~H2DE_Volume() {
 }
 
 // ACTIONS
-void H2DE_Volume::playSong(const std::string& name, int loops, bool pauseSensitive) {
+void H2DE_Volume::playSong(const std::string& name, uint32_t loops, bool pauseSensitive) {
     playChunk(true, name, loops, pauseSensitive);
 }
 
-int H2DE_Volume::playSfx(const std::string& name, int loops, bool pauseSensitive) {
+int H2DE_Volume::playSfx(const std::string& name, uint32_t loops, bool pauseSensitive) {
     return playChunk(false, name, loops, pauseSensitive);
 }
 
@@ -70,7 +70,7 @@ void H2DE_Volume::resumeAll() const {
     }
 }
 
-int H2DE_Volume::playChunk(bool isSong, const std::string& soundName, int loops, bool pauseSensitive) {
+int H2DE_Volume::playChunk(bool isSong, const std::string& soundName, uint32_t loops, bool pauseSensitive) {
     Mix_Chunk* chunk = getChunk(soundName);
     if (!chunk) {
         return -1;

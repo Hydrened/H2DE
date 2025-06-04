@@ -12,7 +12,7 @@ void H2DE_Camera::initGrid() {
     H2DE_ObjectData od = H2DE_ObjectData();
     od.index = std::numeric_limits<int>::min();
 
-    grid = engine->createBasicObject(od);
+    grid = engine->createObject<H2DE_BasicObject>(od);
     grid->isGrid = true;
 
     updateGrid();
@@ -173,19 +173,19 @@ void H2DE_Camera::setGameWidth(float width) {
 }
 
 // lerp
-unsigned int H2DE_Camera::setTranslate(const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Camera::setTranslate(const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Translate>(engine, data.translate, translate, duration, easing, [this](H2DE_Translate iv) {
         setTranslate(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_Camera::setGameWidth(float width, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Camera::setGameWidth(float width, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<float>(engine, data.gameWidth, width, duration, easing, [this](float iv) {
         setGameWidth(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_Camera::setInterfaceWidth(float width, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Camera::setInterfaceWidth(float width, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<float>(engine, data.interfaceWidth, width, duration, easing, [this](float iv) {
         setInterfaceWidth(iv);
     }, completed, pauseSensitive);

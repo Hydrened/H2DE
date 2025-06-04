@@ -15,8 +15,8 @@ private:
     std::unordered_map<std::string, SDL_Texture*> textureBuffer = {};
     std::unordered_map<std::string, Mix_Chunk*> soundBuffer = {};
 
-    int loadedAssets = 0;
-    int assetsToLoad = -1;
+    uint32_t loadedAssets = 0;
+    uint32_t assetsToLoad = 0;
 
     H2DE_AssetLoaderManager(H2DE_Engine* engine, SDL_Renderer* renderer);
     ~H2DE_AssetLoaderManager();

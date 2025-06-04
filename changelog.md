@@ -1,3 +1,11 @@
+## H2DE-4.0.5
+#### FIXED
+- crash when closing app when using sprite
+- sprite rendering
+#### MODIFIED
+- delays and timelines now returns H2DE_TimelineID (uint32tt) instead of unsigned int
+- channel ids for volume are now H2DE_ChannelID (uint8_t) instead of int
+
 ## H2DE-4.0.4
 #### ADDED
 - rendered objects, surfaces and hitboxes getters

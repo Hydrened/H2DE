@@ -226,7 +226,7 @@ void H2DE_Object::setPivot(const H2DE_Pivot& pivot) {
     refreshSurfaceBuffers();
 }
 
-void H2DE_Object::setOpacity(Uint8 opacity) {
+void H2DE_Object::setOpacity(uint8_t opacity) {
     objectData.opacity = opacity;
     refreshSurfaceBuffers();
 }
@@ -288,49 +288,49 @@ void H2DE_Object::setHitboxOnCollide(const std::string& name, const std::functio
 }
 
 // -- lerp
-unsigned int H2DE_Object::setTranslate(const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Object::setTranslate(const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Translate>(engine, objectData.transform.translate, translate, duration, easing, [this](H2DE_Translate iv) {
         setTranslate(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_Object::setScale(const H2DE_Scale& scale, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Object::setScale(const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Scale>(engine, objectData.transform.scale, scale, duration, easing, [this](H2DE_Scale iv) {
         setScale(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_Object::setRotation(float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Object::setRotation(float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<float>(engine, objectData.transform.rotation, rotation, duration, easing, [this](float iv) {
         setRotation(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_Object::setOpacity(Uint8 opacity, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<Uint8>(engine, objectData.opacity, opacity, duration, easing, [this](Uint8 iv) {
+H2DE_TimelineID H2DE_Object::setOpacity(uint8_t opacity, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    return H2DE_LerpManager::lerp<uint8_t>(engine, objectData.opacity, opacity, duration, easing, [this](uint8_t iv) {
         setRotation(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Translate>(engine, getHitbox(name).transform.translate, translate, duration, easing, [this, name](H2DE_Translate iv) {
         setHitboxTranslate(name, iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_Object::setHitboxScale(const std::string& name, const H2DE_Scale& scale, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Object::setHitboxScale(const std::string& name, const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Scale>(engine, getHitbox(name).transform.scale, scale, duration, easing, [this, name](H2DE_Scale iv) {
         setHitboxScale(name, iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_Object::setHitboxRotation(const std::string& name, float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Object::setHitboxRotation(const std::string& name, float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<float>(engine, getHitbox(name).transform.rotation, rotation, duration, easing, [this, name](float iv) {
         setHitboxRotation(name, iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_Object::setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Object::setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp(engine, getHitbox(name).color, color, duration, easing, [this, name](H2DE_ColorRGB iv) {
         setHitboxColor(name, iv);
     }, completed, pauseSensitive);

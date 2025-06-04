@@ -7,8 +7,8 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
-#include <optional>
 #include <map>
+#include <optional>
 #include <vector>
 #include <windows.h>
 
@@ -25,7 +25,7 @@
 #include <H2DE/engine/H2DE_volume.h>
 #include <H2DE/engine/H2DE_timeline_manager.h>
 #include <H2DE/engine/H2DE_camera.h>
-#include <H2DE/engine/H2DE_button_manager.h>
+#include <H2DE/engine/H2DE_object_manager.h>
 #include <H2DE/surfaces/H2DE_surface.h>
 #include <H2DE/objects/H2DE_object.h>
 
@@ -36,7 +36,7 @@ class H2DE_Renderer;
 class H2DE_Volume;
 class H2DE_TimelineManager;
 class H2DE_Camera;
-class H2DE_ButtonManager;
+class H2DE_ObjectManager;
 class H2DE_BarObject;
 class H2DE_BasicObject;
 class H2DE_ButtonObject;
@@ -53,9 +53,9 @@ private:
     H2DE_Volume* volume = nullptr;
     H2DE_TimelineManager* timelineManager = nullptr;
     H2DE_Camera* camera = nullptr;
-    H2DE_ButtonManager* buttonManager = nullptr;
+    H2DE_ObjectManager* objectManager = nullptr;
 
-    unsigned int fps = 0;
+    uint16_t fps = 0;
     float currentFPS = 0;
     float deltaTime = 0.0f;
     bool isRunning = false;
@@ -78,6 +78,8 @@ private:
     void handleEvents(SDL_Event event);
     void update();
     void updateObjects();
+
+    void refreshObjectManager();
 
     void destroy();
     void destroyObjects();
@@ -108,18 +110,31 @@ public:
     inline void resume() { paused = false; }
     inline void togglePause() { paused = !paused; }
 
-    unsigned int createTimeline(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive = true);
-    void resetTimeline(unsigned int id);
-    void stopTimeline(unsigned int id, bool callCompleted);
+    H2DE_TimelineID createTimeline(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
+    void resetTimeline(H2DE_TimelineID id);
+    void stopTimeline(H2DE_TimelineID id, bool callCompleted);
 
-    unsigned int delay(unsigned int duration, const std::function<void()>& callback, bool pauseSensitive = true);
-    void resetDelay(unsigned int id);
-    void stopDelay(unsigned int id,  bool callCompleted);
+    H2DE_TimelineID delay(H2DE_TimelineID duration, const std::function<void()>& callback, bool pauseSensitive = true);
+    void resetDelay(H2DE_TimelineID id);
+    void stopDelay(H2DE_TimelineID id,  bool callCompleted);
 
-    H2DE_BarObject* createBarObject(const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
-    H2DE_BasicObject* createBasicObject(const H2DE_ObjectData& objectData);
-    H2DE_ButtonObject* createButtonObject(const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
-    H2DE_TextObject* createTextObject(const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
+    template<typename H2DE_Object_T>
+    H2DE_Object_T* createObject(const H2DE_ObjectData& objectData) {
+        H2DE_Object_T* object = new H2DE_Object_T(this, objectData);
+        objects.push_back(object);
+        return object;
+    }
+    template<typename H2DE_Object_T>
+    H2DE_Object_T* createObject(const H2DE_ObjectData& objectData, const typename H2DE_Object_T::H2DE_DataType& specificObjectData) {
+        H2DE_Object_T* object = new H2DE_Object_T(this, objectData, specificObjectData);
+        objects.push_back(object);
+
+        if constexpr (std::is_same_v<H2DE_Object_T, H2DE_ButtonObject>) {
+            refreshObjectManager();
+        }
+
+        return object;
+    }
     bool destroyObject(H2DE_Object* object);
 
     inline H2DE_EngineData getData() const { return data; }
@@ -127,19 +142,19 @@ public:
     inline H2DE_Window* getWindow() const { return window; }
     inline H2DE_Volume* getVolume() const { return volume; }
     inline H2DE_Camera* getCamera() const { return camera; }
-    inline unsigned int getFPS() const { return fps; }
+    inline uint16_t getFPS() const { return fps; }
     inline float getCurrentFPS(bool round = true) const { return (round) ? std::round(currentFPS) : currentFPS; }
     inline float getDeltaTime() const { return deltaTime; }
     inline bool isPaused() const { return paused; }
 
-    unsigned int getObjectsRenderedNumber() const;
-    unsigned int getSurfacesRenderedNumber() const;
-    unsigned int getHitboxesRenderedNumber() const;
+    uint32_t getObjectsRenderedNumber() const;
+    uint32_t getSurfacesRenderedNumber() const;
+    uint32_t getHitboxesRenderedNumber() const;
 
     inline const H2DE_Translate getMouseGamePos() const { return getMousePos(false); }
     inline const H2DE_Translate getMouseInterfacePos() const { return getMousePos(true); }
 
-    inline void setFPS(unsigned int FPS) { fps = FPS; }
+    inline void setFPS(uint16_t FPS) { fps = FPS; }
     inline void setHandleEventCall(const std::function<void(SDL_Event)>& call) { handleEventsCall = call; }
     inline void setUpdateCall(const std::function<void()>& call) { updateCall = call; }
 
@@ -148,7 +163,7 @@ public:
     friend class H2DE_Renderer;
     friend class H2DE_Volume;
     friend class H2DE_Camera;
-    friend class H2DE_ButtonManager;
+    friend class H2DE_ObjectManager;
     friend class H2DE_Object;
     friend class H2DE_TextObject;
 };

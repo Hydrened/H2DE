@@ -20,7 +20,7 @@ bool H2DE_Color::isVisible() const {
 }
 
 // SETTER
-unsigned int H2DE_Color::setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Color::setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp(engine, colorData.color, color, duration, easing, [this](H2DE_ColorRGB iv) {
         setColor(iv);
     }, completed, pauseSensitive);

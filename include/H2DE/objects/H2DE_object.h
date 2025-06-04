@@ -32,22 +32,13 @@ protected:
     virtual void refreshSurfaceBuffers() = 0;
     virtual void refreshMaxRadius() = 0;
 
-    template<typename H2DE_Surface_T, typename H2DE_SurfaceData_T>
-    H2DE_Surface_T* addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SurfaceData_T& specificData) {
+    template<typename H2DE_Surface_T>
+    H2DE_Surface_T* addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
         H2DE_Surface_T* surface = new H2DE_Surface_T(engine, this, surfaceData, specificData);
         surfaces[name] = surface;
         refreshMaxRadius();
         refreshSurfaceBuffers();
         return surface;
-    }
-    inline H2DE_Texture* addTexture(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {
-        return addSurface<H2DE_Texture, H2DE_TextureData>(surfaces, name, surfaceData, textureData);
-    }
-    inline H2DE_Sprite* addSprite(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
-        return addSurface<H2DE_Sprite, H2DE_SpriteData>(surfaces, name, surfaceData, spriteData);
-    }
-    inline H2DE_Color* addColor(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) {
-        return addSurface<H2DE_Color, H2DE_ColorData>(surfaces, name, surfaceData, colorData);
     }
     void removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
 
@@ -72,7 +63,7 @@ public:
     inline H2DE_Scale getScale() const { return objectData.transform.scale; }
     inline float getRotation() const { return objectData.transform.rotation; }
     inline H2DE_Pivot getPivot() const { return objectData.transform.pivot; }
-    inline Uint8 getOpacity() const { return objectData.opacity; }
+    inline uint8_t getOpacity() const { return objectData.opacity; }
     inline bool isAbsolute() const { return objectData.absolute; }
     inline int getIndex() const { return objectData.index; }
     inline bool isHidden() const { return hidden; }
@@ -84,14 +75,14 @@ public:
     void setScale(const H2DE_Scale& scale);
     void setRotation(float rotation);
     void setPivot(const H2DE_Pivot& pivot);
-    void setOpacity(Uint8 opacity);
+    void setOpacity(uint8_t opacity);
     void setAbsolute(bool absolute);
     void setIndex(int index);
 
-    unsigned int setTranslate(const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
-    unsigned int setScale(const H2DE_Scale& scale, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
-    unsigned int setRotation(float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
-    unsigned int setOpacity(Uint8 opacity, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setTranslate(const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setScale(const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setRotation(float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setOpacity(uint8_t opacity, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     void setHitboxTranslate(const std::string& name, const H2DE_Translate& translate);
     void setHitboxScale(const std::string& name, const H2DE_Scale& scale);
@@ -101,10 +92,10 @@ public:
     void setHitboxCollisionIndex(const std::string& name, int collisionIndex);
     void setHitboxOnCollide(const std::string& name, const std::function<void(H2DE_Object*, H2DE_Face)>& onCollide);
 
-    unsigned int setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
-    unsigned int setHitboxScale(const std::string& name, const H2DE_Scale& scale, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
-    unsigned int setHitboxRotation(const std::string& name, float rotation, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
-    unsigned int setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setHitboxScale(const std::string& name, const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setHitboxRotation(const std::string& name, float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     friend class H2DE_Engine;
     friend class H2DE_Renderer;
@@ -113,7 +104,7 @@ public:
     friend class H2DE_Texture;
     friend class H2DE_Sprite;
     friend class H2DE_Color;
-    friend class H2DE_ButtonManager;
+    friend class H2DE_ObjectManager;
 };
 
 #include <H2DE/objects/H2DE_bar_object.h>

@@ -7,19 +7,15 @@ H2DE_Sprite::H2DE_Sprite(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData&
 }
 
 void H2DE_Sprite::initDelay() {
-    if (delayId != -1) {
-        engine->stopDelay(delayId, false);
-    }
-
-    delayId = engine->delay(spriteData.delay, [this]() {
+    delayId = engine->createTimeline(spriteData.delay, H2DE_EASING_LINEAR, nullptr, [this]() {
         nextFrame();
-    }, spriteData.pauseSensitive);
+    }, -1, spriteData.pauseSensitive);
 }
 
 // CLEANUP
 H2DE_Sprite::~H2DE_Sprite() {
     if (delayId != -1) {
-        engine->stopDelay(delayId, false);
+        engine->stopTimeline(delayId, false);
     }
 }
 
@@ -38,7 +34,8 @@ std::optional<H2DE_PixelRect> H2DE_Sprite::getSrcRect() const {
 
     srcRect.x = currentFrame * (spriteData.size.x + spriteData.spacing) + spriteData.startingPos.x;
     srcRect.y = spriteData.startingPos.y;
-    srcRect.addScale(spriteData.size);
+    srcRect.w = spriteData.size.x;
+    srcRect.h = spriteData.size.y;
 
     return srcRect;
 }
@@ -78,12 +75,12 @@ void H2DE_Sprite::setSpacing(int spacing) {
     object->refreshSurfaceBuffers();
 }
 
-void H2DE_Sprite::setNbFrame(unsigned int nbFrame) {
+void H2DE_Sprite::setNbFrame(uint16_t nbFrame) {
     spriteData.nbFrame = nbFrame;
     object->refreshSurfaceBuffers();
 }
 
-void H2DE_Sprite::setDelay(unsigned int delay) {
+void H2DE_Sprite::setDelay(uint32_t delay) {
     spriteData.delay = delay;
     object->refreshSurfaceBuffers();
 }
@@ -94,7 +91,7 @@ void H2DE_Sprite::setPauseSensitive(bool pauseSensitive) {
 }
 
 // -- lerp
-unsigned int H2DE_Sprite::setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Sprite::setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp(engine, spriteData.color, color, duration, easing, [this](H2DE_ColorRGB iv) {
         setColor(iv);
     }, completed, pauseSensitive);

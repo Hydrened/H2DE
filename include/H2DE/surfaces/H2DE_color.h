@@ -1,5 +1,5 @@
-#ifndef H2DE_COLOR_H
-#define H2DE_COLOR_H
+#ifndef H2DE_SURFACE_COLOR_H
+#define H2DE_SURFACE_COLOR_H
 
 #include <H2DE/surfaces/H2DE_surface.h>
 
@@ -20,8 +20,10 @@ public:
 
     inline void setColor(const H2DE_ColorRGB& color) { colorData.color = color; }
 
-    unsigned int setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
+    using H2DE_DataType = H2DE_ColorData;
+    
     friend class H2DE_Object;
 };
 

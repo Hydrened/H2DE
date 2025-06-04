@@ -40,7 +40,7 @@ H2DE_ColorRGB::operator H2DE_ColorHSV() const {
     return hsv;
 }
 
-H2DE_ColorRGB::operator Uint32() const {
+H2DE_ColorRGB::operator uint32_t() const {
     return (a << 24) | (b << 16) | (g << 8) | r;
 }
 

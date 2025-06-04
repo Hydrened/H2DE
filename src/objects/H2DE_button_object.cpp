@@ -20,7 +20,7 @@ void H2DE_ButtonObject::refreshTextObject() {
     H2DE_TextObjectData tod = H2DE_TextObjectData();
     tod.text = buttonObjectData.text;
 
-    textObject = engine->createTextObject(od, tod);
+    textObject = engine->createObject<H2DE_TextObject>(od, tod);
 }
 
 // CLEANUP

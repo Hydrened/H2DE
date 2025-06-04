@@ -52,19 +52,19 @@ void H2DE_BarObject::setValue(float value) {
 }
 
 // -- lerp
-unsigned int H2DE_BarObject::setMin(float min, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_BarObject::setMin(float min, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<float>(engine, barObjectData.min, min, duration, easing, [this](float iv) {
         setMin(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_BarObject::setMax(float max, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_BarObject::setMax(float max, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<float>(engine, barObjectData.max, max, duration, easing, [this](float iv) {
         setMax(iv);
     }, completed, pauseSensitive);
 }
 
-unsigned int H2DE_BarObject::setValue(float value, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_TimelineID H2DE_BarObject::setValue(float value, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<float>(engine, barObjectData.value, value, duration, easing, [this](float iv) {
         setValue(iv);
     }, completed, pauseSensitive);

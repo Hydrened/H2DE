@@ -18,10 +18,12 @@ bool H2DE_RandomBool() {
     static std::random_device rd;
     static std::default_random_engine e(rd());
     std::uniform_int_distribution<int> dist(0, 1);
-    return dist(e) == 0;
+    return (dist(e) == 0);
 }
 
 float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EASING_LINEAR) {
+    constexpr float PI = 3.14159265359f;
+
     blend = std::clamp(blend, 0.0f, 1.0f);
 
     switch (easing) {
@@ -74,7 +76,7 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
             }
 
             float amplitude = powf(2.0f, 10.0f * (blend - 1.0f));
-            float oscillation = sinf((blend - 1.075f) * (2.0f * M_PI) / 0.3f);
+            float oscillation = sinf((blend - 1.075f) * (2.0f * PI) / 0.3f);
         
             blend = -amplitude * oscillation;
             break;
@@ -86,7 +88,7 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
             }
         
             float amplitude = powf(2.0f, -10.0f * blend);
-            float oscillation = sinf((blend - 0.075f) * (2.0f * M_PI) / 0.3f);
+            float oscillation = sinf((blend - 0.075f) * (2.0f * PI) / 0.3f);
         
             blend = amplitude * oscillation + 1.0f;
             break;
@@ -102,12 +104,12 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
         
             if (blend < 0.5f) {
                 amplitude = powf(2.0f, 20.0f * blend - 10.0f);
-                oscillation = sinf(sineFactor * (2.0f * M_PI) / 4.5f);
+                oscillation = sinf(sineFactor * (2.0f * PI) / 4.5f);
                 blend = -(amplitude * oscillation) * 0.5f;
 
             } else {
                 amplitude = powf(2.0f, -20.0f * blend + 10.0f);
-                oscillation = sinf(sineFactor * (2.0f * M_PI) / 4.5f);
+                oscillation = sinf(sineFactor * (2.0f * PI) / 4.5f);
                 blend = (amplitude * oscillation) * 0.5f + 1.0f;
             }
         
@@ -150,17 +152,17 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
         }
 
         case H2DE_EASING_SINE_IN: {
-            blend = 1.0f - cosf((blend * M_PI) * 0.5f);
+            blend = 1.0f - cosf((blend * PI) * 0.5f);
             break;
         }
 
         case H2DE_EASING_SINE_OUT: {
-            blend = sinf((blend * M_PI) * 0.5f);
+            blend = sinf((blend * PI) * 0.5f);
             break;
         }
 
         case H2DE_EASING_SINE_IN_OUT: {
-            blend = -(cosf(M_PI * blend) - 1.0f) * 0.5f;
+            blend = -(cosf(PI * blend) - 1.0f) * 0.5f;
             break;
         }
 

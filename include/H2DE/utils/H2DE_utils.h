@@ -7,6 +7,13 @@
 #include <random>
 #include <SDL2/SDL_video.h>
 
+#undef max
+
+using H2DE_TimelineID = uint32_t;
+using H2DE_ChannelID = int8_t;
+
+#define H2DE_UINT8_MAX 255
+
 class H2DE_Object;
 class H2DE_ButtonObject;
 class H2DE_Surface;
@@ -50,10 +57,10 @@ enum H2DE_Easing {
 };
 
 enum H2DE_Face {
-    H2DE_FACE_TOP = 0b00,
-    H2DE_FACE_RIGHT = 0b01,
-    H2DE_FACE_BOTTOM = 0b10,
-    H2DE_FACE_LEFT = 0b11,
+    H2DE_FACE_TOP       = 0b00,
+    H2DE_FACE_RIGHT     = 0b01,
+    H2DE_FACE_BOTTOM    = 0b10,
+    H2DE_FACE_LEFT      = 0b11,
 };
 
 enum H2DE_TextAlign {
@@ -256,13 +263,13 @@ using H2DE_PixelRect = H2DE_Rect<int>;
 using H2DE_LevelRect = H2DE_Rect<float>;
 
 struct H2DE_ColorRGB {
-    Uint8 r = SDL_MAX_UINT8;
-    Uint8 g = SDL_MAX_UINT8;
-    Uint8 b = SDL_MAX_UINT8;
-    Uint8 a = SDL_MAX_UINT8;
+    uint8_t r = H2DE_UINT8_MAX;
+    uint8_t g = H2DE_UINT8_MAX;
+    uint8_t b = H2DE_UINT8_MAX;
+    uint8_t a = H2DE_UINT8_MAX;
 
     explicit operator H2DE_ColorHSV() const;
-    explicit operator Uint32() const;
+    explicit operator uint32_t() const;
 
     inline bool operator==(const H2DE_ColorRGB& other) const { return (r == other.r&& g == other.g && b == other.b && a == other.a); }
     inline bool operator!=(const H2DE_ColorRGB& other) const { return !(*this == other); }
@@ -334,7 +341,7 @@ struct H2DE_Padding {
 };
 
 struct H2DE_WindowData {
-    unsigned int fps = 60;
+    uint16_t fps = 60;
     const char* title = "H2DE Window";
     H2DE_PixelPos pos = { SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED };
     H2DE_PixelSize size = { 1280, 720 };
@@ -386,7 +393,7 @@ struct H2DE_Text {
 
 struct H2DE_ObjectData {
     H2DE_Transform transform = H2DE_Transform();
-    Uint8 opacity = UINT8_MAX;
+    uint8_t opacity = H2DE_UINT8_MAX;
     bool absolute = false;
     int index = 0;
 };
@@ -410,6 +417,10 @@ struct H2DE_TextObjectData {
     H2DE_Text text = H2DE_Text();
 };
 
+struct H2DE_TimeObjectData {
+
+};
+
 struct H2DE_SurfaceData {
     H2DE_Transform transform = H2DE_Transform();
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
@@ -429,8 +440,8 @@ struct H2DE_SpriteData {
     H2DE_PixelPos startingPos = { 0, 0 };
     H2DE_PixelSize size = { 1, 1 };
     int spacing = 0;
-    unsigned int nbFrame = 0;
-    unsigned int delay = 200;
+    uint16_t nbFrame = 0;
+    uint32_t delay = 200;
     bool pauseSensitive = true;
 };
 

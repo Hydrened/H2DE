@@ -9,27 +9,27 @@ private:
     H2DE_Engine* engine;
 
     struct H2DE_Timeline {
-        unsigned int current = 0;
-        unsigned int duration;
-        int loops;
-        unsigned int currentLoop = 0;
+        uint32_t current = 0;
+        uint32_t duration;
+        uint32_t loops;
+        uint32_t currentLoop = 0;
         H2DE_Easing easing;
         std::function<void(float)> update;
         std::function<void()> completed;
         bool pauseSensitive;
     };
 
-    std::unordered_map<int, H2DE_Timeline> timelines;
-    unsigned int id = 0;
+    std::unordered_map<H2DE_TimelineID, H2DE_Timeline> timelines;
+    H2DE_TimelineID id = 0;
 
     H2DE_TimelineManager(H2DE_Engine* engine);
     ~H2DE_TimelineManager();
 
     void update();
 
-    unsigned int create(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive = true);
-    void reset(unsigned int id);
-    void stop(unsigned int id, bool callCompleted);
+    H2DE_TimelineID create(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
+    void reset(H2DE_TimelineID id);
+    void stop(H2DE_TimelineID id, bool callCompleted);
 
     friend class H2DE_Engine;
 };

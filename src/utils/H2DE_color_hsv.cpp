@@ -42,10 +42,10 @@ H2DE_ColorHSV::operator H2DE_ColorRGB() const {
         b_f = x;
     }
 
-    rgb.r = static_cast<Uint8>((r_f + m) * 255);
-    rgb.g = static_cast<Uint8>((g_f + m) * 255);
-    rgb.b = static_cast<Uint8>((b_f + m) * 255);
-    rgb.a = static_cast<Uint8>(a * 255);
+    rgb.r = static_cast<uint8_t>((r_f + m) * 255);
+    rgb.g = static_cast<uint8_t>((g_f + m) * 255);
+    rgb.b = static_cast<uint8_t>((b_f + m) * 255);
+    rgb.a = static_cast<uint8_t>(a * 255);
 
     return rgb;
 }

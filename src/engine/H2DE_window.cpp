@@ -127,24 +127,22 @@ void H2DE_Window::fixRatioSize(const H2DE_PixelSize& size) {
         return;
     }
 
-    float ratio;
-    switch (data.ratio) {
-        case H2DE_WINDOW_RATIO_CUSTOM: ratio = customRatio; break;
-        case H2DE_WINDOW_RATIO_4_3: ratio = 4.0f / 3.0f; break;
-        case H2DE_WINDOW_RATIO_3_2: ratio = 3.0f / 2.0f; break;
-        case H2DE_WINDOW_RATIO_5_4: ratio = 5.0f / 4.0f; break;
-        case H2DE_WINDOW_RATIO_16_10: ratio = 16.0f / 10.0f; break;
-        case H2DE_WINDOW_RATIO_16_9: ratio = 16.0f / 9.0f; break;
-        case H2DE_WINDOW_RATIO_21_9: ratio = 21.0f / 9.0f; break;
-        case H2DE_WINDOW_RATIO_32_9: ratio = 32.0f / 9.0f; break;
-        default: return;
+    static constexpr std::array<float, 8> ratios = { 0.0f, 4.0f / 3.0f, 3.0f / 2.0f, 5.0f / 4.0f, 16.0f / 10.0f, 16.0f / 9.0f, 21.0f / 9.0f, 32.0f / 9.0f };
+
+    const int ratioIndex = static_cast<int>(data.ratio) - 1;
+    if (ratioIndex < 0 || ratioIndex >= ratios.size()) {
+        return;
     }
+
+    const float ratio = (data.ratio != H2DE_WINDOW_RATIO_CUSTOM)
+        ? ratios.at(ratioIndex)
+        : customRatio;
 
     const int wDiff = std::abs(size.x - oldSize.x);
     const int hDiff = std::abs(size.y - oldSize.y);
 
     const bool resizeWidth = (!oldSize.isNull())
-        ? wDiff < hDiff
+        ? (wDiff < hDiff)
         : false;
 
     H2DE_PixelSize finalSize = size;

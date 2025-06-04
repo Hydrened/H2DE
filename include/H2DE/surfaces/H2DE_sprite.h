@@ -1,5 +1,5 @@
-#ifndef H2DE_SPRITE_H
-#define H2DE_SPRITE_H
+#ifndef H2DE_SURFACE_SPRITE_H
+#define H2DE_SURFACE_SPRITE_H
 
 #include <H2DE/surfaces/H2DE_surface.h>
 
@@ -8,7 +8,7 @@ private:
     H2DE_SpriteData spriteData;
 
     int delayId = -1;
-    unsigned int currentFrame = 0;
+    uint16_t currentFrame = 0;
 
     H2DE_Sprite(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData);
     ~H2DE_Sprite() override;
@@ -26,8 +26,8 @@ public:
     inline H2DE_PixelPos getStartingPos() const { return spriteData.startingPos; }
     inline H2DE_PixelSize getSize() const { return spriteData.size; }
     inline int getSpacing() const { return spriteData.spacing; }
-    inline unsigned int getNbFrame() const { return spriteData.nbFrame; }
-    inline unsigned int getDelay() const { return spriteData.delay; }
+    inline uint16_t getNbFrame() const { return spriteData.nbFrame; }
+    inline uint32_t getDelay() const { return spriteData.delay; }
     inline bool isPauseSensitive() const { return spriteData.pauseSensitive; }
 
     void setTextureName(const std::string& textureName);
@@ -35,11 +35,13 @@ public:
     void setStartingPos(const H2DE_PixelPos& startingPos);
     void setSize(const H2DE_PixelSize& size);
     void setSpacing(int spacing);
-    void setNbFrame(unsigned int nbFrame);
-    void setDelay(unsigned int delay);
+    void setNbFrame(uint16_t nbFrame);
+    void setDelay(uint32_t delay);
     void setPauseSensitive(bool pauseSensitive);
 
-    unsigned int setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+
+    using H2DE_DataType = H2DE_SpriteData;
 
     friend class H2DE_Object;
 };

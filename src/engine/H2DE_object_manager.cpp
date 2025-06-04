@@ -1,18 +1,18 @@
-#include "H2DE/engine/H2DE_button_manager.h"
+#include "H2DE/engine/H2DE_object_manager.h"
 #include "H2DE/engine/H2DE_geometry.h"
 
 // INIT
-H2DE_ButtonManager::H2DE_ButtonManager(H2DE_Engine* e) : engine(e) {
+H2DE_ObjectManager::H2DE_ObjectManager(H2DE_Engine* e) : engine(e) {
 
 }
 
 // CLEANUP
-H2DE_ButtonManager::~H2DE_ButtonManager() {
+H2DE_ObjectManager::~H2DE_ObjectManager() {
 
 }
 
 // EVENTS
-void H2DE_ButtonManager::handleEvents(SDL_Event event) {
+void H2DE_ObjectManager::handleEvents(SDL_Event event) {
     switch (event.type) {
         case SDL_MOUSEBUTTONDOWN:
             handleMouseDownEvents(event);
@@ -31,7 +31,7 @@ void H2DE_ButtonManager::handleEvents(SDL_Event event) {
     }
 }
 
-void H2DE_ButtonManager::handleMouseDownEvents(SDL_Event event) {
+void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
     const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
 
@@ -54,7 +54,7 @@ void H2DE_ButtonManager::handleMouseDownEvents(SDL_Event event) {
     }
 }
 
-void H2DE_ButtonManager::handleMouseUpEvents(SDL_Event event) {
+void H2DE_ObjectManager::handleMouseUpEvents(SDL_Event event) {
     if (!mouseDown) {
         return;
     }
@@ -65,7 +65,7 @@ void H2DE_ButtonManager::handleMouseUpEvents(SDL_Event event) {
     }
 }
 
-void H2DE_ButtonManager::handleHoverEvents(SDL_Event event) {
+void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
     const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
 
@@ -113,7 +113,7 @@ void H2DE_ButtonManager::handleHoverEvents(SDL_Event event) {
     }
 }
 
-void H2DE_ButtonManager::handleBlurEvents(SDL_Event event) {
+void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
     if (!hovered) {
         return;
     }
@@ -143,7 +143,7 @@ void H2DE_ButtonManager::handleBlurEvents(SDL_Event event) {
 }
 
 // UDPATE
-void H2DE_ButtonManager::updateButtonBuffer(const std::vector<H2DE_Object*>& objects) {
+void H2DE_ObjectManager::refreshButtonBuffer(const std::vector<H2DE_Object*>& objects) {
     for (H2DE_Object* object : objects) {
         H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
 
@@ -165,7 +165,7 @@ void H2DE_ButtonManager::updateButtonBuffer(const std::vector<H2DE_Object*>& obj
 }
 
 // GETTER
-const std::vector<H2DE_ButtonObject*> H2DE_ButtonManager::getValidButtons() const {
+const std::vector<H2DE_ButtonObject*> H2DE_ObjectManager::getValidButtons() const {
     std::vector<H2DE_ButtonObject*> res;
 
     for (H2DE_ButtonObject* button : buttons) {

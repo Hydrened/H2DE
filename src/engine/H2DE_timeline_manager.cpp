@@ -51,7 +51,7 @@ void H2DE_TimelineManager::update() {
 }
 
 // ACIOTNS
-unsigned int H2DE_TimelineManager::create(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive) {
+H2DE_TimelineID H2DE_TimelineManager::create(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive) {
     H2DE_TimelineManager::H2DE_Timeline timeline = H2DE_TimelineManager::H2DE_Timeline();
     timeline.duration = duration;
     timeline.loops = loops;
@@ -66,7 +66,7 @@ unsigned int H2DE_TimelineManager::create(unsigned int duration, H2DE_Easing eas
     return id;
 }
 
-void H2DE_TimelineManager::reset(unsigned int id) {
+void H2DE_TimelineManager::reset(H2DE_TimelineID id) {
     const auto it = timelines.find(id);
 
     if (it != timelines.end()) {
@@ -75,11 +75,10 @@ void H2DE_TimelineManager::reset(unsigned int id) {
     }
 }
 
-void H2DE_TimelineManager::stop(unsigned int id, bool callCompleted) {
+void H2DE_TimelineManager::stop(H2DE_TimelineID id, bool callCompleted) {
     const auto it = timelines.find(id);
 
     if (it != timelines.end()) {
-
         if (callCompleted) {
             if (it->second.update) {
                 it->second.update(1.0f);
@@ -89,7 +88,7 @@ void H2DE_TimelineManager::stop(unsigned int id, bool callCompleted) {
                 it->second.completed();
             }
         }
-        
+
         timelines.erase(it);
     }
 }

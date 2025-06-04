@@ -14,9 +14,9 @@ private:
 
     std::unordered_map<std::string, SDL_Texture*> textures = {};
 
-    unsigned int objectsRendered = 0;
-    unsigned int surfacesRendered = 0;
-    unsigned int hitboxesRendered = 0;
+    uint32_t objectsRendered = 0;
+    uint32_t surfacesRendered = 0;
+    uint32_t hitboxesRendered = 0;
 
     using R = H2DE_Renderer;
 

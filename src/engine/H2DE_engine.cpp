@@ -19,7 +19,7 @@ H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fp
         volume = new H2DE_Volume(this);
         timelineManager = new H2DE_TimelineManager(this);
         camera = new H2DE_Camera(this, data.camera);
-        buttonManager = new H2DE_ButtonManager(this);
+        objectManager = new H2DE_ObjectManager(this);
 
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
@@ -56,22 +56,22 @@ void H2DE_Engine::destroy() {
         volume = nullptr;
     }
 
-    if (timelineManager != nullptr) {
-        delete timelineManager;
-        timelineManager = nullptr;
-    }
-
     if (camera != nullptr) {
         delete camera;
         camera = nullptr;
     }
 
-    if (buttonManager != nullptr) {
-        delete buttonManager;
-        buttonManager = nullptr;
+    if (objectManager != nullptr) {
+        delete objectManager;
+        objectManager = nullptr;
     }
 
     destroyObjects();
+
+    if (timelineManager != nullptr) {
+        delete timelineManager;
+        timelineManager = nullptr;
+    }
 
     if (settings != nullptr) {
         delete settings;
@@ -166,7 +166,7 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
             handleEventsCall(event);
         }
 
-        buttonManager->handleEvents(event);
+        objectManager->handleEvents(event);
     }
 }
 
@@ -223,55 +223,34 @@ void H2DE_Engine::debugModePreviousFrame() {
 }
 
 // -- timeline
-unsigned int H2DE_Engine::createTimeline(unsigned int duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, int loops, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Engine::createTimeline(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive) {
     return timelineManager->create(duration, easing, update, completed, loops, pauseSensitive);
 }
 
-void H2DE_Engine::resetTimeline(unsigned int id) {
+void H2DE_Engine::resetTimeline(H2DE_TimelineID id) {
     timelineManager->reset(id);
 }
 
-void H2DE_Engine::stopTimeline(unsigned int id, bool callCompleted) {
+void H2DE_Engine::stopTimeline(H2DE_TimelineID id, bool callCompleted) {
     timelineManager->stop(id, callCompleted);
 }
 
 // -- delay
-unsigned int H2DE_Engine::delay(unsigned int duration, const std::function<void()>& callback, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Engine::delay(H2DE_TimelineID duration, const std::function<void()>& callback, bool pauseSensitive) {
     return timelineManager->create(duration, H2DE_EASING_LINEAR, nullptr, callback, 1, pauseSensitive);
 }
 
-void H2DE_Engine::resetDelay(unsigned int id) {
+void H2DE_Engine::resetDelay(H2DE_TimelineID id) {
     timelineManager->reset(id);
 }
 
-void H2DE_Engine::stopDelay(unsigned int id,  bool callCompleted) {
+void H2DE_Engine::stopDelay(H2DE_TimelineID id,  bool callCompleted) {
     timelineManager->stop(id, callCompleted);
 }
 
 // -- objects
-H2DE_BarObject* H2DE_Engine::createBarObject(const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData) {
-    H2DE_BarObject* object = new H2DE_BarObject(this, objectData, barObjectData);
-    objects.push_back(object);
-    return object;
-}
-
-H2DE_BasicObject* H2DE_Engine::createBasicObject(const H2DE_ObjectData& objectData) {
-    H2DE_BasicObject* object = new H2DE_BasicObject(this, objectData);
-    objects.push_back(object);
-    return object;
-}
-
-H2DE_ButtonObject* H2DE_Engine::createButtonObject(const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData) {
-    H2DE_ButtonObject* object = new H2DE_ButtonObject(this, objectData, buttonObjectData);
-    objects.push_back(object);
-    buttonManager->updateButtonBuffer(objects);
-    return object;
-}
-
-H2DE_TextObject* H2DE_Engine::createTextObject(const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData) {
-    H2DE_TextObject* object = new H2DE_TextObject(this, objectData, textObjectData);
-    objects.push_back(object);
-    return object;
+void H2DE_Engine::refreshObjectManager() {
+    objectManager->refreshButtonBuffer(objects);
 }
 
 bool H2DE_Engine::destroyObject(H2DE_Object* object) {
@@ -279,7 +258,7 @@ bool H2DE_Engine::destroyObject(H2DE_Object* object) {
 
     bool isButton = (dynamic_cast<H2DE_ButtonObject*>(object) != nullptr);
     if (isButton) {
-        buttonManager->updateButtonBuffer(objects);
+        objectManager->refreshButtonBuffer(objects);
     }
 
     if (it != objects.end()) {
@@ -307,14 +286,14 @@ bool H2DE_Engine::isPositionGreater(H2DE_Object* a, H2DE_Object* b) {
         : (aTranslate.x < bTranslate.x);
 }
 
-unsigned int H2DE_Engine::getObjectsRenderedNumber() const {
+uint32_t H2DE_Engine::getObjectsRenderedNumber() const {
     return renderer->objectsRendered;
 }
 
-unsigned int H2DE_Engine::getSurfacesRenderedNumber() const {
+uint32_t H2DE_Engine::getSurfacesRenderedNumber() const {
     return renderer->surfacesRendered;
 }
 
-unsigned int H2DE_Engine::getHitboxesRenderedNumber() const {
+uint32_t H2DE_Engine::getHitboxesRenderedNumber() const {
     return renderer->hitboxesRendered;
 }

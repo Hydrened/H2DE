@@ -7,6 +7,8 @@ class H2DE_BarObject : public H2DE_Object {
 private:
     H2DE_BarObjectData barObjectData;
 
+    using H2DE_DataType = H2DE_BarObjectData;
+
     std::unordered_map<std::string, H2DE_Surface*> frontSurfaces = {};
     std::unordered_map<std::string, H2DE_Surface*> backgroundSurfaces = {};
 
@@ -17,27 +19,17 @@ private:
     void refreshMaxRadius() override;
 
 public:
-    inline H2DE_Texture* addTextureToFront(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {
-        return H2DE_Object::addTexture(frontSurfaces, name, surfaceData, textureData);
-    }
-    inline H2DE_Sprite* addSpriteToFront(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
-        return H2DE_Object::addSprite(frontSurfaces, name, surfaceData, spriteData);
-    }
-    inline H2DE_Color* addColorToFront(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) {
-        return H2DE_Object::addColor(frontSurfaces, name, surfaceData, colorData);
+    template<typename H2DE_Surface_T>
+    inline H2DE_Surface_T* addSurfaceToFront(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
+        return H2DE_Object::addSurface<H2DE_Surface_T>(frontSurfaces, name, surfaceData, specificData);
     }
     inline void removeSurfaceFromFront(const std::string& name) {
         H2DE_Object::removeSurface(frontSurfaces, name);
     }
 
-    inline H2DE_Texture* addTextureToBackground(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {
-        return H2DE_Object::addTexture(backgroundSurfaces, name, surfaceData, textureData);
-    }
-    inline H2DE_Sprite* addSpriteToBackground(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
-        return H2DE_Object::addSprite(backgroundSurfaces, name, surfaceData, spriteData);
-    }
-    inline H2DE_Color* addColorToBackground(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) {
-        return H2DE_Object::addColor(backgroundSurfaces, name, surfaceData, colorData);
+    template<typename H2DE_Surface_T>
+    inline H2DE_Surface_T* addSurfaceToBackground(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
+        return H2DE_Object::addSurface<H2DE_Surface_T>(backgroundSurfaces, name, surfaceData, specificData);
     }
     inline void removeSurfaceFromBackground(const std::string& name) {
         H2DE_Object::removeSurface(backgroundSurfaces, name);
@@ -57,9 +49,9 @@ public:
     void setMax(float max);
     void setValue(float value);
 
-    unsigned int setMin(float min, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
-    unsigned int setMax(float max, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
-    unsigned int setValue(float value, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setMin(float min, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setMax(float max, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setValue(float value, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     friend class H2DE_Engine;
 };

@@ -106,7 +106,7 @@ void H2DE_AssetLoaderManager::importSound(const std::filesystem::path& file) {
 }
 
 void H2DE_AssetLoaderManager::assetImported() {
-    constexpr int barWidth = 30;
+    constexpr uint8_t barWidth = 30;
 
     loadedAssets++;
     const float blend = static_cast<float>(loadedAssets) / assetsToLoad;

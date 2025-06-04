@@ -1,5 +1,5 @@
-#ifndef H2DE_TEXTURE_H
-#define H2DE_TEXTURE_H
+#ifndef H2DE_SURFACE_TEXTURE_H
+#define H2DE_SURFACE_TEXTURE_H
 
 #include <H2DE/surfaces/H2DE_surface.h>
 
@@ -22,8 +22,10 @@ public:
     void setColor(const H2DE_ColorRGB& color);
     void setSrcRect(const std::optional<H2DE_PixelRect>& srcRect);
 
-    unsigned int setColor(const H2DE_ColorRGB& color, unsigned int duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_TimelineID setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
+    using H2DE_DataType = H2DE_TextureData;
+    
     friend class H2DE_Object;
     friend class H2DE_TextObject;
 };

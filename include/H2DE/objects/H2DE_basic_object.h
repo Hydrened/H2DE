@@ -14,14 +14,9 @@ private:
     void refreshMaxRadius() override;
 
 public:
-    inline H2DE_Texture* addTexture(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) {
-        return H2DE_Object::addTexture(surfaces, name, surfaceData, textureData);
-    }
-    inline H2DE_Sprite* addSprite(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData) {
-        return H2DE_Object::addSprite(surfaces, name, surfaceData, spriteData);
-    }
-    inline H2DE_Color* addColor(const std::string& name, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) {
-        return H2DE_Object::addColor(surfaces, name, surfaceData, colorData);
+    template<typename H2DE_Surface_T>
+    inline H2DE_Surface_T* addSurface(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
+        return H2DE_Object::addSurface<H2DE_Surface_T>(surfaces, name, surfaceData, specificData);
     }
     inline void removeSurface(const std::string& name) {
         H2DE_Object::removeSurface(surfaces, name);
