@@ -2,7 +2,7 @@
 #include "H2DE/engine/H2DE_error.h"
 
 // INIT
-H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fps) {
+H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fps), deltaTime(1.0f / data.window.fps) {
     try {
         static bool once = false;
         if (once) {
@@ -84,8 +84,6 @@ void H2DE_Engine::destroyObjects() {
         delete object;
         object = nullptr;
     }
-
-    objects.clear();
 }
 
 void H2DE_DestroyEngine(H2DE_Engine* engine) {
@@ -227,6 +225,18 @@ H2DE_TimelineID H2DE_Engine::createTimeline(H2DE_TimelineID duration, H2DE_Easin
     return timelineManager->create(duration, easing, update, completed, loops, pauseSensitive);
 }
 
+void H2DE_Engine::pauseTimeline(H2DE_TimelineID id) {
+    timelineManager->pause(id);
+}
+
+void H2DE_Engine::resumeTimeline(H2DE_TimelineID id) {
+    timelineManager->resume(id);
+}
+
+void H2DE_Engine::togglePauseTimeline(H2DE_TimelineID id) {
+    timelineManager->togglePause(id);
+}
+
 void H2DE_Engine::resetTimeline(H2DE_TimelineID id) {
     timelineManager->reset(id);
 }
@@ -235,17 +245,13 @@ void H2DE_Engine::stopTimeline(H2DE_TimelineID id, bool callCompleted) {
     timelineManager->stop(id, callCompleted);
 }
 
+bool H2DE_Engine::isTimelinePaused(H2DE_TimelineID id) const {
+    return timelineManager->isPaused(id);
+}
+
 // -- delay
 H2DE_TimelineID H2DE_Engine::delay(H2DE_TimelineID duration, const std::function<void()>& callback, bool pauseSensitive) {
     return timelineManager->create(duration, H2DE_EASING_LINEAR, nullptr, callback, 1, pauseSensitive);
-}
-
-void H2DE_Engine::resetDelay(H2DE_TimelineID id) {
-    timelineManager->reset(id);
-}
-
-void H2DE_Engine::stopDelay(H2DE_TimelineID id,  bool callCompleted) {
-    timelineManager->stop(id, callCompleted);
 }
 
 // -- objects

@@ -1,3 +1,12 @@
+## H2DE-4.0.6
+#### ADDED
+- timer object
+- pause, resume, toggle pause, is paused methods for timelines and delays
+#### FIXED
+- timeline with infinite loop offset
+- timeline crash when duration < delta time
+- button object crash when closing app
+
 ## H2DE-4.0.5
 #### FIXED
 - crash when closing app when using sprite

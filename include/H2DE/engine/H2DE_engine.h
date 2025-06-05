@@ -6,9 +6,11 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <optional>
+#include <sstream>
 #include <vector>
 #include <windows.h>
 
@@ -37,10 +39,6 @@ class H2DE_Volume;
 class H2DE_TimelineManager;
 class H2DE_Camera;
 class H2DE_ObjectManager;
-class H2DE_BarObject;
-class H2DE_BasicObject;
-class H2DE_ButtonObject;
-class H2DE_TextObject;
 
 class H2DE_Engine {
 private:
@@ -111,12 +109,20 @@ public:
     inline void togglePause() { paused = !paused; }
 
     H2DE_TimelineID createTimeline(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
+    void pauseTimeline(H2DE_TimelineID id);
+    void resumeTimeline(H2DE_TimelineID id);
+    void togglePauseTimeline(H2DE_TimelineID id);
     void resetTimeline(H2DE_TimelineID id);
     void stopTimeline(H2DE_TimelineID id, bool callCompleted);
+    bool isTimelinePaused(H2DE_TimelineID id) const;
 
     H2DE_TimelineID delay(H2DE_TimelineID duration, const std::function<void()>& callback, bool pauseSensitive = true);
-    void resetDelay(H2DE_TimelineID id);
-    void stopDelay(H2DE_TimelineID id,  bool callCompleted);
+    inline void pauseDelay(H2DE_TimelineID id) { pauseTimeline(id); }
+    inline void resumeDelay(H2DE_TimelineID id) { resumeTimeline(id); }
+    inline void togglePauseDelay(H2DE_TimelineID id) { togglePauseTimeline(id); }
+    inline void resetDelay(H2DE_TimelineID id) { resetTimeline(id); }
+    inline void stopDelay(H2DE_TimelineID id,  bool callCompleted) { stopTimeline(id, callCompleted); }
+    inline bool isDelayPaused(H2DE_TimelineID id) const { return isTimelinePaused(id); }
 
     template<typename H2DE_Object_T>
     H2DE_Object_T* createObject(const H2DE_ObjectData& objectData) {

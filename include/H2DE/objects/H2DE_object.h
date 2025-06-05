@@ -111,5 +111,6 @@ public:
 #include <H2DE/objects/H2DE_basic_object.h>
 #include <H2DE/objects/H2DE_button_object.h>
 #include <H2DE/objects/H2DE_text_object.h>
+#include <H2DE/objects/H2DE_timer_object.h>
 
 #endif

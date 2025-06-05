@@ -17,6 +17,7 @@ private:
         std::function<void(float)> update;
         std::function<void()> completed;
         bool pauseSensitive;
+        bool paused = false;
     };
 
     std::unordered_map<H2DE_TimelineID, H2DE_Timeline> timelines;
@@ -28,8 +29,12 @@ private:
     void update();
 
     H2DE_TimelineID create(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
+    void pause(H2DE_TimelineID id);
+    void resume(H2DE_TimelineID id);
+    void togglePause(H2DE_TimelineID id);
     void reset(H2DE_TimelineID id);
     void stop(H2DE_TimelineID id, bool callCompleted);
+    bool isPaused(H2DE_TimelineID id) const;
 
     friend class H2DE_Engine;
 };

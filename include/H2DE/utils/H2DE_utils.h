@@ -391,6 +391,13 @@ struct H2DE_Text {
     H2DE_Padding padding = { 0.0f, 0.0f, 0.0f, 0.0f };
 };
 
+struct H2DE_Time {
+    uint8_t hours = 0;
+    uint8_t minutes = 0;
+    uint8_t seconds = 0;
+    uint16_t milliseconds = 0;
+};
+
 struct H2DE_ObjectData {
     H2DE_Transform transform = H2DE_Transform();
     uint8_t opacity = H2DE_UINT8_MAX;
@@ -417,8 +424,15 @@ struct H2DE_TextObjectData {
     H2DE_Text text = H2DE_Text();
 };
 
-struct H2DE_TimeObjectData {
-
+struct H2DE_TimerObjectData {
+    H2DE_Time time = H2DE_Time();
+    H2DE_Text text = H2DE_Text();
+    char separator = ':';
+    bool displayHours = false;
+    bool displayMinutes = false;
+    bool displaySeconds = true;
+    bool displayMilliseconds = false;
+    bool pauseSensitive = true;
 };
 
 struct H2DE_SurfaceData {
