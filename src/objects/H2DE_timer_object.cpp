@@ -49,8 +49,8 @@ void H2DE_TimerObject::refreshTextObject() {
     od.index++;
 
     H2DE_TextObjectData tod = H2DE_TextObjectData();
+    timerObjectData.text.text = getStringifiedTime();
     tod.text = timerObjectData.text;
-    tod.text.text = getStringifiedTime();
 
     textObject = engine->createObject<H2DE_TextObject>(od, tod);
 }

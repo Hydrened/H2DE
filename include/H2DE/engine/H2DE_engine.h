@@ -28,6 +28,7 @@
 #include <H2DE/engine/H2DE_timeline_manager.h>
 #include <H2DE/engine/H2DE_camera.h>
 #include <H2DE/engine/H2DE_object_manager.h>
+#include <H2DE/engine/H2DE_json.h>
 #include <H2DE/surfaces/H2DE_surface.h>
 #include <H2DE/objects/H2DE_object.h>
 

@@ -1,3 +1,8 @@
+## H2DE-4.0.7
+#### ADDED
+- create, read, write json file
+- type getters from json data
+
 ## H2DE-4.0.6
 #### ADDED
 - timer object
