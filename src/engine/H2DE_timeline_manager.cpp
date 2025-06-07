@@ -2,7 +2,7 @@
 
 // INIT
 H2DE_TimelineManager::H2DE_TimelineManager(H2DE_Engine* e) : engine(e) {
-
+    timelines.reserve(1000);
 }
 
 // CLEANUP
@@ -23,7 +23,7 @@ void H2DE_TimelineManager::update() {
         timeline.current += engine->getDeltaTime() * 1000;
 
         if (timeline.update) {
-            float blend = std::clamp(timeline.current, 0u, timeline.duration) / static_cast<float>(timeline.duration);
+            float blend = std::clamp(timeline.current, 0.0f, timeline.duration) / timeline.duration;
             blend = H2DE_Lerp(0.0f, 1.0f, blend, timeline.easing);
             timeline.update(blend);
         }
@@ -34,7 +34,7 @@ void H2DE_TimelineManager::update() {
             }
 
             timeline.currentLoop++;
-            timeline.current = 0;
+            timeline.current = 0.0f;
 
             if (timeline.loops == -1) {
                 ++it;
@@ -54,7 +54,7 @@ void H2DE_TimelineManager::update() {
 // ACIOTNS
 H2DE_TimelineID H2DE_TimelineManager::create(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive) {
     H2DE_TimelineManager::H2DE_Timeline timeline = H2DE_TimelineManager::H2DE_Timeline();
-    timeline.duration = std::max(duration, 1u);
+    timeline.duration = std::max(static_cast<float>(duration) + engine->getDeltaTime() + 1, 1.0f);
     timeline.loops = loops;
     timeline.easing = easing;
     timeline.update = update;

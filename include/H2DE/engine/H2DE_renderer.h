@@ -42,7 +42,7 @@ private:
     void renderSurface(const H2DE_Object* object, H2DE_Surface* surface);
 
     void renderTexture(const H2DE_Object* object, H2DE_Surface* surface) const;
-    void renderTextureSetProperties(H2DE_Surface* surface, SDL_Texture* texture) const;
+    void renderTextureSetProperties(const H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture) const;
     void renderTextureRenderTexture(const H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture) const;
 
     void renderColor(const H2DE_Object* object, H2DE_Surface* surface) const;
@@ -63,6 +63,8 @@ private:
     bool isSurfaceVisible(const H2DE_Surface* surface) const;
     static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
     static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
+
+    static inline float getOpacityBlend(uint8_t opacity) { return (static_cast<float>(opacity) / static_cast<float>(H2DE_UINT8_MAX)); }
 
     H2DE_PixelPos levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const;
     H2DE_PixelPos levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const;

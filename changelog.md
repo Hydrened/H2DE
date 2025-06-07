@@ -1,3 +1,12 @@
+## H2DE-4.0.8
+#### ADDED
+- stop engine method
+#### FIXED
+- color and time lerp not accurate
+- object opacity not working
+- timer hours not rendering
+- timelines not accurate
+
 ## H2DE-4.0.7
 #### ADDED
 - create, read, write json file

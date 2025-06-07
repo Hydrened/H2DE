@@ -7,18 +7,18 @@ class H2DE_Engine;
 class H2DE_LerpManager {
 public:
     static H2DE_TimelineID lerp(H2DE_Engine* engine, const H2DE_ColorRGB& origin, const H2DE_ColorRGB& destination, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(H2DE_ColorRGB)>& update, const std::function<void()>& completed, bool pauseSensitive = true) {
-        const uint8_t redToAdd = destination.r - origin.r;
-        const uint8_t greenToAdd = destination.g - origin.g;
-        const uint8_t blueToAdd = destination.b - origin.b;
-        const uint8_t alphaToAdd = destination.a - origin.a;
+        const int redToAdd = destination.r - origin.r;
+        const int greenToAdd = destination.g - origin.g;
+        const int blueToAdd = destination.b - origin.b;
+        const int alphaToAdd = destination.a - origin.a;
 
         return engine->createTimeline(duration, easing, [update, origin, redToAdd, greenToAdd, blueToAdd, alphaToAdd](float blend) {
             if (update) {
                 H2DE_ColorRGB interpolatedColor = H2DE_ColorRGB();
-                interpolatedColor.r = static_cast<uint8_t>(origin.r + (redToAdd * blend));
-                interpolatedColor.g = static_cast<uint8_t>(origin.g + (greenToAdd * blend));
-                interpolatedColor.b = static_cast<uint8_t>(origin.b + (blueToAdd * blend));
-                interpolatedColor.a = static_cast<uint8_t>(origin.a + (alphaToAdd * blend));
+                interpolatedColor.r = static_cast<uint8_t>(std::round(origin.r + (redToAdd * blend)));
+                interpolatedColor.g = static_cast<uint8_t>(std::round(origin.g + (greenToAdd * blend)));
+                interpolatedColor.b = static_cast<uint8_t>(std::round(origin.b + (blueToAdd * blend)));
+                interpolatedColor.a = static_cast<uint8_t>(std::round(origin.a + (alphaToAdd * blend)));
 
                 update(interpolatedColor);
             }
@@ -26,17 +26,17 @@ public:
     }
 
     static H2DE_TimelineID lerp(H2DE_Engine* engine, const H2DE_Time& origin, const H2DE_Time& destination, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(H2DE_Time)>& update, const std::function<void()>& completed, bool pauseSensitive = true) {
-        const uint8_t hrToAdd = destination.hours - origin.hours;
-        const uint8_t minToAdd = destination.minutes - origin.minutes;
-        const uint8_t secToAdd = destination.seconds - origin.seconds;
-        const uint16_t msToAdd = destination.milliseconds - origin.milliseconds;
+        const int hrToAdd = destination.hours - origin.hours;
+        const int minToAdd = destination.minutes - origin.minutes;
+        const int secToAdd = destination.seconds - origin.seconds;
+        const int msToAdd = destination.milliseconds - origin.milliseconds;
 
         return engine->createTimeline(duration, easing, [update, origin, hrToAdd, minToAdd, secToAdd, msToAdd](float blend) {
             H2DE_Time interpolatedTime = H2DE_Time();
-            interpolatedTime.hours = static_cast<uint8_t>(origin.hours + (hrToAdd * blend));
-            interpolatedTime.minutes = static_cast<uint8_t>(origin.minutes + (minToAdd * blend));
-            interpolatedTime.seconds = static_cast<uint8_t>(origin.seconds + (secToAdd * blend));
-            interpolatedTime.milliseconds = static_cast<uint16_t>(origin.milliseconds + (msToAdd * blend));
+            interpolatedTime.hours = static_cast<uint8_t>(std::round(origin.hours + (hrToAdd * blend)));
+            interpolatedTime.minutes = static_cast<uint8_t>(std::round(origin.minutes + (minToAdd * blend)));
+            interpolatedTime.seconds = static_cast<uint8_t>(std::round(origin.seconds + (secToAdd * blend)));
+            interpolatedTime.milliseconds = static_cast<uint16_t>(std::round(origin.milliseconds + (msToAdd * blend)));
 
             update(interpolatedTime);
 

@@ -155,17 +155,19 @@ void H2DE_Renderer::renderSurface(const H2DE_Object* object, H2DE_Surface* surfa
 // -- -- textures
 void H2DE_Renderer::renderTexture(const H2DE_Object* object, H2DE_Surface* surface) const {
     SDL_Texture* texture = textures.find(surface->getTextureName())->second;
-    renderTextureSetProperties(surface, texture);
+    renderTextureSetProperties(object, surface, texture);
     renderTextureRenderTexture(object, surface, texture);
 }
 
-void H2DE_Renderer::renderTextureSetProperties(H2DE_Surface* surface, SDL_Texture* texture) const {
+void H2DE_Renderer::renderTextureSetProperties(const H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture) const {
     const H2DE_ColorRGB color = surface->getColor();
     const SDL_ScaleMode scaleMode = R::getScaleMode(surface->surfaceData.scaleMode);
     const SDL_BlendMode blendMode = R::getBlendMode(surface->surfaceData.blendMode);
 
+    uint8_t opacity = std::round((getOpacityBlend(color.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
+
     SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
-    SDL_SetTextureAlphaMod(texture, color.a);
+    SDL_SetTextureAlphaMod(texture, opacity);
     SDL_SetTextureBlendMode(texture, blendMode);
     SDL_SetTextureScaleMode(texture, scaleMode);
 }
@@ -205,7 +207,10 @@ void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface
         static_cast<Sint16>(corners[0].y), static_cast<Sint16>(corners[1].y), static_cast<Sint16>(corners[2].y - 1), static_cast<Sint16>(corners[3].y - 1)
     };
 
-    filledPolygonColor(renderer, vx.data(), vy.data(), 4, static_cast<Uint32>(surface->getColor()));
+    H2DE_ColorRGB surfaceColor = surface->getColor();
+    surfaceColor.a = std::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
+
+    filledPolygonColor(renderer, vx.data(), vy.data(), 4, static_cast<Uint32>(surfaceColor));
 }
 
 // -- -- getters

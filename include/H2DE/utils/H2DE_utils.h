@@ -13,6 +13,8 @@ using H2DE_TimelineID = uint32_t;
 using H2DE_ChannelID = int8_t;
 
 #define H2DE_UINT8_MAX 255
+#define H2DE_INDEX_MIN -2147483648
+#define H2DE_INDEX_MAX 2147483647
 
 class H2DE_Object;
 class H2DE_ButtonObject;
@@ -376,7 +378,7 @@ struct H2DE_Transform {
 
 struct H2DE_Hitbox {
     H2DE_Transform transform = H2DE_Transform();
-    H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    H2DE_ColorRGB color = H2DE_ColorRGB();
     int collisionIndex = 0;
     std::function<void(H2DE_Object*, H2DE_Face)> onCollide = nullptr;
 };
@@ -387,7 +389,7 @@ struct H2DE_Text {
     H2DE_Scale fontSize = { 1.0f, 1.0f };
     H2DE_Scale spacing = { 0.1f, 0.3f };
     H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_CENTER_CENTER;
-    H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    H2DE_ColorRGB color = H2DE_ColorRGB();
     H2DE_Padding padding = { 0.0f, 0.0f, 0.0f, 0.0f };
 };
 
@@ -444,13 +446,13 @@ struct H2DE_SurfaceData {
 
 struct H2DE_TextureData {
     std::string textureName = "";
-    H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    H2DE_ColorRGB color = H2DE_ColorRGB();
     std::optional<H2DE_PixelRect> srcRect = std::nullopt;
 };
 
 struct H2DE_SpriteData {
     std::string textureName = "";
-    H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    H2DE_ColorRGB color = H2DE_ColorRGB();
     H2DE_PixelPos startingPos = { 0, 0 };
     H2DE_PixelSize size = { 1, 1 };
     int spacing = 0;
@@ -460,7 +462,7 @@ struct H2DE_SpriteData {
 };
 
 struct H2DE_ColorData {
-    H2DE_ColorRGB color = { 255, 255, 255, 255 };
+    H2DE_ColorRGB color = H2DE_ColorRGB();
 };
 
 struct H2DE_Font {

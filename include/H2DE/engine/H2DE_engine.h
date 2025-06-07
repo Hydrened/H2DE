@@ -92,6 +92,7 @@ public:
     friend void H2DE_DestroyEngine(H2DE_Engine* engine);
 
     void run();
+    inline void stop() { isRunning = false; }
 
     void loadAssets(const std::string& directory);
     void loadFont(const std::string& name, const H2DE_Font& font);

@@ -308,7 +308,7 @@ H2DE_TimelineID H2DE_Object::setRotation(float rotation, H2DE_TimelineID duratio
 
 H2DE_TimelineID H2DE_Object::setOpacity(uint8_t opacity, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<uint8_t>(engine, objectData.opacity, opacity, duration, easing, [this](uint8_t iv) {
-        setRotation(iv);
+        setOpacity(iv);
     }, completed, pauseSensitive);
 }
 

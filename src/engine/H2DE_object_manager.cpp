@@ -3,7 +3,7 @@
 
 // INIT
 H2DE_ObjectManager::H2DE_ObjectManager(H2DE_Engine* e) : engine(e) {
-
+    buttons.reserve(500);
 }
 
 // CLEANUP

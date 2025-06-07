@@ -106,7 +106,7 @@ const std::string H2DE_TimerObject::getStringifiedTime() const {
     std::string res = "";
 
     if (timerObjectData.displayHours) {
-        res += timerObjectData.time.hours;
+        res += std::to_string(timerObjectData.time.hours) + timerObjectData.separator;
     }
 
     if (timerObjectData.displayMinutes) {

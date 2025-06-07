@@ -9,8 +9,8 @@ private:
     H2DE_Engine* engine;
 
     struct H2DE_Timeline {
-        uint32_t current = 0;
-        uint32_t duration;
+        float current = 0.0f;
+        float duration;
         uint32_t loops;
         uint32_t currentLoop = 0;
         H2DE_Easing easing;
