@@ -38,7 +38,8 @@ public:
     inline bool isPauseSensitive() const { return buttonObjectData.pauseSensitive; }
 
     inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const { return surfaces; }
-    inline H2DE_Surface* getSurface(const std::string& name) const { return H2DE_Object::getSurface(surfaces, name); }
+    template<typename H2DE_Surface_T>
+    inline H2DE_Surface_T* getSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); }
     inline H2DE_TextObject* getTextObject() const { return textObject; }
 
     inline void setMouseDown(const std::function<void(H2DE_Object*)>& onMouseDown) { buttonObjectData.onMouseDown = onMouseDown; }

@@ -28,7 +28,7 @@ private:
 
     void update();
 
-    H2DE_TimelineID create(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
+    H2DE_TimelineID create(uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
     void pause(H2DE_TimelineID id);
     void resume(H2DE_TimelineID id);
     void togglePause(H2DE_TimelineID id);

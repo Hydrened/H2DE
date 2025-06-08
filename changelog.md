@@ -1,3 +1,12 @@
+## H2DE-4.0.9
+#### ADDED
+- surface from objects getters with templates
+#### FIXED
+- axis origin not working for surfaces and hitboxes
+- camera translate getter
+- camera not working correctly with axis origins
+- absolute object not rendering on top of non absolute ones
+
 ## H2DE-4.0.8
 #### ADDED
 - stop engine method

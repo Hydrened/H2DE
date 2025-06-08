@@ -134,8 +134,6 @@ void H2DE_Engine::run() {
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
     }
-
-    destroy();
 }
 
 // EVENTS
@@ -221,7 +219,7 @@ void H2DE_Engine::debugModePreviousFrame() {
 }
 
 // -- timeline
-H2DE_TimelineID H2DE_Engine::createTimeline(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Engine::createTimeline(uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive) {
     return timelineManager->create(duration, easing, update, completed, loops, pauseSensitive);
 }
 
@@ -250,7 +248,7 @@ bool H2DE_Engine::isTimelinePaused(H2DE_TimelineID id) const {
 }
 
 // -- delay
-H2DE_TimelineID H2DE_Engine::delay(H2DE_TimelineID duration, const std::function<void()>& callback, bool pauseSensitive) {
+H2DE_TimelineID H2DE_Engine::delay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive) {
     return timelineManager->create(duration, H2DE_EASING_LINEAR, nullptr, callback, 1, pauseSensitive);
 }
 
@@ -262,13 +260,13 @@ void H2DE_Engine::refreshObjectManager() {
 bool H2DE_Engine::destroyObject(H2DE_Object* object) {
     auto it = std::find(objects.begin(), objects.end(), object);
 
-    bool isButton = (dynamic_cast<H2DE_ButtonObject*>(object) != nullptr);
-    if (isButton) {
-        objectManager->refreshButtonBuffer(objects);
-    }
-
     if (it != objects.end()) {
         objects.erase(it);
+
+        bool isButton = (dynamic_cast<H2DE_ButtonObject*>(object) != nullptr);
+        if (isButton) {
+            objectManager->refreshButtonBuffer(objects);
+        }
         return true;
     }
 

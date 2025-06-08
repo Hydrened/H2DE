@@ -3,7 +3,6 @@
 
 #include <H2DE/engine/H2DE_engine.h>
 #include <string>
-#include <limits>
 class H2DE_Engine;
 class H2DE_BasicObject;
 
@@ -37,7 +36,7 @@ public:
     inline bool containsPoint(const H2DE_Translate& translate) const { return getWorldRect().collides(translate); }
 
     inline H2DE_CameraData getData() const { return data; }
-    H2DE_Translate getTranslate() const;
+    inline H2DE_Translate getTranslate() const { return data.translate; }
     inline H2DE_Scale getGameScale() const { return getScale(data.gameWidth); }
     inline H2DE_Scale getInterfaceScale() const { return getScale(data.interfaceWidth); }
     inline H2DE_LevelRect getWorldRect() const { return getTranslate().makeRect(getGameScale()); }

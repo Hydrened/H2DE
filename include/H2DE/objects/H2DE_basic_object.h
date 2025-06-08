@@ -23,7 +23,8 @@ public:
     }
 
     inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const { return surfaces; }
-    inline H2DE_Surface* getSurface(const std::string& name) const { return H2DE_Object::getSurface(surfaces, name); }
+    template<typename H2DE_Surface_T>
+    inline H2DE_Surface_T* getSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); }
 
     friend class H2DE_Engine;
 };

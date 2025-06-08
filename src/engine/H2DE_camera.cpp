@@ -10,7 +10,7 @@ H2DE_Camera::H2DE_Camera(H2DE_Engine* e, const H2DE_CameraData& d) : engine(e), 
 
 void H2DE_Camera::initGrid() {
     H2DE_ObjectData od = H2DE_ObjectData();
-    od.index = std::numeric_limits<int>::min();
+    od.index = H2DE_INDEX_MIN;
 
     grid = engine->createObject<H2DE_BasicObject>(od);
     grid->isGrid = true;
@@ -123,14 +123,6 @@ bool H2DE_Camera::containsObject(const H2DE_Object* object) const {
     const H2DE_LevelRect world_cameraRect = getWorldRect();
     H2DE_Translate world_objectTranslate = object->getTranslate();
 
-    if (engine->camera->isXOriginInverted()) {
-        world_objectTranslate.x *= -1;
-    }
-
-    if (engine->camera->isYOriginInverted()) {
-        world_objectTranslate.y *= -1;
-    }
-
     return world_cameraRect.collides(world_objectTranslate, object->maxRadius);
 }
 
@@ -141,20 +133,6 @@ H2DE_Scale H2DE_Camera::getScale(float width) const {
 
     res.x = width;
     res.y = static_cast<float>(windowSize.y) / static_cast<float>(windowSize.x) * width;
-
-    return res;
-}
-
-H2DE_Translate H2DE_Camera::getTranslate() const {
-    H2DE_Translate res = data.translate;
-
-    if (isXOriginInverted()) {
-        res.x *= -1;
-    }
-
-    if (isYOriginInverted()) {
-        res.y *= -1;
-    }
 
     return res;
 }

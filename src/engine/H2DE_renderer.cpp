@@ -44,6 +44,13 @@ void H2DE_Renderer::clearRenderer() const {
 // -- objects
 void H2DE_Renderer::sortObjects() {
     std::sort(objects.begin(), objects.end(), [](H2DE_Object* a, H2DE_Object* b) {
+        bool absoluteA = a->isAbsolute();
+        bool absoluteB = b->isAbsolute();
+
+        if (absoluteA != absoluteB) {
+            return absoluteB;
+        }
+
         int indexA = a->getIndex();
         int indexB = b->getIndex();
 
@@ -103,12 +110,15 @@ void H2DE_Renderer::renderGrid() {
 
     H2DE_Object* grid = engine->camera->grid;
 
+    bool xIsInverted = engine->camera->isXOriginInverted();
+    bool yIsInverted = engine->camera->isYOriginInverted();
+
     for (const auto& [name, hitbox] : grid->hitboxes) {
         if (name.substr(0, 1) == "c") {
             continue;
         }
 
-        const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(grid, hitbox);
+        const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(grid, hitbox, xIsInverted, yIsInverted);
         renderHitbox(world_hitboxRect, hitbox.color, grid->isAbsolute());
     }
 }
@@ -120,13 +130,16 @@ void H2DE_Renderer::renderCrosshair() {
 
     H2DE_Object* grid = engine->camera->grid;
 
+    bool xIsInverted = engine->camera->isXOriginInverted();
+    bool yIsInverted = engine->camera->isYOriginInverted();
+
     const H2DE_Hitbox crosshairHitboxW = grid->getHitbox("cw");
     const H2DE_Hitbox crosshairHitboxH = grid->getHitbox("ch");
 
     bool grisIsAbsolute = grid->isAbsolute();
 
-    const H2DE_LevelRect world_crosshairHitboxRectW = G::getHitboxRect(grid, crosshairHitboxW);
-    const H2DE_LevelRect world_crosshairHitboxRectH = G::getHitboxRect(grid, crosshairHitboxH);
+    const H2DE_LevelRect world_crosshairHitboxRectW = G::getHitboxRect(grid, crosshairHitboxW, xIsInverted, yIsInverted);
+    const H2DE_LevelRect world_crosshairHitboxRectH = G::getHitboxRect(grid, crosshairHitboxH, xIsInverted, yIsInverted);
     renderHitbox(world_crosshairHitboxRectW, crosshairHitboxW.color, grisIsAbsolute);
     renderHitbox(world_crosshairHitboxRectH, crosshairHitboxH.color, grisIsAbsolute);
 }
@@ -356,6 +369,17 @@ H2DE_PixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelRect& world_rect, b
     H2DE_LevelRect world_cameraRect = engine->camera->getWorldRect();
     H2DE_Translate world_translate = world_rect.getTranslate();
 
+    bool xIsInverted = engine->camera->isXOriginInverted();
+    bool yIsInverted = engine->camera->isYOriginInverted();
+
+    if (xIsInverted) {
+        world_cameraRect.x *= -1;
+    }
+
+    if (yIsInverted) {
+        world_cameraRect.y *= -1;
+    }
+
     if (absolute) {
         world_translate += engine->camera->getInterfaceScale() * 0.5f;
     } else {
@@ -407,16 +431,16 @@ H2DE_Translate H2DE_Renderer::pixelToLevel(const H2DE_PixelPos& pos, bool absolu
     bool xIsInverted = engine->camera->isXOriginInverted();
     bool yIsInverted = engine->camera->isYOriginInverted();
 
+    if (!absolute) {
+        res += engine->camera->getTranslate();
+    }
+
     if (xIsInverted) {
         res.x *= -1;
     }
 
     if (yIsInverted) {
         res.y *= -1;
-    }
-
-    if (!absolute) {
-        res += engine->camera->getTranslate();
     }
 
     return res;

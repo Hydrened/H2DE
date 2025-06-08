@@ -42,8 +42,10 @@ public:
 
     inline std::unordered_map<std::string, H2DE_Surface*> getFrontSurfaces() const { return frontSurfaces; }
     inline std::unordered_map<std::string, H2DE_Surface*> getBackgroundSurfaces() const { return backgroundSurfaces; }
-    inline H2DE_Surface* getFrontSurface(const std::string& name) const { return H2DE_Object::getSurface(frontSurfaces, name); }
-    inline H2DE_Surface* getBackgroundSurface(const std::string& name) const { return H2DE_Object::getSurface(backgroundSurfaces, name); }
+    template<typename H2DE_Surface_T>
+    inline H2DE_Surface_T* getFrontSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(frontSurfaces, name); }
+    template<typename H2DE_Surface_T>
+    inline H2DE_Surface_T* getBackgroundSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(backgroundSurfaces, name); }
 
     void setMin(float min);
     void setMax(float max);

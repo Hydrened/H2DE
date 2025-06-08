@@ -54,7 +54,8 @@ public:
     inline uint16_t getMilliseconds() { return timerObjectData.time.milliseconds; }
 
     inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const { return surfaces; }
-    inline H2DE_Surface* getSurface(const std::string& name) const { return H2DE_Object::getSurface(surfaces, name); }
+    template<typename H2DE_Surface_T>
+    inline H2DE_Surface_T* getSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); }
     inline H2DE_TextObject* getTextObject() const { return textObject; }
     
     void setTime(const H2DE_Time& time);

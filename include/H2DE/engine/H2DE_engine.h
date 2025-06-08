@@ -110,7 +110,7 @@ public:
     inline void resume() { paused = false; }
     inline void togglePause() { paused = !paused; }
 
-    H2DE_TimelineID createTimeline(H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
+    H2DE_TimelineID createTimeline(uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
     void pauseTimeline(H2DE_TimelineID id);
     void resumeTimeline(H2DE_TimelineID id);
     void togglePauseTimeline(H2DE_TimelineID id);
@@ -118,7 +118,7 @@ public:
     void stopTimeline(H2DE_TimelineID id, bool callCompleted);
     bool isTimelinePaused(H2DE_TimelineID id) const;
 
-    H2DE_TimelineID delay(H2DE_TimelineID duration, const std::function<void()>& callback, bool pauseSensitive = true);
+    H2DE_TimelineID delay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive = true);
     inline void pauseDelay(H2DE_TimelineID id) { pauseTimeline(id); }
     inline void resumeDelay(H2DE_TimelineID id) { resumeTimeline(id); }
     inline void togglePauseDelay(H2DE_TimelineID id) { togglePauseTimeline(id); }

@@ -3,14 +3,20 @@
 // GETTERS
 H2DE_LevelRect H2DE_Geometry::getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle, bool xIsInverted, bool yIsInverted) {
     H2DE_Transform parentTransform = object->getTransform();
-    const H2DE_Transform childTransform = transform;
+    H2DE_Transform childTransform = transform;
 
     if (xIsInverted) {
         parentTransform.translate.x *= -1;
+        parentTransform.pivot.x *= -1;
+        childTransform.translate.x *= -1;
+        childTransform.pivot.x *= -1;
     }
 
     if (yIsInverted) {
         parentTransform.translate.y *= -1;
+        parentTransform.pivot.y *= -1;
+        childTransform.translate.y *= -1;
+        childTransform.pivot.y *= -1;
     }
     
     H2DE_LevelRect world_parentRect = parentTransform.translate.makeRect(parentTransform.scale);

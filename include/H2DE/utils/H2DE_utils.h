@@ -15,6 +15,7 @@ using H2DE_ChannelID = int8_t;
 #define H2DE_UINT8_MAX 255
 #define H2DE_INDEX_MIN -2147483648
 #define H2DE_INDEX_MAX 2147483647
+#define H2DE_INVALID_TIMELINE_ID 4294967295u
 
 class H2DE_Object;
 class H2DE_ButtonObject;

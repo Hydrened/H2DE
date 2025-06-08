@@ -194,15 +194,6 @@ float H2DE_Object::getMaxSurfaceRadius(const std::unordered_map<std::string, H2D
     return std::sqrt(res);
 }
 
-H2DE_Surface* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
-    auto it = surfaces.find(name);
-    if (it == surfaces.end()) {
-        H2DE_Error::throwError("Surface named \"" + name + "\" not found");
-    }
-
-    return it->second;
-}
-
 // SETTER
 
 // -- non lerp
