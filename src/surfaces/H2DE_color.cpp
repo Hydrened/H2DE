@@ -6,11 +6,6 @@ H2DE_Color::H2DE_Color(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& s
 
 }
 
-// CLEANUP
-H2DE_Color::~H2DE_Color() {
-
-}
-
 // GETTER
 bool H2DE_Color::isVisible() const {
     bool surfaceIsNotHidden = !(isHidden());

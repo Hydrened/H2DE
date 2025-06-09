@@ -14,7 +14,7 @@ private:
     int sfxVolume = -1;
 
     H2DE_Volume(H2DE_Engine* engine);
-    ~H2DE_Volume();
+    ~H2DE_Volume() = default;
 
     void initSettings() const;
     void loadData();

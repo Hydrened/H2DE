@@ -72,13 +72,7 @@ void H2DE_Settings::refreshFile() {
     refreshValues();
 }
 
-// CLEANUP
-H2DE_Settings::~H2DE_Settings() {
-
-}
-
 // ACTIONS
-// -- add
 bool H2DE_Settings::addSection(const std::string& name) {
     if (hasSection(name)) {
         return false;
@@ -168,7 +162,7 @@ int H2DE_Settings::getKeyInteger(const std::string& section, const std::string& 
     if (!hasKey(section, key)) {
         return defaultValue;
     }
-    
+
     try {
         int value = std::stoi(values.at(section).at(key));
         return value;

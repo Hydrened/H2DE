@@ -14,7 +14,7 @@ void H2DE_Sprite::initDelay() {
 
 // CLEANUP
 H2DE_Sprite::~H2DE_Sprite() {
-    if (delayId != -1) {
+    if (delayId != H2DE_INVALID_DELAY_ID) {
         engine->stopTimeline(delayId, false);
     }
 }

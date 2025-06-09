@@ -24,11 +24,6 @@ void H2DE_Volume::loadData() {
     setSfxVolume(sfxVolume);
 }
 
-// CLEANUP
-H2DE_Volume::~H2DE_Volume() {
-
-}
-
 // ACTIONS
 void H2DE_Volume::playSong(const std::string& name, uint32_t loops, bool pauseSensitive) {
     playChunk(true, name, loops, pauseSensitive);
@@ -78,7 +73,7 @@ int H2DE_Volume::playChunk(bool isSong, const std::string& soundName, uint32_t l
 
     int channel = Mix_PlayChannel((isSong) ? 0 : -1, chunk, loops);
 
-    if (channel != -1) {
+    if (channel != H2DE_ALL_CHANNELS) {
         Mix_Volume(channel, (isSong) ? songVolume : sfxVolume);
         playingChannelsPauseSensitive[channel] = pauseSensitive;
     }

@@ -6,11 +6,6 @@ H2DE_ObjectManager::H2DE_ObjectManager(H2DE_Engine* e) : engine(e) {
     buttons.reserve(500);
 }
 
-// CLEANUP
-H2DE_ObjectManager::~H2DE_ObjectManager() {
-
-}
-
 // EVENTS
 void H2DE_ObjectManager::handleEvents(SDL_Event event) {
     switch (event.type) {

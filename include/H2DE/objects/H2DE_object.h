@@ -22,7 +22,7 @@ protected:
     float maxRadius;
 
     H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
-    virtual ~H2DE_Object();
+    virtual ~H2DE_Object() = default;
 
     static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
     static void destroySurfaces(std::vector<H2DE_Surface*>& surfaces);

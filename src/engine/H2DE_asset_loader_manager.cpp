@@ -6,11 +6,6 @@ H2DE_AssetLoaderManager::H2DE_AssetLoaderManager(H2DE_Engine* e, SDL_Renderer* r
 
 }
 
-// CLEANUP
-H2DE_AssetLoaderManager::~H2DE_AssetLoaderManager() {
-
-}
-
 // ACTIONS
 void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory) {
     if (!std::filesystem::exists(directory)) {

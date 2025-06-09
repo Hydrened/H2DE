@@ -5,11 +5,6 @@ H2DE_TimelineManager::H2DE_TimelineManager(H2DE_Engine* e) : engine(e) {
     timelines.reserve(1000);
 }
 
-// CLEANUP
-H2DE_TimelineManager::~H2DE_TimelineManager() {
-
-}
-
 // UPDATE
 void H2DE_TimelineManager::update() {
     for (auto it = timelines.begin(); it != timelines.end(); ) {
@@ -20,7 +15,7 @@ void H2DE_TimelineManager::update() {
             continue;
         }
 
-        timeline.current += engine->getDeltaTime() * 1000;
+        timeline.current += engine->getDeltaTime() * 1000.0f;
 
         if (timeline.update) {
             float blend = std::clamp(timeline.current, 0.0f, timeline.duration) / timeline.duration;
@@ -36,7 +31,7 @@ void H2DE_TimelineManager::update() {
             timeline.currentLoop++;
             timeline.current = 0.0f;
 
-            if (timeline.loops == -1) {
+            if (timeline.loops == H2DE_INFINITE_LOOP) {
                 ++it;
                 continue;
             }

@@ -6,11 +6,6 @@ H2DE_Texture::H2DE_Texture(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceDat
 
 }
 
-// CLEANUP
-H2DE_Texture::~H2DE_Texture() {
-
-}
-
 // GETTER
 bool H2DE_Texture::isVisible() const {
     bool surfaceIsNotHidden = !(isHidden());

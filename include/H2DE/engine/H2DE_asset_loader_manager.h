@@ -19,7 +19,7 @@ private:
     uint32_t assetsToLoad = 0;
 
     H2DE_AssetLoaderManager(H2DE_Engine* engine, SDL_Renderer* renderer);
-    ~H2DE_AssetLoaderManager();
+    ~H2DE_AssetLoaderManager() = default;
 
     void importFile(const std::filesystem::path& file);
     void importTexture(const std::filesystem::path& file);

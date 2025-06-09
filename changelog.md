@@ -1,3 +1,7 @@
+## H2DE-4.0.10
+#### FIXED
+- camera grid renndering
+
 ## H2DE-4.0.9
 #### ADDED
 - surface from objects getters with templates

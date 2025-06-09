@@ -9,13 +9,22 @@
 
 #undef max
 
+using H2DE_DelayID = uint32_t;
 using H2DE_TimelineID = uint32_t;
+
 using H2DE_ChannelID = int8_t;
 
+#define H2DE_UINT8_MIN 0
 #define H2DE_UINT8_MAX 255
+
 #define H2DE_INDEX_MIN -2147483648
 #define H2DE_INDEX_MAX 2147483647
+
+#define H2DE_INVALID_DELAY_ID 4294967295u
 #define H2DE_INVALID_TIMELINE_ID 4294967295u
+
+#define H2DE_INFINITE_LOOP -1
+#define H2DE_ALL_CHANNELS -1
 
 class H2DE_Object;
 class H2DE_ButtonObject;

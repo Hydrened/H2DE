@@ -8,7 +8,7 @@ private:
     H2DE_TextureData textureData;
 
     H2DE_Texture(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData);
-    ~H2DE_Texture() override;
+    ~H2DE_Texture() override = default;
 
     bool isVisible() const override;
 

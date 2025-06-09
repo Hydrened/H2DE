@@ -118,13 +118,13 @@ public:
     void stopTimeline(H2DE_TimelineID id, bool callCompleted);
     bool isTimelinePaused(H2DE_TimelineID id) const;
 
-    H2DE_TimelineID delay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive = true);
-    inline void pauseDelay(H2DE_TimelineID id) { pauseTimeline(id); }
-    inline void resumeDelay(H2DE_TimelineID id) { resumeTimeline(id); }
-    inline void togglePauseDelay(H2DE_TimelineID id) { togglePauseTimeline(id); }
-    inline void resetDelay(H2DE_TimelineID id) { resetTimeline(id); }
-    inline void stopDelay(H2DE_TimelineID id,  bool callCompleted) { stopTimeline(id, callCompleted); }
-    inline bool isDelayPaused(H2DE_TimelineID id) const { return isTimelinePaused(id); }
+    H2DE_DelayID delay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive = true);
+    inline void pauseDelay(H2DE_DelayID id) { pauseTimeline(id); }
+    inline void resumeDelay(H2DE_DelayID id) { resumeTimeline(id); }
+    inline void togglePauseDelay(H2DE_DelayID id) { togglePauseTimeline(id); }
+    inline void resetDelay(H2DE_DelayID id) { resetTimeline(id); }
+    inline void stopDelay(H2DE_DelayID id,  bool callCompleted) { stopTimeline(id, callCompleted); }
+    inline bool isDelayPaused(H2DE_DelayID id) const { return isTimelinePaused(id); }
 
     template<typename H2DE_Object_T>
     H2DE_Object_T* createObject(const H2DE_ObjectData& objectData) {

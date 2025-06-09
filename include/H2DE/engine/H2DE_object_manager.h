@@ -14,7 +14,7 @@ private:
     H2DE_ButtonObject* hovered = nullptr;
 
     H2DE_ObjectManager(H2DE_Engine* engine);
-    ~H2DE_ObjectManager();
+    ~H2DE_ObjectManager() = default;
 
     void handleEvents(SDL_Event event);
     void handleMouseDownEvents(SDL_Event event);

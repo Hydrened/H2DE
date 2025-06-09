@@ -7,7 +7,7 @@ class H2DE_Sprite : public H2DE_Surface {
 private:
     H2DE_SpriteData spriteData;
 
-    int delayId = -1;
+    int delayId = H2DE_INVALID_DELAY_ID;
     uint16_t currentFrame = 0;
 
     H2DE_Sprite(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_SpriteData& spriteData);

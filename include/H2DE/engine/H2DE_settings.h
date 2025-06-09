@@ -12,7 +12,7 @@ private:
     std::map<std::string, std::map<std::string, std::string>> values = {};
 
     H2DE_Settings(H2DE_Engine* engine);
-    ~H2DE_Settings();
+    ~H2DE_Settings() = default;
 
     void initFile();
     void refreshValues();

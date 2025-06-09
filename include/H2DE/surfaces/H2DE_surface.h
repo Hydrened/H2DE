@@ -20,7 +20,7 @@ protected:
     H2DE_Object* object;
 
     H2DE_Surface(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData);
-    virtual ~H2DE_Surface();
+    virtual ~H2DE_Surface() = default;
 
 public:
     inline void show() { hidden = false; }
