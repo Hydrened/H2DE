@@ -7,8 +7,6 @@ class H2DE_BarObject : public H2DE_Object {
 private:
     H2DE_BarObjectData barObjectData;
 
-    using H2DE_DataType = H2DE_BarObjectData;
-
     std::unordered_map<std::string, H2DE_Surface*> frontSurfaces = {};
     std::unordered_map<std::string, H2DE_Surface*> backgroundSurfaces = {};
 
@@ -54,6 +52,8 @@ public:
     H2DE_TimelineID setMin(float min, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     H2DE_TimelineID setMax(float max, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     H2DE_TimelineID setValue(float value, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+
+    using H2DE_DataType = H2DE_BarObjectData;
 
     friend class H2DE_Engine;
 };

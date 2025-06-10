@@ -1,3 +1,9 @@
+## H2DE-4.0.11
+#### FIXED
+- button on mouse up dot working if on mouse down is null
+#### MODIFIED
+- object data type as public
+
 ## H2DE-4.0.10
 #### FIXED
 - camera grid renndering

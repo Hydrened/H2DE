@@ -31,9 +31,6 @@ void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
 
     for (H2DE_ButtonObject* button : getValidButtons()) {
-        if (!button->buttonObjectData.onMouseDown) {
-            continue;
-        }
 
         const H2DE_Translate mousePos = (button->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 
@@ -41,7 +38,11 @@ void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
             const H2DE_LevelRect buttonRect = G::getHitboxRect(button, hitbox);
 
             if (buttonRect.collides(mousePos)) {
-                button->buttonObjectData.onMouseDown(button);
+
+                if (button->buttonObjectData.onMouseDown) {
+                    button->buttonObjectData.onMouseDown(button);
+                }
+                
                 mouseDown = button;
                 return;
             }
@@ -137,7 +138,7 @@ void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
     }
 }
 
-// UDPATE
+// ACTIONS
 void H2DE_ObjectManager::refreshButtonBuffer(const std::vector<H2DE_Object*>& objects) {
     for (H2DE_Object* object : objects) {
         H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);

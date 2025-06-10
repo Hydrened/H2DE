@@ -8,8 +8,6 @@ class H2DE_TimerObject : public H2DE_Object {
 private:
     H2DE_TimerObjectData timerObjectData;
 
-    using H2DE_DataType = H2DE_TimerObjectData;
-
     H2DE_TextObject* textObject = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
 
@@ -70,6 +68,8 @@ public:
     H2DE_TimelineID setSeconds(uint8_t seconds, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     H2DE_TimelineID setMilliseconds(uint16_t milliseconds, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
+    using H2DE_DataType = H2DE_TimerObjectData;
+    
     friend class H2DE_Engine;
 };
 

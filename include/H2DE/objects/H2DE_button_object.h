@@ -8,8 +8,6 @@ class H2DE_ButtonObject : public H2DE_Object {
 private:
     H2DE_ButtonObjectData buttonObjectData;
 
-    using H2DE_DataType = H2DE_ButtonObjectData;
-
     H2DE_TextObject* textObject = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
 
@@ -47,6 +45,8 @@ public:
     inline void setMouseHover(const std::function<void(H2DE_Object*)>& onHover) { buttonObjectData.onHover = onHover; }
     inline void setMouseBlur(const std::function<void(H2DE_Object*)>& onBlur) { buttonObjectData.onBlur = onBlur; }
     inline void setPauseSensitive(bool pauseSensitive) { buttonObjectData.pauseSensitive = pauseSensitive; }
+
+    using H2DE_DataType = H2DE_ButtonObjectData;
 
     friend class H2DE_Engine;
     friend class H2DE_ObjectManager;
