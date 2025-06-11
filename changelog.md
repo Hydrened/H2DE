@@ -1,3 +1,10 @@
+## H2DE-4.0.12
+#### ADDED
+- button callbacks gives timelineID to manage button animations
+#### FIXED
+- object memory management
+- destroy inner text when destroying timer or button object
+
 ## H2DE-4.0.11
 #### FIXED
 - button on mouse up dot working if on mouse down is null

@@ -11,6 +11,8 @@ private:
     H2DE_TextObject* textObject = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
 
+    H2DE_TimelineID currentTimelineID = H2DE_INVALID_TIMELINE_ID;
+
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     ~H2DE_ButtonObject() override;
 
@@ -40,10 +42,10 @@ public:
     inline H2DE_Surface_T* getSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); }
     inline H2DE_TextObject* getTextObject() const { return textObject; }
 
-    inline void setMouseDown(const std::function<void(H2DE_Object*)>& onMouseDown) { buttonObjectData.onMouseDown = onMouseDown; }
-    inline void setMouseUp(const std::function<void(H2DE_Object*)>& onMouseUp) { buttonObjectData.onMouseUp = onMouseUp; }
-    inline void setMouseHover(const std::function<void(H2DE_Object*)>& onHover) { buttonObjectData.onHover = onHover; }
-    inline void setMouseBlur(const std::function<void(H2DE_Object*)>& onBlur) { buttonObjectData.onBlur = onBlur; }
+    inline void setMouseDown(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onMouseDown) { buttonObjectData.onMouseDown = onMouseDown; }
+    inline void setMouseUp(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onMouseUp) { buttonObjectData.onMouseUp = onMouseUp; }
+    inline void setMouseHover(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onHover) { buttonObjectData.onHover = onHover; }
+    inline void setMouseBlur(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onBlur) { buttonObjectData.onBlur = onBlur; }
     inline void setPauseSensitive(bool pauseSensitive) { buttonObjectData.pauseSensitive = pauseSensitive; }
 
     using H2DE_DataType = H2DE_ButtonObjectData;

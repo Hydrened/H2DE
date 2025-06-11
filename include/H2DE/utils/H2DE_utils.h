@@ -425,10 +425,10 @@ struct H2DE_BarObjectData {
 
 struct H2DE_ButtonObjectData {
     H2DE_Text text = H2DE_Text();
-    std::function<void(H2DE_ButtonObject*)> onMouseDown = nullptr;
-    std::function<void(H2DE_ButtonObject*)> onMouseUp = nullptr;
-    std::function<void(H2DE_ButtonObject*)> onHover = nullptr;
-    std::function<void(H2DE_ButtonObject*)> onBlur = nullptr;
+    std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)> onMouseDown = nullptr;
+    std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)> onMouseUp = nullptr;
+    std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)> onHover = nullptr;
+    std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)> onBlur = nullptr;
     bool pauseSensitive = true;
 };
 

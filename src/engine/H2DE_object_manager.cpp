@@ -40,7 +40,7 @@ void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
             if (buttonRect.collides(mousePos)) {
 
                 if (button->buttonObjectData.onMouseDown) {
-                    button->buttonObjectData.onMouseDown(button);
+                    button->buttonObjectData.onMouseDown(button, button->currentTimelineID);
                 }
                 
                 mouseDown = button;
@@ -56,7 +56,7 @@ void H2DE_ObjectManager::handleMouseUpEvents(SDL_Event event) {
     }
 
     if (mouseDown->buttonObjectData.onMouseUp) {
-        mouseDown->buttonObjectData.onMouseUp(mouseDown);
+        mouseDown->buttonObjectData.onMouseUp(mouseDown, mouseDown->currentTimelineID);
         mouseDown = nullptr;
     }
 }
@@ -95,13 +95,13 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
 
             if (hovered) {
                 if (hovered->buttonObjectData.onBlur) {
-                    hovered->buttonObjectData.onBlur(hovered);
+                    hovered->buttonObjectData.onBlur(hovered, hovered->currentTimelineID);
                 }
             }
 
             hovered = button;
             if (button->buttonObjectData.onHover) {
-                button->buttonObjectData.onHover(button);
+                button->buttonObjectData.onHover(button, button->currentTimelineID);
             }
 
             return;
@@ -131,7 +131,7 @@ void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
 
     if (!stillHovering) {
         if (hovered->buttonObjectData.onBlur) {
-            hovered->buttonObjectData.onBlur(hovered);
+            hovered->buttonObjectData.onBlur(hovered, hovered->currentTimelineID);
         }
 
         hovered = nullptr;

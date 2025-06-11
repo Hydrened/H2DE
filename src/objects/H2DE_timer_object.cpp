@@ -30,6 +30,13 @@ void H2DE_TimerObject::initTimeline() {
 // CLEANUP
 H2DE_TimerObject::~H2DE_TimerObject() {
     destroyTimeline();
+
+    if (textObject != nullptr) {
+        if (engine->destroyObject(textObject)) {
+            textObject = nullptr;
+        }
+    }
+
     H2DE_Object::destroySurfaces(surfaces);
 }
 

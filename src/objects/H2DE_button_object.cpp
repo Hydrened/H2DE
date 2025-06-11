@@ -9,6 +9,12 @@ H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, 
 
 // CLEANUP
 H2DE_ButtonObject::~H2DE_ButtonObject() {
+    if (textObject != nullptr) {
+        if (engine->destroyObject(textObject)) {
+            textObject = nullptr;
+        }
+    }
+
     H2DE_Object::destroySurfaces(surfaces);
 }
 
@@ -48,24 +54,24 @@ void H2DE_ButtonObject::refreshMaxRadius() {
 
 void H2DE_ButtonObject::mouseDown() {
     if (buttonObjectData.onMouseDown) {
-        buttonObjectData.onMouseDown(this);
+        buttonObjectData.onMouseDown(this, currentTimelineID);
     }
 }
 
 void H2DE_ButtonObject::mouseUp() {
     if (buttonObjectData.onMouseUp) {
-        buttonObjectData.onMouseUp(this);
+        buttonObjectData.onMouseUp(this, currentTimelineID);
     }
 }
 
 void H2DE_ButtonObject::mouseHover() {
     if (buttonObjectData.onHover) {
-        buttonObjectData.onHover(this);
+        buttonObjectData.onHover(this, currentTimelineID);
     }
 }
 
 void H2DE_ButtonObject::mouseBlur() {
     if (buttonObjectData.onBlur) {
-        buttonObjectData.onBlur(this);
+        buttonObjectData.onBlur(this, currentTimelineID);
     }
 }

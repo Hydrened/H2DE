@@ -80,9 +80,17 @@ void H2DE_Engine::destroy() {
 }
 
 void H2DE_Engine::destroyObjects() {
-    for (H2DE_Object* object : objects) {
+    for (auto it = objects.begin(); it != objects.end(); ) {
+        H2DE_Object* object = *it;
+
+        if (object == nullptr) {
+            ++it;
+            continue;
+        }
+        
         delete object;
         object = nullptr;
+        it = objects.erase(it);
     }
 }
 
@@ -260,17 +268,21 @@ void H2DE_Engine::refreshObjectManager() {
 bool H2DE_Engine::destroyObject(H2DE_Object* object) {
     auto it = std::find(objects.begin(), objects.end(), object);
 
-    if (it != objects.end()) {
-        objects.erase(it);
-
-        bool isButton = (dynamic_cast<H2DE_ButtonObject*>(object) != nullptr);
-        if (isButton) {
-            objectManager->refreshButtonBuffer(objects);
-        }
-        return true;
+    if (it == objects.end()) {
+        return false;
     }
 
-    return false;
+    bool isButton = (dynamic_cast<H2DE_ButtonObject*>(object) != nullptr);
+
+    objects.erase(it);
+    
+    delete object;
+    
+    if (isButton) {
+        objectManager->refreshButtonBuffer(objects);
+    }
+
+    return true;
 }
 
 // -- mouse
