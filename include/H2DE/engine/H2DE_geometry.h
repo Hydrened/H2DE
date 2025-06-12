@@ -12,11 +12,6 @@ enum H2DE_Flip {
 };
 
 class H2DE_Geometry {
-private:
-    static H2DE_LevelRect getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle, bool xIsInverted, bool yIsInverted);
-
-    static float getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle);
-
 public:
     inline static H2DE_LevelRect getHitboxRect(const H2DE_Object* object, const H2DE_Hitbox& hitbox, bool xIsInverted = false, bool yIsInverted = false) {
         return H2DE_Geometry::getRect(object, hitbox.transform, 90.0f, xIsInverted, yIsInverted);
@@ -48,12 +43,16 @@ public:
 
     static float normalizeRotation(float rotation);
 
-    static inline float getRotationCausedByFlip(H2DE_Flip flip) {
+    static constexpr float getRotationCausedByFlip(H2DE_Flip flip) {
         return ((flip == H2DE_FLIP_XY) ? 180.0f : 0.0f);
     }
     inline static float snapRotation(float rotation, float angle) {
         return std::round(rotation  / angle) * angle;
     }
+
+private:
+    static H2DE_LevelRect getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle, bool xIsInverted, bool yIsInverted);
+    static float getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle);
 };
 
 using G = H2DE_Geometry;

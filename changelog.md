@@ -1,3 +1,12 @@
+## H2DE-4.0.13
+#### ADDED
+- button stop timeline function
+#### FIXED
+- button timeline not stopping when button removed 
+- button mouse up called when mouse isn't on button's hitboxes
+#### MODIFIED
+- remove hitbox and surfaces from object now returns boolean instead of void
+
 ## H2DE-4.0.12
 #### ADDED
 - button callbacks gives timelineID to manage button animations

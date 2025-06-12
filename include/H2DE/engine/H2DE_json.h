@@ -18,10 +18,10 @@ public:
 
     static bool write(const std::filesystem::path& path, const json& data, bool encode);
 
-    static inline int getInteger(const json& integer) { return integer.get<int>(); } 
-    static inline float getFloat(const json& floater) { return floater.get<float>(); } 
-    static inline bool getBool(const json& boolean) { return boolean.get<bool>(); } 
-    static inline char getChar(const json& character) { return character.get<char>(); } 
+    static constexpr int getInteger(const json& integer) { return integer.get<int>(); } 
+    static constexpr float getFloat(const json& floater) { return floater.get<float>(); } 
+    static constexpr bool getBool(const json& boolean) { return boolean.get<bool>(); } 
+    static constexpr char getChar(const json& character) { return character.get<char>(); } 
     static inline std::string getString(const json& string) { return string.get<std::string>(); }
 
     template<typename H2DE_Vector2D_T>

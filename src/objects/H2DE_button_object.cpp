@@ -9,6 +9,8 @@ H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, 
 
 // CLEANUP
 H2DE_ButtonObject::~H2DE_ButtonObject() {
+    stopTimeline();
+
     if (textObject != nullptr) {
         if (engine->destroyObject(textObject)) {
             textObject = nullptr;
@@ -16,6 +18,17 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
     }
 
     H2DE_Object::destroySurfaces(surfaces);
+}
+
+bool H2DE_ButtonObject::stopTimeline() {
+    if (currentTimelineID != H2DE_INVALID_TIMELINE_ID) {
+        engine->stopTimeline(currentTimelineID, true);
+        currentTimelineID = H2DE_INVALID_TIMELINE_ID;
+        
+        return true;
+    }
+
+    return false;
 }
 
 // ACTIONS

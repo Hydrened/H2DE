@@ -80,14 +80,18 @@ void H2DE_Object::updateCollisions() {
 // ACTIONS
 
 // -- surfaces
-void H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+bool H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
     auto it = surfaces.find(name);
 
-    if (it != surfaces.end()) {
+    bool removed = (it != surfaces.end());
+
+    if (removed) {
         surfaces.erase(it);
         refreshMaxRadius();
         refreshSurfaceBuffers();
     }
+
+    return removed;
 }
 
 // -- hitboxes
@@ -96,13 +100,17 @@ void H2DE_Object::addHitbox(const std::string& name, const H2DE_Hitbox& hitbox) 
     refreshMaxRadius();
 }
 
-void H2DE_Object::removeHitbox(const std::string& name) {
+bool H2DE_Object::removeHitbox(const std::string& name) {
     auto it = hitboxes.find(name);
     
-    if (it != hitboxes.end()) {
+    bool removed =  (it != hitboxes.end());
+
+    if (removed) {
         hitboxes.erase(it);
         refreshMaxRadius();
     }
+
+    return removed;
 }
 
 // GETTER

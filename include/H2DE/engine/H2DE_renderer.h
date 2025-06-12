@@ -64,7 +64,7 @@ private:
     static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
     static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
 
-    static inline float getOpacityBlend(uint8_t opacity) { return (static_cast<float>(opacity) / static_cast<float>(H2DE_UINT8_MAX)); }
+    static constexpr float getOpacityBlend(uint8_t opacity) { return (static_cast<float>(opacity) / static_cast<float>(H2DE_UINT8_MAX)); }
 
     H2DE_PixelPos levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const;
     H2DE_PixelPos levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const;

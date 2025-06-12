@@ -5,28 +5,6 @@
 class H2DE_Engine;
 
 class H2DE_Volume {
-private:
-    H2DE_Engine* engine;
-
-    std::unordered_map<std::string, Mix_Chunk*> sounds;
-    std::unordered_map<int, bool> playingChannelsPauseSensitive = {}; 
-    int songVolume = -1;
-    int sfxVolume = -1;
-
-    H2DE_Volume(H2DE_Engine* engine);
-    ~H2DE_Volume() = default;
-
-    void initSettings() const;
-    void loadData();
-
-    void pause();
-    void resume();
-
-    int playChunk(bool isSong, const std::string& soundName, uint32_t loops, bool pauseSensitive = true);
-
-    Mix_Chunk* getChunk(const std::string& soundName) const;
-    static int lerpVolume(int volume);
-
 public:
     void playSong(const std::string& name, uint32_t loops, bool pauseSensitive = true);
     int playSfx(const std::string& name, uint32_t loops, bool pauseSensitive = true);
@@ -51,6 +29,28 @@ public:
 
     friend class H2DE_Engine;
     friend class H2DE_AssetLoaderManager;
+
+private:
+    H2DE_Engine* engine;
+
+    std::unordered_map<std::string, Mix_Chunk*> sounds;
+    std::unordered_map<int, bool> playingChannelsPauseSensitive = {}; 
+    int songVolume = -1;
+    int sfxVolume = -1;
+
+    H2DE_Volume(H2DE_Engine* engine);
+    ~H2DE_Volume() = default;
+
+    void initSettings() const;
+    void loadData();
+
+    void pause();
+    void resume();
+
+    int playChunk(bool isSong, const std::string& soundName, uint32_t loops, bool pauseSensitive = true);
+
+    Mix_Chunk* getChunk(const std::string& soundName) const;
+    static int lerpVolume(int volume);
 };
 
 #endif

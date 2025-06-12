@@ -51,13 +51,27 @@ void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
 }
 
 void H2DE_ObjectManager::handleMouseUpEvents(SDL_Event event) {
-    if (!mouseDown) {
+    if (mouseDown == nullptr) {
         return;
     }
 
-    if (mouseDown->buttonObjectData.onMouseUp) {
-        mouseDown->buttonObjectData.onMouseUp(mouseDown, mouseDown->currentTimelineID);
-        mouseDown = nullptr;
+    if (!mouseDown->buttonObjectData.onMouseUp) {
+        return;
+    }
+
+    const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
+    const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
+
+    const H2DE_Translate mousePos = (mouseDown->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
+
+    for (const auto& [name, hitbox] : mouseDown->hitboxes) {
+        const H2DE_LevelRect buttonRect = G::getHitboxRect(mouseDown, hitbox);
+
+        if (buttonRect.collides(mousePos)) {
+            mouseDown->buttonObjectData.onMouseUp(mouseDown, mouseDown->currentTimelineID);
+            mouseDown = nullptr;
+            return;
+        }
     }
 }
 
@@ -79,7 +93,7 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
                 continue;
             }
 
-            if (hovered) {
+            if (hovered != nullptr) {
                 if (hovered == button) {
                     continue;
                 }
@@ -93,7 +107,7 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
                 }
             }
 
-            if (hovered) {
+            if (hovered != nullptr) {
                 if (hovered->buttonObjectData.onBlur) {
                     hovered->buttonObjectData.onBlur(hovered, hovered->currentTimelineID);
                 }
@@ -103,14 +117,13 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
             if (button->buttonObjectData.onHover) {
                 button->buttonObjectData.onHover(button, button->currentTimelineID);
             }
-
             return;
         }
     }
 }
 
 void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
-    if (!hovered) {
+    if (hovered == nullptr) {
         return;
     }
 
@@ -140,6 +153,9 @@ void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
 
 // ACTIONS
 void H2DE_ObjectManager::refreshButtonBuffer(const std::vector<H2DE_Object*>& objects) {
+    mouseDown = nullptr;
+    hovered = nullptr;
+
     for (H2DE_Object* object : objects) {
         H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
 

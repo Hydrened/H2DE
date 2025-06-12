@@ -5,28 +5,13 @@
 class H2DE_TextObject;
 
 class H2DE_ButtonObject : public H2DE_Object {
-private:
-    H2DE_ButtonObjectData buttonObjectData;
-
-    H2DE_TextObject* textObject = nullptr;
-    std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
-
-    H2DE_TimelineID currentTimelineID = H2DE_INVALID_TIMELINE_ID;
-
-    H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
-    ~H2DE_ButtonObject() override;
-
-    void refreshTextObject();
-    void refreshSurfaceBuffers() override;
-    void refreshMaxRadius() override;
-
 public:
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* addSurface(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
         return H2DE_Object::addSurface<H2DE_Surface_T>(surfaces, name, surfaceData, specificData);
     }
-    inline void removeSurface(const std::string& name) {
-        H2DE_Object::removeSurface(surfaces, name);
+    inline bool removeSurface(const std::string& name) {
+        return H2DE_Object::removeSurface(surfaces, name);
     }
 
     void mouseDown();
@@ -34,8 +19,10 @@ public:
     void mouseHover();
     void mouseBlur();
 
+    bool stopTimeline();
+
     inline H2DE_ButtonObjectData getButtonData() const { return buttonObjectData; }
-    inline bool isPauseSensitive() const { return buttonObjectData.pauseSensitive; }
+    constexpr bool isPauseSensitive() const { return buttonObjectData.pauseSensitive; }
 
     inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const { return surfaces; }
     template<typename H2DE_Surface_T>
@@ -52,6 +39,21 @@ public:
 
     friend class H2DE_Engine;
     friend class H2DE_ObjectManager;
+
+private:
+    H2DE_ButtonObjectData buttonObjectData;
+
+    H2DE_TextObject* textObject = nullptr;
+    std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
+
+    H2DE_TimelineID currentTimelineID = H2DE_INVALID_TIMELINE_ID;
+
+    H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
+    ~H2DE_ButtonObject() override;
+
+    void refreshTextObject();
+    void refreshSurfaceBuffers() override;
+    void refreshMaxRadius() override;
 };
 
 #endif

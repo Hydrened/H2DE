@@ -207,10 +207,6 @@ void H2DE_Engine::loadFont(const std::string& name, const H2DE_Font& font) {
 }
 
 // -- debug mode
-void H2DE_Engine::debugMode(bool state) {
-    debugModeEnabled = state;
-}
-
 void H2DE_Engine::debugModeNextFrame() {
     if (!debugModeEnabled) {
         return;
@@ -224,6 +220,8 @@ void H2DE_Engine::debugModePreviousFrame() {
     if (!debugModeEnabled) {
         return;
     }
+
+    H2DE_Error::logWarning("Feature not implemented");
 }
 
 // -- timeline

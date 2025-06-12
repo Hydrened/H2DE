@@ -5,37 +5,20 @@
 class H2DE_Engine;
 
 class H2DE_Surface {
-private:
-    H2DE_SurfaceData surfaceData;
-
-    bool hidden = false;
-
-    virtual std::string getTextureName() const = 0;
-    virtual H2DE_ColorRGB getColor() const = 0;
-    virtual std::optional<H2DE_PixelRect> getSrcRect() const = 0;
-    virtual bool isVisible() const = 0;
-
-protected:
-    H2DE_Engine* engine;
-    H2DE_Object* object;
-
-    H2DE_Surface(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData);
-    virtual ~H2DE_Surface() = default;
-
 public:
     inline void show() { hidden = false; }
     inline void hide() { hidden = true; }
 
-    inline H2DE_SurfaceData getSurfaceData() const { return surfaceData; }
-    inline H2DE_Transform getTransform() const { return surfaceData.transform; }
-    inline H2DE_Translate getTranslate() const { return surfaceData.transform.translate; }
-    inline H2DE_Scale getScale() const { return surfaceData.transform.scale; }
-    inline float getRotation() const { return surfaceData.transform.rotation; }
-    inline H2DE_Pivot getPivot() const { return surfaceData.transform.pivot; }
-    inline H2DE_ScaleMode getScaleMode() const { return surfaceData.scaleMode; }
-    inline H2DE_BlendMode getBlendMode() const { return surfaceData.blendMode; }
-    inline int getIndex() const { return surfaceData.index; }
-    inline bool isHidden() const { return hidden; }
+    constexpr H2DE_SurfaceData getSurfaceData() const { return surfaceData; }
+    constexpr H2DE_Transform getTransform() const { return surfaceData.transform; }
+    constexpr H2DE_Translate getTranslate() const { return surfaceData.transform.translate; }
+    constexpr H2DE_Scale getScale() const { return surfaceData.transform.scale; }
+    constexpr float getRotation() const { return surfaceData.transform.rotation; }
+    constexpr H2DE_Pivot getPivot() const { return surfaceData.transform.pivot; }
+    constexpr H2DE_ScaleMode getScaleMode() const { return surfaceData.scaleMode; }
+    constexpr H2DE_BlendMode getBlendMode() const { return surfaceData.blendMode; }
+    constexpr int getIndex() const { return surfaceData.index; }
+    constexpr bool isHidden() const { return hidden; }
 
     void setTranslate(const H2DE_Translate& translate);
     void setScale(const H2DE_Scale& scale);
@@ -51,6 +34,23 @@ public:
 
     friend class H2DE_Renderer;
     friend class H2DE_Object;
+
+protected:
+    H2DE_Engine* engine;
+    H2DE_Object* object;
+
+    H2DE_Surface(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData);
+    virtual ~H2DE_Surface() = default;
+
+private:
+    H2DE_SurfaceData surfaceData;
+
+    bool hidden = false;
+
+    virtual std::string getTextureName() const = 0;
+    virtual H2DE_ColorRGB getColor() const = 0;
+    virtual std::optional<H2DE_PixelRect> getSrcRect() const = 0;
+    virtual bool isVisible() const = 0;
 };
 
 #include <H2DE/surfaces/H2DE_texture.h>

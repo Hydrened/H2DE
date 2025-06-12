@@ -5,6 +5,24 @@
 class H2DE_Engine;
 
 class H2DE_Window {
+public:
+    inline H2DE_WindowData getData() const { return data; }
+    H2DE_PixelPos getPos() const;
+    H2DE_PixelSize getSize() const;
+
+    void setPos(const H2DE_PixelPos& pos);
+    void setSize(const H2DE_PixelSize& size);
+    void setMinimumSize(const H2DE_PixelSize& minimumSize);
+    void setMaximumSize(const H2DE_PixelSize& maximumSize);
+    void setTitle(const std::string& title);
+    void setIcon(const std::string& textureName);
+    void setFullscreen(const H2DE_Engine* engine, bool fullscreen);
+    void setResizable(const H2DE_Engine* engine, bool resizable);
+    void setGrab(const H2DE_Engine* engine, bool grab);
+    void setRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio);
+    
+    friend class H2DE_Engine;
+
 private:
     H2DE_Engine* engine;
     H2DE_WindowData data;
@@ -29,27 +47,9 @@ private:
 
     void fixRatioSize(const H2DE_PixelSize& size);
 
-    inline static const SDL_WindowFlags getFlags(bool fullscreen, bool resizable) {
+    inline constexpr const SDL_WindowFlags getFlags(bool fullscreen, bool resizable) {
         return (fullscreen) ? SDL_WINDOW_FULLSCREEN_DESKTOP : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
     }
-
-public:
-    inline H2DE_WindowData getData() const { return data; }
-    H2DE_PixelPos getPos() const;
-    H2DE_PixelSize getSize() const;
-
-    void setPos(const H2DE_PixelPos& pos);
-    void setSize(const H2DE_PixelSize& size);
-    void setMinimumSize(const H2DE_PixelSize& minimumSize);
-    void setMaximumSize(const H2DE_PixelSize& maximumSize);
-    void setTitle(const std::string& title);
-    void setIcon(const std::string& textureName);
-    void setFullscreen(const H2DE_Engine* engine, bool fullscreen);
-    void setResizable(const H2DE_Engine* engine, bool resizable);
-    void setGrab(const H2DE_Engine* engine, bool grab);
-    void setRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio);
-    
-    friend class H2DE_Engine;
 };
 
 #endif

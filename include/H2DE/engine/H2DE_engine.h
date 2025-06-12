@@ -42,51 +42,6 @@ class H2DE_Camera;
 class H2DE_ObjectManager;
 
 class H2DE_Engine {
-private:
-    H2DE_EngineData data;
-
-    H2DE_Settings* settings = nullptr;
-    H2DE_Window* window = nullptr;
-    H2DE_AssetLoaderManager* assetLoaderManager = nullptr;
-    H2DE_Renderer* renderer = nullptr;
-    H2DE_Volume* volume = nullptr;
-    H2DE_TimelineManager* timelineManager = nullptr;
-    H2DE_Camera* camera = nullptr;
-    H2DE_ObjectManager* objectManager = nullptr;
-
-    uint16_t fps = 0;
-    float currentFPS = 0;
-    float deltaTime = 0.0f;
-    bool isRunning = false;
-    bool paused = false;
-
-    bool debugModeEnabled = false;
-    bool debugObjectEnabled = false;
-
-    std::function<void(SDL_Event)> handleEventsCall = nullptr;
-    std::function<void()> updateCall = nullptr;
-
-    std::unordered_map<std::string, H2DE_Font> fonts = {};
-    std::vector<H2DE_Object*> objects = {};
-
-    H2DE_PixelPos mousePos = { 0, 0 };
-
-    H2DE_Engine(const H2DE_EngineData& data);
-    ~H2DE_Engine();
-
-    void handleEvents(SDL_Event event);
-    void update();
-    void updateObjects();
-
-    void refreshObjectManager();
-
-    void destroy();
-    void destroyObjects();
-
-    const H2DE_Translate getMousePos(bool absolute) const;
-
-    static bool isPositionGreater(H2DE_Object* a, H2DE_Object* b);
-
 public:
     friend H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);
     friend void H2DE_DestroyEngine(H2DE_Engine* engine);
@@ -97,7 +52,7 @@ public:
     void loadAssets(const std::string& directory);
     void loadFont(const std::string& name, const H2DE_Font& font);
 
-    void debugMode(bool state);
+    inline void debugMode(bool state) { debugModeEnabled = state; }
     inline void toggleDebugMode() { debugMode(!debugModeEnabled); }
 
     inline void debugObjects(bool state) { debugObjectEnabled = state; }
@@ -150,10 +105,10 @@ public:
     inline H2DE_Window* getWindow() const { return window; }
     inline H2DE_Volume* getVolume() const { return volume; }
     inline H2DE_Camera* getCamera() const { return camera; }
-    inline uint16_t getFPS() const { return fps; }
+    constexpr uint16_t getFPS() const { return fps; }
     inline float getCurrentFPS(bool round = true) const { return (round) ? std::round(currentFPS) : currentFPS; }
-    inline float getDeltaTime() const { return deltaTime; }
-    inline bool isPaused() const { return paused; }
+    constexpr float getDeltaTime() const { return deltaTime; }
+    constexpr bool isPaused() const { return paused; }
 
     uint32_t getObjectsRenderedNumber() const;
     uint32_t getSurfacesRenderedNumber() const;
@@ -174,6 +129,51 @@ public:
     friend class H2DE_ObjectManager;
     friend class H2DE_Object;
     friend class H2DE_TextObject;
+    
+private:
+    H2DE_EngineData data;
+
+    H2DE_Settings* settings = nullptr;
+    H2DE_Window* window = nullptr;
+    H2DE_AssetLoaderManager* assetLoaderManager = nullptr;
+    H2DE_Renderer* renderer = nullptr;
+    H2DE_Volume* volume = nullptr;
+    H2DE_TimelineManager* timelineManager = nullptr;
+    H2DE_Camera* camera = nullptr;
+    H2DE_ObjectManager* objectManager = nullptr;
+
+    uint16_t fps = 0;
+    float currentFPS = 0;
+    float deltaTime = 0.0f;
+    bool isRunning = false;
+    bool paused = false;
+
+    bool debugModeEnabled = false;
+    bool debugObjectEnabled = false;
+
+    std::function<void(SDL_Event)> handleEventsCall = nullptr;
+    std::function<void()> updateCall = nullptr;
+
+    std::unordered_map<std::string, H2DE_Font> fonts = {};
+    std::vector<H2DE_Object*> objects = {};
+
+    H2DE_PixelPos mousePos = { 0, 0 };
+
+    H2DE_Engine(const H2DE_EngineData& data);
+    ~H2DE_Engine();
+
+    void handleEvents(SDL_Event event);
+    void update();
+    void updateObjects();
+
+    void refreshObjectManager();
+
+    void destroy();
+    void destroyObjects();
+
+    const H2DE_Translate getMousePos(bool absolute) const;
+
+    static bool isPositionGreater(H2DE_Object* a, H2DE_Object* b);
 };
 
 H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data);

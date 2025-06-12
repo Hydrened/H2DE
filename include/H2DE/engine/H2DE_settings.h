@@ -5,6 +5,18 @@
 class H2DE_Engine;
 
 class H2DE_Settings {
+public:
+    bool addSection(const std::string& name);
+    bool addKey(const std::string& section, const std::string& key, const std::string& value);
+
+    std::string getKeyString(const std::string& section, const std::string& key, const std::string& defaultValue) const;
+    int getKeyInteger(const std::string& section, const std::string& key, int defaultValue) const;
+    bool getKeyBoolean(const std::string& section, const std::string& key, bool defaultValue) const;
+
+    bool setKeyValue(const std::string& section, const std::string& key, const std::string& value);
+
+    friend class H2DE_Engine;
+
 private:
     H2DE_Engine* engine;
 
@@ -23,18 +35,6 @@ private:
     bool isSection(const std::string& line) const;
     bool isKey(const std::string& line) const;
     const std::pair<std::string, std::string> getKeyAndValue(const std::string& line) const;
-
-public:
-    bool addSection(const std::string& name);
-    bool addKey(const std::string& section, const std::string& key, const std::string& value);
-
-    std::string getKeyString(const std::string& section, const std::string& key, const std::string& defaultValue) const;
-    int getKeyInteger(const std::string& section, const std::string& key, int defaultValue) const;
-    bool getKeyBoolean(const std::string& section, const std::string& key, bool defaultValue) const;
-
-    bool setKeyValue(const std::string& section, const std::string& key, const std::string& value);
-
-    friend class H2DE_Engine;
 };
 
 #endif
