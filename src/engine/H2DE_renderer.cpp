@@ -240,7 +240,7 @@ float H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE_Object* object, H2
 
 SDL_Point H2DE_Renderer::renderSurfaceGetLocalPivot(const H2DE_Object* object, H2DE_Surface* surface) const {
     bool objIsAbsolute = object->objectData.absolute;
-    const H2DE_PixelSize pixel_surfaceScale = R::levelToPixelSize(surface->surfaceData.transform.scale * 0.5f, objIsAbsolute);
+    const H2DE_SubPixelSize pixel_surfaceScale = R::levelToPixelSize(surface->surfaceData.transform.scale * 0.5f, objIsAbsolute);
 
     return static_cast<SDL_Point>(pixel_surfaceScale);
 }
@@ -363,7 +363,7 @@ SDL_BlendMode H2DE_Renderer::getBlendMode(H2DE_BlendMode blendMode) {
 }
 
 // -- level to pixel
-H2DE_PixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const {
+H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     H2DE_LevelRect world_cameraRect = engine->camera->getWorldRect();
@@ -387,33 +387,33 @@ H2DE_PixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelRect& world_rect, b
     }
     
     return {
-        static_cast<int>(std::round(world_translate.x * blockSize)),
-        static_cast<int>(std::round(world_translate.y * blockSize)),
+        world_translate.x * blockSize,
+        world_translate.y * blockSize,
     };
 }
 
-H2DE_PixelPos H2DE_Renderer::levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const {
+H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     return {
-        static_cast<int>(std::round(local_translate.x * blockSize)),
-        static_cast<int>(std::round(local_translate.y * blockSize)),
+        local_translate.x * blockSize,
+        local_translate.y * blockSize,
     };
 }
 
-H2DE_PixelSize H2DE_Renderer::levelToPixelSize(const H2DE_Scale& world_scale, bool absolute) const {
+H2DE_SubPixelSize H2DE_Renderer::levelToPixelSize(const H2DE_Scale& world_scale, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     return {
-        static_cast<int>(std::round(std::abs(world_scale.x) * blockSize)),
-        static_cast<int>(std::round(std::abs(world_scale.y) * blockSize)),
+        std::abs(world_scale.x) * blockSize,
+        std::abs(world_scale.y) * blockSize,
     };
 }
 
-H2DE_PixelRect H2DE_Renderer::levelToPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const {
-    const H2DE_PixelPos pos = levelToPixelPos(world_rect, absolute);
-    const H2DE_PixelSize size = levelToPixelSize(world_rect.getScale(), absolute);
-    return H2DE_PixelRect{ pos.x, pos.y, size.x, size.y };
+H2DE_SubPixelRect H2DE_Renderer::levelToPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const {
+    const H2DE_SubPixelPos pos = levelToPixelPos(world_rect, absolute);
+    const H2DE_SubPixelSize size = levelToPixelSize(world_rect.getScale(), absolute);
+    return H2DE_SubPixelRect{ pos.x, pos.y, size.x, size.y };
 }
 
 // -- pixel to level

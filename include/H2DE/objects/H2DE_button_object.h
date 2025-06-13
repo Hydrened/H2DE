@@ -14,6 +14,9 @@ public:
         return H2DE_Object::removeSurface(surfaces, name);
     }
 
+    inline void enable() { disabled = false; }
+    inline void disable() { disabled = true; }
+
     void mouseDown();
     void mouseUp();
     void mouseHover();
@@ -46,6 +49,7 @@ private:
     H2DE_TextObject* textObject = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
 
+    bool disabled = false;
     H2DE_TimelineID currentTimelineID = H2DE_INVALID_TIMELINE_ID;
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);

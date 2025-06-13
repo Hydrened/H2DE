@@ -177,6 +177,8 @@ struct H2DE_Vector2D {
 using H2DE_PixelPos = H2DE_Vector2D<int>;
 using H2DE_PixelSize = H2DE_Vector2D<int>;
 using H2DE_PixelPivot = H2DE_Vector2D<int>;
+using H2DE_SubPixelPos = H2DE_Vector2D<float>;
+using H2DE_SubPixelSize = H2DE_Vector2D<float>;
 using H2DE_Translate = H2DE_Vector2D<float>;
 using H2DE_Scale = H2DE_Vector2D<float>;
 using H2DE_Pivot = H2DE_Vector2D<float>;
@@ -293,6 +295,7 @@ struct H2DE_Rect {
 };
 
 using H2DE_PixelRect = H2DE_Rect<int>;
+using H2DE_SubPixelRect = H2DE_Rect<float>;
 using H2DE_LevelRect = H2DE_Rect<float>;
 
 struct H2DE_ColorRGB {

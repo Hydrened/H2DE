@@ -31,6 +31,9 @@ void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
 
     for (H2DE_ButtonObject* button : getValidButtons()) {
+        if (button->disabled) {
+            continue;
+        }
 
         const H2DE_Translate mousePos = (button->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 
@@ -55,7 +58,7 @@ void H2DE_ObjectManager::handleMouseUpEvents(SDL_Event event) {
         return;
     }
 
-    if (!mouseDown->buttonObjectData.onMouseUp) {
+    if (!mouseDown->buttonObjectData.onMouseUp || mouseDown->disabled) {
         return;
     }
 
@@ -81,6 +84,10 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
 
     for (H2DE_ButtonObject* button : getValidButtons()) {
         if (!button->buttonObjectData.onHover && !button->buttonObjectData.onBlur) {
+            continue;
+        }
+
+        if (button->disabled) {
             continue;
         }
 
@@ -124,6 +131,10 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
 
 void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
     if (hovered == nullptr) {
+        return;
+    }
+
+    if (hovered->disabled) {
         return;
     }
 

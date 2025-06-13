@@ -1,3 +1,9 @@
+## H2DE-4.0.14
+#### ADDED
+- disable button
+#### FIXED
+- subpixel precision
+
 ## H2DE-4.0.13
 #### ADDED
 - button stop timeline function
