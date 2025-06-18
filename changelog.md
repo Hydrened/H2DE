@@ -1,3 +1,7 @@
+## H2DE-4.0.15
+#### ADDED
+- get texture pixel size
+
 ## H2DE-4.0.14
 #### ADDED
 - disable button

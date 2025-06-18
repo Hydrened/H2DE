@@ -7,7 +7,7 @@ class H2DE_Texture : public H2DE_Surface {
 public:
     inline H2DE_TextureData getTextureData() const { return textureData; }
     inline std::string getTextureName() const override { return textureData.textureName; }
-    constexpr H2DE_ColorRGB getColor() const { return textureData.color; }
+    inline H2DE_ColorRGB getColor() const { return textureData.color; }
     inline std::optional<H2DE_PixelRect> getSrcRect() const override { return textureData.srcRect; };
 
     void setTextureName(const std::string& textureName);

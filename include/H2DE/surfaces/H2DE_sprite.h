@@ -7,7 +7,7 @@ class H2DE_Sprite : public H2DE_Surface {
 public:
     inline H2DE_SpriteData getSpriteData() const { return spriteData; }
     inline std::string getTextureName() const override { return spriteData.textureName; }
-    constexpr H2DE_ColorRGB getColor() const override { return spriteData.color; }
+    inline H2DE_ColorRGB getColor() const override { return spriteData.color; }
     constexpr H2DE_PixelPos getStartingPos() const { return spriteData.startingPos; }
     constexpr H2DE_PixelSize getSize() const { return spriteData.size; }
     constexpr int getSpacing() const { return spriteData.spacing; }

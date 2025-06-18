@@ -117,6 +117,8 @@ public:
     inline const H2DE_Translate getMouseGamePos() const { return getMousePos(false); }
     inline const H2DE_Translate getMouseInterfacePos() const { return getMousePos(true); }
 
+    const H2DE_PixelSize getTextureSize(const std::string& textureName) const;
+
     inline void setFPS(uint16_t FPS) { fps = FPS; }
     inline void setHandleEventCall(const std::function<void(SDL_Event)>& call) { handleEventsCall = call; }
     inline void setUpdateCall(const std::function<void()>& call) { updateCall = call; }

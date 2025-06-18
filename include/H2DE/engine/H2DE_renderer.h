@@ -60,6 +60,7 @@ private:
     const float getBlockSize(float width) const;
     const float getGameBlockSize() const;
     const float getInterfaceBlockSize() const;
+    SDL_Texture* getTexture(const std::string& textureName) const;
     bool isSurfaceVisible(const H2DE_Surface* surface) const;
     static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
     static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);

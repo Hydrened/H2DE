@@ -167,7 +167,11 @@ void H2DE_Renderer::renderSurface(const H2DE_Object* object, H2DE_Surface* surfa
 
 // -- -- textures
 void H2DE_Renderer::renderTexture(const H2DE_Object* object, H2DE_Surface* surface) const {
-    SDL_Texture* texture = textures.find(surface->getTextureName())->second;
+    SDL_Texture* texture = getTexture(surface->getTextureName());
+    if (texture == nullptr) {
+        return;
+    }
+    
     renderTextureSetProperties(object, surface, texture);
     renderTextureRenderTexture(object, surface, texture);
 }
@@ -335,6 +339,15 @@ const float H2DE_Renderer::getGameBlockSize() const {
 
 const float H2DE_Renderer::getInterfaceBlockSize() const {
     return getBlockSize(engine->camera->getInterfaceWidth());
+}
+
+SDL_Texture* H2DE_Renderer::getTexture(const std::string& textureName) const {
+    auto it = (textures.find(textureName));
+    if (it != textures.end()) {
+        return it->second;    
+    }
+
+    return nullptr;
 }
 
 bool H2DE_Renderer::isSurfaceVisible(const H2DE_Surface* surface) const {

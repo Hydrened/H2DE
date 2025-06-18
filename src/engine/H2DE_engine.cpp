@@ -311,3 +311,19 @@ uint32_t H2DE_Engine::getSurfacesRenderedNumber() const {
 uint32_t H2DE_Engine::getHitboxesRenderedNumber() const {
     return renderer->hitboxesRendered;
 }
+
+const H2DE_PixelSize H2DE_Engine::getTextureSize(const std::string& textureName) const {
+    SDL_Texture* texture = renderer->getTexture(textureName);
+    if (texture == nullptr) {
+        H2DE_Error::logError("Can't find texture named \"" + textureName + "\"");
+    }
+
+    int width = 0;
+    int height = 0;
+
+    if (SDL_QueryTexture(texture, nullptr, nullptr, &width, &height) != 0) {
+        H2DE_Error::logError("Failed to query texture named \"" + textureName + "\"");
+    } 
+
+    return { width, height };
+}
