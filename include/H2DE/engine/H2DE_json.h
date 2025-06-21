@@ -24,6 +24,11 @@ public:
     static constexpr char getChar(const json& character) { return character.get<char>(); } 
     static inline std::string getString(const json& string) { return string.get<std::string>(); }
 
+    template<typename T>
+    static inline T getValue(const json& value) {
+        return value.get<T>();
+    }
+
     template<typename H2DE_Vector2D_T>
     static inline H2DE_Vector2D<H2DE_Vector2D_T> getVector2D(const json& translate) {
         return H2DE_Vector2D<H2DE_Vector2D_T>{

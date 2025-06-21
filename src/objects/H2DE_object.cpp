@@ -151,13 +151,18 @@ const std::array<H2DE_Translate, 4> H2DE_Object::getCorners(const H2DE_Transform
     };
 }
 
-H2DE_Hitbox H2DE_Object::getHitbox(const std::string& name) const {
+const H2DE_Hitbox& H2DE_Object::getHitbox(const std::string& name) const {
     auto it = hitboxes.find(name);
     if (it == hitboxes.end()) {
         H2DE_Error::logError("Hitbox named \"" + name + "\" not found");
     }
         
     return it->second;
+}
+
+const H2DE_LevelRect H2DE_Object::getHitboxWorldRect(const std::string& name) const {
+    const H2DE_Transform& hitboxTransform = getHitbox(name).transform;
+    return hitboxTransform.translate.makeRect(hitboxTransform.scale).addTranslate(getTranslate());
 }
 
 float H2DE_Object::getMaxHitboxRadius() const {

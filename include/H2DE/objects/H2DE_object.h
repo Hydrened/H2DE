@@ -28,7 +28,8 @@ public:
     constexpr bool isHidden() const { return hidden; }
     
     inline std::unordered_map<std::string, H2DE_Hitbox> getHitboxes() const { return hitboxes; }
-    H2DE_Hitbox getHitbox(const std::string& name) const;
+    const H2DE_Hitbox& getHitbox(const std::string& name) const;
+    const H2DE_LevelRect getHitboxWorldRect(const std::string& name) const;
 
     void setTranslate(const H2DE_Translate& translate);
     void setScale(const H2DE_Scale& scale);

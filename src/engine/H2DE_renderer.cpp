@@ -133,8 +133,8 @@ void H2DE_Renderer::renderCrosshair() {
     bool xIsInverted = engine->camera->isXOriginInverted();
     bool yIsInverted = engine->camera->isYOriginInverted();
 
-    const H2DE_Hitbox crosshairHitboxW = grid->getHitbox("cw");
-    const H2DE_Hitbox crosshairHitboxH = grid->getHitbox("ch");
+    const H2DE_Hitbox& crosshairHitboxW = grid->getHitbox("cw");
+    const H2DE_Hitbox& crosshairHitboxH = grid->getHitbox("ch");
 
     bool grisIsAbsolute = grid->isAbsolute();
 

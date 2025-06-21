@@ -1,3 +1,7 @@
+## H2DE-4.0.16
+#### ADDED
+- get hitbox world rect
+
 ## H2DE-4.0.15
 #### ADDED
 - get texture pixel size
