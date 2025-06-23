@@ -181,7 +181,7 @@ void H2DE_Renderer::renderTextureSetProperties(const H2DE_Object* object, H2DE_S
     const SDL_ScaleMode scaleMode = R::getScaleMode(surface->surfaceData.scaleMode);
     const SDL_BlendMode blendMode = R::getBlendMode(surface->surfaceData.blendMode);
 
-    uint8_t opacity = std::round((getOpacityBlend(color.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
+    uint8_t opacity = H2DE::round((getOpacityBlend(color.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
 
     SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
     SDL_SetTextureAlphaMod(texture, opacity);
@@ -206,8 +206,8 @@ void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface
     SDL_Rect world_surfaceRect = R::renderSurfaceGetWorldDestRect(object, surface);
     float world_surfaceRotation = R::renderSurfaceGetWorldRotation(object, surface);
     
-    const int halfWidth = static_cast<int>(std::round(world_surfaceRect.w * 0.5f));
-    const int halfHeight = static_cast<int>(std::round(world_surfaceRect.h * 0.5f));
+    const int halfWidth = static_cast<int>(H2DE::round(world_surfaceRect.w * 0.5f));
+    const int halfHeight = static_cast<int>(H2DE::round(world_surfaceRect.h * 0.5f));
 
     const H2DE_PixelRect world_pixel_surfaceRect = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight, world_surfaceRect.w, world_surfaceRect.h };
     const H2DE_PixelPivot world_pixel_pivot = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight };
@@ -225,7 +225,7 @@ void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface
     };
 
     H2DE_ColorRGB surfaceColor = surface->getColor();
-    surfaceColor.a = std::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
+    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
 
     filledPolygonColor(renderer, vx.data(), vy.data(), 4, static_cast<Uint32>(surfaceColor));
 }
@@ -418,8 +418,8 @@ H2DE_SubPixelSize H2DE_Renderer::levelToPixelSize(const H2DE_Scale& world_scale,
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     return {
-        std::abs(world_scale.x) * blockSize,
-        std::abs(world_scale.y) * blockSize,
+        H2DE::abs(world_scale.x) * blockSize,
+        H2DE::abs(world_scale.y) * blockSize,
     };
 }
 

@@ -47,7 +47,7 @@ public:
         return ((flip == H2DE_FLIP_XY) ? 180.0f : 0.0f);
     }
     inline static float snapRotation(float rotation, float angle) {
-        return std::round(rotation  / angle) * angle;
+        return H2DE::round(rotation  / angle) * angle;
     }
 
 private:

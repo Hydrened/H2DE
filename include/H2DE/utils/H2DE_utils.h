@@ -103,15 +103,38 @@ enum H2DE_BlendMode {
     H2DE_BLEND_MODE_NONE,
 };
 
-template<typename T>
-constexpr T H2DE_Abs(T value) {
-    return (value < 0 ? -value : value);
-}
+namespace H2DE {
+    template<typename T>
+    constexpr T abs(T value) {
+        return (value < 0 ? -value : value);
+    }
 
-template<typename T>
-constexpr T H2DE_Pow(T value, unsigned int power) {
-    return (power == 0) ? static_cast<T>(1) : value * H2DE_Pow(value, power - 1);
-}
+    template<typename T>
+    constexpr T pow(T value, unsigned int power) {
+        return (power == 0) ? static_cast<T>(1) : value * H2DE::pow(value, power - 1);
+    }
+
+    template<typename T>
+    constexpr int round(T value) {
+        return (value >= 0) ? static_cast<int>(value + 0.5f) : static_cast<int>(value - 0.5f);
+    }
+
+    template<typename T>
+    constexpr int floor(T value) {
+        return static_cast<int>(value) - (value < static_cast<T>(static_cast<int>(value)) ? 1 : 0);
+    }
+
+    template<typename T>
+    constexpr int ceil(T value) {
+        return static_cast<int>(value) + (value > static_cast<T>(static_cast<int>(value)) ? 1 : 0);
+    }
+
+    int randomIntegerInRange(int min, int max);
+    float randomFloatInRange(float min, float max);
+    bool randomBool();
+
+    float lerp(float min, float max, float blend, H2DE_Easing easing);
+};
 
 template<typename H2DE_Vector2D_T>
 struct H2DE_Vector2D {
@@ -142,10 +165,10 @@ struct H2DE_Vector2D {
     constexpr bool operator==(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return (x == other.x && y == other.y); }
     constexpr bool operator!=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return !(*this == other); }
     constexpr bool operator>(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
-        return (H2DE_Abs<H2DE_Vector2D_T>(x) + H2DE_Abs<H2DE_Vector2D_T>(y) > H2DE_Abs<H2DE_Vector2D_T>(other.x) + H2DE_Abs<H2DE_Vector2D_T>(other.y));
+        return (H2DE::abs<H2DE_Vector2D_T>(x) + H2DE::abs<H2DE_Vector2D_T>(y) > H2DE::abs<H2DE_Vector2D_T>(other.x) + H2DE::abs<H2DE_Vector2D_T>(other.y));
     }
     constexpr bool operator>=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
-        return (H2DE_Abs<H2DE_Vector2D_T>(x) + H2DE_Abs<H2DE_Vector2D_T>(y) >= H2DE_Abs<H2DE_Vector2D_T>(other.x) + H2DE_Abs<H2DE_Vector2D_T>(other.y));
+        return (H2DE::abs<H2DE_Vector2D_T>(x) + H2DE::abs<H2DE_Vector2D_T>(y) >= H2DE::abs<H2DE_Vector2D_T>(other.x) + H2DE::abs<H2DE_Vector2D_T>(other.y));
     }
     constexpr bool operator<(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return !(*this >= other); }
     constexpr bool operator<=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return !(*this > other); }
@@ -169,7 +192,7 @@ struct H2DE_Vector2D {
     H2DE_Vector2D<H2DE_Vector2D_T> rotate(const H2DE_Vector2D<H2DE_Vector2D_T>& pivot, float angle) const;
     constexpr H2DE_Vector2D<H2DE_Vector2D_T> getCenter() const { return (*this * 0.5f); }
     constexpr H2DE_Vector2D_T getDistanceSquared(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
-        return H2DE_Pow(other.x - x, 2) + H2DE_Pow(other.y - y, 2);
+        return H2DE::pow(other.x - x, 2) + H2DE::pow(other.y - y, 2);
     }
     inline H2DE_Vector2D_T getDistance(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return std::sqrt(getDistanceSquared(other)); }
 };
@@ -236,8 +259,8 @@ struct H2DE_Rect {
 
     inline operator SDL_Rect() const {
         return SDL_Rect{
-            static_cast<int>(std::round(x - w * 0.5f)),
-            static_cast<int>(std::round(y - h * 0.5f)),
+            static_cast<int>(H2DE::round(x - w * 0.5f)),
+            static_cast<int>(H2DE::round(y - h * 0.5f)),
             static_cast<int>(w),
             static_cast<int>(h)
         };
@@ -275,8 +298,8 @@ struct H2DE_Rect {
 
     constexpr bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
         return (
-            (H2DE_Abs(x - rect.x) < ((w + rect.w) * 0.5f)) &&
-            (H2DE_Abs(y - rect.y) < ((h + rect.h) * 0.5f))
+            (H2DE::abs(x - rect.x) < ((w + rect.w) * 0.5f)) &&
+            (H2DE::abs(y - rect.y) < ((h + rect.h) * 0.5f))
         );
     }
     constexpr bool collides(const H2DE_Vector2D<H2DE_Rect_T>& translate) const {
@@ -540,11 +563,5 @@ struct H2DE_Font {
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;
     H2DE_BlendMode blendMode = H2DE_BLEND_MODE_BLEND;
 };
-
-int H2DE_RandomIntegerInRange(int min, int max);
-float H2DE_RandomFloatInRange(float min, float max);
-bool H2DE_RandomBool();
-
-float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing);
 
 #endif

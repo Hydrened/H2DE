@@ -162,7 +162,8 @@ const H2DE_Hitbox& H2DE_Object::getHitbox(const std::string& name) const {
 
 const H2DE_LevelRect H2DE_Object::getHitboxWorldRect(const std::string& name) const {
     const H2DE_Transform& hitboxTransform = getHitbox(name).transform;
-    return hitboxTransform.translate.makeRect(hitboxTransform.scale).addTranslate(getTranslate());
+    const H2DE_Scale absScale = { H2DE::abs(hitboxTransform.scale.x), H2DE::abs(hitboxTransform.scale.y) };
+    return hitboxTransform.translate.makeRect(absScale).addTranslate(getTranslate());
 }
 
 float H2DE_Object::getMaxHitboxRadius() const {
@@ -173,7 +174,7 @@ float H2DE_Object::getMaxHitboxRadius() const {
         for (const H2DE_Translate& corner : H2DE_Object::getCorners(hitbox.transform)) {
 
             const H2DE_Translate world_hitboxCorner = corner + world_objectTranslate;
-            float distance = std::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
+            float distance = H2DE::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
 
             if (distance > res) {
                 res = distance;
@@ -192,7 +193,7 @@ float H2DE_Object::getMaxSurfaceRadius(const std::unordered_map<std::string, H2D
         for (const H2DE_Translate& corner : H2DE_Object::getCorners(surface->getTransform())) {
 
             const H2DE_Translate world_hitboxCorner = corner + world_objectTranslate;
-            float distance = std::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
+            float distance = H2DE::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
 
             if (distance > res) {
                 res = distance;

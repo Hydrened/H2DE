@@ -148,6 +148,7 @@ void H2DE_Engine::run() {
 void H2DE_Engine::handleEvents(SDL_Event event) {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
+            
             case SDL_QUIT:
                 isRunning = false;
                 break;

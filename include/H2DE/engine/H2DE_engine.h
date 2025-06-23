@@ -106,7 +106,7 @@ public:
     inline H2DE_Volume* getVolume() const { return volume; }
     inline H2DE_Camera* getCamera() const { return camera; }
     constexpr uint16_t getFPS() const { return fps; }
-    inline float getCurrentFPS(bool round = true) const { return (round) ? std::round(currentFPS) : currentFPS; }
+    inline float getCurrentFPS(bool round = true) const { return (round) ? H2DE::round(currentFPS) : currentFPS; }
     constexpr float getDeltaTime() const { return deltaTime; }
     constexpr bool isPaused() const { return paused; }
 

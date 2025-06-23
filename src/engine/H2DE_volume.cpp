@@ -95,7 +95,7 @@ Mix_Chunk* H2DE_Volume::getChunk(const std::string& soundName) const {
 int H2DE_Volume::lerpVolume(int volume) {
     volume = std::clamp(volume, 0, 100);
     float blend = volume * 100.0f;
-    return H2DE_Lerp(0, MIX_MAX_VOLUME, blend, H2DE_EASING_LINEAR);
+    return H2DE::lerp(0, MIX_MAX_VOLUME, blend, H2DE_EASING_LINEAR);
 }
 
 // SETTER

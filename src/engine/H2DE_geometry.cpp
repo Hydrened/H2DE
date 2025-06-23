@@ -20,12 +20,12 @@ H2DE_LevelRect H2DE_Geometry::getRect(const H2DE_Object* object, const H2DE_Tran
     }
     
     H2DE_LevelRect world_parentRect = parentTransform.translate.makeRect(parentTransform.scale);
-    world_parentRect.w = std::abs(world_parentRect.w);
-    world_parentRect.h = std::abs(world_parentRect.h);
+    world_parentRect.w = H2DE::abs(world_parentRect.w);
+    world_parentRect.h = H2DE::abs(world_parentRect.h);
 
     H2DE_LevelRect local_childRect = childTransform.translate.makeRect(childTransform.scale);
-    local_childRect.w = std::abs(local_childRect.w);
-    local_childRect.h = std::abs(local_childRect.h);
+    local_childRect.w = H2DE::abs(local_childRect.w);
+    local_childRect.h = H2DE::abs(local_childRect.h);
 
     H2DE_Flip parentFlip = G::getFlipFromScale(parentTransform.scale);
     H2DE_Flip childFlip = G::getFlipFromScale(childTransform.scale);

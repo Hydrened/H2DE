@@ -71,14 +71,14 @@ void H2DE_Camera::updateGridObjectHitboxes() {
 
     constexpr float EPSILON = 0.001f;
 
-    float step = std::max(std::floor(data.gameWidth / 50.0f) * 2.0f, 1.0f);
+    float step = std::max(H2DE::floor(data.gameWidth / 50.0f) * 2.0f, 1.0f);
 
-    float startX = std::round(minX) + std::round(std::fmod(minX, step)) * -1;
+    float startX = H2DE::round(minX) + H2DE::round(std::fmod(minX, step)) * -1;
 
     for (float x = startX; x < maxX; x += step) {
         const H2DE_ColorRGB& color = (x == 0.0f)
             ? centerGridColor
-            : (std::abs(std::fmod(x, step * 5.0f)) < EPSILON)
+            : (H2DE::abs(std::fmod(x, step * 5.0f)) < EPSILON)
                 ? mainGridColor : secondGridColor;
 
         float localX = x - cameraTranslate.x;
@@ -90,12 +90,12 @@ void H2DE_Camera::updateGridObjectHitboxes() {
         grid->addHitbox("x-" + std::to_string(x), hitbox);
     }
 
-    float startY = std::round(minY) + std::round(std::fmod(minY, step)) * -1;
+    float startY = H2DE::round(minY) + H2DE::round(std::fmod(minY, step)) * -1;
 
     for (float y = startY; y < maxY; y += step) {
         const H2DE_ColorRGB& color = (y == 0.0f)
             ? centerGridColor
-            : (std::abs(std::fmod(y, step * 5.0f)) < EPSILON)
+            : (H2DE::abs(std::fmod(y, step * 5.0f)) < EPSILON)
                 ? mainGridColor : secondGridColor;
 
         float localY = y - cameraTranslate.y;

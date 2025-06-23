@@ -1,27 +1,27 @@
 #include "H2DE/utils/H2DE_utils.h"
 
-int H2DE_RandomIntegerInRange(int min, int max) {
+int H2DE::randomIntegerInRange(int min, int max) {
     static std::random_device rd;
     static std::default_random_engine e(rd());
     std::uniform_int_distribution<int> dist(min, max);
     return dist(e);
 }
 
-float H2DE_RandomFloatInRange(float min, float max) {
+float H2DE::randomFloatInRange(float min, float max) {
     static std::random_device rd;
     static std::default_random_engine e(rd());
     std::uniform_real_distribution<float> dist(min, max);
     return dist(e);
 }
 
-bool H2DE_RandomBool() {
+bool H2DE::randomBool() {
     static std::random_device rd;
     static std::default_random_engine e(rd());
     std::uniform_int_distribution<int> dist(0, 1);
     return (dist(e) == 0);
 }
 
-float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EASING_LINEAR) {
+float H2DE::lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EASING_LINEAR) {
     constexpr float PI = 3.14159265359f;
 
     blend = std::clamp(blend, 0.0f, 1.0f);
@@ -117,7 +117,7 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
         }
 
         case H2DE_EASING_BOUNCE_IN: {
-            blend = 1.0f - H2DE_Lerp(0.0f, 1.0f, 1.0f - blend, H2DE_EASING_BOUNCE_OUT);
+            blend = 1.0f - H2DE::lerp(0.0f, 1.0f, 1.0f - blend, H2DE_EASING_BOUNCE_OUT);
             break;
         }
 
@@ -140,12 +140,12 @@ float H2DE_Lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EAS
         case H2DE_EASING_BOUNCE_IN_OUT: {
             if (blend < 0.5f) {
                 float bounceBlend = 1.0f - 2.0f * blend;
-                float bounceInValue = H2DE_Lerp(0.0f, 1.0f, bounceBlend, H2DE_EASING_BOUNCE_OUT);
+                float bounceInValue = H2DE::lerp(0.0f, 1.0f, bounceBlend, H2DE_EASING_BOUNCE_OUT);
                 blend = (1.0f - bounceInValue) * 0.5f;
 
             } else {
                 float bounceBlend = 2.0f * blend - 1.0f;
-                float bounceOutValue = H2DE_Lerp(0.0f, 1.0f, bounceBlend, H2DE_EASING_BOUNCE_OUT);
+                float bounceOutValue = H2DE::lerp(0.0f, 1.0f, bounceBlend, H2DE_EASING_BOUNCE_OUT);
                 blend = (1.0f + bounceOutValue) * 0.5f;
             }
             break;

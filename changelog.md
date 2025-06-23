@@ -1,3 +1,11 @@
+## H2DE-4.0.17
+#### ADDED
+- constexpr round, ceil and floor
+- H2DE namespace for abs, round, ceiul, floor, pow, randoms and lerp
+#### FIXED
+- getter for hitbox world rect with negative size
+- crash after destroying button
+
 ## H2DE-4.0.16
 #### ADDED
 - get hitbox world rect

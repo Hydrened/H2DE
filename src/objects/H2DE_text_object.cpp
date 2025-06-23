@@ -141,7 +141,7 @@ const std::vector<std::vector<std::string>> H2DE_TextObject::getLines() const {
 
     const H2DE_Scale charTotalScale = textObjectData.text.fontSize + textObjectData.text.spacing;
     const float totalWidthPadding = textObjectData.text.padding.left + textObjectData.text.padding.right;
-    const int maxNbCharPerLine = std::floor(objectData.transform.scale.x / charTotalScale.x + textObjectData.text.spacing.x - totalWidthPadding);
+    const int maxNbCharPerLine = H2DE::floor(objectData.transform.scale.x / charTotalScale.x + textObjectData.text.spacing.x - totalWidthPadding);
 
     int currentLineIndex = 0;
 

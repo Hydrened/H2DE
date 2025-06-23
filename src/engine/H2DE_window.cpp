@@ -138,8 +138,8 @@ void H2DE_Window::fixRatioSize(const H2DE_PixelSize& size) {
         ? ratios.at(ratioIndex)
         : customRatio;
 
-    const int wDiff = std::abs(size.x - oldSize.x);
-    const int hDiff = std::abs(size.y - oldSize.y);
+    const int wDiff = H2DE::abs(size.x - oldSize.x);
+    const int hDiff = H2DE::abs(size.y - oldSize.y);
 
     const bool resizeWidth = (!oldSize.isNull())
         ? (wDiff < hDiff)

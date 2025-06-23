@@ -31,10 +31,6 @@ void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
 
     for (H2DE_ButtonObject* button : getValidButtons()) {
-        if (button->disabled) {
-            continue;
-        }
-
         const H2DE_Translate mousePos = (button->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 
         for (const auto& [name, hitbox] : button->hitboxes) {
@@ -87,10 +83,6 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
             continue;
         }
 
-        if (button->disabled) {
-            continue;
-        }
-
         const H2DE_Translate mousePos = (button->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 
         for (const auto& [name, hitbox] : button->hitboxes) {
@@ -124,6 +116,7 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
             if (button->buttonObjectData.onHover) {
                 button->buttonObjectData.onHover(button, button->currentTimelineID);
             }
+
             return;
         }
     }
@@ -167,6 +160,8 @@ void H2DE_ObjectManager::refreshButtonBuffer(const std::vector<H2DE_Object*>& ob
     mouseDown = nullptr;
     hovered = nullptr;
 
+    buttons.clear();
+
     for (H2DE_Object* object : objects) {
         H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
 
@@ -192,17 +187,19 @@ const std::vector<H2DE_ButtonObject*> H2DE_ObjectManager::getValidButtons() cons
     std::vector<H2DE_ButtonObject*> res;
 
     for (H2DE_ButtonObject* button : buttons) {
-        if (button) {
-            if (button->hidden) {
-                continue;
-            }
-
-            if (engine->paused && button->buttonObjectData.pauseSensitive) {
-                continue;
-            }
-
-            res.push_back(button);
+        if (button->hidden) {
+            continue;
         }
+
+        if (button->disabled) {
+            continue;
+        }
+
+        if (engine->paused && button->buttonObjectData.pauseSensitive) {
+            continue;
+        }
+
+        res.push_back(button);
     } 
 
     return res;

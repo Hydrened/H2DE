@@ -19,7 +19,7 @@ void H2DE_TimelineManager::update() {
 
         if (timeline.update) {
             float blend = std::clamp(timeline.current, 0.0f, timeline.duration) / timeline.duration;
-            blend = H2DE_Lerp(0.0f, 1.0f, blend, timeline.easing);
+            blend = H2DE::lerp(0.0f, 1.0f, blend, timeline.easing);
             timeline.update(blend);
         }
 

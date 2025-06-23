@@ -15,10 +15,10 @@ public:
         return engine->createTimeline(duration, easing, [update, origin, redToAdd, greenToAdd, blueToAdd, alphaToAdd](float blend) {
             if (update) {
                 H2DE_ColorRGB interpolatedColor = H2DE_ColorRGB();
-                interpolatedColor.r = static_cast<uint8_t>(std::round(origin.r + (redToAdd * blend)));
-                interpolatedColor.g = static_cast<uint8_t>(std::round(origin.g + (greenToAdd * blend)));
-                interpolatedColor.b = static_cast<uint8_t>(std::round(origin.b + (blueToAdd * blend)));
-                interpolatedColor.a = static_cast<uint8_t>(std::round(origin.a + (alphaToAdd * blend)));
+                interpolatedColor.r = static_cast<uint8_t>(H2DE::round(origin.r + (redToAdd * blend)));
+                interpolatedColor.g = static_cast<uint8_t>(H2DE::round(origin.g + (greenToAdd * blend)));
+                interpolatedColor.b = static_cast<uint8_t>(H2DE::round(origin.b + (blueToAdd * blend)));
+                interpolatedColor.a = static_cast<uint8_t>(H2DE::round(origin.a + (alphaToAdd * blend)));
 
                 update(interpolatedColor);
             }
@@ -33,10 +33,10 @@ public:
 
         return engine->createTimeline(duration, easing, [update, origin, hrToAdd, minToAdd, secToAdd, msToAdd](float blend) {
             H2DE_Time interpolatedTime = H2DE_Time();
-            interpolatedTime.hours = static_cast<uint8_t>(std::round(origin.hours + (hrToAdd * blend)));
-            interpolatedTime.minutes = static_cast<uint8_t>(std::round(origin.minutes + (minToAdd * blend)));
-            interpolatedTime.seconds = static_cast<uint8_t>(std::round(origin.seconds + (secToAdd * blend)));
-            interpolatedTime.milliseconds = static_cast<uint16_t>(std::round(origin.milliseconds + (msToAdd * blend)));
+            interpolatedTime.hours = static_cast<uint8_t>(H2DE::round(origin.hours + (hrToAdd * blend)));
+            interpolatedTime.minutes = static_cast<uint8_t>(H2DE::round(origin.minutes + (minToAdd * blend)));
+            interpolatedTime.seconds = static_cast<uint8_t>(H2DE::round(origin.seconds + (secToAdd * blend)));
+            interpolatedTime.milliseconds = static_cast<uint16_t>(H2DE::round(origin.milliseconds + (msToAdd * blend)));
 
             update(interpolatedTime);
 

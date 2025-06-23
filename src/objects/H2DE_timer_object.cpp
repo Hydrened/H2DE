@@ -95,7 +95,7 @@ void H2DE_TimerObject::togglePause() {
 H2DE_Time H2DE_TimerObject::elapsedToTime(float elapsed) {
     H2DE_Time res = H2DE_Time();
 
-    res.milliseconds = std::round((elapsed - std::floor(elapsed)) * 1000.0f);
+    res.milliseconds = H2DE::round((elapsed - H2DE::floor(elapsed)) * 1000.0f);
     res.seconds = static_cast<int>(elapsed) % 60;
     res.minutes = (static_cast<int>(elapsed) % 3600) / 60;
     res.hours = static_cast<int>(elapsed) / 3600;

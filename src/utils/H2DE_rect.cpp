@@ -92,12 +92,12 @@ const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2D
     H2DE_Rect_T dx = rect.x - x;
     H2DE_Rect_T dy = rect.y - y;
 
-    H2DE_Rect_T px = (w + rect.w) * 0.5f - std::abs(dx);
+    H2DE_Rect_T px = (w + rect.w) * 0.5f - H2DE::abs(dx);
     if (px <= 0) {
         return std::nullopt;
     }
 
-    H2DE_Rect_T py = (h + rect.h) * 0.5f - std::abs(dy);
+    H2DE_Rect_T py = (h + rect.h) * 0.5f - H2DE::abs(dy);
     if (py <= 0) {
         return std::nullopt;
     }
