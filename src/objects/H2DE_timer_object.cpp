@@ -166,31 +166,46 @@ void H2DE_TimerObject::setMilliseconds(uint16_t milliseconds) {
 
 // lerp
 H2DE_TimelineID H2DE_TimerObject::setTime(const H2DE_Time& time, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp(engine, timerObjectData.time, time, duration, easing, [this](H2DE_Time iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp(engine, timerObjectData.time, time, duration, easing, [this](H2DE_Time iv) {
         setTime(iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_TimerObject::setHours(uint8_t hours, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<uint8_t>(engine, timerObjectData.time.hours, hours, duration, easing, [this](uint8_t iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<uint8_t>(engine, timerObjectData.time.hours, hours, duration, easing, [this](uint8_t iv) {
         setHours(iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_TimerObject::setMinutes(uint8_t minutes, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<uint8_t>(engine, timerObjectData.time.minutes, minutes, duration, easing, [this](uint8_t iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<uint8_t>(engine, timerObjectData.time.minutes, minutes, duration, easing, [this](uint8_t iv) {
         setMinutes(iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_TimerObject::setSeconds(uint8_t seconds, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<uint8_t>(engine, timerObjectData.time.seconds, seconds, duration, easing, [this](uint8_t iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<uint8_t>(engine, timerObjectData.time.seconds, seconds, duration, easing, [this](uint8_t iv) {
         setSeconds(iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_TimerObject::setMilliseconds(uint16_t milliseconds, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<uint16_t>(engine, timerObjectData.time.milliseconds, milliseconds, duration, easing, [this](uint8_t iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<uint16_t>(engine, timerObjectData.time.milliseconds, milliseconds, duration, easing, [this](uint8_t iv) {
         setMilliseconds(iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }

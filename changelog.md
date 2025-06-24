@@ -1,3 +1,9 @@
+## H2DE-4.0.18
+#### ADDED
+- doxygen documentation
+#### FIXED
+- crash when removing an object while it's lerp animated 
+
 ## H2DE-4.0.17
 #### ADDED
 - constexpr round, ceil and floor

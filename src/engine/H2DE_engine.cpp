@@ -254,6 +254,10 @@ bool H2DE_Engine::isTimelinePaused(H2DE_TimelineID id) const {
     return timelineManager->isPaused(id);
 }
 
+bool H2DE_Engine::isTimelineStoped(H2DE_TimelineID id) const {
+    return timelineManager->isStoped(id);
+}
+
 // -- delay
 H2DE_DelayID H2DE_Engine::delay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive) {
     return timelineManager->create(duration, H2DE_EASING_LINEAR, nullptr, callback, 1, pauseSensitive);

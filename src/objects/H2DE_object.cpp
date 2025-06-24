@@ -9,6 +9,10 @@ H2DE_Object::H2DE_Object(H2DE_Engine* e, const H2DE_ObjectData& od) : engine(e),
 }
 
 // CLEANUP
+H2DE_Object::~H2DE_Object() {
+    stopTimelines();
+}
+
 void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
     for (const auto& [name, surface] : surfaces) {
         delete surface;
@@ -25,9 +29,23 @@ void H2DE_Object::destroySurfaces(std::vector<H2DE_Surface*>& surfaces) {
     surfaces.clear();
 }
 
+void H2DE_Object::removeTimeline(H2DE_TimelineID id) {
+    auto it = std::find(timelineIDsBuffer.begin(), timelineIDsBuffer.end(), id);
+    if (it != timelineIDsBuffer.end()) {
+        timelineIDsBuffer.erase(it);
+    }
+}
+
+void H2DE_Object::stopTimelines() {
+    for (const H2DE_TimelineID& timelineID : timelineIDsBuffer) {
+        engine->stopTimeline(timelineID, false);
+    }
+}
+
 // UPDATE
 void H2DE_Object::update() {
     updateCollisions();
+    updateTimelineBuffer();
 }
 
 void H2DE_Object::updateCollisions() {
@@ -73,6 +91,17 @@ void H2DE_Object::updateCollisions() {
                     hitbox.onCollide(otherObject, possibleCollidedFace.value());
                 }
             }
+        }
+    }
+}
+
+void H2DE_Object::updateTimelineBuffer() {
+    for (auto it = timelineIDsBuffer.begin(); it != timelineIDsBuffer.end(); ) {
+        if (engine->isTimelineStoped(*it)) {
+            it = timelineIDsBuffer.erase(it);
+
+        } else {
+            ++it;
         }
     }
 }
@@ -290,49 +319,73 @@ void H2DE_Object::setHitboxOnCollide(const std::string& name, const std::functio
 
 // -- lerp
 H2DE_TimelineID H2DE_Object::setTranslate(const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<H2DE_Translate>(engine, objectData.transform.translate, translate, duration, easing, [this](H2DE_Translate iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<H2DE_Translate>(engine, objectData.transform.translate, translate, duration, easing, [this](H2DE_Translate iv) {
         setTranslate(iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_Object::setScale(const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<H2DE_Scale>(engine, objectData.transform.scale, scale, duration, easing, [this](H2DE_Scale iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<H2DE_Scale>(engine, objectData.transform.scale, scale, duration, easing, [this](H2DE_Scale iv) {
         setScale(iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_Object::setRotation(float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<float>(engine, objectData.transform.rotation, rotation, duration, easing, [this](float iv) {
+    H2DE_TimelineID id =  H2DE_LerpManager::lerp<float>(engine, objectData.transform.rotation, rotation, duration, easing, [this](float iv) {
         setRotation(iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_Object::setOpacity(uint8_t opacity, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<uint8_t>(engine, objectData.opacity, opacity, duration, easing, [this](uint8_t iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<uint8_t>(engine, objectData.opacity, opacity, duration, easing, [this](uint8_t iv) {
         setOpacity(iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<H2DE_Translate>(engine, getHitbox(name).transform.translate, translate, duration, easing, [this, name](H2DE_Translate iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<H2DE_Translate>(engine, getHitbox(name).transform.translate, translate, duration, easing, [this, name](H2DE_Translate iv) {
         setHitboxTranslate(name, iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_Object::setHitboxScale(const std::string& name, const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<H2DE_Scale>(engine, getHitbox(name).transform.scale, scale, duration, easing, [this, name](H2DE_Scale iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<H2DE_Scale>(engine, getHitbox(name).transform.scale, scale, duration, easing, [this, name](H2DE_Scale iv) {
         setHitboxScale(name, iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_Object::setHitboxRotation(const std::string& name, float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp<float>(engine, getHitbox(name).transform.rotation, rotation, duration, easing, [this, name](float iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<float>(engine, getHitbox(name).transform.rotation, rotation, duration, easing, [this, name](float iv) {
         setHitboxRotation(name, iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }
 
 H2DE_TimelineID H2DE_Object::setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    return H2DE_LerpManager::lerp(engine, getHitbox(name).color, color, duration, easing, [this, name](H2DE_ColorRGB iv) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp(engine, getHitbox(name).color, color, duration, easing, [this, name](H2DE_ColorRGB iv) {
         setHitboxColor(name, iv);
     }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
 }

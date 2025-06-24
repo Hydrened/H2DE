@@ -117,6 +117,10 @@ void H2DE_TimelineManager::stop(H2DE_TimelineID id, bool callCompleted) {
 // GETTER
 bool H2DE_TimelineManager::isPaused(H2DE_TimelineID id) const {
     const auto it = timelines.find(id);
-
     return (it != timelines.end()) ? it->second.paused : false;
+}
+
+bool H2DE_TimelineManager::isStoped(H2DE_TimelineID id) const {
+    const auto it = timelines.find(id);
+    return (it == timelines.end());
 }

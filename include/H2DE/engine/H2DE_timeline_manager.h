@@ -35,6 +35,7 @@ private:
     void reset(H2DE_TimelineID id);
     void stop(H2DE_TimelineID id, bool callCompleted);
     bool isPaused(H2DE_TimelineID id) const;
+    bool isStoped(H2DE_TimelineID id) const;
 
     friend class H2DE_Engine;
 };

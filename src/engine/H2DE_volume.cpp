@@ -73,7 +73,7 @@ int H2DE_Volume::playChunk(bool isSong, const std::string& soundName, uint32_t l
 
     int channel = Mix_PlayChannel((isSong) ? 0 : -1, chunk, loops);
 
-    if (channel != H2DE_ALL_CHANNELS) {
+    if (channel != -1) {
         Mix_Volume(channel, (isSong) ? songVolume : sfxVolume);
         playingChannelsPauseSensitive[channel] = pauseSensitive;
     }
