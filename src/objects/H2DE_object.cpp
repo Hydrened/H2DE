@@ -126,6 +126,11 @@ bool H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& 
 // -- hitboxes
 void H2DE_Object::addHitbox(const std::string& name, const H2DE_Hitbox& hitbox) {
     hitboxes[name] = hitbox;
+
+    hitboxes[name].transform.defaultTranslate = hitbox.transform.translate;
+    hitboxes[name].transform.defaultScale = hitbox.transform.scale;
+    hitboxes[name].transform.defaultPivot = hitbox.transform.pivot;
+    
     refreshMaxRadius();
 }
 
@@ -140,6 +145,38 @@ bool H2DE_Object::removeHitbox(const std::string& name) {
     }
 
     return removed;
+}
+
+// -- rescale
+void H2DE_Object::rescaleSurfaceBuffers() {
+    const float absoluteObjectScaleX = H2DE::abs(objectData.transform.scale.x);
+    const float absoluteObjectScaleY = H2DE::abs(objectData.transform.scale.y);
+    const H2DE_Scale absoluteObjectScale = { absoluteObjectScaleX, absoluteObjectScaleY };
+
+    for (H2DE_Surface* surface : surfaceBuffers) {
+        H2DE_Object::rescaleTransform(surface->surfaceData.transform, absoluteObjectScale);
+    }
+}
+
+void H2DE_Object::rescaleHitboxes() {
+    const float absoluteObjectScaleX = H2DE::abs(objectData.transform.scale.x);
+    const float absoluteObjectScaleY = H2DE::abs(objectData.transform.scale.y);
+    const H2DE_Scale absoluteObjectScale = { absoluteObjectScaleX, absoluteObjectScaleY };
+
+    for (auto& [name, hitbox] : hitboxes) {
+        H2DE_Object::rescaleTransform(hitbox.transform, absoluteObjectScale);
+    }
+}
+
+void H2DE_Object::rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) {
+    transform.translate.x = transform.defaultTranslate.x * scale.x;
+    transform.translate.y = transform.defaultTranslate.y * scale.y;
+
+    transform.scale.x = transform.defaultScale.x * scale.x;
+    transform.scale.y = transform.defaultScale.y * scale.y;
+
+    transform.pivot.x = transform.defaultPivot.x * scale.x;
+    transform.pivot.y = transform.defaultPivot.y * scale.y;
 }
 
 // GETTER
@@ -244,6 +281,7 @@ void H2DE_Object::setTranslate(const H2DE_Translate& translate) {
 void H2DE_Object::setScale(const H2DE_Scale& scale) {
     objectData.transform.scale = scale;
     refreshSurfaceBuffers();
+    rescaleHitboxes();
 }
 
 void H2DE_Object::setRotation(float rotation) {
@@ -274,6 +312,7 @@ void H2DE_Object::setIndex(int index) {
 void H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Translate& translate) {
     if (hasHitbox(name)) {
         hitboxes[name].transform.translate = translate;
+        hitboxes[name].transform.defaultTranslate = translate;
         refreshMaxRadius();
     }
 }
@@ -281,6 +320,7 @@ void H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Transla
 void H2DE_Object::setHitboxScale(const std::string& name, const H2DE_Scale& scale) {
     if (hasHitbox(name)) {
         hitboxes[name].transform.scale = scale;
+        hitboxes[name].transform.defaultScale = scale;
         refreshMaxRadius();
     }
 }
@@ -295,6 +335,7 @@ void H2DE_Object::setHitboxRotation(const std::string& name, float rotation) {
 void H2DE_Object::setHitboxPivot(const std::string& name, const H2DE_Pivot& pivot) {
     if (hasHitbox(name)) {
         hitboxes[name].transform.pivot = pivot;
+        hitboxes[name].transform.defaultPivot = pivot;
         refreshMaxRadius();
     }
 }

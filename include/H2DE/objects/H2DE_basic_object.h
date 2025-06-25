@@ -75,6 +75,12 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* getSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); }
+    /**
+     * @brief Checks whether a surface with the given name exists.
+     * @param name Name of the surface to check.
+     * @return true if the surface exists, false otherwise.
+     */
+    inline bool hasSurface(const std::string& name) const { return H2DE_Object::hasSurface(surfaces, name); }
 
     friend class H2DE_Engine;
 

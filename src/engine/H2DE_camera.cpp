@@ -65,26 +65,28 @@ void H2DE_Camera::updateGridObjectHitboxes() {
     float minY = world_cameraRect.getMinY();
     float maxY = world_cameraRect.getMaxY();
 
-    constexpr H2DE_ColorRGB secondGridColor = { 20, 20, 20, 255 };
-    constexpr H2DE_ColorRGB mainGridColor = { 69, 69, 69, 255 };
-    constexpr H2DE_ColorRGB centerGridColor = { 150, 150, 150, 255 };
+    constexpr H2DE_ColorRGB SECOND_GRID_COLOR = { 20, 20, 20, 255 };
+    constexpr H2DE_ColorRGB MAIN_GRID_COLOR = { 69, 69, 69, 255 };
+    constexpr H2DE_ColorRGB CENTER_GRID_COLOR = { 150, 150, 150, 255 };
 
+    constexpr float REISIZE_GRID_FACTOR = 0.02f;
+    constexpr float MAIN_GRID_SPACING = 5.0f;
     constexpr float EPSILON = 0.001f;
 
-    float step = std::max(H2DE::floor(data.gameWidth / 50.0f) * 2.0f, 1.0f);
+    float step = std::max(H2DE::floor(data.gameWidth * REISIZE_GRID_FACTOR) * 2.0f, 1.0f);
 
     float startX = H2DE::round(minX) + H2DE::round(std::fmod(minX, step)) * -1;
 
     for (float x = startX; x < maxX; x += step) {
         const H2DE_ColorRGB& color = (x == 0.0f)
-            ? centerGridColor
-            : (H2DE::abs(std::fmod(x, step * 5.0f)) < EPSILON)
-                ? mainGridColor : secondGridColor;
+            ? CENTER_GRID_COLOR
+            : (H2DE::abs(std::fmod(x, step * MAIN_GRID_SPACING)) < EPSILON)
+                ? MAIN_GRID_COLOR : SECOND_GRID_COLOR;
 
         float localX = x - cameraTranslate.x;
 
         H2DE_Hitbox hitbox = H2DE_Hitbox();
-        hitbox.transform.translate = { localX, 0.0f };
+        hitbox.transform.translate.x = localX;
         hitbox.transform.scale = { 0.0f, cameraScale.y };
         hitbox.color = color;
         grid->addHitbox("x-" + std::to_string(x), hitbox);
@@ -94,14 +96,14 @@ void H2DE_Camera::updateGridObjectHitboxes() {
 
     for (float y = startY; y < maxY; y += step) {
         const H2DE_ColorRGB& color = (y == 0.0f)
-            ? centerGridColor
-            : (H2DE::abs(std::fmod(y, step * 5.0f)) < EPSILON)
-                ? mainGridColor : secondGridColor;
+            ? CENTER_GRID_COLOR
+            : (H2DE::abs(std::fmod(y, step * MAIN_GRID_SPACING)) < EPSILON)
+                ? MAIN_GRID_COLOR : SECOND_GRID_COLOR;
 
         float localY = y - cameraTranslate.y;
 
         H2DE_Hitbox hitbox = H2DE_Hitbox();
-        hitbox.transform.translate = { 0.0f , localY};
+        hitbox.transform.translate.y = localY;
         hitbox.transform.scale = { cameraScale.x, 0.0f };
         hitbox.color = color;
         grid->addHitbox("y-" + std::to_string(y), hitbox);

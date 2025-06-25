@@ -6,14 +6,6 @@ H2DE_Color::H2DE_Color(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& s
 
 }
 
-// GETTER
-bool H2DE_Color::isVisible() const {
-    bool surfaceIsNotHidden = !(isHidden());
-    bool colorIsVisible = (colorData.color.isVisible());
-    
-    return (surfaceIsNotHidden && colorIsVisible);
-}
-
 // SETTER
 H2DE_TimelineID H2DE_Color::setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp(engine, colorData.color, color, duration, easing, [this](H2DE_ColorRGB iv) {

@@ -96,6 +96,8 @@ void H2DE_TextObject::refreshSurfaceBuffers() {
 
         currentLineLength = 0;
     }
+
+    rescaleSurfaceBuffers();
 }
 
 void H2DE_TextObject::refreshMaxRadius() {
@@ -141,7 +143,7 @@ const std::vector<std::vector<std::string>> H2DE_TextObject::getLines() const {
 
     const H2DE_Scale charTotalScale = textObjectData.text.fontSize + textObjectData.text.spacing;
     const float totalWidthPadding = textObjectData.text.padding.left + textObjectData.text.padding.right;
-    const int maxNbCharPerLine = H2DE::floor(objectData.transform.scale.x / charTotalScale.x + textObjectData.text.spacing.x - totalWidthPadding);
+    const int maxNbCharPerLine = H2DE::floor(textObjectData.text.container.x / charTotalScale.x + textObjectData.text.spacing.x - totalWidthPadding);
 
     int currentLineIndex = 0;
 
@@ -189,7 +191,7 @@ float H2DE_TextObject::getStartingOffsetY(const std::vector<std::vector<std::str
     constexpr uint8_t H2DE_TEXT_ALIGN_CENTER    = 0b00010000;
     constexpr uint8_t H2DE_TEXT_ALIGN_BOTTOM    = 0b00100000;
 
-    float halfObjectHeight = objectData.transform.scale.y * 0.5f;
+    float halfObjectHeight = textObjectData.text.container.y * 0.5f;
     float totalCharHeight = textObjectData.text.fontSize.y + textObjectData.text.spacing.y;
     float halfCharHeight = textObjectData.text.fontSize.y * 0.5f;
     float totalTextHeight = totalCharHeight * lines.size() - textObjectData.text.spacing.y;
@@ -218,7 +220,7 @@ float H2DE_TextObject::getStartingOffsetX(const std::vector<std::string>& line) 
     constexpr uint8_t H2DE_TEXT_ALIGN_CENTER    = 0b00000010;
     constexpr uint8_t H2DE_TEXT_ALIGN_RIGHT     = 0b00000100;
 
-    float halfObjectWidth = objectData.transform.scale.x * 0.5f;
+    float halfObjectWidth = textObjectData.text.container.x * 0.5f;
     float totalCharWidth = textObjectData.text.fontSize.x + textObjectData.text.spacing.x;
     float halfCharWidth = textObjectData.text.fontSize.x * 0.5f;
     float totalTextWidth = totalCharWidth * getLineLength(line) - textObjectData.text.spacing.x;

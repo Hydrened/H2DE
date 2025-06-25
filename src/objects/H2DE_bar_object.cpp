@@ -23,6 +23,7 @@ void H2DE_BarObject::refreshSurfaceBuffers() {
     surfaceBuffers.reserve(sortedFrontSurfaces.size() + sortedBackgroundSurfaces.size());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedBackgroundSurfaces.begin(), sortedBackgroundSurfaces.end());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedFrontSurfaces.begin(), sortedFrontSurfaces.end());
+    rescaleSurfaceBuffers();
 }
 
 void H2DE_BarObject::refreshMaxRadius() {

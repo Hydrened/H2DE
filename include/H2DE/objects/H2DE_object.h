@@ -174,6 +174,12 @@ public:
      * @return A H2DE_LevelRect representing the world position and size of the hitbox.
      */
     const H2DE_LevelRect getHitboxWorldRect(const std::string& name) const;
+    /**
+     * @brief Checks whether a hitbox with the given name exists.
+     * @param name Name of the hitbox to check.
+     * @return true if the hitbox exists, false otherwise.
+     */
+    inline bool hasHitbox(const std::string& name) const { return (hitboxes.find(name) != hitboxes.end()); }
 
     /**
      * @brief Set the object's position in world space.
@@ -450,7 +456,13 @@ protected:
 
     static const std::vector<H2DE_Surface*> getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
     static const std::array<H2DE_Translate, 4> getCorners(const H2DE_Transform& transform);
-    inline bool hasHitbox(const std::string& name) const { return (hitboxes.find(name) != hitboxes.end()); }
+
+    static inline bool hasSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) { return (surfaces.find(name) != surfaces.end()); }
+
+    void rescaleSurfaceBuffers();
+    void rescaleHitboxes();
+    static void rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale);
+
     float getMaxHitboxRadius() const;
     float getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const;
 

@@ -41,7 +41,7 @@ using H2DE_ChannelID = int8_t;
 #define H2DE_INVALID_TIMELINE_ID 4294967295u
 
 /** @brief Constant used to represent an infinite loop in timelines or animations. */
-#define H2DE_INFINITE_LOOP -1
+#define H2DE_INFINITE_LOOP 4294967295
 
 /**
  * @enum H2DE_WindowRatio
@@ -405,6 +405,81 @@ struct H2DE_Vector2D {
     inline operator SDL_Point() const { return { static_cast<int>(x), static_cast<int>(y) }; }
 
     /**
+     * @brief Returns a new vector with the X component increased by a given value.
+     * @param value Value to add to the X component.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> addX(H2DE_Vector2D_T value) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ x + value, y };
+    }
+    /**
+     * @brief Returns a new vector with the Y component increased by a given value.
+     * @param value Value to add to the Y component.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> addY(H2DE_Vector2D_T value) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ x, y + value };
+    }
+
+    /**
+     * @brief Returns a new vector with the X component decreased by a given value.
+     * @param value Value to subtract from the X component.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> subtractX(H2DE_Vector2D_T value) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ x - value, y };
+    }
+    /**
+     * @brief Returns a new vector with the Y component decreased by a given value.
+     * @param value Value to subtract from the Y component.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> subtractY(H2DE_Vector2D_T value) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ x, y - value };
+    }
+
+    /**
+     * @brief Returns a new vector with the X component multiplied by a given multiplier.
+     * @param multiplier Multiplier to multiply the X component by.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> multiplyX(float multiplier) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ static_cast<H2DE_Vector2D_T>(x * multiplier), y };
+    }
+    /**
+     * @brief Returns a new vector with the Y component multiplied by a given multiplier.
+     * @param multiplier Multiplier to multiply the Y component by.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> multiplyY(float multiplier) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ x, static_cast<H2DE_Vector2D_T>(y * multiplier) };
+    }
+
+    /**
+     * @brief Returns a new vector with the X component divided by a given divider.
+     * @param divider Divider to divide the X component by.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideX(float divider) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ static_cast<H2DE_Vector2D_T>(x / divider), y };
+    }
+    /**
+     * @brief Returns a new vector with the Y component divided by a given divider.
+     * @param divider Divider to divide the Y component by.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideY(float divider) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ x, static_cast<H2DE_Vector2D_T>(y / divider) };
+    }
+
+    /**
+     * @brief Returns a new vector with the X component set to a given value.
+     * @param value New value for the X component.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> setX(H2DE_Vector2D_T value) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ value, y };
+    }
+    /**
+     * @brief Returns a new vector with the Y component set to a given value.
+     * @param value New value for the Y component.
+     */
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> setY(H2DE_Vector2D_T value) const {
+        return H2DE_Vector2D<H2DE_Vector2D_T>{ x, value };
+    }
+
+    /**
      * @brief Create a rectangle at this vector's position with given size.
      * @param scale The size vector (width and height).
      * @return H2DE_Rect representing the rectangle.
@@ -466,10 +541,6 @@ using H2DE_PixelPos = H2DE_Vector2D<int>;
 using H2DE_PixelSize = H2DE_Vector2D<int>;
 /** @brief Pivot point in pixels, represented as integer 2D vector. */
 using H2DE_PixelPivot = H2DE_Vector2D<int>;
-/** @brief Position with sub-pixel precision (float). */
-using H2DE_SubPixelPos = H2DE_Vector2D<float>;
-/** @brief Size with sub-pixel precision (float). */
-using H2DE_SubPixelSize = H2DE_Vector2D<float>;
 /** @brief Translation vector, usually float for smooth movement. */
 using H2DE_Translate = H2DE_Vector2D<float>;
 /** @brief Scale vector, usually float for smooth scaling. */
@@ -633,14 +704,14 @@ struct H2DE_Rect {
      * @brief Returns a new rectangle with position translated negatively by given vector.
      * @param translate Vector to subtract from position.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> substractTranslate(const H2DE_Vector2D<H2DE_Rect_T>& translate) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractTranslate(const H2DE_Vector2D<H2DE_Rect_T>& translate) const {
         return H2DE_Rect<H2DE_Rect_T>{ x - translate.x, y - translate.y, w, h };
     }
     /**
      * @brief Returns a new rectangle with size scaled down by given vector.
      * @param scale Vector to subtract from size.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> substractScale(const H2DE_Vector2D<H2DE_Rect_T>& scale) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractScale(const H2DE_Vector2D<H2DE_Rect_T>& scale) const {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w - scale.x, h - scale.y };
     }
     /**
@@ -670,6 +741,151 @@ struct H2DE_Rect {
      */
     constexpr H2DE_Rect<H2DE_Rect_T> divideScale(float divider) const {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, static_cast<H2DE_Rect_T>(w / divider), static_cast<H2DE_Rect_T>(h / divider) };
+    }
+
+    /**
+     * @brief Returns a new rectangle with the X component increased by a given value.
+     * @param value Value to add to the X component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> addX(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x + value, y, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the Y component increased by a given value.
+     * @param value Value to add to the Y component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> addY(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y + value, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the W component increased by a given value.
+     * @param value Value to add to the W component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> addW(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, w + value, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the H component increased by a given value.
+     * @param value Value to add to the H component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> addH(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, w, h + value };
+    }
+
+    /**
+     * @brief Returns a new rectangle with the X component decreased by a given value.
+     * @param value Value to subtract from the X component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractX(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x - value, y, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the Y component decreased by a given value.
+     * @param value Value to subtract from the Y component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractY(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y - value, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the W component decreased by a given value.
+     * @param value Value to subtract from the W component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractW(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, w - value, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the H component decreased by a given value.
+     * @param value Value to subtract from the H component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractH(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, w, h - value };
+    }
+
+    /**
+     * @brief Returns a new rectangle with the X component multiplied by a given multiplier.
+     * @param multiplier Multiplier to multiply the X component by.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyX(float multiplier) const {
+        return H2DE_Rect<H2DE_Rect_T>{ static_cast<H2DE_Rect_T>(x * multiplier), y, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the Y component multiplied by a given multiplier.
+     * @param multiplier Multiplier to multiply the Y component by.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyY(float multiplier) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, static_cast<H2DE_Rect_T>(y * multiplier), w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the W component multiplied by a given multiplier.
+     * @param multiplier Multiplier to multiply the W component by.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyW(float multiplier) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, static_cast<H2DE_Rect_T>(w * multiplier), h };
+    }
+    /**
+     * @brief Returns a new rectangle with the H component multiplied by a given multiplier.
+     * @param multiplier Multiplier to multiply the H component by.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyH(float multiplier) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, w, static_cast<H2DE_Rect_T>(h * multiplier) };
+    }
+
+    /**
+     * @brief Returns a new rectangle with the X component divided by a given divider.
+     * @param divider Divider to divide the X component by.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> divideX(float divider) const {
+        return H2DE_Rect<H2DE_Rect_T>{ static_cast<H2DE_Rect_T>(x / divider), y, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the Y component divided by a given divider.
+     * @param divider Divider to divide the Y component by.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> divideY(float divider) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, static_cast<H2DE_Rect_T>(y / divider), w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the W component divided by a given divider.
+     * @param divider Divider to divide the W component by.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> divideW(float divider) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, static_cast<H2DE_Rect_T>(w / divider), h };
+    }
+    /**
+     * @brief Returns a new rectangle with the H component divided by a given divider.
+     * @param divider Divider to divide the H component by.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> divideH(float divider) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, w, static_cast<H2DE_Rect_T>(h / divider) };
+    }
+
+    /**
+     * @brief Returns a new rectangle with the X component set to a given value.
+     * @param value New value for the X component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> setX(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ value, y, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the Y component set to a given value.
+     * @param value New value for the Y component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> setY(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, value, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the W component set to a given value.
+     * @param value New value for the W component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> setW(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, value, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the H component set to a given value.
+     * @param value New value for the H component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> setH(H2DE_Rect_T value) const {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, w, value };
     }
 
     /**
@@ -751,8 +967,6 @@ struct H2DE_Rect {
 
 /** @brief Alias for rectangle with integer components (pixels). */
 using H2DE_PixelRect = H2DE_Rect<int>;
-/** @brief Alias for rectangle with float components (sub-pixel precision). */
-using H2DE_SubPixelRect = H2DE_Rect<float>;
 /** @brief Alias for rectangle used in level coordinates (float). */
 using H2DE_LevelRect = H2DE_Rect<float>;
 
@@ -1146,6 +1360,7 @@ struct H2DE_EngineData {
  * such as their position, scale, rotation, and pivot point.
  */
 struct H2DE_Transform {
+public:
     H2DE_Translate translate = { 0.0f, 0.0f };      /** Object position in the 2D space. */
     H2DE_Scale scale = { 1.0f, 1.0f };              /** Object scale on both axes. */
     float rotation = 0.0f;                          /** Object rotation in degrees. */
@@ -1163,7 +1378,15 @@ struct H2DE_Transform {
      * @param rotation The rotation in degrees.
      * @param pivot The pivot point.
      */
-    constexpr H2DE_Transform(const H2DE_Translate& translate, const H2DE_Scale& scale, float rotation, const H2DE_Pivot& pivot) : translate(translate), scale(scale), rotation(rotation), pivot(pivot) {}
+    constexpr H2DE_Transform(const H2DE_Translate& translate, const H2DE_Scale& scale, float rotation, const H2DE_Pivot& pivot) : translate(translate), defaultTranslate(translate), scale(scale), defaultScale(scale), rotation(rotation), pivot(pivot), defaultPivot(pivot) {}
+
+private:
+    H2DE_Translate defaultTranslate = { 0.0f, 0.0f };
+    H2DE_Scale defaultScale = { 1.0f, 1.0f };
+    H2DE_Pivot defaultPivot = { 0.0f, 0.0f };
+
+    friend class H2DE_Object;
+    friend class H2DE_Surface;
 };
 
 /**
@@ -1190,6 +1413,7 @@ struct H2DE_Hitbox {
 struct H2DE_Text {
     std::string text = "";                                          /** Text content to display. */
     std::string font = "";                                          /** Font name or path to use for rendering the text. */
+    H2DE_Scale container = { 10.0f, 10.0f };                        /** Container for the text to be written. */
     H2DE_Scale fontSize = { 1.0f, 1.0f };                           /** Font size scale for X and Y axes. */
     H2DE_Scale spacing = { 0.1f, 0.3f };                            /** Spacing between characters (X) and lines (Y). */
     H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_CENTER_CENTER;       /** Text alignment (horizontal and vertical). */

@@ -24,7 +24,7 @@ void H2DE_TimerObject::initTimeline() {
 
         textObject->setText(getStringifiedTime());
 
-    }, -1, timerObjectData.pauseSensitive);
+    }, H2DE_INFINITE_LOOP, timerObjectData.pauseSensitive);
 }
 
 // CLEANUP
@@ -70,6 +70,7 @@ void H2DE_TimerObject::refreshSurfaceBuffers() {
     surfaceBuffers.clear();
     surfaceBuffers.reserve(sortedSurfaces.size());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
+    rescaleSurfaceBuffers();
 }
 
 void H2DE_TimerObject::refreshMaxRadius() {

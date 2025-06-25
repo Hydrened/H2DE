@@ -1,3 +1,9 @@
+## H2DE-4.1.0
+#### ADDED
+- scale object resize surfaces and hitboxes
+- specific member operation for H2DE_Vector2D and H2DE_Rect
+- "has hitbox" and "has surface" object methods
+
 ## H2DE-4.0.18
 #### ADDED
 - doxygen documentation

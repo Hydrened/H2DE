@@ -3,7 +3,9 @@
 
 // INIT
 H2DE_Surface::H2DE_Surface(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& sd) : engine(e), object(o), surfaceData(sd) {
-
+    surfaceData.transform.defaultTranslate = surfaceData.transform.translate;
+    surfaceData.transform.defaultScale = surfaceData.transform.scale;
+    surfaceData.transform.defaultPivot= surfaceData.transform.pivot;
 }
 
 // SETTER
@@ -11,12 +13,14 @@ H2DE_Surface::H2DE_Surface(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceDat
 // -- no lerp
 void H2DE_Surface::setTranslate(const H2DE_Translate& translate) {
     surfaceData.transform.translate = translate;
+    surfaceData.transform.defaultTranslate = translate;
     object->refreshSurfaceBuffers();
     object->refreshMaxRadius();
 }
 
 void H2DE_Surface::setScale(const H2DE_Scale& scale) {
     surfaceData.transform.scale = scale;
+    surfaceData.transform.defaultScale = scale;
     object->refreshSurfaceBuffers();
     object->refreshMaxRadius();
 }
@@ -29,6 +33,7 @@ void H2DE_Surface::setRotation(float rotation) {
 
 void H2DE_Surface::setPivot(const H2DE_Pivot& pivot) {
     surfaceData.transform.pivot = pivot;
+    surfaceData.transform.defaultPivot = pivot;
     object->refreshSurfaceBuffers();
     object->refreshMaxRadius();
 }

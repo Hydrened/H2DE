@@ -19,6 +19,7 @@ void H2DE_BasicObject::refreshSurfaceBuffers() {
     surfaceBuffers.clear();
     surfaceBuffers.reserve(sortedSurfaces.size());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
+    rescaleSurfaceBuffers();
 }
 
 void H2DE_BasicObject::refreshMaxRadius() {

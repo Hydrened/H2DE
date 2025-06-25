@@ -9,7 +9,7 @@ H2DE_Sprite::H2DE_Sprite(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData&
 void H2DE_Sprite::initDelay() {
     delayId = engine->createTimeline(spriteData.delay, H2DE_EASING_LINEAR, nullptr, [this]() {
         nextFrame();
-    }, -1, spriteData.pauseSensitive);
+    }, H2DE_INFINITE_LOOP, spriteData.pauseSensitive);
 }
 
 // CLEANUP
@@ -30,14 +30,12 @@ void H2DE_Sprite::nextFrame() {
 
 // GETTER
 std::optional<H2DE_PixelRect> H2DE_Sprite::getSrcRect() const {
-    H2DE_PixelRect srcRect = H2DE_PixelRect();
+    H2DE_PixelPos res = H2DE_PixelPos();
 
-    srcRect.x = currentFrame * (spriteData.size.x + spriteData.spacing) + spriteData.startingPos.x;
-    srcRect.y = spriteData.startingPos.y;
-    srcRect.w = spriteData.size.x;
-    srcRect.h = spriteData.size.y;
+    res.x = currentFrame * (spriteData.size.x + spriteData.spacing) + spriteData.startingPos.x;
+    res.y = spriteData.startingPos.y;
 
-    return srcRect;
+    return res.makeRect(spriteData.size);
 }
 
 bool H2DE_Sprite::isVisible() const {

@@ -20,6 +20,10 @@ private:
 
     using R = H2DE_Renderer;
 
+    using H2DE_SubPixelPos = H2DE_Vector2D<float>;
+    using H2DE_SubPixelSize = H2DE_Vector2D<float>;
+    using H2DE_SubPixelRect = H2DE_Rect<float>;
+
     H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer, std::vector<H2DE_Object*>& objects);
     ~H2DE_Renderer();
 

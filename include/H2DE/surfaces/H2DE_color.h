@@ -73,7 +73,7 @@ private:
 
     inline std::string getTextureName() const override { return "/"; }
     inline std::optional<H2DE_PixelRect> getSrcRect() const override { return std::nullopt; };
-    bool isVisible() const override;
+    inline bool isVisible() const override { return (!isHidden() && colorData.color.isVisible()); }
 };
 
 #endif

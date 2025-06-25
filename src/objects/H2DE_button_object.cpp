@@ -39,6 +39,10 @@ void H2DE_ButtonObject::refreshTextObject() {
         }
     }
 
+    if (buttonObjectData.text.text == "") {
+        return;
+    }
+
     H2DE_ObjectData od = objectData;
     od.index++;
 
@@ -56,6 +60,7 @@ void H2DE_ButtonObject::refreshSurfaceBuffers() {
     surfaceBuffers.clear();
     surfaceBuffers.reserve(sortedSurfaces.size());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
+    rescaleSurfaceBuffers();
 }
 
 void H2DE_ButtonObject::refreshMaxRadius() {

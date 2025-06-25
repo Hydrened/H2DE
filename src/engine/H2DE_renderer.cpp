@@ -376,7 +376,7 @@ SDL_BlendMode H2DE_Renderer::getBlendMode(H2DE_BlendMode blendMode) {
 }
 
 // -- level to pixel
-H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const {
+H2DE_Renderer::H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     H2DE_LevelRect world_cameraRect = engine->camera->getWorldRect();
@@ -405,16 +405,12 @@ H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelRect& world_rect
     };
 }
 
-H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const {
+H2DE_Renderer::H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
-
-    return {
-        local_translate.x * blockSize,
-        local_translate.y * blockSize,
-    };
+    return local_translate * blockSize;
 }
 
-H2DE_SubPixelSize H2DE_Renderer::levelToPixelSize(const H2DE_Scale& world_scale, bool absolute) const {
+H2DE_Renderer::H2DE_SubPixelSize H2DE_Renderer::levelToPixelSize(const H2DE_Scale& world_scale, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     return {
@@ -423,7 +419,7 @@ H2DE_SubPixelSize H2DE_Renderer::levelToPixelSize(const H2DE_Scale& world_scale,
     };
 }
 
-H2DE_SubPixelRect H2DE_Renderer::levelToPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const {
+H2DE_Renderer::H2DE_SubPixelRect H2DE_Renderer::levelToPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const {
     const H2DE_SubPixelPos pos = levelToPixelPos(world_rect, absolute);
     const H2DE_SubPixelSize size = levelToPixelSize(world_rect.getScale(), absolute);
     return H2DE_SubPixelRect{ pos.x, pos.y, size.x, size.y };

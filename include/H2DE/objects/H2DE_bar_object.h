@@ -164,6 +164,18 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* getBackgroundSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(backgroundSurfaces, name); }
+    /**
+     * @brief Checks whether a front surface with the given name exists.
+     * @param name Name of the surface to check.
+     * @return true if the front surface exists, false otherwise.
+     */
+    inline bool hasFrontSurface(const std::string& name) const { return H2DE_Object::hasSurface(frontSurfaces, name); }
+    /**
+     * @brief Checks whether a background surface with the given name exists.
+     * @param name Name of the surface to check.
+     * @return true if the background surface exists, false otherwise.
+     */
+    inline bool hasBackgroundSurface(const std::string& name) const { return H2DE_Object::hasSurface(backgroundSurfaces, name); }
 
     /**
      * @brief Set the minimum value of the bar.
