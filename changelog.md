@@ -1,3 +1,14 @@
+## H2DE-4.1.1
+#### ADDED
+- getter and setter for text container
+- getter and setter for timer pause sensitive
+- increase / decrease for timer
+- onReach function for timer
+- missing dll files: "libgcc_s_seh-1.dll", "libstdc++-6.dll" and "libwinpthread-1.dll"
+#### FIXED
+- H2DE_Time constructor ms type
+- timer member overflow
+
 ## H2DE-4.1.0
 #### ADDED
 - scale object resize surfaces and hitboxes

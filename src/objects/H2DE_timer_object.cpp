@@ -19,7 +19,10 @@ void H2DE_TimerObject::initElapsedTime() {
 
 void H2DE_TimerObject::initTimeline() {
     timelineId = engine->createTimeline(0, H2DE_EASING_LINEAR, nullptr, [this]() {
-        elapsed += engine->getDeltaTime();
+        int deltaTimeMultiplier = (timerObjectData.increasing) ? 1 : -1;
+        
+        elapsed += engine->getDeltaTime() * deltaTimeMultiplier;
+        elapsed = std::max(elapsed, 0.0f);
         timerObjectData.time = H2DE_TimerObject::elapsedToTime(elapsed);
 
         textObject->setText(getStringifiedTime());
@@ -42,6 +45,29 @@ H2DE_TimerObject::~H2DE_TimerObject() {
 
 void H2DE_TimerObject::destroyTimeline() {
     engine->stopTimeline(timelineId, false);
+}
+
+// UPDATE
+void H2DE_TimerObject::update() {
+    float epsilon = 0.5f / engine->getFPS();
+
+    for (auto it = onReachEvents.begin(); it != onReachEvents.end(); ) {
+        float elapsedDifferenceWithTarget = H2DE::abs(H2DE_TimerObject::getElapsed(it->target) - elapsed);
+
+        if (elapsedDifferenceWithTarget <= epsilon) {
+            it->callback();
+
+            if (it->once) {
+                it = onReachEvents.erase(it);
+
+            } else {
+                ++it;
+            }
+
+        } else {
+            ++it;
+        }
+    }
 }
 
 // ACTIONS
@@ -80,6 +106,23 @@ void H2DE_TimerObject::refreshMaxRadius() {
     maxRadius = std::max(maxHitboxesRadius, maxSurfaceRadius);
 }
 
+void H2DE_TimerObject::refreshTimeline() {
+    destroyTimeline();
+    initTimeline();
+}
+
+void H2DE_TimerObject::onReach(const H2DE_Time& target, const std::function<void()>& callback, bool once) {
+    if (!callback) {
+        return;
+    }
+
+    H2DE_TimerObject::OnReachEvent onReachEvent = H2DE_TimerObject::OnReachEvent();
+    onReachEvent.target = target;
+    onReachEvent.callback = callback;
+    onReachEvent.once = once;
+    onReachEvents.push_back(onReachEvent);
+}
+
 void H2DE_TimerObject::pause() {
     engine->pauseTimeline(timelineId);
 }
@@ -96,9 +139,9 @@ void H2DE_TimerObject::togglePause() {
 H2DE_Time H2DE_TimerObject::elapsedToTime(float elapsed) {
     H2DE_Time res = H2DE_Time();
 
-    res.milliseconds = H2DE::round((elapsed - H2DE::floor(elapsed)) * 1000.0f);
-    res.seconds = static_cast<int>(elapsed) % 60;
-    res.minutes = (static_cast<int>(elapsed) % 3600) / 60;
+    res.milliseconds = std::clamp(H2DE::round((elapsed - H2DE::floor(elapsed)) * 1000.0f), 0, 999);
+    res.seconds = std::clamp(static_cast<int>(elapsed) % 60, 0, 59);
+    res.minutes = std::clamp((static_cast<int>(elapsed) % 3600) / 60, 0, 59);
     res.hours = static_cast<int>(elapsed) / 3600;
 
     return res;
@@ -163,6 +206,16 @@ void H2DE_TimerObject::setSeconds(uint8_t seconds) {
 void H2DE_TimerObject::setMilliseconds(uint16_t milliseconds) {
     timerObjectData.time.milliseconds = milliseconds;
     refreshSurfaceBuffers();
+}
+
+void H2DE_TimerObject::setIncreasing(bool increasing) {
+    timerObjectData.increasing = increasing;
+    refreshTimeline();
+}
+
+void H2DE_TimerObject::setPauseSensitive(bool pauseSensitive) {
+    timerObjectData.pauseSensitive = pauseSensitive;
+    refreshTimeline();
 }
 
 // lerp

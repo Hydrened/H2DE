@@ -12,6 +12,11 @@ H2DE_BasicObject::~H2DE_BasicObject() {
     H2DE_Object::destroySurfaces(surfaces);
 }
 
+// UPDATE
+void H2DE_BasicObject::update() {
+
+}
+
 // ACTIONS
 void H2DE_BasicObject::refreshSurfaceBuffers() {
     const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::getSortedSurfaces(surfaces);

@@ -13,6 +13,11 @@ H2DE_TextObject::~H2DE_TextObject() {
     H2DE_Object::destroySurfaces(surfaceBuffers);
 }
 
+// UPDATE
+void H2DE_TextObject::update() {
+
+}
+
 // ACTIONS
 void H2DE_TextObject::refreshSurfaceBuffers() {
     H2DE_Object::destroySurfaces(surfaceBuffers);
@@ -257,6 +262,11 @@ void H2DE_TextObject::setFont(const std::string& font) {
     refreshSurfaceBuffers();
 }
 
+void H2DE_TextObject::setContainer(const H2DE_Scale& container) {
+    textObjectData.text.container = container;
+    refreshSurfaceBuffers();
+}
+
 void H2DE_TextObject::setFontSize(const H2DE_Scale& fontSize) {
     textObjectData.text.fontSize = fontSize;
     refreshSurfaceBuffers();
@@ -278,6 +288,15 @@ void H2DE_TextObject::setColor(const H2DE_ColorRGB& color) {
 }
 
 // -- lerp
+H2DE_TimelineID H2DE_TextObject::setContainer(const H2DE_Scale& container, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    H2DE_TimelineID id = H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.container, container, duration, easing, [this](H2DE_Scale iv) {
+        setContainer(iv);
+    }, completed, pauseSensitive);
+
+    addTimelineToTimelines(id);
+    return id;
+}
+
 H2DE_TimelineID H2DE_TextObject::setFontSize(const H2DE_Scale& fontSize, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     H2DE_TimelineID id = H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.fontSize, fontSize, duration, easing, [this](H2DE_Scale iv) {
         setFontSize(iv);

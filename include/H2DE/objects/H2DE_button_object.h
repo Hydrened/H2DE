@@ -227,6 +227,8 @@ private:
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     ~H2DE_ButtonObject() override;
 
+    void update() override;
+
     void refreshTextObject();
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;

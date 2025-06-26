@@ -37,7 +37,7 @@ using H2DE_ChannelID = int8_t;
 
 /** @brief Special value representing an invalid delay ID. */
 #define H2DE_INVALID_DELAY_ID 4294967295u
-/** @brief Special value representing infinite loops in animations or timelines. */
+/** @brief Special value representing an invalid timeline ID. */
 #define H2DE_INVALID_TIMELINE_ID 4294967295u
 
 /** @brief Constant used to represent an infinite loop in timelines or animations. */
@@ -1413,7 +1413,7 @@ struct H2DE_Hitbox {
 struct H2DE_Text {
     std::string text = "";                                          /** Text content to display. */
     std::string font = "";                                          /** Font name or path to use for rendering the text. */
-    H2DE_Scale container = { 10.0f, 10.0f };                        /** Container for the text to be written. */
+    H2DE_Scale container = { 10.0f, 10.0f };                        /** Zone for the text to be written in. */
     H2DE_Scale fontSize = { 1.0f, 1.0f };                           /** Font size scale for X and Y axes. */
     H2DE_Scale spacing = { 0.1f, 0.3f };                            /** Spacing between characters (X) and lines (Y). */
     H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_CENTER_CENTER;       /** Text alignment (horizontal and vertical). */
@@ -1442,7 +1442,7 @@ struct H2DE_Time {
      * @param seconds Number of seconds.
      * @param milliseconds Number of milliseconds.
      */
-    constexpr H2DE_Time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t milliseconds) : hours(hours), minutes(minutes), seconds(seconds), milliseconds(milliseconds) {}
+    constexpr H2DE_Time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint16_t milliseconds) : hours(hours), minutes(minutes), seconds(seconds), milliseconds(milliseconds) {}
 };
 
 /**
@@ -1524,6 +1524,7 @@ struct H2DE_TimerObjectData {
     bool displayMinutes = false;            /**< Whether to display minutes. */
     bool displaySeconds = true;             /**< Whether to display seconds. */
     bool displayMilliseconds = false;       /**< Whether to display milliseconds. */
+    bool increasing = true;                 /**< Whether the timer is increasing (false for decreasing). */
     bool pauseSensitive = true;             /**< Whether the timer is sensitive to pause state. */
 };
 

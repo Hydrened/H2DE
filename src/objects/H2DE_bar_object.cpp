@@ -14,6 +14,11 @@ H2DE_BarObject::~H2DE_BarObject() {
     H2DE_Object::destroySurfaces(backgroundSurfaces);
 }
 
+// UPDATE
+void H2DE_BarObject::update() {
+
+}
+
 // ACTIONS
 void H2DE_BarObject::refreshSurfaceBuffers() {
     const std::vector<H2DE_Surface*> sortedBackgroundSurfaces = H2DE_Object::getSortedSurfaces(backgroundSurfaces);

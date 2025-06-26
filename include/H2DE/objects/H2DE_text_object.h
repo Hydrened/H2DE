@@ -52,6 +52,14 @@ public:
      */
     inline std::string getFont() const { return textObjectData.text.font; }
     /**
+     * @brief Get the container scale.
+     * 
+     * Returns the scale of the container used for containing the text.
+     * 
+     * @return The scale of the container as an H2DE_Scale value.
+     */
+    constexpr H2DE_Scale getContainer() const { return textObjectData.text.container; }
+    /**
      * @brief Get the font size scale.
      * 
      * Returns the scaling factor used for the font size, allowing dynamic resizing.
@@ -101,6 +109,14 @@ public:
      */
     void setFont(const std::string& font);
     /**
+     * @brief Set the container scale immediately.
+     * 
+     * Adjusts the container scale without animation.
+     * 
+     * @param container The new container scale.
+     */
+    void setContainer(const H2DE_Scale& container);
+    /**
      * @brief Set the font size scale immediately.
      * 
      * Adjusts the font size scale without animation.
@@ -132,6 +148,19 @@ public:
      * @param color The new text color.
      */
     void setColor(const H2DE_ColorRGB& color);
+    /**
+     * @brief Animate the container scale change over time.
+     * 
+     * Smoothly changes the cotnainer scale from current to target value using timeline animation.
+     * 
+     * @param container The target container scale.
+     * @param duration Duration of the animation.
+     * @param easing Easing function to apply for interpolation.
+     * @param completed Callback function called once the animation finishes.
+     * @param pauseSensitive If true, animation pauses when the game is paused.
+     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     */
+    H2DE_TimelineID setContainer(const H2DE_Scale& container, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the font size change over time.
      * 
@@ -183,6 +212,8 @@ private:
 
     H2DE_TextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     ~H2DE_TextObject() override;
+
+    void update() override;
 
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;

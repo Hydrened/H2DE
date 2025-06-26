@@ -64,6 +64,11 @@ public:
     }
 
     /**
+     * 
+     */
+    void onReach(const H2DE_Time& target, const std::function<void()>& callback, bool once);
+
+    /**
      * @brief Reset the timer to zero.
      * 
      * Sets all time components (hours, minutes, seconds, milliseconds) back to 0.
@@ -134,6 +139,21 @@ public:
      * @return The milliseconds as a 16-bit unsigned integer.
      */
     constexpr uint16_t getMilliseconds() { return timerObjectData.time.milliseconds; }
+    /**
+     * @brief Checks if the timer is currently increasing.
+     * 
+     * @return true if the timer is increasing, false if it is decreasing.
+     */
+    constexpr bool isIncreasing() const { return timerObjectData.increasing; }
+    /**
+     * @brief Check if the timer is sensitive to the game's pause state.
+     * 
+     * Returns true if the timer is paused when the engine is paused,
+     * false otherwise.
+     * 
+     * @return true if pause sensitive, false if not.
+     */
+    constexpr bool isPauseSensitive() const { return timerObjectData.pauseSensitive; }
 
     /**
      * @brief Get all surfaces of the object.
@@ -206,6 +226,20 @@ public:
      * @param milliseconds The new milliseconds value (0-999).
      */
     void setMilliseconds(uint16_t milliseconds);
+    /**
+     * @brief Sets whether the timer is increasing or decreasing.
+     * 
+     * @param increasing True if the timer should count up, false to count down.
+     */
+    void setIncreasing(bool increasing);
+    /**
+     * @brief Set whether the timer is sensitive to the engine's pause state.
+     * 
+     * When set to true, the timer wil be paused if the engine is paused.
+     * 
+     * @param pauseSensitive True to make the timer sensitive to pause, false otherwise.
+     */
+    void setPauseSensitive(bool pauseSensitive);
     
     /**
      * @brief Animate the full time change over a duration.
@@ -278,16 +312,26 @@ public:
     friend class H2DE_Engine;
 
 private:
+    struct OnReachEvent {
+        H2DE_Time target = H2DE_Time();
+        std::function<void()> callback = nullptr;
+        bool once = false;
+    };
+
+private:
     H2DE_TimerObjectData timerObjectData;
 
     H2DE_TextObject* textObject = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
+    std::vector<OnReachEvent> onReachEvents = {};
 
     H2DE_TimelineID timelineId = 0;
     float elapsed = 0.0f;
 
     H2DE_TimerObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TimerObjectData& timerObjectData);
     ~H2DE_TimerObject() override;
+
+    void update() override;
 
     void initElapsedTime();
     void initTimeline();
@@ -296,9 +340,11 @@ private:
     void refreshTextObject();
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
+    void refreshTimeline();
 
     static H2DE_Time elapsedToTime(float elapsed);
     static std::string intToStr(int value, int nbDigits);
+    static constexpr float getElapsed(const H2DE_Time& time) { return (time.hours * 3600.0f) + (time.minutes * 60.0f) + (time.seconds) + (time.milliseconds * 0.001f); }
     const std::string getStringifiedTime() const;
 };
 

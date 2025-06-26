@@ -90,6 +90,8 @@ private:
     H2DE_BasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
     ~H2DE_BasicObject() override;
 
+    void update() override;
+
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
 };

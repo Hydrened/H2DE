@@ -420,7 +420,7 @@ protected:
     static void destroySurfaces(std::vector<H2DE_Surface*>& surfaces);
     void removeTimeline(H2DE_TimelineID id);
 
-    void update();
+    virtual void update();
     void updateCollisions();
     void updateTimelineBuffer();
 
