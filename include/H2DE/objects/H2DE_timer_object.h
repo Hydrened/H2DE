@@ -73,7 +73,9 @@ public:
      * 
      * Sets all time components (hours, minutes, seconds, milliseconds) back to 0.
      */
-    inline void reset() { timerObjectData.time = { 0, 0, 0, 0 }; }
+    inline void reset() noexcept { 
+        timerObjectData.time = { 0, 0, 0, 0 };
+    }
     /**
      * @brief Pause the timer.
      * 
@@ -106,7 +108,9 @@ public:
      * 
      * @return The complete timer data.
      */
-    inline H2DE_TimerObjectData getTimerData() const { return timerObjectData; }
+    inline H2DE_TimerObjectData getTimerData() const {
+        return timerObjectData;
+    }
     /**
      * @brief Get the current time of the timer.
      * 
@@ -114,37 +118,49 @@ public:
      * 
      * @return The current time.
      */
-    constexpr H2DE_Time getTime() const { return timerObjectData.time; }
+    constexpr H2DE_Time getTime() const noexcept {
+        return timerObjectData.time; 
+    }
     /**
      * @brief Get the hours component of the timer.
      * 
      * @return The hours as an 8-bit unsigned integer.
      */
-    constexpr uint8_t getHours() { return timerObjectData.time.hours; }
+    constexpr uint8_t getHours() const noexcept {
+        return timerObjectData.time.hours;
+    }
     /**
      * @brief Get the minutes component of the timer.
      * 
      * @return The minutes as an 8-bit unsigned integer.
      */
-    constexpr uint8_t getMinutes() { return timerObjectData.time.minutes; }
+    constexpr uint8_t getMinutes() const noexcept {
+        return timerObjectData.time.minutes;
+    }
     /**
      * @brief Get the seconds component of the timer.
      * 
      * @return The seconds as an 8-bit unsigned integer.
      */
-    constexpr uint8_t getSeconds() { return timerObjectData.time.seconds; }
+    constexpr uint8_t getSeconds() const noexcept {
+        return timerObjectData.time.seconds;
+    }
     /**
      * @brief Get the milliseconds component of the timer.
      * 
      * @return The milliseconds as a 16-bit unsigned integer.
      */
-    constexpr uint16_t getMilliseconds() { return timerObjectData.time.milliseconds; }
+    constexpr uint16_t getMilliseconds() const noexcept {
+        return timerObjectData.time.milliseconds;
+    }
     /**
      * @brief Checks if the timer is currently increasing.
      * 
      * @return true if the timer is increasing, false if it is decreasing.
      */
-    constexpr bool isIncreasing() const { return timerObjectData.increasing; }
+    constexpr bool isIncreasing() const noexcept {
+        return timerObjectData.increasing;
+    }
     /**
      * @brief Check if the timer is sensitive to the game's pause state.
      * 
@@ -153,7 +169,9 @@ public:
      * 
      * @return true if pause sensitive, false if not.
      */
-    constexpr bool isPauseSensitive() const { return timerObjectData.pauseSensitive; }
+    constexpr bool isPauseSensitive() const noexcept {
+        return timerObjectData.pauseSensitive;
+    }
 
     /**
      * @brief Get all surfaces of the object.
@@ -163,7 +181,9 @@ public:
      * 
      * @return A map of surface names to their respective surface pointers.
      */
-    inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const { return surfaces; }
+    inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const noexcept {
+        return surfaces; 
+    }
     /**
      * @brief Get a surface by name and cast it to a specific type.
      * 
@@ -175,7 +195,9 @@ public:
      * @return A pointer to the surface cast to the specified type, or nullptr.
      */
     template<typename H2DE_Surface_T>
-    inline H2DE_Surface_T* getSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); }
+    inline H2DE_Surface_T* getSurface(const std::string& name) const {
+        return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name);
+    }
     /**
      * @brief Get the text object associated with the timer.
      * 
@@ -184,7 +206,9 @@ public:
      * 
      * @return Pointer to the timer's text object, or nullptr if none.
      */
-    inline H2DE_TextObject* getTextObject() const { return textObject; }
+    inline H2DE_TextObject* getTextObject() const noexcept {
+        return textObject; 
+    }
     
     /**
      * @brief Set the full time immediately.
@@ -312,7 +336,7 @@ public:
     friend class H2DE_Engine;
 
 private:
-    struct OnReachEvent {
+    struct H2DE_OnReachEvent {
         H2DE_Time target = H2DE_Time();
         std::function<void()> callback = nullptr;
         bool once = false;
@@ -323,7 +347,7 @@ private:
 
     H2DE_TextObject* textObject = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
-    std::vector<OnReachEvent> onReachEvents = {};
+    std::vector<H2DE_OnReachEvent> onReachEvents = {};
 
     H2DE_TimelineID timelineId = 0;
     float elapsed = 0.0f;
@@ -333,7 +357,7 @@ private:
 
     void update() override;
 
-    void initElapsedTime();
+    void initElapsedTime() noexcept;
     void initTimeline();
     void destroyTimeline();
 
@@ -344,7 +368,9 @@ private:
 
     static H2DE_Time elapsedToTime(float elapsed);
     static std::string intToStr(int value, int nbDigits);
-    static constexpr float getElapsed(const H2DE_Time& time) { return (time.hours * 3600.0f) + (time.minutes * 60.0f) + (time.seconds) + (time.milliseconds * 0.001f); }
+    static constexpr float getElapsed(const H2DE_Time& time) noexcept {
+        return (time.hours * 3600.0f) + (time.minutes * 60.0f) + (time.seconds) + (time.milliseconds * 0.001f);
+    }
     const std::string getStringifiedTime() const;
 };
 

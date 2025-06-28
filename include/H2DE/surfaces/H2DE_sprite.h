@@ -39,19 +39,25 @@ public:
      * 
      * @return The H2DE_SpriteData of the sprite.
      */
-    inline H2DE_SpriteData getSpriteData() const { return spriteData; }
+    inline H2DE_SpriteData getSpriteData() const {
+        return spriteData; 
+    }
     /**
      * @brief Get the texture name used by the sprite.
      * 
      * @return Texture name string.
      */
-    inline std::string getTextureName() const override { return spriteData.textureName; }
+    inline std::string getTextureName() const override {
+        return spriteData.textureName;
+    }
     /**
      * @brief Get the modulating color tint of the sprite.
      * 
      * @return Current color (H2DE_ColorRGB).
      */
-    inline H2DE_ColorRGB getColor() const override { return spriteData.color; }
+    inline H2DE_ColorRGB getColor() const noexcept override {
+        return spriteData.color;
+    }
     /**
      * @brief Get the starting position of the sprite in the texture.
      * 
@@ -59,13 +65,17 @@ public:
      * 
      * @return Starting position (H2DE_PixelPos).
      */
-    constexpr H2DE_PixelPos getStartingPos() const { return spriteData.startingPos; }
+    constexpr H2DE_PixelPos getStartingPos() const {
+        return spriteData.startingPos; 
+    }
     /**
      * @brief Get the size of each frame in the sprite.
      * 
      * @return Frame size (H2DE_PixelSize).
      */
-    constexpr H2DE_PixelSize getSize() const { return spriteData.size; }
+    constexpr H2DE_PixelSize getSize() const {
+        return spriteData.size;
+    }
     /**
      * @brief Get the spacing in pixels between frames.
      * 
@@ -73,19 +83,25 @@ public:
      * 
      * @return Spacing in pixels.
      */
-    constexpr int getSpacing() const { return spriteData.spacing; }
+    constexpr int getSpacing() const {
+        return spriteData.spacing; 
+    }
     /**
      * @brief Get the number of frames in the sprite animation.
      * 
      * @return Number of frames.
      */
-    constexpr uint16_t getNbFrame() const { return spriteData.nbFrame; }
+    constexpr uint16_t getNbFrame() const {
+        return spriteData.nbFrame;
+    }
     /**
      * @brief Get the delay between frames in milliseconds.
      * 
      * @return Frame delay.
      */
-    constexpr uint32_t getDelay() const { return spriteData.delay; }
+    constexpr uint32_t getDelay() const {
+        return spriteData.delay;
+    }
     /**
      * @brief Check if the animation is sensitive to pause state.
      * 
@@ -93,7 +109,9 @@ public:
      * 
      * @return True if pause sensitive, false otherwise.
      */
-    constexpr bool isPauseSensitive() const { return spriteData.pauseSensitive; }
+    constexpr bool isPauseSensitive() const {
+        return spriteData.pauseSensitive;
+    }
 
     /**
      * @brief Instantly set the texture name used by the sprite.
@@ -170,10 +188,12 @@ private:
     ~H2DE_Sprite() override;
 
     void initDelay();
-    void nextFrame();
+    void nextFrame() noexcept;
 
-    std::optional<H2DE_PixelRect> getSrcRect() const override;
-    bool isVisible() const override;
+    std::optional<H2DE_PixelRect> getSrcRect() const noexcept override;
+    inline bool isVisible() const noexcept override {
+        return (!isHidden() && spriteData.color.isVisible()); 
+    }
 };
 
 #endif

@@ -30,7 +30,9 @@ public:
      * 
      * @return The current H2DE_WindowData.
      */
-    inline H2DE_WindowData getData() const { return data; }
+    constexpr H2DE_WindowData getData() const noexcept {
+        return data; 
+    }
     /**
      * @brief Get the current position of the window on screen.
      * 
@@ -143,7 +145,7 @@ private:
 
     void fixRatioSize(const H2DE_PixelSize& size);
 
-    inline constexpr const SDL_WindowFlags getFlags(bool fullscreen, bool resizable) {
+    constexpr const SDL_WindowFlags getFlags(bool fullscreen, bool resizable) {
         return (fullscreen) ? SDL_WINDOW_FULLSCREEN_DESKTOP : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
     }
 };

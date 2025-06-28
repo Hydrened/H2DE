@@ -3,7 +3,7 @@
 #undef max
 
 // INIT
-H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, SDL_Renderer* r, std::vector<H2DE_Object*>& o) : engine(e), renderer(r), objects(o) {
+H2DE_Renderer::H2DE_Renderer(H2DE_Engine* e, SDL_Renderer* r, std::vector<H2DE_Object*>& o) noexcept : engine(e), renderer(r), objects(o) {
 
 }
 
@@ -22,7 +22,7 @@ void H2DE_Renderer::destroyTextures() {
     textures.clear();
 }
 
-void H2DE_Renderer::resetCounts() {
+void H2DE_Renderer::resetCounts() noexcept {
     objectsRendered = 0;
     surfacesRendered = 0;
     hitboxesRendered = 0;
@@ -238,7 +238,7 @@ SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object,
     return static_cast<SDL_Rect>(levelToPixelRect(G::getSurfaceRect(object, surface, xIsInverted, yIsInverted), object->objectData.absolute));
 }
 
-float H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE_Object* object, H2DE_Surface* surface) const {
+float H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE_Object* object, H2DE_Surface* surface) const noexcept {
     return G::getSurfaceRotation(object, surface);
 }
 
@@ -249,7 +249,7 @@ SDL_Point H2DE_Renderer::renderSurfaceGetLocalPivot(const H2DE_Object* object, H
     return static_cast<SDL_Point>(pixel_surfaceScale);
 }
 
-SDL_RendererFlip H2DE_Renderer::renderSurfaceGetWorldFlip(const H2DE_Object* object, H2DE_Surface* surface) {
+SDL_RendererFlip H2DE_Renderer::renderSurfaceGetWorldFlip(const H2DE_Object* object, H2DE_Surface* surface) noexcept {
     H2DE_Flip objFlip = G::getFlipFromScale(object->objectData.transform.scale);
     H2DE_Flip surFlip = G::getFlipFromScale(surface->surfaceData.transform.scale);
     H2DE_Flip addedFlip = G::addFlip(objFlip, surFlip);
@@ -356,7 +356,7 @@ bool H2DE_Renderer::isSurfaceVisible(const H2DE_Surface* surface) const {
 }
 
 // -- sdl getters
-SDL_ScaleMode H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) {
+SDL_ScaleMode H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) noexcept {
     switch (scaleMode) {
         case H2DE_SCALE_MODE_BEST: return SDL_ScaleModeBest;
         case H2DE_SCALE_MODE_LINEAR: return SDL_ScaleModeLinear;
@@ -364,7 +364,7 @@ SDL_ScaleMode H2DE_Renderer::getScaleMode(H2DE_ScaleMode scaleMode) {
     }
 }
 
-SDL_BlendMode H2DE_Renderer::getBlendMode(H2DE_BlendMode blendMode) {
+SDL_BlendMode H2DE_Renderer::getBlendMode(H2DE_BlendMode blendMode) noexcept {
     switch (blendMode) {
         case H2DE_BLEND_MODE_BLEND: return SDL_BLENDMODE_BLEND;
         case H2DE_BLEND_MODE_ADD: return SDL_BLENDMODE_ADD;

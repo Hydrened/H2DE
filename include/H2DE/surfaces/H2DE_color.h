@@ -34,20 +34,26 @@ public:
      * 
      * @return The H2DE_ColorData of the color surface.
      */
-    constexpr H2DE_ColorData getColorData() const { return colorData; }
+    constexpr H2DE_ColorData getColorData() const noexcept {
+        return colorData;
+    }
     /**
      * @brief Get the current modulating color.
      * 
      * @return The current color (H2DE_ColorRGB).
      */
-    inline H2DE_ColorRGB getColor() const override { return colorData.color; }
+    inline H2DE_ColorRGB getColor() const noexcept override {
+        return colorData.color; 
+    }
 
     /**
      * @brief Instantly set the modulating color.
      * 
      * @param color New color to set.
      */
-    inline void setColor(const H2DE_ColorRGB& color) { colorData.color = color; }
+    inline void setColor(const H2DE_ColorRGB& color) noexcept {
+        colorData.color = color;
+    }
 
     /**
      * @brief Animate the modulating color over time with easing and completion callback.
@@ -68,12 +74,18 @@ public:
 private:
     H2DE_ColorData colorData;
 
-    H2DE_Color(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData);
+    H2DE_Color(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) noexcept;
     ~H2DE_Color() override = default;
 
-    inline std::string getTextureName() const override { return "/"; }
-    inline std::optional<H2DE_PixelRect> getSrcRect() const override { return std::nullopt; };
-    inline bool isVisible() const override { return (!isHidden() && colorData.color.isVisible()); }
+    inline std::string getTextureName() const override {
+        return "/";
+    }
+    inline std::optional<H2DE_PixelRect> getSrcRect() const noexcept override {
+        return std::nullopt;
+    }
+    inline bool isVisible() const noexcept override {
+        return (!isHidden() && colorData.color.isVisible());
+    }
 };
 
 #endif

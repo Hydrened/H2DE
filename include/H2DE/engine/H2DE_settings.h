@@ -115,7 +115,7 @@ private:
     std::map<std::string, std::map<std::string, std::string>> values = {};
 
     H2DE_Settings(H2DE_Engine* engine);
-    ~H2DE_Settings() = default;
+    ~H2DE_Settings() noexcept = default;
 
     void initFile();
     void refreshValues();
@@ -124,7 +124,7 @@ private:
     bool hasSection(const std::string& section) const;
     bool hasKey(const std::string& section, const std::string& key) const;
     bool isSection(const std::string& line) const;
-    bool isKey(const std::string& line) const;
+    bool isKey(const std::string& line) const noexcept;
     const std::pair<std::string, std::string> getKeyAndValue(const std::string& line) const;
 };
 

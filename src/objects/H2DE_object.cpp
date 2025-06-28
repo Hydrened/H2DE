@@ -4,7 +4,7 @@
 #include "H2DE/engine/H2DE_error.h"
 
 // INIT
-H2DE_Object::H2DE_Object(H2DE_Engine* e, const H2DE_ObjectData& od) : engine(e), objectData(od) {
+H2DE_Object::H2DE_Object(H2DE_Engine* e, const H2DE_ObjectData& od) noexcept : engine(e), objectData(od) {
 
 }
 
@@ -137,7 +137,7 @@ void H2DE_Object::addHitbox(const std::string& name, const H2DE_Hitbox& hitbox) 
 bool H2DE_Object::removeHitbox(const std::string& name) {
     auto it = hitboxes.find(name);
     
-    bool removed =  (it != hitboxes.end());
+    bool removed = (it != hitboxes.end());
 
     if (removed) {
         hitboxes.erase(it);
@@ -148,7 +148,7 @@ bool H2DE_Object::removeHitbox(const std::string& name) {
 }
 
 // -- rescale
-void H2DE_Object::rescaleSurfaceBuffers() {
+void H2DE_Object::rescaleSurfaceBuffers() noexcept {
     const float absoluteObjectScaleX = H2DE::abs(objectData.transform.scale.x);
     const float absoluteObjectScaleY = H2DE::abs(objectData.transform.scale.y);
     const H2DE_Scale absoluteObjectScale = { absoluteObjectScaleX, absoluteObjectScaleY };
@@ -158,7 +158,7 @@ void H2DE_Object::rescaleSurfaceBuffers() {
     }
 }
 
-void H2DE_Object::rescaleHitboxes() {
+void H2DE_Object::rescaleHitboxes() noexcept {
     const float absoluteObjectScaleX = H2DE::abs(objectData.transform.scale.x);
     const float absoluteObjectScaleY = H2DE::abs(objectData.transform.scale.y);
     const H2DE_Scale absoluteObjectScale = { absoluteObjectScaleX, absoluteObjectScaleY };
@@ -168,7 +168,7 @@ void H2DE_Object::rescaleHitboxes() {
     }
 }
 
-void H2DE_Object::rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) {
+void H2DE_Object::rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) noexcept {
     transform.translate.x = transform.defaultTranslate.x * scale.x;
     transform.translate.y = transform.defaultTranslate.y * scale.y;
 

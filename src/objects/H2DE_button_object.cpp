@@ -31,11 +31,6 @@ bool H2DE_ButtonObject::stopTimeline() {
     return false;
 }
 
-// UPDATE
-void H2DE_ButtonObject::update() {
-
-}
-
 // ACTIONS
 void H2DE_ButtonObject::refreshTextObject() {
     if (textObject != nullptr) {

@@ -23,7 +23,7 @@ H2DE_ColorRGB::operator H2DE_ColorHSV() const {
         hsv.s = delta / max;
 
         if (max == r_f) {
-            hsv.h = 60 * (fmod(((g_f - b_f) / delta), 6));
+            hsv.h = 60 * (std::fmod(((g_f - b_f) / delta), 6));
 
         } else if (max == g_f) {
             hsv.h = 60 * (((b_f - r_f) / delta) + 2);

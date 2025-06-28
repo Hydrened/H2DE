@@ -6,7 +6,7 @@ H2DE_ColorHSV::operator H2DE_ColorRGB() const {
     H2DE_ColorRGB rgb;
 
     float c = v * s;
-    float x = c * (1 - std::fabs(fmod(h / 60.0, 2) - 1));
+    float x = c * (1 - std::fabs(std::fmod(h / 60.0, 2) - 1));
     float m = v - c;
 
     float r_f, g_f, b_f;

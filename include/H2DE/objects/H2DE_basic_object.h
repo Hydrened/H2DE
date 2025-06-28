@@ -62,7 +62,9 @@ public:
      * 
      * @return A map of surface names to their respective surface pointers.
      */
-    inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const { return surfaces; }
+    inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const noexcept {
+        return surfaces; 
+}
     /**
      * @brief Get a surface by name and cast it to a specific type.
      * 
@@ -74,13 +76,17 @@ public:
      * @return A pointer to the surface cast to the specified type, or nullptr.
      */
     template<typename H2DE_Surface_T>
-    inline H2DE_Surface_T* getSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); }
+    inline H2DE_Surface_T* getSurface(const std::string& name) const {
+        return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); 
+}
     /**
      * @brief Checks whether a surface with the given name exists.
      * @param name Name of the surface to check.
      * @return true if the surface exists, false otherwise.
      */
-    inline bool hasSurface(const std::string& name) const { return H2DE_Object::hasSurface(surfaces, name); }
+    inline bool hasSurface(const std::string& name) const {
+        return H2DE_Object::hasSurface(surfaces, name);
+    }
 
     friend class H2DE_Engine;
 
@@ -89,8 +95,6 @@ private:
 
     H2DE_BasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
     ~H2DE_BasicObject() override;
-
-    void update() override;
 
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;

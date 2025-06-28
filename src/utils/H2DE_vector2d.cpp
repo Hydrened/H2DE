@@ -5,28 +5,28 @@ template struct H2DE_Vector2D<float>;
 
 // OPERATIONS
 template<typename H2DE_Vector2D_T>
-H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator+=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) {
+H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator+=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) noexcept {
     x += other.x;
     y += other.y;
     return *this;
 }
 
 template<typename H2DE_Vector2D_T>
-H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator-=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) {
+H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator-=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) noexcept {
     x -= other.x;
     y -= other.y;
     return *this;
 }
 
 template<typename H2DE_Vector2D_T>
-H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator*=(float multiplier) {
+H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator*=(float multiplier) noexcept {
     x *= multiplier;
     y *= multiplier;
     return *this;
 }
 
 template<typename H2DE_Vector2D_T>
-H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator/=(float divider) {
+H2DE_Vector2D<H2DE_Vector2D_T>& H2DE_Vector2D<H2DE_Vector2D_T>::operator/=(float divider) noexcept {
     x /= divider;
     y /= divider;
     return *this;

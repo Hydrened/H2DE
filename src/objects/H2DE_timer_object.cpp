@@ -9,7 +9,7 @@ H2DE_TimerObject::H2DE_TimerObject(H2DE_Engine* e, const H2DE_ObjectData& od, co
     initTimeline();
 }
 
-void H2DE_TimerObject::initElapsedTime() {
+void H2DE_TimerObject::initElapsedTime() noexcept {
     float ms = timerObjectData.time.milliseconds / 1000.0f;
     float sec = timerObjectData.time.seconds;
     float min = timerObjectData.time.minutes * 60.0f;
@@ -116,7 +116,7 @@ void H2DE_TimerObject::onReach(const H2DE_Time& target, const std::function<void
         return;
     }
 
-    H2DE_TimerObject::OnReachEvent onReachEvent = H2DE_TimerObject::OnReachEvent();
+    H2DE_TimerObject::H2DE_OnReachEvent onReachEvent = H2DE_TimerObject::H2DE_OnReachEvent();
     onReachEvent.target = target;
     onReachEvent.callback = callback;
     onReachEvent.once = once;

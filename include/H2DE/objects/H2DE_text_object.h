@@ -34,7 +34,9 @@ public:
      * 
      * @return The full data structure of the text object.
      */
-    inline H2DE_TextObjectData getTextData() const { return textObjectData; }
+    inline H2DE_TextObjectData getTextData() const noexcept {
+        return textObjectData;
+    }
     /**
      * @brief Get the text string displayed by the text object.
      * 
@@ -42,7 +44,9 @@ public:
      * 
      * @return The displayed text as a std::string.
      */
-    inline std::string getText() const { return textObjectData.text.text; }
+    inline std::string getText() const {
+        return textObjectData.text.text;
+    }
     /**
      * @brief Get the font name used for rendering the text.
      * 
@@ -50,7 +54,9 @@ public:
      * 
      * @return The font name as a std::string.
      */
-    inline std::string getFont() const { return textObjectData.text.font; }
+    inline std::string getFont() const {
+        return textObjectData.text.font;
+    }
     /**
      * @brief Get the container scale.
      * 
@@ -58,7 +64,9 @@ public:
      * 
      * @return The scale of the container as an H2DE_Scale value.
      */
-    constexpr H2DE_Scale getContainer() const { return textObjectData.text.container; }
+    constexpr H2DE_Scale getContainer() const noexcept {
+        return textObjectData.text.container;
+    }
     /**
      * @brief Get the font size scale.
      * 
@@ -66,7 +74,9 @@ public:
      * 
      * @return The font size scale as an H2DE_Scale value.
      */
-    constexpr H2DE_Scale getFontSize() const { return textObjectData.text.fontSize; }
+    constexpr H2DE_Scale getFontSize() const noexcept {
+        return textObjectData.text.fontSize;
+    }
     /**
      * @brief Get the spacing between characters.
      * 
@@ -74,7 +84,9 @@ public:
      * 
      * @return The character spacing as an H2DE_Scale value.
      */
-    constexpr H2DE_Scale getSpacing() const { return textObjectData.text.spacing; }
+    constexpr H2DE_Scale getSpacing() const noexcept {
+        return textObjectData.text.spacing;
+    }
     /**
      * @brief Get the horizontal alignment of the text.
      * 
@@ -82,7 +94,9 @@ public:
      * 
      * @return The text alignment as an H2DE_TextAlign enum value.
      */
-    constexpr H2DE_TextAlign getTextAlign() const { return textObjectData.text.textAlign; }
+    constexpr H2DE_TextAlign getTextAlign() const noexcept {
+        return textObjectData.text.textAlign;
+    }
     /**
      * @brief Get the color of the text.
      * 
@@ -90,7 +104,9 @@ public:
      * 
      * @return The text color as an H2DE_ColorRGB struct.
      */
-    constexpr H2DE_ColorRGB getColor() const { return textObjectData.text.color; }
+    constexpr H2DE_ColorRGB getColor() const noexcept {
+        return textObjectData.text.color;
+    }
 
     /**
      * @brief Set the text string to display.
@@ -213,8 +229,6 @@ private:
     H2DE_TextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     ~H2DE_TextObject() override;
 
-    void update() override;
-
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
 
@@ -223,10 +237,12 @@ private:
 
     static int getLineLength(const std::vector<std::string>& line);
 
-    float getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const;
+    float getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const noexcept;
     float getStartingOffsetX(const std::vector<std::string>& line) const;
 
-    inline bool isTextNull() const { return (textObjectData.text.text == ""); }
+    inline bool isTextNull() const {
+        return (textObjectData.text.text == ""); 
+    }
 };
 
 #endif

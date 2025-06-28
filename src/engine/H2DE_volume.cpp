@@ -24,6 +24,23 @@ void H2DE_Volume::loadData() {
     setSfxVolume(sfxVolume);
 }
 
+// UPDATE
+void H2DE_Volume::update() {
+    bool engineIsPaused = engine->isPaused();
+
+    for (const auto& [channel, pauseSensitive] : playingChannelsPauseSensitive) {
+        if (!pauseSensitive) {
+            continue;
+        }
+
+        if (engineIsPaused) {
+            Mix_Pause(channel);
+        } else {
+            Mix_Resume(channel);
+        }
+    }
+}
+
 // ACTIONS
 void H2DE_Volume::playSong(const std::string& name, uint32_t loops, bool pauseSensitive) {
     playChunk(true, name, loops, pauseSensitive);
@@ -34,15 +51,15 @@ int H2DE_Volume::playSfx(const std::string& name, uint32_t loops, bool pauseSens
 }
 
 void H2DE_Volume::pause() {
-    for (const auto& [channel, ps] : playingChannelsPauseSensitive) {
-        if (ps) {
+    for (const auto& [channel, pauseSensitive] : playingChannelsPauseSensitive) {
+        if (pauseSensitive) {
             Mix_Pause(channel);
         }
     }
 }
 
 void H2DE_Volume::resume() {
-    for (const auto& [channel, ps] : playingChannelsPauseSensitive) {
+    for (const auto& [channel, pauseSensitive] : playingChannelsPauseSensitive) {
         Mix_Resume(channel);
     }
 }

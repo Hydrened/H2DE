@@ -65,11 +65,15 @@ public:
     /**
      * @brief Enable the button (makes it active).
      */
-    inline void enable() { disabled = false; }
+    inline void enable() { 
+        disabled = false;
+    }
     /**
      * @brief Disable the button (makes it inactive).
      */
-    inline void disable() { disabled = true; }
+    inline void disable() {
+        disabled = true;
+    }
 
     /**
      * @brief Calls the mouse down event handler assigned to the button.
@@ -115,7 +119,9 @@ public:
      * 
      * @return A copy of the button's data.
      */
-    inline H2DE_ButtonObjectData getButtonData() const { return buttonObjectData; }
+    inline H2DE_ButtonObjectData getButtonData() const {
+        return buttonObjectData;
+    }
     /**
      * @brief Check if the button is sensitive to the game's pause state.
      * 
@@ -124,12 +130,16 @@ public:
      * 
      * @return true if pause sensitive, false if not.
      */
-    constexpr bool isPauseSensitive() const { return buttonObjectData.pauseSensitive; }
+    constexpr bool isPauseSensitive() const noexcept {
+        return buttonObjectData.pauseSensitive; 
+    }
     /**
      * @brief Check if the button is disabled.
      * @return true if disabled, false otherwise.
      */
-    constexpr bool isDisabled() const { return disabled; }
+    constexpr bool isDisabled() const noexcept {
+        return disabled; 
+    }
 
     /**
      * @brief Get all surfaces of the object.
@@ -139,7 +149,9 @@ public:
      * 
      * @return A map of surface names to their respective surface pointers.
      */
-    inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const { return surfaces; }
+    inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const noexcept {
+        return surfaces; 
+    }
     /**
      * @brief Get a surface by name and cast it to a specific type.
      * 
@@ -151,13 +163,17 @@ public:
      * @return A pointer to the surface cast to the specified type, or nullptr.
      */
     template<typename H2DE_Surface_T>
-    inline H2DE_Surface_T* getSurface(const std::string& name) const { return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); }
+    inline H2DE_Surface_T* getSurface(const std::string& name) const {
+        return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); 
+    }
     /**
      * @brief Checks whether a surface with the given name exists.
      * @param name Name of the surface to check.
      * @return true if the surface exists, false otherwise.
      */
-    inline bool hasSurface(const std::string& name) const { return H2DE_Object::hasSurface(surfaces, name); }
+    inline bool hasSurface(const std::string& name) const {
+        return H2DE_Object::hasSurface(surfaces, name);
+    }
     /**
      * @brief Get the text object associated with the button.
      * 
@@ -166,7 +182,9 @@ public:
      * 
      * @return Pointer to the button's text object, or nullptr if none.
      */
-    inline H2DE_TextObject* getTextObject() const { return textObject; }
+    inline H2DE_TextObject* getTextObject() const noexcept {
+        return textObject; 
+    }
 
     /**
      * @brief Set the callback function triggered when the button is pressed down.
@@ -176,7 +194,9 @@ public:
      * 
      * @param onMouseDown The function to call on mouse down event.
      */
-    inline void setMouseDown(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onMouseDown) { buttonObjectData.onMouseDown = onMouseDown; }
+    inline void setMouseDown(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onMouseDown) noexcept {
+        buttonObjectData.onMouseDown = onMouseDown;
+    }
     /**
      * @brief Set the callback function triggered when the mouse button is released.
      * 
@@ -184,7 +204,9 @@ public:
      * 
      * @param onMouseUp The function to call on mouse up event.
      */
-    inline void setMouseUp(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onMouseUp) { buttonObjectData.onMouseUp = onMouseUp; }
+    inline void setMouseUp(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onMouseUp) noexcept {
+        buttonObjectData.onMouseUp = onMouseUp;
+    }
     /**
      * @brief Set the callback function triggered when the mouse starts hovering over the button.
      * 
@@ -192,7 +214,9 @@ public:
      * 
      * @param onHover The function to call on mouse hover event.
      */
-    inline void setMouseHover(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onHover) { buttonObjectData.onHover = onHover; }
+    inline void setMouseHover(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onHover) noexcept {
+        buttonObjectData.onHover = onHover;
+    }
     /**
      * @brief Set the callback function triggered when the mouse stops hovering over the button.
      * 
@@ -200,7 +224,9 @@ public:
      * 
      * @param onBlur The function to call on mouse blur event.
      */
-    inline void setMouseBlur(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onBlur) { buttonObjectData.onBlur = onBlur; }
+    inline void setMouseBlur(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onBlur) noexcept {
+        buttonObjectData.onBlur = onBlur;
+    }
     /**
      * @brief Set whether the button's events are sensitive to the engine's pause state.
      * 
@@ -208,7 +234,9 @@ public:
      * 
      * @param pauseSensitive True to make the button sensitive to pause, false otherwise.
      */
-    inline void setPauseSensitive(bool pauseSensitive) { buttonObjectData.pauseSensitive = pauseSensitive; }
+    inline void setPauseSensitive(bool pauseSensitive) noexcept { 
+        buttonObjectData.pauseSensitive = pauseSensitive; 
+    }
 
     using H2DE_DataType = H2DE_ButtonObjectData;
 
@@ -226,8 +254,6 @@ private:
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     ~H2DE_ButtonObject() override;
-
-    void update() override;
 
     void refreshTextObject();
     void refreshSurfaceBuffers() override;

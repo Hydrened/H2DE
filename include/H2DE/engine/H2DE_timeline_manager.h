@@ -24,7 +24,7 @@ private:
     H2DE_TimelineID id = 0;
 
     H2DE_TimelineManager(H2DE_Engine* engine);
-    ~H2DE_TimelineManager() = default;
+    ~H2DE_TimelineManager() noexcept = default;
 
     void update();
 

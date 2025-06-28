@@ -91,7 +91,9 @@ namespace H2DE_Json {
      * @param integer JSON value representing an integer.
      * @return The integer extracted from JSON.
      */
-    constexpr int getInteger(const json& integer) { return integer.get<int>(); } 
+    constexpr int getInteger(const json& integer) {
+        return integer.get<int>();
+    } 
     /**
      * @brief Extract a float from a JSON value.
      * 
@@ -100,7 +102,9 @@ namespace H2DE_Json {
      * @param floater JSON value representing a floating point number.
      * @return The float extracted from JSON.
      */
-    constexpr float getFloat(const json& floater) { return floater.get<float>(); } 
+    constexpr float getFloat(const json& floater) {
+        return floater.get<float>();
+    } 
     /**
      * @brief Extract a boolean from a JSON value.
      * 
@@ -109,7 +113,9 @@ namespace H2DE_Json {
      * @param boolean JSON value representing a boolean.
      * @return The bool extracted from JSON.
      */
-    constexpr bool getBool(const json& boolean) { return boolean.get<bool>(); } 
+    constexpr bool getBool(const json& boolean) {
+        return boolean.get<bool>();
+    } 
     /**
      * @brief Extract a char from a JSON value.
      * 
@@ -118,7 +124,9 @@ namespace H2DE_Json {
      * @param character JSON value representing a character.
      * @return The char extracted from JSON.
      */
-    constexpr char getChar(const json& character) { return character.get<char>(); } 
+    constexpr char getChar(const json& character) {
+        return character.get<char>();
+    } 
     /**
      * @brief Extract a std::string from a JSON value.
      * 
@@ -127,7 +135,9 @@ namespace H2DE_Json {
      * @param string JSON value representing a string.
      * @return The string extracted from JSON.
      */
-    inline std::string getString(const json& string) { return string.get<std::string>(); }
+    inline std::string getString(const json& string) {
+        return string.get<std::string>();
+    }
 
     /**
      * @brief Extract a generic value of type T from a JSON value.

@@ -2,7 +2,7 @@
 #include "H2DE/engine/H2DE_lerp_manager.h"
 
 // INIT
-H2DE_Color::H2DE_Color(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& sd, const H2DE_ColorData& cd) : H2DE_Surface(e, o, sd), colorData(cd) {
+H2DE_Color::H2DE_Color(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& sd, const H2DE_ColorData& cd) noexcept : H2DE_Surface(e, o, sd), colorData(cd) {
 
 }
 

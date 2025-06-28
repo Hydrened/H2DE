@@ -52,7 +52,7 @@ H2DE_LevelRect H2DE_Geometry::getRect(const H2DE_Object* object, const H2DE_Tran
     return world_childRotated_parentRotated_parentFliped_childRect;
 }
 
-float H2DE_Geometry::getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle) {
+float H2DE_Geometry::getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle) noexcept {
     const H2DE_Transform parentTransform = object->getTransform();
     const H2DE_Transform childTransform = transform;
     
@@ -71,7 +71,7 @@ float H2DE_Geometry::getRotation(const H2DE_Object* object, const H2DE_Transform
 }
 
 // FLIP
-H2DE_LevelRect H2DE_Geometry::flipRect(const H2DE_LevelRect& local_childRect, H2DE_Flip flip) {
+H2DE_LevelRect H2DE_Geometry::flipRect(const H2DE_LevelRect& local_childRect, H2DE_Flip flip) noexcept {
     H2DE_LevelRect res = local_childRect;
 
     if (flip & H2DE_FLIP_X) {
@@ -85,7 +85,7 @@ H2DE_LevelRect H2DE_Geometry::flipRect(const H2DE_LevelRect& local_childRect, H2
     return res;
 }
 
-float H2DE_Geometry::flipRotation(float rotation, H2DE_Flip flip) {
+float H2DE_Geometry::flipRotation(float rotation, H2DE_Flip flip) noexcept {
     float res = rotation;
 
     if (flip == H2DE_FLIP_X || flip == H2DE_FLIP_Y) {
@@ -95,7 +95,7 @@ float H2DE_Geometry::flipRotation(float rotation, H2DE_Flip flip) {
     return G::normalizeRotation(res);
 }
 
-H2DE_Pivot H2DE_Geometry::flipPivot(const H2DE_LevelRect& world_parentRect, const H2DE_Pivot& local_pivot, H2DE_Flip flip) {
+H2DE_Pivot H2DE_Geometry::flipPivot(const H2DE_LevelRect& world_parentRect, const H2DE_Pivot& local_pivot, H2DE_Flip flip) noexcept {
     H2DE_Pivot res = local_pivot;
 
     if (flip & H2DE_FLIP_X) {
@@ -110,7 +110,7 @@ H2DE_Pivot H2DE_Geometry::flipPivot(const H2DE_LevelRect& world_parentRect, cons
 }
 
 // -- getter
-H2DE_Flip H2DE_Geometry::getFlipFromScale(const H2DE_Scale& scale) {
+H2DE_Flip H2DE_Geometry::getFlipFromScale(const H2DE_Scale& scale) noexcept {
     H2DE_Flip res = H2DE_FLIP_NONE;
 
     if (scale.x < 0.0f) {
@@ -125,7 +125,7 @@ H2DE_Flip H2DE_Geometry::getFlipFromScale(const H2DE_Scale& scale) {
 }
 
 // -- operations
-H2DE_Flip H2DE_Geometry::addFlip(H2DE_Flip flip1, H2DE_Flip flip2) {
+H2DE_Flip H2DE_Geometry::addFlip(H2DE_Flip flip1, H2DE_Flip flip2) noexcept {
     if (flip1 == flip2) {
         return H2DE_FLIP_NONE;
     }
@@ -153,7 +153,7 @@ H2DE_LevelRect H2DE_Geometry::applyRotationOnRect(const H2DE_LevelRect& world_re
     return world_rotatedRectCenter.makeRect(rectScale);
 }
 
-float H2DE_Geometry::normalizeRotation(float rotation) {
+float H2DE_Geometry::normalizeRotation(float rotation) noexcept {
     while (rotation >= 360.0f) {
         rotation -= 360.0f;
     }

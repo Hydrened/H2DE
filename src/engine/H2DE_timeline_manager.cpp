@@ -46,7 +46,7 @@ void H2DE_TimelineManager::update() {
     }
 }
 
-// ACIOTNS
+// ACTIONS
 H2DE_TimelineID H2DE_TimelineManager::create(uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive) {
     H2DE_TimelineManager::H2DE_Timeline timeline = H2DE_TimelineManager::H2DE_Timeline();
     timeline.duration = std::max(static_cast<float>(duration) + engine->getDeltaTime() + 1, 1.0f);

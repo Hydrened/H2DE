@@ -131,7 +131,7 @@ bool H2DE_Settings::isSection(const std::string& line) const {
     return (isNameValid && isLineASection);
 }
 
-bool H2DE_Settings::isKey(const std::string& line) const {
+bool H2DE_Settings::isKey(const std::string& line) const noexcept {
     if (line.length() == 0) {
         return false;
     }

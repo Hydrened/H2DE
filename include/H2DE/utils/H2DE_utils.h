@@ -175,7 +175,7 @@ namespace H2DE {
      * @return Absolute value of `value`.
      */
     template<typename T>
-    constexpr T abs(T value) {
+    constexpr T abs(T value) noexcept {
         return (value < 0 ? -value : value);
     }
 
@@ -188,7 +188,7 @@ namespace H2DE {
      * @return value raised to the power.
      */
     template<typename T>
-    constexpr T pow(T value, unsigned int power) {
+    constexpr T pow(T value, unsigned int power) noexcept {
         return (power == 0) ? static_cast<T>(1) : value * H2DE::pow(value, power - 1);
     }
 
@@ -200,7 +200,7 @@ namespace H2DE {
      * @return Rounded integer.
      */
     template<typename T>
-    constexpr int round(T value) {
+    constexpr int round(T value) noexcept {
         return (value >= 0) ? static_cast<int>(value + 0.5f) : static_cast<int>(value - 0.5f);
     }
     /**
@@ -211,7 +211,7 @@ namespace H2DE {
      * @return Largest integer less or equal to value.
      */
     template<typename T>
-    constexpr int floor(T value) {
+    constexpr int floor(T value) noexcept {
         return static_cast<int>(value) - (value < static_cast<T>(static_cast<int>(value)) ? 1 : 0);
     }
     /**
@@ -222,7 +222,7 @@ namespace H2DE {
      * @return Smallest integer greater or equal to value.
      */
     template<typename T>
-    constexpr int ceil(T value) {
+    constexpr int ceil(T value) noexcept {
         return static_cast<int>(value) + (value > static_cast<T>(static_cast<int>(value)) ? 1 : 0);
     }
 
@@ -280,20 +280,20 @@ struct H2DE_Vector2D {
     /**
      * @brief Default constructor initializes vector to (0,0).
      */
-    constexpr H2DE_Vector2D() = default;
+    constexpr H2DE_Vector2D() noexcept = default;
     /**
      * @brief Construct a vector with given x and y values.
      * @param x The x component.
      * @param y The y component.
      */
-    constexpr H2DE_Vector2D(H2DE_Vector2D_T x, H2DE_Vector2D_T y) : x(x), y(y) {}
+    constexpr H2DE_Vector2D(H2DE_Vector2D_T x, H2DE_Vector2D_T y) noexcept : x(x), y(y) {}
 
     /**
      * @brief Vector addition.
      * @param other The other vector to add.
      * @return The result of vector addition.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator+(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator+(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x + other.x, y + other.y };
     }
     /**
@@ -301,7 +301,7 @@ struct H2DE_Vector2D {
      * @param other The other vector to subtract.
      * @return The result of vector subtraction.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator-(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator-(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x - other.x, y - other.y };
     }
     /**
@@ -309,7 +309,7 @@ struct H2DE_Vector2D {
      * @param multiplier The scalar multiplier.
      * @return The scaled vector.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator*(float multiplier) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator*(float multiplier) const noexcept {
         return H2DE_Vector2D{ static_cast<H2DE_Vector2D_T>(x * multiplier), static_cast<H2DE_Vector2D_T>(y * multiplier) };
     }
     /**
@@ -317,7 +317,7 @@ struct H2DE_Vector2D {
      * @param divider The scalar divisor.
      * @return The scaled vector.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator/(float divider) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator/(float divider) const noexcept {
         return H2DE_Vector2D{ static_cast<H2DE_Vector2D_T>(x / divider), static_cast<H2DE_Vector2D_T>(y / divider) };
     }
 
@@ -326,44 +326,48 @@ struct H2DE_Vector2D {
      * @param other The other vector to add.
      * @return Reference to this vector after addition.
      */
-    H2DE_Vector2D<H2DE_Vector2D_T>& operator+=(const H2DE_Vector2D<H2DE_Vector2D_T>& other);
+    H2DE_Vector2D<H2DE_Vector2D_T>& operator+=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) noexcept;
     /**
      * @brief Compound subtraction assignment.
      * @param other The other vector to subtract.
      * @return Reference to this vector after subtraction.
      */
-    H2DE_Vector2D<H2DE_Vector2D_T>& operator-=(const H2DE_Vector2D<H2DE_Vector2D_T>& other);
+    H2DE_Vector2D<H2DE_Vector2D_T>& operator-=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) noexcept;
     /**
      * @brief Compound scalar multiplication assignment.
      * @param multiplier The scalar multiplier.
      * @return Reference to this vector after scaling.
      */
-    H2DE_Vector2D<H2DE_Vector2D_T>& operator*=(float multiplier);
+    H2DE_Vector2D<H2DE_Vector2D_T>& operator*=(float multiplier) noexcept;
     /**
      * @brief Compound scalar division assignment.
      * @param divider The scalar divisor.
      * @return Reference to this vector after scaling.
      */
-    H2DE_Vector2D<H2DE_Vector2D_T>& operator/=(float divider);
+    H2DE_Vector2D<H2DE_Vector2D_T>& operator/=(float divider) noexcept;
 
     /**
      * @brief Equality operator.
      * @param other The other vector to compare.
      * @return True if both x and y components are equal.
      */
-    constexpr bool operator==(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return (x == other.x && y == other.y); }
+    constexpr bool operator==(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const noexcept {
+        return (x == other.x && y == other.y);
+    }
     /**
      * @brief Inequality operator.
      * @param other The other vector to compare.
      * @return True if any component differs.
      */
-    constexpr bool operator!=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return !(*this == other); }
+    constexpr bool operator!=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const noexcept {
+        return !(*this == other);
+    }
     /**
      * @brief Greater-than operator based on sum of absolute components.
      * @param other The other vector to compare.
      * @return True if this vector's component sum is greater.
      */
-    constexpr bool operator>(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+    constexpr bool operator>(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const noexcept {
         return (H2DE::abs<H2DE_Vector2D_T>(x) + H2DE::abs<H2DE_Vector2D_T>(y) > H2DE::abs<H2DE_Vector2D_T>(other.x) + H2DE::abs<H2DE_Vector2D_T>(other.y));
     }
     /**
@@ -371,7 +375,7 @@ struct H2DE_Vector2D {
      * @param other The other vector to compare.
      * @return True if this vector's component sum is greater or equal.
      */
-    constexpr bool operator>=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+    constexpr bool operator>=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const noexcept {
         return (H2DE::abs<H2DE_Vector2D_T>(x) + H2DE::abs<H2DE_Vector2D_T>(y) >= H2DE::abs<H2DE_Vector2D_T>(other.x) + H2DE::abs<H2DE_Vector2D_T>(other.y));
     }
     /**
@@ -379,13 +383,17 @@ struct H2DE_Vector2D {
      * @param other The other vector to compare.
      * @return True if this vector's component sum is less.
      */
-    constexpr bool operator<(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return !(*this >= other); }
+    constexpr bool operator<(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const noexcept {
+        return !(*this >= other);
+    }
     /**
      * @brief Less-than-or-equal operator based on sum of absolute components.
      * @param other The other vector to compare.
      * @return True if this vector's component sum is less or equal.
      */
-    constexpr bool operator<=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return !(*this > other); }
+    constexpr bool operator<=(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const noexcept {
+        return !(*this > other);
+    }
 
     /**
      * @brief Stream output operator for easy debugging.
@@ -402,20 +410,22 @@ struct H2DE_Vector2D {
      * @brief Convert vector to SDL_Point (casting components to int).
      * @return SDL_Point with x and y components.
      */
-    inline operator SDL_Point() const { return { static_cast<int>(x), static_cast<int>(y) }; }
+    inline operator SDL_Point() const noexcept {
+        return { static_cast<int>(x), static_cast<int>(y) };
+    }
 
     /**
      * @brief Returns a new vector with the X component increased by a given value.
      * @param value Value to add to the X component.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> addX(H2DE_Vector2D_T value) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> addX(H2DE_Vector2D_T value) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x + value, y };
     }
     /**
      * @brief Returns a new vector with the Y component increased by a given value.
      * @param value Value to add to the Y component.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> addY(H2DE_Vector2D_T value) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> addY(H2DE_Vector2D_T value) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x, y + value };
     }
 
@@ -423,14 +433,14 @@ struct H2DE_Vector2D {
      * @brief Returns a new vector with the X component decreased by a given value.
      * @param value Value to subtract from the X component.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> subtractX(H2DE_Vector2D_T value) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> subtractX(H2DE_Vector2D_T value) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x - value, y };
     }
     /**
      * @brief Returns a new vector with the Y component decreased by a given value.
      * @param value Value to subtract from the Y component.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> subtractY(H2DE_Vector2D_T value) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> subtractY(H2DE_Vector2D_T value) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x, y - value };
     }
 
@@ -438,14 +448,14 @@ struct H2DE_Vector2D {
      * @brief Returns a new vector with the X component multiplied by a given multiplier.
      * @param multiplier Multiplier to multiply the X component by.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> multiplyX(float multiplier) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> multiplyX(float multiplier) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ static_cast<H2DE_Vector2D_T>(x * multiplier), y };
     }
     /**
      * @brief Returns a new vector with the Y component multiplied by a given multiplier.
      * @param multiplier Multiplier to multiply the Y component by.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> multiplyY(float multiplier) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> multiplyY(float multiplier) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x, static_cast<H2DE_Vector2D_T>(y * multiplier) };
     }
 
@@ -453,14 +463,14 @@ struct H2DE_Vector2D {
      * @brief Returns a new vector with the X component divided by a given divider.
      * @param divider Divider to divide the X component by.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideX(float divider) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideX(float divider) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ static_cast<H2DE_Vector2D_T>(x / divider), y };
     }
     /**
      * @brief Returns a new vector with the Y component divided by a given divider.
      * @param divider Divider to divide the Y component by.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideY(float divider) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideY(float divider) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x, static_cast<H2DE_Vector2D_T>(y / divider) };
     }
 
@@ -468,14 +478,14 @@ struct H2DE_Vector2D {
      * @brief Returns a new vector with the X component set to a given value.
      * @param value New value for the X component.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> setX(H2DE_Vector2D_T value) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> setX(H2DE_Vector2D_T value) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ value, y };
     }
     /**
      * @brief Returns a new vector with the Y component set to a given value.
      * @param value New value for the Y component.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> setY(H2DE_Vector2D_T value) const {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> setY(H2DE_Vector2D_T value) const noexcept {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x, value };
     }
 
@@ -484,14 +494,14 @@ struct H2DE_Vector2D {
      * @param scale The size vector (width and height).
      * @return H2DE_Rect representing the rectangle.
      */
-    constexpr H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D<H2DE_Vector2D_T>& scale) const {
+    constexpr H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D<H2DE_Vector2D_T>& scale) const noexcept {
         return H2DE_Rect<H2DE_Vector2D_T>{ x, y, scale.x, scale.y };   
     }
     /**
      * @brief Create a rectangle at this vector's position with zero size.
      * @return H2DE_Rect with zero width and height.
      */
-    constexpr H2DE_Rect<H2DE_Vector2D_T> makeNullRect() const {
+    constexpr H2DE_Rect<H2DE_Vector2D_T> makeNullRect() const noexcept {
         return H2DE_Rect<H2DE_Vector2D_T>{ x, y, static_cast<H2DE_Vector2D_T>(0.0f), static_cast<H2DE_Vector2D_T>(0.0f) };
     }
 
@@ -499,7 +509,9 @@ struct H2DE_Vector2D {
      * @brief Check if the vector is (0,0).
      * @return True if both components are zero.
      */
-    constexpr bool isNull() const { return (x == 0 && y == 0); }
+    constexpr bool isNull() const noexcept {
+        return (x == 0 && y == 0);
+    }
     /**
      * @brief Rotate this vector around a pivot point by a given angle.
      * @param pivot The pivot point to rotate around.
@@ -512,7 +524,9 @@ struct H2DE_Vector2D {
      * 
      * @return A new vector scaled by 0.5 (half the x and y).
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> getCenter() const { return (*this * 0.5f); }
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> getCenter() const noexcept {
+        return (*this * 0.5f);
+    }
     /**
      * @brief Calculate the squared distance between this vector and another.
      * 
@@ -521,7 +535,7 @@ struct H2DE_Vector2D {
      * @param other The other vector to compute the distance to.
      * @return The squared distance as the sum of squared component differences.
      */
-    constexpr H2DE_Vector2D_T getDistanceSquared(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+    constexpr H2DE_Vector2D_T getDistanceSquared(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const noexcept {
         return H2DE::pow(other.x - x, 2) + H2DE::pow(other.y - y, 2);
     }
     /**
@@ -532,7 +546,9 @@ struct H2DE_Vector2D {
      * @param other The other vector to compute the distance to.
      * @return The Euclidean distance as a float.
      */
-    inline H2DE_Vector2D_T getDistance(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const { return std::sqrt(getDistanceSquared(other)); }
+    inline H2DE_Vector2D_T getDistance(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+        return std::sqrt(getDistanceSquared(other));
+    }
 };
 
 /** @brief Position in pixels, represented as integer 2D vector. */
@@ -566,7 +582,7 @@ struct H2DE_Rect {
     /**
      * @brief Default constructor, initializes rect to (0,0,1,1).
      */
-    constexpr H2DE_Rect() = default;
+    constexpr H2DE_Rect() noexcept = default;
     /**
      * @brief Constructs a rectangle with specified position and size.
      * 
@@ -575,13 +591,13 @@ struct H2DE_Rect {
      * @param w Width
      * @param h Height
      */
-    constexpr H2DE_Rect(H2DE_Rect_T x, H2DE_Rect_T y, H2DE_Rect_T w, H2DE_Rect_T h) : x(x), y(y), w(w), h(h) {}
+    constexpr H2DE_Rect(H2DE_Rect_T x, H2DE_Rect_T y, H2DE_Rect_T w, H2DE_Rect_T h) noexcept : x(x), y(y), w(w), h(h) {}
 
     /**
      * @brief Adds two rectangles component-wise.
      * @return A new rectangle with added position and size.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> operator+(const H2DE_Rect<H2DE_Rect_T>& other) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> operator+(const H2DE_Rect<H2DE_Rect_T>& other) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{
             x + other.x,
             y + other.y,
@@ -593,7 +609,7 @@ struct H2DE_Rect {
      * @brief Subtracts two rectangles component-wise.
      * @return A new rectangle with subtracted position and size.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> operator-(const H2DE_Rect<H2DE_Rect_T>& other) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> operator-(const H2DE_Rect<H2DE_Rect_T>& other) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{
             x - other.x,
             y - other.y,
@@ -606,7 +622,7 @@ struct H2DE_Rect {
      * @param multiplier The value to multiply by.
      * @return A new scaled rectangle.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> operator*(float multiplier) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> operator*(float multiplier) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{
             static_cast<H2DE_Rect_T>(x * multiplier),
             static_cast<H2DE_Rect_T>(y * multiplier),
@@ -619,7 +635,7 @@ struct H2DE_Rect {
      * @param divider The value to divide by.
      * @return A new scaled rectangle.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> operator/(float divider) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> operator/(float divider) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{
             static_cast<H2DE_Rect_T>(x / divider),
             static_cast<H2DE_Rect_T>(y / divider),
@@ -633,43 +649,47 @@ struct H2DE_Rect {
      * @param other The rect to add.
      * @return Reference to this rect after addition.
      */
-    H2DE_Rect<H2DE_Rect_T>& operator+=(const H2DE_Rect<H2DE_Rect_T>& other);
+    H2DE_Rect<H2DE_Rect_T>& operator+=(const H2DE_Rect<H2DE_Rect_T>& other) noexcept;
     /**
      * @brief Subtracts the values of another rect from this rect (in-place).
      * @param other The rect to subtract.
      * @return Reference to this rect after subtraction.
      */
-    H2DE_Rect<H2DE_Rect_T>& operator-=(const H2DE_Rect<H2DE_Rect_T>& other);
+    H2DE_Rect<H2DE_Rect_T>& operator-=(const H2DE_Rect<H2DE_Rect_T>& other) noexcept;
     /**
      * @brief Multiplies all values of this rect by a scalar (in-place).
      * @param multiplier The scalar to multiply by.
      * @return Reference to this rect after multiplication.
      */
-    H2DE_Rect<H2DE_Rect_T>& operator*=(float multiplier);
+    H2DE_Rect<H2DE_Rect_T>& operator*=(float multiplier) noexcept;
     /**
      * @brief Divides all values of this rect by a scalar (in-place).
      * @param divider The scalar to divide by.
      * @return Reference to this rect after division.
      */
-    H2DE_Rect<H2DE_Rect_T>& operator/=(float divider);
+    H2DE_Rect<H2DE_Rect_T>& operator/=(float divider) noexcept;
 
     /**
      * @brief Checks equality between two rectangles.
      * @return true if position and size are equal.
      */
-    constexpr bool operator==(const H2DE_Rect<H2DE_Rect_T>& other) const { return (x == other.x && y == other.y && w == other.w && h == other.h); }
+    constexpr bool operator==(const H2DE_Rect<H2DE_Rect_T>& other) const noexcept {
+        return (x == other.x && y == other.y && w == other.w && h == other.h);
+    }
     /**
      * @brief Checks inequality between two rectangles.
      * @return true if position or size differ.
      */
-    constexpr bool operator!=(const H2DE_Rect<H2DE_Rect_T>& other) const { return !(*this == other); }
+    constexpr bool operator!=(const H2DE_Rect<H2DE_Rect_T>& other) const noexcept {
+        return !(*this == other);
+    }
 
     /**
      * @brief Converts this rectangle to SDL_Rect for SDL rendering.
      * 
      * The rectangle is converted from center-position + size to SDL's top-left + size.
      */
-    inline operator SDL_Rect() const {
+    inline operator SDL_Rect() const noexcept {
         return SDL_Rect{
             static_cast<int>(H2DE::round(x - w * 0.5f)),
             static_cast<int>(H2DE::round(y - h * 0.5f)),
@@ -690,56 +710,56 @@ struct H2DE_Rect {
      * @brief Returns a new rectangle with position translated by given vector.
      * @param translate Vector to add to position.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> addTranslate(const H2DE_Vector2D<H2DE_Rect_T>& translate) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> addTranslate(const H2DE_Vector2D<H2DE_Rect_T>& translate) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x + translate.x, y + translate.y, w, h };
     }
     /**
      * @brief Returns a new rectangle with size scaled by given vector.
      * @param scale Vector to add to size.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> addScale(const H2DE_Vector2D<H2DE_Rect_T>& scale) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> addScale(const H2DE_Vector2D<H2DE_Rect_T>& scale) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w + scale.x, h + scale.y };
     }
     /**
      * @brief Returns a new rectangle with position translated negatively by given vector.
      * @param translate Vector to subtract from position.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> subtractTranslate(const H2DE_Vector2D<H2DE_Rect_T>& translate) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractTranslate(const H2DE_Vector2D<H2DE_Rect_T>& translate) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x - translate.x, y - translate.y, w, h };
     }
     /**
      * @brief Returns a new rectangle with size scaled down by given vector.
      * @param scale Vector to subtract from size.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> subtractScale(const H2DE_Vector2D<H2DE_Rect_T>& scale) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractScale(const H2DE_Vector2D<H2DE_Rect_T>& scale) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w - scale.x, h - scale.y };
     }
     /**
      * @brief Returns a new rectangle with position multiplied by multiplier, size unchanged.
      * @param multiplier Value to multiply position by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> multiplyTranslate(float multiplier) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyTranslate(float multiplier) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ static_cast<H2DE_Rect_T>(x * multiplier), static_cast<H2DE_Rect_T>(y * multiplier), w, h };
     }
     /**
      * @brief Returns a new rectangle with size multiplied by multiplier, position unchanged.
      * @param multiplier Value to multiply size by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> multiplyScale(float multiplier) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyScale(float multiplier) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, static_cast<H2DE_Rect_T>(w * multiplier), static_cast<H2DE_Rect_T>(h * multiplier) };
     }
     /**
      * @brief Returns a new rectangle with position divided by divider, size unchanged.
      * @param divider Value to divide position by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideTranslate(float divider) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideTranslate(float divider) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ static_cast<H2DE_Rect_T>(x / divider), static_cast<H2DE_Rect_T>(y / divider), w, h };
     }
     /**
      * @brief Returns a new rectangle with size divided by divider, position unchanged.
      * @param divider Value to divide size by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideScale(float divider) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideScale(float divider) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, static_cast<H2DE_Rect_T>(w / divider), static_cast<H2DE_Rect_T>(h / divider) };
     }
 
@@ -747,28 +767,28 @@ struct H2DE_Rect {
      * @brief Returns a new rectangle with the X component increased by a given value.
      * @param value Value to add to the X component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> addX(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> addX(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x + value, y, w, h };
     }
     /**
      * @brief Returns a new rectangle with the Y component increased by a given value.
      * @param value Value to add to the Y component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> addY(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> addY(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y + value, w, h };
     }
     /**
      * @brief Returns a new rectangle with the W component increased by a given value.
      * @param value Value to add to the W component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> addW(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> addW(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w + value, h };
     }
     /**
      * @brief Returns a new rectangle with the H component increased by a given value.
      * @param value Value to add to the H component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> addH(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> addH(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w, h + value };
     }
 
@@ -776,28 +796,28 @@ struct H2DE_Rect {
      * @brief Returns a new rectangle with the X component decreased by a given value.
      * @param value Value to subtract from the X component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> subtractX(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractX(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x - value, y, w, h };
     }
     /**
      * @brief Returns a new rectangle with the Y component decreased by a given value.
      * @param value Value to subtract from the Y component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> subtractY(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractY(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y - value, w, h };
     }
     /**
      * @brief Returns a new rectangle with the W component decreased by a given value.
      * @param value Value to subtract from the W component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> subtractW(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractW(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w - value, h };
     }
     /**
      * @brief Returns a new rectangle with the H component decreased by a given value.
      * @param value Value to subtract from the H component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> subtractH(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> subtractH(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w, h - value };
     }
 
@@ -805,28 +825,28 @@ struct H2DE_Rect {
      * @brief Returns a new rectangle with the X component multiplied by a given multiplier.
      * @param multiplier Multiplier to multiply the X component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> multiplyX(float multiplier) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyX(float multiplier) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ static_cast<H2DE_Rect_T>(x * multiplier), y, w, h };
     }
     /**
      * @brief Returns a new rectangle with the Y component multiplied by a given multiplier.
      * @param multiplier Multiplier to multiply the Y component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> multiplyY(float multiplier) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyY(float multiplier) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, static_cast<H2DE_Rect_T>(y * multiplier), w, h };
     }
     /**
      * @brief Returns a new rectangle with the W component multiplied by a given multiplier.
      * @param multiplier Multiplier to multiply the W component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> multiplyW(float multiplier) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyW(float multiplier) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, static_cast<H2DE_Rect_T>(w * multiplier), h };
     }
     /**
      * @brief Returns a new rectangle with the H component multiplied by a given multiplier.
      * @param multiplier Multiplier to multiply the H component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> multiplyH(float multiplier) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> multiplyH(float multiplier) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w, static_cast<H2DE_Rect_T>(h * multiplier) };
     }
 
@@ -834,28 +854,28 @@ struct H2DE_Rect {
      * @brief Returns a new rectangle with the X component divided by a given divider.
      * @param divider Divider to divide the X component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideX(float divider) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideX(float divider) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ static_cast<H2DE_Rect_T>(x / divider), y, w, h };
     }
     /**
      * @brief Returns a new rectangle with the Y component divided by a given divider.
      * @param divider Divider to divide the Y component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideY(float divider) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideY(float divider) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, static_cast<H2DE_Rect_T>(y / divider), w, h };
     }
     /**
      * @brief Returns a new rectangle with the W component divided by a given divider.
      * @param divider Divider to divide the W component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideW(float divider) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideW(float divider) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, static_cast<H2DE_Rect_T>(w / divider), h };
     }
     /**
      * @brief Returns a new rectangle with the H component divided by a given divider.
      * @param divider Divider to divide the H component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideH(float divider) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideH(float divider) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w, static_cast<H2DE_Rect_T>(h / divider) };
     }
 
@@ -863,63 +883,75 @@ struct H2DE_Rect {
      * @brief Returns a new rectangle with the X component set to a given value.
      * @param value New value for the X component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> setX(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> setX(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ value, y, w, h };
     }
     /**
      * @brief Returns a new rectangle with the Y component set to a given value.
      * @param value New value for the Y component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> setY(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> setY(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, value, w, h };
     }
     /**
      * @brief Returns a new rectangle with the W component set to a given value.
      * @param value New value for the W component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> setW(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> setW(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, value, h };
     }
     /**
      * @brief Returns a new rectangle with the H component set to a given value.
      * @param value New value for the H component.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> setH(H2DE_Rect_T value) const {
+    constexpr H2DE_Rect<H2DE_Rect_T> setH(H2DE_Rect_T value) const noexcept {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w, value };
     }
 
     /**
      * @brief Returns position vector of the rectangle center.
      */
-    constexpr H2DE_Vector2D<H2DE_Rect_T> getTranslate() const { return H2DE_Vector2D<H2DE_Rect_T>{ x, y }; }
+    constexpr H2DE_Vector2D<H2DE_Rect_T> getTranslate() const noexcept {
+        return H2DE_Vector2D<H2DE_Rect_T>{ x, y };
+    }
     /**
      * @brief Returns size vector of the rectangle.
      */
-    constexpr H2DE_Vector2D<H2DE_Rect_T> getScale() const { return H2DE_Vector2D<H2DE_Rect_T>{ w, h }; }
+    constexpr H2DE_Vector2D<H2DE_Rect_T> getScale() const noexcept {
+        return H2DE_Vector2D<H2DE_Rect_T>{ w, h };
+    }
 
     /**
      * @brief Returns minimal X coordinate of the rectangle (left edge).
      */
-    constexpr H2DE_Rect_T getMinX() const { return x - static_cast<H2DE_Rect_T>(w * 0.5f); }
+    constexpr H2DE_Rect_T getMinX() const noexcept {
+        return (x - static_cast<H2DE_Rect_T>(w * 0.5f));
+    }
     /**
      * @brief Returns maximal X coordinate of the rectangle (right edge).
      */
-    constexpr H2DE_Rect_T getMaxX() const { return x + static_cast<H2DE_Rect_T>(w * 0.5f); }
+    constexpr H2DE_Rect_T getMaxX() const noexcept {
+        return (x + static_cast<H2DE_Rect_T>(w * 0.5f));
+    }
     /**
      * @brief Returns minimal Y coordinate of the rectangle (top edge).
      */
-    constexpr H2DE_Rect_T getMinY() const { return y - static_cast<H2DE_Rect_T>(h * 0.5f); }
+    constexpr H2DE_Rect_T getMinY() const noexcept {
+        return (y - static_cast<H2DE_Rect_T>(h * 0.5f));
+    }
     /**
      * @brief Returns maximal Y coordinate of the rectangle (bottom edge).
      */
-    constexpr H2DE_Rect_T getMaxY() const { return y + static_cast<H2DE_Rect_T>(h * 0.5f); }
+    constexpr H2DE_Rect_T getMaxY() const noexcept {
+        return (y + static_cast<H2DE_Rect_T>(h * 0.5f));
+    }
 
     /**
      * @brief Checks if this rectangle collides with another rectangle.
      * @param rect Rectangle to test collision against.
      * @return true if rectangles overlap.
      */
-    constexpr bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const {
+    constexpr bool collides(const H2DE_Rect<H2DE_Rect_T>& rect) const noexcept {
         return (
             (H2DE::abs(x - rect.x) < ((w + rect.w) * 0.5f)) &&
             (H2DE::abs(y - rect.y) < ((h + rect.h) * 0.5f))
@@ -930,7 +962,7 @@ struct H2DE_Rect {
      * @param translate Point position vector.
      * @return true if point lies within rectangle bounds.
      */
-    constexpr bool collides(const H2DE_Vector2D<H2DE_Rect_T>& translate) const {
+    constexpr bool collides(const H2DE_Vector2D<H2DE_Rect_T>& translate) const noexcept {
         return (
             (translate.x >= x - w * 0.5f) &&
             (translate.x <= x + w * 0.5f) &&
@@ -944,25 +976,25 @@ struct H2DE_Rect {
      * @param radius Circle radius.
      * @return true if circle intersects rectangle.
      */
-    bool collides(const H2DE_Vector2D<H2DE_Rect_T>& translate, float radius) const;
+    bool collides(const H2DE_Vector2D<H2DE_Rect_T>& translate, float radius) const noexcept;
     /**
      * @brief Gets the face of this rectangle collided with another.
      * @param rect Rectangle to test against.
      * @return Optional face enum representing the side collided, or nullopt if none.
      */
-    const std::optional<H2DE_Face> getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const;
+    const std::optional<H2DE_Face> getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const noexcept;
     /**
      * @brief Snaps this rectangle to another rectangle along the specified face.
      * @param rect Rectangle to snap to.
      * @param face Face of the rectangle to align.
      */
-    void snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face face);
+    void snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face face) noexcept;
 
     /**
      * @brief Returns an array of the 4 corners of the rectangle.
      * @return std::array with corners ordered (top-left, top-right, bottom-right, bottom-left).
      */
-    std::array<H2DE_Vector2D<H2DE_Rect_T>, 4> getCorners() const;
+    std::array<H2DE_Vector2D<H2DE_Rect_T>, 4> getCorners() const noexcept;
 };
 
 /** @brief Alias for rectangle with integer components (pixels). */
@@ -985,14 +1017,14 @@ struct H2DE_ColorRGB {
     /**
      * @brief Default constructor initializes to white opaque.
      */
-    constexpr H2DE_ColorRGB() = default;
+    constexpr H2DE_ColorRGB() noexcept = default;
     /**
      * @brief Constructor with red, green and blue; alpha defaults to 255 (opaque).
      * @param red Red channel value.
      * @param green Green channel value.
      * @param blue Blue channel value.
      */
-    constexpr H2DE_ColorRGB(uint8_t red, uint8_t green, uint8_t blue) : r(red), g(green), b(blue), a(H2DE_UINT8_MAX) {}
+    constexpr H2DE_ColorRGB(uint8_t red, uint8_t green, uint8_t blue) noexcept : r(red), g(green), b(blue), a(H2DE_UINT8_MAX) {}
     /**
      * @brief Constructor with red, green, blue and alpha channels.
      * @param red Red channel value.
@@ -1000,7 +1032,7 @@ struct H2DE_ColorRGB {
      * @param blue Blue channel value.
      * @param alpha Alpha channel value.
      */
-    constexpr H2DE_ColorRGB(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) : r(red), g(green), b(blue), a(alpha) {}
+    constexpr H2DE_ColorRGB(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) noexcept : r(red), g(green), b(blue), a(alpha) {}
 
     /**
      * @brief Converts this RGB color to HSV color space.
@@ -1011,20 +1043,26 @@ struct H2DE_ColorRGB {
      * @brief Converts the color to a 32-bit integer in ARGB format.
      * @return 32-bit unsigned int representation of color.
      */
-    constexpr explicit operator uint32_t() const { return ((a << 24) | (b << 16) | (g << 8) | r); }
+    constexpr explicit operator uint32_t() const noexcept {
+        return ((a << 24) | (b << 16) | (g << 8) | r);
+    }
 
     /**
      * @brief Equality operator.
      * @param other The other color to compare with.
      * @return True if all channels (RGBA) are equal.
      */
-    constexpr bool operator==(const H2DE_ColorRGB& other) const { return (r == other.r && g == other.g && b == other.b && a == other.a); }
+    constexpr bool operator==(const H2DE_ColorRGB& other) const noexcept {
+        return (r == other.r && g == other.g && b == other.b && a == other.a);
+    }
     /**
      * @brief Inequality operator.
      * @param other The other color to compare with.
      * @return True if any channel differs.
      */
-    constexpr bool operator!=(const H2DE_ColorRGB& other) const { return !(*this == other); }
+    constexpr bool operator!=(const H2DE_ColorRGB& other) const noexcept {
+        return !(*this == other);
+    }
 
     /**
      * @brief Stream output operator for debug.
@@ -1114,7 +1152,9 @@ struct H2DE_ColorRGB {
      * @brief Checks if the color is visible (alpha not zero).
      * @return True if alpha is not zero.
      */
-    constexpr bool isVisible() const { return (a != 0); }
+    constexpr bool isVisible() const noexcept {
+        return (a != 0);
+    }
 };
 
 /**
@@ -1136,14 +1176,14 @@ struct H2DE_ColorHSV {
     /**
      * @brief Default constructor. Initializes to opaque white (1.0, 1.0, 1.0, 1.0).
      */
-    constexpr H2DE_ColorHSV() = default;
+    constexpr H2DE_ColorHSV() noexcept = default;
     /**
      * @brief Constructs an HSV color without specifying alpha.
      * @param hue Hue value (0.0 - 360.0)
      * @param saturation Saturation value (0.0 - 1.0)
      * @param value Value (brightness) (0.0 - 1.0)
      */
-    constexpr H2DE_ColorHSV(float hue, float saturation, float value) : h(hue), s(saturation), v(value), a(1.0f) {}
+    constexpr H2DE_ColorHSV(float hue, float saturation, float value) noexcept : h(hue), s(saturation), v(value), a(1.0f) {}
     /**
      * @brief Constructs an HSV color with specified alpha.
      * @param hue Hue value (0.0 - 360.0)
@@ -1151,7 +1191,7 @@ struct H2DE_ColorHSV {
      * @param value Value (brightness) (0.0 - 1.0)
      * @param alpha Alpha value (0.0 - 1.0)
      */
-    constexpr H2DE_ColorHSV(float hue, float saturation, float value, float alpha) : h(hue), s(saturation), v(value), a(alpha) {}
+    constexpr H2DE_ColorHSV(float hue, float saturation, float value, float alpha) noexcept : h(hue), s(saturation), v(value), a(alpha) {}
 
     /**
      * @brief Converts this HSV color to its RGB equivalent.
@@ -1164,13 +1204,17 @@ struct H2DE_ColorHSV {
      * @param other The other HSV color.
      * @return True if all components match.
      */
-    constexpr bool operator==(const H2DE_ColorHSV& other) const { return (h == other.h && s == other.s && v == other.v, a == other.a); }
+    constexpr bool operator==(const H2DE_ColorHSV& other) const noexcept {
+        return (h == other.h && s == other.s && v == other.v, a == other.a);
+    }
     /**
      * @brief Compares if two HSV colors are different.
      * @param other The other HSV color.
      * @return True if any component is different.
      */
-    constexpr bool operator!=(const H2DE_ColorHSV& other) const { return !(*this == other); }
+    constexpr bool operator!=(const H2DE_ColorHSV& other) const noexcept {
+        return !(*this == other);
+    }
 
     /**
      * @brief Outputs HSV color values to a stream (debug/logging).
@@ -1263,7 +1307,9 @@ struct H2DE_ColorHSV {
      * @brief Checks if the color is visible (alpha > 0.0).
      * @return True if the color is not fully transparent.
      */
-    constexpr bool isVisible() const { return (a != 0); }
+    constexpr bool isVisible() const noexcept {
+        return (a != 0);
+    }
 };
 
 /**
@@ -1279,12 +1325,12 @@ struct H2DE_Padding {
     /**
      * @brief Default constructor. Initializes all paddings to 0.
      */
-    constexpr H2DE_Padding() = default;
+    constexpr H2DE_Padding() noexcept = default;
     /**
      * @brief Uniform padding constructor. Applies the same value to all sides.
      * @param all The padding to apply to top, right, bottom, and left.
      */
-    constexpr H2DE_Padding(float all) : top(all), right(all), bottom(all), left(all) {}
+    constexpr H2DE_Padding(float all) noexcept : top(all), right(all), bottom(all), left(all) {}
     /**
      * @brief Block/inline padding constructor.
      * 
@@ -1293,7 +1339,7 @@ struct H2DE_Padding {
      * @param block Padding for top and bottom.
      * @param inLine Padding for left and right.
      */
-    constexpr H2DE_Padding(float block, float inLine) : top(block), right(inLine), bottom(block), left(inLine) {}
+    constexpr H2DE_Padding(float block, float inLine) noexcept : top(block), right(inLine), bottom(block), left(inLine) {}
     /**
      * @brief Full custom padding constructor.
      * @param top Top padding.
@@ -1301,7 +1347,7 @@ struct H2DE_Padding {
      * @param bottom Bottom padding.
      * @param left Left padding.
      */
-    constexpr H2DE_Padding(float top, float right, float bottom, float left) : top(top), right(right), bottom(bottom), left(left) {}
+    constexpr H2DE_Padding(float top, float right, float bottom, float left) noexcept : top(top), right(right), bottom(bottom), left(left) {}
 };
 
 /**
@@ -1369,7 +1415,7 @@ public:
     /**
      * @brief Default constructor.
      */
-    constexpr H2DE_Transform() = default;
+    constexpr H2DE_Transform() noexcept = default;
     /**
      * @brief Initializes a transform with custom values.
      * 
@@ -1378,7 +1424,7 @@ public:
      * @param rotation The rotation in degrees.
      * @param pivot The pivot point.
      */
-    constexpr H2DE_Transform(const H2DE_Translate& translate, const H2DE_Scale& scale, float rotation, const H2DE_Pivot& pivot) : translate(translate), defaultTranslate(translate), scale(scale), defaultScale(scale), rotation(rotation), pivot(pivot), defaultPivot(pivot) {}
+    constexpr H2DE_Transform(const H2DE_Translate& translate, const H2DE_Scale& scale, float rotation, const H2DE_Pivot& pivot) noexcept : translate(translate), defaultTranslate(translate), scale(scale), defaultScale(scale), rotation(rotation), pivot(pivot), defaultPivot(pivot) {}
 
 private:
     H2DE_Translate defaultTranslate = { 0.0f, 0.0f };
@@ -1434,7 +1480,7 @@ struct H2DE_Time {
     /**
      * @brief Default constructor.
      */
-    constexpr H2DE_Time() = default;
+    constexpr H2DE_Time() noexcept = default;
     /**
      * @brief Constructs a H2DE_Time with specified values.
      * @param hours Number of hours.
@@ -1442,7 +1488,7 @@ struct H2DE_Time {
      * @param seconds Number of seconds.
      * @param milliseconds Number of milliseconds.
      */
-    constexpr H2DE_Time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint16_t milliseconds) : hours(hours), minutes(minutes), seconds(seconds), milliseconds(milliseconds) {}
+    constexpr H2DE_Time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint16_t milliseconds) noexcept : hours(hours), minutes(minutes), seconds(seconds), milliseconds(milliseconds) {}
 };
 
 /**
@@ -1458,7 +1504,7 @@ struct H2DE_ObjectData {
     /**
      * @brief Default constructor.
      */
-    constexpr H2DE_ObjectData() = default;
+    constexpr H2DE_ObjectData() noexcept = default;
     /**
      * @brief Constructs a H2DE_Time with specified values.
      * @param hours Number of hours.
@@ -1466,7 +1512,7 @@ struct H2DE_ObjectData {
      * @param seconds Number of seconds.
      * @param milliseconds Number of milliseconds.
      */
-    constexpr H2DE_ObjectData(const H2DE_Transform& transform, uint8_t opacity, bool absolute, int index) : transform(transform), opacity(opacity), absolute(absolute), index(index) {}
+    constexpr H2DE_ObjectData(const H2DE_Transform& transform, uint8_t opacity, bool absolute, int index) noexcept : transform(transform), opacity(opacity), absolute(absolute), index(index) {}
 };
 
 /**
@@ -1481,14 +1527,14 @@ struct H2DE_BarObjectData {
     /**
      * @brief Default constructor.
      */
-    constexpr H2DE_BarObjectData() = default;
+    constexpr H2DE_BarObjectData() noexcept = default;
     /**
      * @brief Constructs an H2DE_BarObjectData with specified min, max and current value.
      * @param min Minimum value.
      * @param max Maximum value.
      * @param value Current value.
      */
-    constexpr H2DE_BarObjectData(float min, float max, float value) : min(min), max(max), value(value) {}
+    constexpr H2DE_BarObjectData(float min, float max, float value) noexcept : min(min), max(max), value(value) {}
 };
 
 /**
@@ -1541,7 +1587,7 @@ struct H2DE_SurfaceData {
     /**
      * @brief Default constructor.
      */
-    constexpr H2DE_SurfaceData() = default;
+    constexpr H2DE_SurfaceData() noexcept = default;
     /**
      * @brief Constructs an H2DE_SurfaceData with specified transform, scale mode, blend mode, and index.
      * @param transform The transform data (position, scale, rotation, pivot).
@@ -1549,7 +1595,7 @@ struct H2DE_SurfaceData {
      * @param blendMode The blending mode for rendering.
      * @param index The index or order of the surface.
      */
-    constexpr H2DE_SurfaceData(const H2DE_Transform& transform, H2DE_ScaleMode scaleMode, H2DE_BlendMode blendMode, int index) : transform(transform), scaleMode(scaleMode), blendMode(blendMode), index(index) {}
+    constexpr H2DE_SurfaceData(const H2DE_Transform& transform, H2DE_ScaleMode scaleMode, H2DE_BlendMode blendMode, int index) noexcept : transform(transform), scaleMode(scaleMode), blendMode(blendMode), index(index) {}
 };
 
 /**
@@ -1587,12 +1633,12 @@ struct H2DE_ColorData {
     /** 
      * @brief Default constructor, initializes with default color.
      */
-    constexpr H2DE_ColorData() = default;
+    constexpr H2DE_ColorData() noexcept = default;
     /**
      * @brief Constructs H2DE_ColorData with a given RGB color.
      * @param color The RGB color to initialize with.
      */
-    constexpr H2DE_ColorData(const H2DE_ColorRGB& color) : color(color) {}
+    constexpr H2DE_ColorData(const H2DE_ColorRGB& color) noexcept : color(color) {}
 };
 
 /**

@@ -20,7 +20,7 @@ H2DE_Sprite::~H2DE_Sprite() {
 }
 
 // ACTIONS
-void H2DE_Sprite::nextFrame() {
+void H2DE_Sprite::nextFrame() noexcept {
     currentFrame++;
 
     if (currentFrame >= spriteData.nbFrame) {
@@ -29,20 +29,13 @@ void H2DE_Sprite::nextFrame() {
 }
 
 // GETTER
-std::optional<H2DE_PixelRect> H2DE_Sprite::getSrcRect() const {
+std::optional<H2DE_PixelRect> H2DE_Sprite::getSrcRect() const noexcept {
     H2DE_PixelPos res = H2DE_PixelPos();
 
     res.x = currentFrame * (spriteData.size.x + spriteData.spacing) + spriteData.startingPos.x;
     res.y = spriteData.startingPos.y;
 
     return res.makeRect(spriteData.size);
-}
-
-bool H2DE_Sprite::isVisible() const {
-    bool surfaceIsNotHidden = !(isHidden());
-    bool colorIsVisible = (spriteData.color.isVisible());
-    
-    return (surfaceIsNotHidden && colorIsVisible);
 }
 
 // SETTER

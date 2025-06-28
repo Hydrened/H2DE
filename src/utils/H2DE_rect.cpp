@@ -5,7 +5,7 @@ template struct H2DE_Rect<float>;
 
 // OPERATIONS
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator+=(const H2DE_Rect<H2DE_Rect_T>& other) {
+H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator+=(const H2DE_Rect<H2DE_Rect_T>& other) noexcept {
     x += other.x;
     y += other.y;
     w += other.w;
@@ -14,7 +14,7 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator+=(const H2DE_Rect<H2DE_
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator-=(const H2DE_Rect<H2DE_Rect_T>& other) {
+H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator-=(const H2DE_Rect<H2DE_Rect_T>& other) noexcept {
     x -= other.x;
     y -= other.y;
     w -= other.w;
@@ -23,7 +23,7 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator-=(const H2DE_Rect<H2DE_
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator*=(float multiplier) {
+H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator*=(float multiplier) noexcept {
     x *= multiplier;
     y *= multiplier;
     w *= multiplier;
@@ -32,7 +32,7 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator*=(float multiplier) {
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) {
+H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) noexcept {
     x /= divider;
     y /= divider;
     w /= divider;
@@ -42,7 +42,7 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) {
 
 // METHODS
 template<typename H2DE_Rect_T>
-void H2DE_Rect<H2DE_Rect_T>::snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face face) {
+void H2DE_Rect<H2DE_Rect_T>::snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face face) noexcept {
     const H2DE_Vector2D<H2DE_Rect_T> halfScale = getScale() * 0.5f;
     const H2DE_Vector2D<H2DE_Rect_T> rectHalfScale = rect.getScale() * 0.5f;
 
@@ -69,7 +69,7 @@ void H2DE_Rect<H2DE_Rect_T>::snap(const H2DE_Rect<H2DE_Rect_T>& rect, H2DE_Face 
 
 // GETTER
 template<typename H2DE_Rect_T>
-bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& translate, float radius) const {
+bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& translate, float radius) const noexcept {
     H2DE_Rect_T halfW = w * 0.5f;
     H2DE_Rect_T halfH = h * 0.5f;
 
@@ -88,7 +88,7 @@ bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& translat
 }
 
 template<typename H2DE_Rect_T>
-const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const {
+const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2DE_Rect<H2DE_Rect_T>& rect) const noexcept {
     H2DE_Rect_T dx = rect.x - x;
     H2DE_Rect_T dy = rect.y - y;
 
@@ -110,7 +110,7 @@ const std::optional<H2DE_Face> H2DE_Rect<H2DE_Rect_T>::getCollidedFace(const H2D
 }
 
 template<typename H2DE_Rect_T>
-std::array<H2DE_Vector2D<H2DE_Rect_T>, 4> H2DE_Rect<H2DE_Rect_T>::getCorners() const {
+std::array<H2DE_Vector2D<H2DE_Rect_T>, 4> H2DE_Rect<H2DE_Rect_T>::getCorners() const noexcept {
     H2DE_Rect_T halfW = static_cast<H2DE_Rect_T>(w * 0.5f);
     H2DE_Rect_T halfH = static_cast<H2DE_Rect_T>(h * 0.5f);
 

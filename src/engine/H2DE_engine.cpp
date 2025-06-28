@@ -179,6 +179,7 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
 void H2DE_Engine::update() {
     window->update();
     timelineManager->update();
+    volume->update();
 
     if (!paused) {
         if (updateCall) {
@@ -305,15 +306,15 @@ bool H2DE_Engine::isPositionGreater(H2DE_Object* a, H2DE_Object* b) {
         : (aTranslate.x < bTranslate.x);
 }
 
-uint32_t H2DE_Engine::getObjectsRenderedNumber() const {
+uint32_t H2DE_Engine::getObjectsRenderedNumber() const noexcept {
     return renderer->objectsRendered;
 }
 
-uint32_t H2DE_Engine::getSurfacesRenderedNumber() const {
+uint32_t H2DE_Engine::getSurfacesRenderedNumber() const noexcept {
     return renderer->surfacesRendered;
 }
 
-uint32_t H2DE_Engine::getHitboxesRenderedNumber() const {
+uint32_t H2DE_Engine::getHitboxesRenderedNumber() const noexcept {
     return renderer->hitboxesRendered;
 }
 

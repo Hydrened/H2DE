@@ -1,3 +1,9 @@
+## H2DE-4.1.2
+#### ADDED
+- get fixed delta time engine function
+#### FIXED
+- volume pause sensitive not working
+
 ## H2DE-4.1.1
 #### ADDED
 - getter and setter for text container
@@ -24,7 +30,7 @@
 ## H2DE-4.0.17
 #### ADDED
 - constexpr round, ceil and floor
-- H2DE namespace for abs, round, ceiul, floor, pow, randoms and lerp
+- H2DE namespace for abs, round, ceil, floor, pow, randoms and lerp
 #### FIXED
 - getter for hitbox world rect with negative size
 - crash after destroying button

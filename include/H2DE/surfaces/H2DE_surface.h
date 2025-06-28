@@ -38,13 +38,17 @@ public:
      * 
      * Makes the surface visible (hidden = false).
      */
-    inline void show() { hidden = false; }
+    inline void show() noexcept {
+        hidden = false; 
+    }
     /**
      * @brief Hide the surface.
      * 
      * Makes the surface invisible (hidden = true).
      */
-    inline void hide() { hidden = true; }
+    inline void hide() noexcept {
+        hidden = true; 
+    }
 
     /**
      * @brief Get the full surface data structure.
@@ -53,7 +57,9 @@ public:
      * 
      * @return The H2DE_SurfaceData of the surface.
      */
-    constexpr H2DE_SurfaceData getSurfaceData() const { return surfaceData; }
+    constexpr H2DE_SurfaceData getSurfaceData() const noexcept {
+        return surfaceData; 
+    }
     /**
      * @brief Get the transform information of the surface.
      * 
@@ -61,43 +67,57 @@ public:
      * 
      * @return The H2DE_Transform struct.
      */
-    constexpr H2DE_Transform getTransform() const { return surfaceData.transform; }
+    constexpr H2DE_Transform getTransform() const noexcept {
+        return surfaceData.transform;
+    }
     /**
      * @brief Get the translation vector of the surface.
      * 
      * @return The H2DE_Translate struct (position offset).
      */
-    constexpr H2DE_Translate getTranslate() const { return surfaceData.transform.translate; }
+    constexpr H2DE_Translate getTranslate() const noexcept {
+        return surfaceData.transform.translate;
+    }
     /**
      * @brief Get the scale factors of the surface.
      * 
      * @return The H2DE_Scale struct (x and y scale).
      */
-    constexpr H2DE_Scale getScale() const { return surfaceData.transform.scale; }
+    constexpr H2DE_Scale getScale() const noexcept {
+        return surfaceData.transform.scale;
+    }
     /**
      * @brief Get the rotation angle in degrees or radians.
      * 
      * @return The rotation value as a float.
      */
-    constexpr float getRotation() const { return surfaceData.transform.rotation; }
+    constexpr float getRotation() const noexcept {
+        return surfaceData.transform.rotation;
+    }
     /**
      * @brief Get the pivot point for rotation and scaling.
      * 
      * @return The H2DE_Pivot struct.
      */
-    constexpr H2DE_Pivot getPivot() const { return surfaceData.transform.pivot; }
+    constexpr H2DE_Pivot getPivot() const noexcept {
+        return surfaceData.transform.pivot;
+    }
     /**
      * @brief Get the scale mode (how the surface scales relative to its container).
      * 
      * @return The H2DE_ScaleMode enum value.
      */
-    constexpr H2DE_ScaleMode getScaleMode() const { return surfaceData.scaleMode; }
+    constexpr H2DE_ScaleMode getScaleMode() const noexcept {
+        return surfaceData.scaleMode;
+    }
     /**
      * @brief Get the blend mode used for rendering this surface.
      * 
      * @return The H2DE_BlendMode enum value.
      */
-    constexpr H2DE_BlendMode getBlendMode() const { return surfaceData.blendMode; }
+    constexpr H2DE_BlendMode getBlendMode() const noexcept {
+        return surfaceData.blendMode;
+    }
     /**
      * @brief Get the index used for draw order layering.
      * 
@@ -105,13 +125,17 @@ public:
      * 
      * @return The index as an integer.
      */
-    constexpr int getIndex() const { return surfaceData.index; }
+    constexpr int getIndex() const noexcept {
+        return surfaceData.index;
+    }
     /**
      * @brief Check if the surface is currently hidden.
      * 
      * @return true if hidden, false otherwise.
      */
-    constexpr bool isHidden() const { return hidden; }
+    constexpr bool isHidden() const noexcept {
+        return hidden;
+    }
 
     /** 
      * @brief Set the translation vector instantly.
@@ -190,7 +214,7 @@ protected:
     H2DE_Engine* engine;
     H2DE_Object* object;
 
-    H2DE_Surface(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData);
+    H2DE_Surface(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData) noexcept;
     virtual ~H2DE_Surface() = default;
 
 private:
@@ -199,9 +223,9 @@ private:
     bool hidden = false;
 
     virtual std::string getTextureName() const = 0;
-    virtual H2DE_ColorRGB getColor() const = 0;
-    virtual std::optional<H2DE_PixelRect> getSrcRect() const = 0;
-    virtual bool isVisible() const = 0;
+    virtual H2DE_ColorRGB getColor() const noexcept = 0;
+    virtual std::optional<H2DE_PixelRect> getSrcRect() const noexcept = 0;
+    virtual bool isVisible() const noexcept = 0;
 };
 
 #include <H2DE/surfaces/H2DE_texture.h>

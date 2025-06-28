@@ -62,7 +62,9 @@ public:
      * 
      * Stops the sound playing on the channel reserved for songs (usually channel 0).
      */
-    inline void stopSong() const { stopSfx(0); }
+    inline void stopSong() const {
+        stopSfx(0);
+    }
     /**
      * @brief Stop the sound effect playing on a specific channel.
      * 
@@ -70,7 +72,9 @@ public:
      * 
      * @param id The channel ID to stop.
      */
-    inline void stopSfx(H2DE_ChannelID id) const { Mix_HaltChannel(id); }
+    inline void stopSfx(H2DE_ChannelID id) const {
+        Mix_HaltChannel(id);
+    }
     /**
      * @brief Stop all currently playing sounds.
      * 
@@ -83,7 +87,9 @@ public:
      * 
      * Pauses the playback on the channel reserved for songs (usually channel 0).
      */
-    inline void pauseSong() const { pauseSfx(0); }
+    inline void pauseSong() const {
+        pauseSfx(0);
+    }
     /**
      * @brief Pause the sound effect playing on a specific channel.
      * 
@@ -91,7 +97,9 @@ public:
      * 
      * @param id The channel ID to pause.
      */
-    inline void pauseSfx(H2DE_ChannelID id) const { Mix_Pause(id); }
+    inline void pauseSfx(H2DE_ChannelID id) const {
+        Mix_Pause(id);
+    }
     /**
      * @brief Pause all currently playing sounds.
      * 
@@ -104,7 +112,9 @@ public:
      * 
      * Resumes playback on the channel reserved for songs (usually channel 0).
      */
-    inline void resumeSong() const { resumeSfx(0); }
+    inline void resumeSong() const {
+        resumeSfx(0); 
+    }
     /**
      * @brief Resume playback of the paused sound effect on a specific channel.
      * 
@@ -112,7 +122,9 @@ public:
      * 
      * @param id The channel ID to resume.
      */
-    inline void resumeSfx(H2DE_ChannelID id) const { Mix_Resume(id); }
+    inline void resumeSfx(H2DE_ChannelID id) const {
+        Mix_Resume(id);
+    }
     /**
      * @brief Resume all paused sounds.
      * 
@@ -127,14 +139,18 @@ public:
      * 
      * @return true if a song is playing, false otherwise.
      */
-    inline bool isSongPlaying() const { return isSfxPlaying(0); }
+    inline bool isSongPlaying() const {
+        return isSfxPlaying(0); 
+    }
     /**
      * @brief Check if a sound effect is playing on a specific channel.
      * 
      * @param id The channel ID to check.
      * @return true if the channel is currently playing a sound, false otherwise.
      */
-    inline bool isSfxPlaying(H2DE_ChannelID id) const { return (Mix_Playing(id) == 1); }
+    inline bool isSfxPlaying(H2DE_ChannelID id) const {
+        return (Mix_Playing(id) == 1); 
+    }
 
     /**
      * @brief Set the volume for all songs.
@@ -166,10 +182,12 @@ private:
     int sfxVolume = -1;
 
     H2DE_Volume(H2DE_Engine* engine);
-    ~H2DE_Volume() = default;
+    ~H2DE_Volume() noexcept = default;
 
     void initSettings() const;
     void loadData();
+
+    void update();
 
     void pause();
     void resume();

@@ -3,16 +3,8 @@
 #include "H2DE/engine/H2DE_error.h"
 
 // INIT
-H2DE_Texture::H2DE_Texture(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& sd, const H2DE_TextureData& td) : H2DE_Surface(e, o, sd), textureData(td) {
+H2DE_Texture::H2DE_Texture(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& sd, const H2DE_TextureData& td) noexcept : H2DE_Surface(e, o, sd), textureData(td) {
 
-}
-
-// GETTER
-bool H2DE_Texture::isVisible() const {
-    bool surfaceIsNotHidden = !(isHidden());
-    bool colorIsVisible = (textureData.color.isVisible());
-    
-    return (surfaceIsNotHidden && colorIsVisible);
 }
 
 // SETTER

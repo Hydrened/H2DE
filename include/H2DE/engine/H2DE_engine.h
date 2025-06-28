@@ -87,7 +87,9 @@ public:
     /**
      * @brief Stops the main engine loop by setting the running flag to false.
      */
-    inline void stop() { isRunning = false; }
+    inline void stop() noexcept {
+        isRunning = false;
+    }
 
     /**
      * @brief Loads all assets (textures, sounds) from the specified directory into the engine.
@@ -113,22 +115,30 @@ public:
      * 
      * @param state True to enable debug mode, false to disable.
      */
-    inline void debugMode(bool state) { debugModeEnabled = state; }
+    inline void debugMode(bool state) noexcept {
+        debugModeEnabled = state;
+    }
     /**
      * @brief Toggles the current state of the debug mode.
      */
-    inline void toggleDebugMode() { debugMode(!debugModeEnabled); }
+    inline void toggleDebugMode() noexcept {
+        debugMode(!debugModeEnabled);
+    }
 
     /**
      * @brief Enables or disables debug visualization for objects.
      * 
      * @param state True to enable object debug mode, false to disable.
      */
-    inline void debugObjects(bool state) { debugObjectEnabled = state; }
+    inline void debugObjects(bool state) noexcept {
+        debugObjectEnabled = state;
+    }
     /**
      * @brief Toggles the debug visualization state for objects.
      */
-    inline void toggleDebugObject() { debugObjectEnabled = !debugObjectEnabled; }
+    inline void toggleDebugObject() noexcept {
+        debugObjectEnabled = !debugObjectEnabled;
+    }
 
     /**
      * @brief Advances debug mode to the next frame for step-by-step debugging.
@@ -142,15 +152,21 @@ public:
     /**
      * @brief Pauses the engine, stopping updates.
      */
-    inline void pause() { paused = true; }
+    inline void pause() noexcept {
+        paused = true;
+    }
     /**
      * @brief Resumes the engine from a paused state.
      */
-    inline void resume() { paused = false; }
+    inline void resume() noexcept {
+        paused = false;
+    }
     /**
      * @brief Toggles the paused state of the engine.
      */
-    inline void togglePause() { paused = !paused; }
+    inline void togglePause() noexcept {
+        paused = !paused;
+    }
 
     /**
      * @brief Creates a new timeline animation with the specified parameters.
@@ -218,41 +234,55 @@ public:
      * @brief Pauses a delay by pausing its underlying timeline.
      * @param id The delay's unique identifier.
      */
-    inline void pauseDelay(H2DE_DelayID id) { pauseTimeline(id); }
+    inline void pauseDelay(H2DE_DelayID id) {
+        pauseTimeline(id);
+    }
     /**
      * @brief Resumes a delay by resuming its underlying timeline.
      * @param id The delay's unique identifier.
      */
-    inline void resumeDelay(H2DE_DelayID id) { resumeTimeline(id); }
+    inline void resumeDelay(H2DE_DelayID id) {
+        resumeTimeline(id);
+    }
     /**
      * @brief Toggles pause state of a delay by toggling its underlying timeline.
      * @param id The delay's unique identifier.
      */
-    inline void togglePauseDelay(H2DE_DelayID id) { togglePauseTimeline(id); }
+    inline void togglePauseDelay(H2DE_DelayID id) {
+        togglePauseTimeline(id);
+    }
     /**
      * @brief Resets a delay by resetting its underlying timeline.
      * @param id The delay's unique identifier.
      */
-    inline void resetDelay(H2DE_DelayID id) { resetTimeline(id); }
+    inline void resetDelay(H2DE_DelayID id) {
+        resetTimeline(id);
+    }
     /**
      * @brief Stops a delay by stopping its underlying timeline.
      * 
      * @param id The delay's unique identifier.
      * @param callCompleted Whether to call the completed callback on stop.
      */
-    inline void stopDelay(H2DE_DelayID id,  bool callCompleted) { stopTimeline(id, callCompleted); }
+    inline void stopDelay(H2DE_DelayID id,  bool callCompleted) {
+        stopTimeline(id, callCompleted);
+    }
     /**
      * @brief Checks if the delay with the given ID is currently paused.
      * @param id The delay's unique identifier.
      * @return True if paused, false otherwise.
      */
-    inline bool isDelayPaused(H2DE_DelayID id) const { return isTimelinePaused(id); }
+    inline bool isDelayPaused(H2DE_DelayID id) const {
+        return isTimelinePaused(id);
+    }
     /**
      * @brief Checks if the delay with the given ID is currently stoped.
      * @param id The delay's unique identifier.
      * @return True if stoped, false otherwise.
      */
-    inline bool isDelayStoped(H2DE_DelayID id) const { return isTimelinePaused(id); }
+    inline bool isDelayStoped(H2DE_DelayID id) const {
+        return isTimelinePaused(id);
+    }
 
     /**
      * @brief Creates a new object of type H2DE_Object_T and adds it to the engine's object list.
@@ -300,64 +330,89 @@ public:
      * @brief Retrieves the engine initialization data.
      * @return A copy of the H2DE_EngineData struct used to initialize the engine.
      */
-    inline H2DE_EngineData getData() const { return data; }
+    inline H2DE_EngineData getData() const noexcept {
+        return data;
+    }
     /**
      * @brief Gets a pointer to the engine settings.
      * @return Pointer to the H2DE_Settings instance.
      */
-    inline H2DE_Settings* getSettings() const { return settings; }
+    inline H2DE_Settings* getSettings() const noexcept {
+        return settings;
+    }
     /**
      * @brief Gets a pointer to the engine window.
      * @return Pointer to the H2DE_Window instance.
      */
-    inline H2DE_Window* getWindow() const { return window; }
+    inline H2DE_Window* getWindow() const noexcept {
+        return window;
+    }
     /**
      * @brief Gets a pointer to the engine audio volume manager.
      * @return Pointer to the H2DE_Volume instance.
      */
-    inline H2DE_Volume* getVolume() const { return volume; }
+    inline H2DE_Volume* getVolume() const noexcept {
+        return volume;
+    }
     /**
      * @brief Gets a pointer to the engine camera.
      * @return Pointer to the H2DE_Camera instance.
      */
-    inline H2DE_Camera* getCamera() const { return camera; }
+    inline H2DE_Camera* getCamera() const noexcept {
+        return camera;
+    }
     /**
      * @brief Gets the target frames per second (FPS) of the engine.
      * @return The FPS value as a 16-bit unsigned integer.
      */
-    constexpr uint16_t getFPS() const { return fps; }
+    constexpr uint16_t getFPS() const noexcept {
+        return fps;
+    }
     /**
      * @brief Gets the current frame rate.
      * @param round Whether to round the FPS value (default true).
      * @return The current FPS as a float, optionally rounded.
      */
-    inline float getCurrentFPS(bool round = true) const { return (round) ? H2DE::round(currentFPS) : currentFPS; }
+    inline float getCurrentFPS(bool round = true) const noexcept {
+        return (round) ? H2DE::round(currentFPS) : currentFPS; 
+    }
     /**
      * @brief Gets the delta time between the last two frames in seconds.
      * @return Delta time as a float.
      */
-    constexpr float getDeltaTime() const { return deltaTime; }
+    constexpr float getDeltaTime() const noexcept {
+        return deltaTime;
+    }
+    /**
+     * @brief Gets the fixed delta time based on the target FPS.
+     * @return Fixed delta time as a float.
+     */
+    constexpr float getFixedDeltaTime() const noexcept {
+        return 1.0f / static_cast<float>(fps);
+    }
     /**
      * @brief Checks if the engine is currently paused.
      * @return True if paused, false otherwise.
      */
-    constexpr bool isPaused() const { return paused; }
+    constexpr bool isPaused() const noexcept {
+        return paused;
+    }
 
     /**
      * @brief Gets the number of objects rendered in the current frame.
      * @return The count of rendered objects as a 32-bit unsigned integer.
      */
-    uint32_t getObjectsRenderedNumber() const;
+    uint32_t getObjectsRenderedNumber() const noexcept;
     /**
      * @brief Gets the number of surfaces rendered in the current frame.
      * @return The count of rendered surfaces as a 32-bit unsigned integer.
      */
-    uint32_t getSurfacesRenderedNumber() const;
+    uint32_t getSurfacesRenderedNumber() const noexcept;
     /**
      * @brief Gets the number of hitboxes rendered in the current frame.
      * @return The count of rendered hitboxes as a 32-bit unsigned integer.
      */
-    uint32_t getHitboxesRenderedNumber() const;
+    uint32_t getHitboxesRenderedNumber() const noexcept;
 
     /**
      * @brief Gets the mouse position in the game world coordinates.
@@ -366,7 +421,9 @@ public:
      * 
      * @return Mouse position as H2DE_Translate in game world space.
      */
-    inline const H2DE_Translate getMouseGamePos() const { return getMousePos(false); }
+    inline const H2DE_Translate getMouseGamePos() const {
+        return getMousePos(false);
+    }
     /**
      * @brief Gets the mouse position in the user interface coordinates.
      * 
@@ -374,7 +431,9 @@ public:
      * 
      * @return Mouse position as H2DE_Translate in UI space.
      */
-    inline const H2DE_Translate getMouseInterfacePos() const { return getMousePos(true); }
+    inline const H2DE_Translate getMouseInterfacePos() const {
+        return getMousePos(true);
+    }
 
     /**
      * @brief Retrieves the size (width and height) of a texture by its name.
@@ -391,17 +450,23 @@ public:
      * @brief Sets the target frames per second (FPS) for the engine.
      * @param FPS The desired FPS value as a 16-bit unsigned integer.
      */
-    inline void setFPS(uint16_t FPS) { fps = FPS; }
+    inline void setFPS(uint16_t FPS) noexcept {
+        fps = FPS;
+    }
     /**
      * @brief Sets a custom callback function to handle SDL events.
      * @param call A std::function taking SDL_Event as parameter.
      */
-    inline void setHandleEventCall(const std::function<void(SDL_Event)>& call) { handleEventsCall = call; }
+    inline void setHandleEventCall(const std::function<void(SDL_Event)>& call) noexcept{
+        handleEventsCall = call;
+    }
     /**
      * @brief Sets a custom callback function to be called every update frame.
      * @param call A std::function with no parameters.
      */
-    inline void setUpdateCall(const std::function<void()>& call) { updateCall = call; }
+    inline void setUpdateCall(const std::function<void()>& call) noexcept {
+        updateCall = call;
+    }
 
     friend class H2DE_Window;
     friend class H2DE_AssetLoaderManager;

@@ -13,11 +13,6 @@ H2DE_TextObject::~H2DE_TextObject() {
     H2DE_Object::destroySurfaces(surfaceBuffers);
 }
 
-// UPDATE
-void H2DE_TextObject::update() {
-
-}
-
 // ACTIONS
 void H2DE_TextObject::refreshSurfaceBuffers() {
     H2DE_Object::destroySurfaces(surfaceBuffers);
@@ -191,7 +186,7 @@ int H2DE_TextObject::getLineLength(const std::vector<std::string>& line) {
     return length;
 }
 
-float H2DE_TextObject::getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const {
+float H2DE_TextObject::getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const noexcept {
     constexpr uint8_t H2DE_TEXT_ALIGN_TOP       = 0b00001000;
     constexpr uint8_t H2DE_TEXT_ALIGN_CENTER    = 0b00010000;
     constexpr uint8_t H2DE_TEXT_ALIGN_BOTTOM    = 0b00100000;

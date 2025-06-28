@@ -2,7 +2,7 @@
 #include "H2DE/engine/H2DE_lerp_manager.h"
 
 // INIT
-H2DE_Surface::H2DE_Surface(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& sd) : engine(e), object(o), surfaceData(sd) {
+H2DE_Surface::H2DE_Surface(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& sd) noexcept : engine(e), object(o), surfaceData(sd) {
     surfaceData.transform.defaultTranslate = surfaceData.transform.translate;
     surfaceData.transform.defaultScale = surfaceData.transform.scale;
     surfaceData.transform.defaultPivot= surfaceData.transform.pivot;

@@ -36,19 +36,25 @@ public:
      * 
      * @return The H2DE_TextureData of the surface.
      */
-    inline H2DE_TextureData getTextureData() const { return textureData; }
+    inline H2DE_TextureData getTextureData() const noexcept {
+        return textureData;
+    }
     /**
      * @brief Get the texture name.
      * 
      * @return The texture name string.
      */
-    inline std::string getTextureName() const override { return textureData.textureName; }
+    inline std::string getTextureName() const noexcept override { 
+        return textureData.textureName;
+    }
     /**
      * @brief Get the modulating color of the texture.
      * 
      * @return The H2DE_ColorRGB color.
      */
-    inline H2DE_ColorRGB getColor() const { return textureData.color; }
+    inline H2DE_ColorRGB getColor() const noexcept override {
+        return textureData.color; 
+    }
     /**
      * @brief Get the source rectangle within the texture.
      * 
@@ -56,7 +62,9 @@ public:
      * 
      * @return Optional source rectangle.
      */
-    inline std::optional<H2DE_PixelRect> getSrcRect() const override { return textureData.srcRect; };
+    inline std::optional<H2DE_PixelRect> getSrcRect() const noexcept override {
+        return textureData.srcRect;
+    }
 
     /**
      * @brief Set the texture name instantly.
@@ -97,10 +105,12 @@ public:
 private:
     H2DE_TextureData textureData;
 
-    H2DE_Texture(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData);
+    H2DE_Texture(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) noexcept;
     ~H2DE_Texture() override = default;
 
-    bool isVisible() const override;
+    inline bool isVisible() const noexcept override {
+        return (!isHidden() && textureData.color.isVisible());
+    }
 };
 
 #endif

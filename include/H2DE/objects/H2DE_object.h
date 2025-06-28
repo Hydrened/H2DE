@@ -68,11 +68,15 @@ public:
     /**
      * @brief Show the object (make it visible when rendering).
      */
-    inline void show() { hidden = false; }
+    inline void show() noexcept {
+        hidden = false; 
+    }
     /**
      * @brief Hide the object (exclude it from rendering).
      */
-    inline void hide() { hidden = true; }
+    inline void hide() noexcept {
+        hidden = true; 
+    }
 
     /**
      * @brief Get the full object data.
@@ -82,7 +86,9 @@ public:
      * 
      * @return The current object data.
      */
-    constexpr H2DE_ObjectData getObjectData() const { return objectData; }
+    constexpr H2DE_ObjectData getObjectData() const noexcept {
+        return objectData;
+    }
     /**
      * @brief Get the object's full transform.
      * 
@@ -90,25 +96,33 @@ public:
      * 
      * @return The current transform state of the object.
      */
-    constexpr H2DE_Transform getTransform() const { return objectData.transform; }
+    constexpr H2DE_Transform getTransform() const noexcept {
+        return objectData.transform; 
+    }
     /**
      * @brief Get the translation (position) of the object.
      * 
      * @return The current position (x, y) in pixels.
      */
-    constexpr H2DE_Translate getTranslate() const { return objectData.transform.translate; }
+    constexpr H2DE_Translate getTranslate() const noexcept {
+        return objectData.transform.translate;
+    }
     /**
      * @brief Get the scale of the object.
      * 
      * @return The current scale on x and y axes.
      */
-    constexpr H2DE_Scale getScale() const { return objectData.transform.scale; }
+    constexpr H2DE_Scale getScale() const noexcept {
+        return objectData.transform.scale;
+    }
     /**
      * @brief Get the rotation of the object in degrees.
      * 
      * @return The rotation angle in degrees.
      */
-    constexpr float getRotation() const { return objectData.transform.rotation; }
+    constexpr float getRotation() const noexcept {
+        return objectData.transform.rotation;
+    }
     /**
      * @brief Get the pivot point of the object.
      * 
@@ -116,13 +130,17 @@ public:
      * 
      * @return The pivot coordinates (usually between 0.0 and 1.0).
      */
-    constexpr H2DE_Pivot getPivot() const { return objectData.transform.pivot; }
+    constexpr H2DE_Pivot getPivot() const noexcept {
+        return objectData.transform.pivot;
+    }
     /**
      * @brief Get the object's opacity.
      * 
      * @return An 8-bit value from 0 (fully transparent) to 255 (fully opaque).
      */
-    constexpr uint8_t getOpacity() const { return objectData.opacity; }
+    constexpr uint8_t getOpacity() const noexcept {
+        return objectData.opacity;
+    }
     /**
      * @brief Check if the object's position is absolute.
      * 
@@ -130,7 +148,9 @@ public:
      * 
      * @return true if the object is rendered in absolute (screen-space) coordinates.
      */
-    constexpr bool isAbsolute() const { return objectData.absolute; }
+    constexpr bool isAbsolute() const noexcept {
+        return objectData.absolute;
+    }
     /**
      * @brief Get the rendering index of the object.
      * 
@@ -138,13 +158,17 @@ public:
      * 
      * @return The render order index.
      */
-    constexpr int getIndex() const { return objectData.index; }
+    constexpr int getIndex() const noexcept {
+        return objectData.index;
+    }
     /**
      * @brief Check if the object is hidden.
      * 
      * @return true if hidden, false if visible.
      */
-    constexpr bool isHidden() const { return hidden; }
+    constexpr bool isHidden() const noexcept {
+        return hidden;
+    }
     
     /**
      * @brief Get all hitboxes attached to the object.
@@ -153,7 +177,9 @@ public:
      * 
      * @return A map of hitbox names to their respective H2DE_Hitbox data.
      */
-    inline std::unordered_map<std::string, H2DE_Hitbox> getHitboxes() const { return hitboxes; }
+    inline std::unordered_map<std::string, H2DE_Hitbox> getHitboxes() const noexcept {
+        return hitboxes; 
+    }
     /**
      * @brief Get a specific hitbox by name.
      * 
@@ -179,7 +205,9 @@ public:
      * @param name Name of the hitbox to check.
      * @return true if the hitbox exists, false otherwise.
      */
-    inline bool hasHitbox(const std::string& name) const { return (hitboxes.find(name) != hitboxes.end()); }
+    inline bool hasHitbox(const std::string& name) const {
+        return (hitboxes.find(name) != hitboxes.end()); 
+    }
 
     /**
      * @brief Set the object's position in world space.
@@ -413,7 +441,7 @@ protected:
     std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
     float maxRadius;
 
-    H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
+    H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData) noexcept;
     virtual ~H2DE_Object();
 
     static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
@@ -427,7 +455,9 @@ protected:
     virtual void refreshSurfaceBuffers() = 0;
     virtual void refreshMaxRadius() = 0;
 
-    inline void addTimelineToTimelines(H2DE_TimelineID id) { timelineIDsBuffer.push_back(id); }
+    inline void addTimelineToTimelines(H2DE_TimelineID id) {
+        timelineIDsBuffer.push_back(id);
+    }
 
     template<typename H2DE_Surface_T>
     H2DE_Surface_T* addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
@@ -457,11 +487,13 @@ protected:
     static const std::vector<H2DE_Surface*> getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
     static const std::array<H2DE_Translate, 4> getCorners(const H2DE_Transform& transform);
 
-    static inline bool hasSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) { return (surfaces.find(name) != surfaces.end()); }
+    static inline bool hasSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+        return (surfaces.find(name) != surfaces.end()); 
+    }
 
-    void rescaleSurfaceBuffers();
-    void rescaleHitboxes();
-    static void rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale);
+    void rescaleSurfaceBuffers() noexcept;
+    void rescaleHitboxes() noexcept;
+    static void rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) noexcept;
 
     float getMaxHitboxRadius() const;
     float getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const;
