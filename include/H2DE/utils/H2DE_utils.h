@@ -40,6 +40,14 @@ using H2DE_ChannelID = int8_t;
 /** @brief Special value representing an invalid timeline ID. */
 #define H2DE_INVALID_TIMELINE_ID 4294967295u
 
+/** @brief Special value representing an invalid channel ID. */
+#define H2DE_INVALID_CHANNEL_ID 255
+
+/** @brief Minimum volume value. */
+#define H2DE_MIN_VOLUME 0
+/** @brief Maximum volume value. */
+#define H2DE_MAX_VOLUME 100
+
 /** @brief Constant used to represent an infinite loop in timelines or animations. */
 #define H2DE_INFINITE_LOOP 4294967295
 

@@ -1,3 +1,14 @@
+## H2DE-4.1.3
+#### ADDED
+- warning if audio played was not found
+- auto volume saving
+#### FIXED
+- sfx using channel 0 (reserved for song only)
+- volume lerping not working
+- audio not stopping in debug mode
+#### MODIFIED
+- renomed volume to audio
+
 ## H2DE-4.1.2
 #### ADDED
 - get fixed delta time engine function

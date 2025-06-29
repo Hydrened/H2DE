@@ -35,7 +35,7 @@
 #include <H2DE/engine/H2DE_window.h>
 #include <H2DE/engine/H2DE_asset_loader_manager.h>
 #include <H2DE/engine/H2DE_renderer.h>
-#include <H2DE/engine/H2DE_volume.h>
+#include <H2DE/engine/H2DE_audio.h>
 #include <H2DE/engine/H2DE_timeline_manager.h>
 #include <H2DE/engine/H2DE_camera.h>
 #include <H2DE/engine/H2DE_object_manager.h>
@@ -47,7 +47,7 @@ class H2DE_Settings;
 class H2DE_Window;
 class H2DE_AssetLoaderManager;
 class H2DE_Renderer;
-class H2DE_Volume;
+class H2DE_Audio;
 class H2DE_TimelineManager;
 class H2DE_Camera;
 class H2DE_ObjectManager;
@@ -348,11 +348,11 @@ public:
         return window;
     }
     /**
-     * @brief Gets a pointer to the engine audio volume manager.
-     * @return Pointer to the H2DE_Volume instance.
+     * @brief Gets a pointer to the engine audio manager.
+     * @return Pointer to the H2DE_Audio instance.
      */
-    inline H2DE_Volume* getVolume() const noexcept {
-        return volume;
+    inline H2DE_Audio* getAudio() const noexcept {
+        return audio;
     }
     /**
      * @brief Gets a pointer to the engine camera.
@@ -471,7 +471,7 @@ public:
     friend class H2DE_Window;
     friend class H2DE_AssetLoaderManager;
     friend class H2DE_Renderer;
-    friend class H2DE_Volume;
+    friend class H2DE_Audio;
     friend class H2DE_Camera;
     friend class H2DE_ObjectManager;
     friend class H2DE_Object;
@@ -484,7 +484,7 @@ private:
     H2DE_Window* window = nullptr;
     H2DE_AssetLoaderManager* assetLoaderManager = nullptr;
     H2DE_Renderer* renderer = nullptr;
-    H2DE_Volume* volume = nullptr;
+    H2DE_Audio* audio = nullptr;
     H2DE_TimelineManager* timelineManager = nullptr;
     H2DE_Camera* camera = nullptr;
     H2DE_ObjectManager* objectManager = nullptr;
@@ -527,7 +527,7 @@ private:
  * @brief Creates and initializes the H2DE engine singleton instance using the provided configuration data.
  * 
  * This function can only be called once during the application lifetime. It initializes all core components of the engine,
- * including the window, renderer, asset manager, camera, object manager, volume, timeline manager, and settings.
+ * including the window, renderer, asset manager, camera, object manager, audio, timeline manager, and settings.
  * 
  * @param data Constant reference to H2DE_EngineData structure containing engine initialization parameters like window and camera settings.
  * 

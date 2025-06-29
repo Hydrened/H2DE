@@ -1,5 +1,4 @@
 .vscode/
-bin/*
-!bin/*.dll
+bin/
 src/test.cpp
 todo.md

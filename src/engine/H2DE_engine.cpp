@@ -16,7 +16,7 @@ H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fp
         window = new H2DE_Window(this, data.window);
         assetLoaderManager = new H2DE_AssetLoaderManager(this, window->renderer);
         renderer = new H2DE_Renderer(this, window->renderer, objects);
-        volume = new H2DE_Volume(this);
+        audio = new H2DE_Audio(this);
         timelineManager = new H2DE_TimelineManager(this);
         camera = new H2DE_Camera(this, data.camera);
         objectManager = new H2DE_ObjectManager(this);
@@ -51,9 +51,9 @@ void H2DE_Engine::destroy() {
         renderer = nullptr;
     }
 
-    if (volume != nullptr) {
-        delete volume;
-        volume = nullptr;
+    if (audio != nullptr) {
+        delete audio;
+        audio = nullptr;
     }
 
     if (camera != nullptr) {
@@ -136,6 +136,10 @@ void H2DE_Engine::run() {
                 lastSec = now;
             }
 
+            if (debugModeEnabled) {
+                audio->pause();
+            }
+
             lastTime = now;
         }
 
@@ -179,7 +183,7 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
 void H2DE_Engine::update() {
     window->update();
     timelineManager->update();
-    volume->update();
+    audio->update();
 
     if (!paused) {
         if (updateCall) {
@@ -214,6 +218,7 @@ void H2DE_Engine::debugModeNextFrame() {
         return;
     }
 
+    audio->resume();
     update();
     renderer->render();
 }

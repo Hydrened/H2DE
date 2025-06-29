@@ -35,7 +35,7 @@ void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory)
         textures[name] = texture;
     }
 
-    std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->volume->sounds;
+    std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->audio->sounds;
     for (const auto& [name, sound] : soundBuffer) {
         auto it = sounds.find(name);
         if (it != sounds.end()) {
