@@ -251,11 +251,42 @@ namespace H2DE {
      */
     float randomFloatInRange(float min, float max);
     /**
+     * @brief Generate a random float in range [0.0f, 1.0f].
+     * 
+     * @return A random float between 0.0f and 1.0f.
+     */
+    inline float randomFloat() {
+        return H2DE::randomFloatInRange(0.0f, 1.0f);
+    }
+    /**
      * @brief Generate a random boolean.
      * 
      * @return true or false randomly.
      */
     bool randomBool();
+    /**
+     * @brief Get a random valid index from a vector.
+     * 
+     * @tparam T Type of elements in the vector.
+     * @param vector The vector to get a random index from.
+     * @return A random index between 0 and vector.size() - 1.
+     */
+    template<typename T>
+    inline int randomIndexFromVector(const std::vector<T>& vector) {
+        return H2DE::randomIntegerInRange(0, vector.size() - 1);
+    }
+    /**
+     * @brief Get a random value from a vector.
+     * 
+     * @tparam T Type of elements in the vector.
+     * @param vector The vector to get a random value from.
+     * @return A randomly chosen element from the vector.
+     * @warning The vector must not be empty.
+     */
+    template<typename T>
+    inline T randomValueFromVector(const std::vector<T>& vector) {
+        return vector.at(H2DE::randomIndexFromVector(vector));
+    }
 
     /**
      * @brief Linear interpolation with easing.
@@ -521,6 +552,13 @@ struct H2DE_Vector2D {
         return (x == 0 && y == 0);
     }
     /**
+     * @brief Check if at least one component is zero.
+     * @return True if either x or y is zero.
+     */
+    constexpr bool hasNullMember() const noexcept {
+        return (x == 0 || y == 0);
+    }
+    /**
      * @brief Rotate this vector around a pivot point by a given angle.
      * @param pivot The pivot point to rotate around.
      * @param angle The rotation angle in radians.
@@ -591,6 +629,13 @@ struct H2DE_Rect {
      * @brief Default constructor, initializes rect to (0,0,1,1).
      */
     constexpr H2DE_Rect() noexcept = default;
+    /**
+     * @brief Constructs a rectangle from a translation and a uniform scale.
+     * 
+     * @param translate Value used for both x and y position
+     * @param scale Value used for both width and height
+     */
+    constexpr H2DE_Rect(H2DE_Rect_T translate, H2DE_Rect_T scale) noexcept : x(translate), y(translate), w(scale), h(scale) {}
     /**
      * @brief Constructs a rectangle with specified position and size.
      * 

@@ -75,12 +75,13 @@ private:
         return (static_cast<float>(opacity) / static_cast<float>(H2DE_UINT8_MAX));
     }
 
-    H2DE_SubPixelPos levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const;
-    H2DE_SubPixelPos levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const;
-    H2DE_SubPixelSize levelToPixelSize(const H2DE_Scale& world_scale, bool absolute) const;
-    H2DE_SubPixelRect levelToPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const;
+    H2DE_SubPixelPos levelToSubPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const;
+    H2DE_SubPixelSize levelToSubPixelSize(const H2DE_Scale& world_scale, bool absolute) const;
+    H2DE_SubPixelRect levelToSubPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const;
 
     H2DE_Translate pixelToLevel(const H2DE_PixelPos& pos, bool absolute) const;
+
+    static H2DE_PixelRect subPixelToPixelRect(const H2DE_SubPixelRect& world_rect);
 
     friend class H2DE_Engine;
     friend class H2DE_AssetLoaderManager;

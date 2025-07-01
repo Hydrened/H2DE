@@ -235,7 +235,8 @@ SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object,
     bool xIsInverted = engine->camera->isXOriginInverted();
     bool yIsInverted = engine->camera->isYOriginInverted();
     
-    return static_cast<SDL_Rect>(levelToPixelRect(G::getSurfaceRect(object, surface, xIsInverted, yIsInverted), object->objectData.absolute));
+    const H2DE_LevelRect surfaceRect = G::getSurfaceRect(object, surface, xIsInverted, yIsInverted);
+    return static_cast<SDL_Rect>(subPixelToPixelRect(levelToSubPixelRect(surfaceRect, object->objectData.absolute)));
 }
 
 float H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE_Object* object, H2DE_Surface* surface) const noexcept {
@@ -244,7 +245,7 @@ float H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE_Object* object, H2
 
 SDL_Point H2DE_Renderer::renderSurfaceGetLocalPivot(const H2DE_Object* object, H2DE_Surface* surface) const {
     bool objIsAbsolute = object->objectData.absolute;
-    const H2DE_SubPixelSize pixel_surfaceScale = R::levelToPixelSize(surface->surfaceData.transform.scale * 0.5f, objIsAbsolute);
+    const H2DE_SubPixelSize pixel_surfaceScale = R::levelToSubPixelSize(surface->surfaceData.transform.scale * 0.5f, objIsAbsolute);
 
     return static_cast<SDL_Point>(pixel_surfaceScale);
 }
@@ -309,7 +310,7 @@ void H2DE_Renderer::renderHitboxes(const H2DE_Object* object) {
 }
 
 void H2DE_Renderer::renderHitbox(const H2DE_LevelRect& world_hitboxRect, const H2DE_ColorRGB& color, bool absolute) {
-    SDL_Rect absRect = static_cast<SDL_Rect>(levelToPixelRect(world_hitboxRect, absolute));
+    SDL_Rect absRect = static_cast<SDL_Rect>(subPixelToPixelRect(levelToSubPixelRect(world_hitboxRect, absolute)));
 
     Sint16 minX = absRect.x;
     Sint16 maxX = absRect.x + absRect.w - 1;
@@ -376,7 +377,7 @@ SDL_BlendMode H2DE_Renderer::getBlendMode(H2DE_BlendMode blendMode) noexcept {
 }
 
 // -- level to pixel
-H2DE_Renderer::H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const {
+H2DE_Renderer::H2DE_SubPixelPos H2DE_Renderer::levelToSubPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     H2DE_LevelRect world_cameraRect = engine->camera->getWorldRect();
@@ -405,12 +406,7 @@ H2DE_Renderer::H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_LevelR
     };
 }
 
-H2DE_Renderer::H2DE_SubPixelPos H2DE_Renderer::levelToPixelPos(const H2DE_Translate& local_translate, bool absolute) const {
-    const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
-    return local_translate * blockSize;
-}
-
-H2DE_Renderer::H2DE_SubPixelSize H2DE_Renderer::levelToPixelSize(const H2DE_Scale& world_scale, bool absolute) const {
+H2DE_Renderer::H2DE_SubPixelSize H2DE_Renderer::levelToSubPixelSize(const H2DE_Scale& world_scale, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
     return {
@@ -419,9 +415,9 @@ H2DE_Renderer::H2DE_SubPixelSize H2DE_Renderer::levelToPixelSize(const H2DE_Scal
     };
 }
 
-H2DE_Renderer::H2DE_SubPixelRect H2DE_Renderer::levelToPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const {
-    const H2DE_SubPixelPos pos = levelToPixelPos(world_rect, absolute);
-    const H2DE_SubPixelSize size = levelToPixelSize(world_rect.getScale(), absolute);
+H2DE_Renderer::H2DE_SubPixelRect H2DE_Renderer::levelToSubPixelRect(const H2DE_LevelRect& world_rect, bool absolute) const {
+    const H2DE_SubPixelPos pos = levelToSubPixelPos(world_rect, absolute);
+    const H2DE_SubPixelSize size = levelToSubPixelSize(world_rect.getScale(), absolute);
     return H2DE_SubPixelRect{ pos.x, pos.y, size.x, size.y };
 }
 
@@ -454,3 +450,12 @@ H2DE_Translate H2DE_Renderer::pixelToLevel(const H2DE_PixelPos& pos, bool absolu
 
     return res;
 }
+
+// -- sub pixel to pixel
+
+
+
+H2DE_PixelRect H2DE_Renderer::subPixelToPixelRect(const H2DE_SubPixelRect& world_rect) {
+    return { H2DE::round(world_rect.x), H2DE::round(world_rect.y), H2DE::round(world_rect.w), H2DE::round(world_rect.h) };
+}
+

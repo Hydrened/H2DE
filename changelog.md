@@ -1,3 +1,11 @@
+## H2DE-4.1.4
+#### ADDED
+- random float function [0.0f, 1.0f]
+- random value from vector function
+- random index from vector function
+#### FIXED
+- subpixel precision
+
 ## H2DE-4.1.3
 #### ADDED
 - warning if audio played was not found
