@@ -234,7 +234,7 @@ void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface
 SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object, H2DE_Surface* surface) const {
     bool xIsInverted = engine->camera->isXOriginInverted();
     bool yIsInverted = engine->camera->isYOriginInverted();
-    
+
     const H2DE_LevelRect surfaceRect = G::getSurfaceRect(object, surface, xIsInverted, yIsInverted);
     return static_cast<SDL_Rect>(subPixelToPixelRect(levelToSubPixelRect(surfaceRect, object->objectData.absolute)));
 }
@@ -376,7 +376,7 @@ SDL_BlendMode H2DE_Renderer::getBlendMode(H2DE_BlendMode blendMode) noexcept {
     }
 }
 
-// -- level to pixel
+// -- level to sub pixel
 H2DE_Renderer::H2DE_SubPixelPos H2DE_Renderer::levelToSubPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
@@ -426,36 +426,51 @@ H2DE_Translate H2DE_Renderer::pixelToLevel(const H2DE_PixelPos& pos, bool absolu
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
     H2DE_Translate res = H2DE_Translate{ static_cast<float>(pos.x), static_cast<float>(pos.y) };
 
+    bool xIsInverted = engine->camera->isXOriginInverted();
+    bool yIsInverted = engine->camera->isYOriginInverted();
+
     const H2DE_Scale cameraHalfScale = (absolute)
         ? engine->camera->getInterfaceScale() * 0.5f
         : engine->camera->getGameScale() * 0.5f;
 
     res /= blockSize;
     res -= cameraHalfScale;
-    
-    bool xIsInverted = engine->camera->isXOriginInverted();
-    bool yIsInverted = engine->camera->isYOriginInverted();
 
-    if (!absolute) {
-        res += engine->camera->getTranslate();
-    }
+    if (absolute) {
+        if (xIsInverted) {
+            res.x *= -1.0f;
+        }
 
-    if (xIsInverted) {
-        res.x *= -1;
-    }
+        if (yIsInverted) {
+            res.y *= -1.0f;
+        }
 
-    if (yIsInverted) {
-        res.y *= -1;
+    } else {
+        H2DE_Translate cameraTranslate = engine->camera->getTranslate();
+
+        if (xIsInverted) {
+            cameraTranslate.x *= -1.0f;
+        }
+
+        if (yIsInverted) {
+            cameraTranslate.y *= -1.0f;
+        }
+
+        res += cameraTranslate;
+
+        if (xIsInverted) {
+            res.x *= -1.0f;
+        }
+
+        if (yIsInverted) {
+            res.y *= -1.0f;
+        }
     }
 
     return res;
 }
 
 // -- sub pixel to pixel
-
-
-
 H2DE_PixelRect H2DE_Renderer::subPixelToPixelRect(const H2DE_SubPixelRect& world_rect) {
     return { H2DE::round(world_rect.x), H2DE::round(world_rect.y), H2DE::round(world_rect.w), H2DE::round(world_rect.h) };
 }
-

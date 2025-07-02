@@ -88,6 +88,7 @@ void H2DE_TextObject::refreshSurfaceBuffers() {
                 td.srcRect = src;
 
                 H2DE_Texture* texture = new H2DE_Texture(engine, this, sd, td);
+                texture->fromText = true;
                 surfaceBuffers.push_back(texture);
             }
 

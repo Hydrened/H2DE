@@ -1,3 +1,8 @@
+## H2DE-4.1.5
+#### FIXED
+- text fliped letters when changing camera origins
+- mouse pos not accurate when changing camera origins
+
 ## H2DE-4.1.4
 #### ADDED
 - random float function [0.0f, 1.0f]

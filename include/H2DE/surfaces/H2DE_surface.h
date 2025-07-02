@@ -209,6 +209,8 @@ public:
 
     friend class H2DE_Renderer;
     friend class H2DE_Object;
+    friend class H2DE_TextObject;
+    friend class H2DE_Geometry;
 
 protected:
     H2DE_Engine* engine;
@@ -221,6 +223,7 @@ private:
     H2DE_SurfaceData surfaceData;
 
     bool hidden = false;
+    bool fromText = false;
 
     virtual std::string getTextureName() const = 0;
     virtual H2DE_ColorRGB getColor() const noexcept = 0;
