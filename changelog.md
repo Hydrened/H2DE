@@ -1,8 +1,10 @@
-## H2DE-4.1.7
+## H2DE-4.1.6
 #### ADDED
 - border thickness
+#### MODIFIED
+- button events parameters
 
-## H2DE-4.1.6
+## H2DE-4.1.6-b1
 #### ADDED
 - border surface
 

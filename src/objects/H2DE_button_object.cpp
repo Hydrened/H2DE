@@ -72,24 +72,24 @@ void H2DE_ButtonObject::refreshMaxRadius() {
 
 void H2DE_ButtonObject::mouseDown() {
     if (buttonObjectData.onMouseDown && !disabled) {
-        buttonObjectData.onMouseDown(this, currentTimelineID);
+        buttonObjectData.onMouseDown({ this, currentTimelineID });
     }
 }
 
 void H2DE_ButtonObject::mouseUp() {
     if (buttonObjectData.onMouseUp && !disabled) {
-        buttonObjectData.onMouseUp(this, currentTimelineID);
+        buttonObjectData.onMouseUp({ this, currentTimelineID });
     }
 }
 
 void H2DE_ButtonObject::mouseHover() {
     if (buttonObjectData.onHover && !disabled) {
-        buttonObjectData.onHover(this, currentTimelineID);
+        buttonObjectData.onHover({ this, currentTimelineID });
     }
 }
 
 void H2DE_ButtonObject::mouseBlur() {
     if (buttonObjectData.onBlur && !disabled) {
-        buttonObjectData.onBlur(this, currentTimelineID);
+        buttonObjectData.onBlur({ this, currentTimelineID });
     }
 }

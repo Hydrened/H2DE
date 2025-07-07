@@ -189,12 +189,11 @@ public:
     /**
      * @brief Set the callback function triggered when the button is pressed down.
      * 
-     * The function signature should be: void(H2DE_ButtonObject*, H2DE_TimelineID&).
      * This callback is called when the mouse button goes down on the button.
      * 
      * @param onMouseDown The function to call on mouse down event.
      */
-    inline void setMouseDown(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onMouseDown) noexcept {
+    inline void setMouseDown(const std::function<void(H2DE_ButtonEventData)>& onMouseDown) noexcept {
         buttonObjectData.onMouseDown = onMouseDown;
     }
     /**
@@ -204,7 +203,7 @@ public:
      * 
      * @param onMouseUp The function to call on mouse up event.
      */
-    inline void setMouseUp(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onMouseUp) noexcept {
+    inline void setMouseUp(const std::function<void(H2DE_ButtonEventData)>& onMouseUp) noexcept {
         buttonObjectData.onMouseUp = onMouseUp;
     }
     /**
@@ -214,7 +213,7 @@ public:
      * 
      * @param onHover The function to call on mouse hover event.
      */
-    inline void setMouseHover(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onHover) noexcept {
+    inline void setMouseHover(const std::function<void(H2DE_ButtonEventData)>& onHover) noexcept {
         buttonObjectData.onHover = onHover;
     }
     /**
@@ -224,7 +223,7 @@ public:
      * 
      * @param onBlur The function to call on mouse blur event.
      */
-    inline void setMouseBlur(const std::function<void(H2DE_ButtonObject*, H2DE_TimelineID&)>& onBlur) noexcept {
+    inline void setMouseBlur(const std::function<void(H2DE_ButtonEventData)>& onBlur) noexcept {
         buttonObjectData.onBlur = onBlur;
     }
     /**
