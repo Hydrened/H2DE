@@ -3,6 +3,7 @@
 
 #include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
+class H2DE_Border;
 
 class H2DE_Renderer {
 private:
@@ -52,6 +53,9 @@ private:
     void renderTextureRenderTexture(const H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture) const;
 
     void renderColor(const H2DE_Object* object, H2DE_Surface* surface) const;
+    void renderBorder(const H2DE_Object* object, H2DE_Surface* surface) const;
+    void renderRectangle(const H2DE_Object* object, H2DE_Border* border) const;
+    void renderCircle(const H2DE_Object* object, H2DE_Border* border) const;
 
     SDL_Rect renderSurfaceGetWorldDestRect(const H2DE_Object* object, H2DE_Surface* surface) const;
     float renderSurfaceGetWorldRotation(const H2DE_Object* object, H2DE_Surface* surface) const noexcept;
@@ -62,6 +66,8 @@ private:
     void renderObjectsHitboxes();
     void renderHitboxes(const H2DE_Object* object);
     void renderHitbox(const H2DE_LevelRect& world_hitboxRect, const H2DE_ColorRGB& color, bool absolute);
+
+    void renderPolygon(const H2DE_Object* object, H2DE_Surface* surface, bool filled) const;
 
     const float getBlockSize(float width) const;
     const float getGameBlockSize() const;

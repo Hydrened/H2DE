@@ -134,6 +134,18 @@ enum H2DE_TextAlign {
 };
 
 /**
+ * @enum H2DE_BorderType
+ * @brief Represents the type of border shape.
+ * 
+ * - H2DE_BORDER_TYPE_RECTANGLE: A standard rectangular border.
+ * - H2DE_BORDER_TYPE_CIRCLE: A circular border.
+ */
+enum H2DE_BorderType {
+    H2DE_BORDER_TYPE_RECTANGLE, /**< A standard rectangular border */
+    H2DE_BORDER_TYPE_CIRCLE     /**< A circular border */
+};
+
+/**
  * @enum H2DE_ScaleMode
  * @brief Defines how textures or sprites are scaled.
  * 
@@ -1692,6 +1704,34 @@ struct H2DE_ColorData {
      * @param color The RGB color to initialize with.
      */
     constexpr H2DE_ColorData(const H2DE_ColorRGB& color) noexcept : color(color) {}
+};
+
+/**
+ * @struct H2DE_BorderData
+ * @brief Describes the border style used for border object.
+ * 
+ * Contains data such as border type, color, thickness, and fill status.
+ */
+struct H2DE_BorderData {
+    H2DE_BorderType type = H2DE_BORDER_TYPE_RECTANGLE;      /**< Shape of the border (rectangle or circle) */
+    H2DE_ColorRGB color = H2DE_ColorRGB();                  /**< Color of the border */
+    uint16_t thickness = 1;                                 /**< Thickness of the border in pixels */
+    bool filled = false;                                    /**< Whether the shape is filled (true) or just outlined (false) */
+
+    /** 
+     * @brief Default constructor. 
+     */
+    constexpr H2DE_BorderData() noexcept = default;
+
+    /**
+     * @brief Custom constructor to initialize all fields.
+     * @param type Border shape type
+     * @param color Border color
+     * @param thickness Border thickness in pixels
+     * @param filled Whether the shape is filled or not
+     */
+    constexpr H2DE_BorderData(H2DE_BorderType type, const H2DE_ColorRGB& color, uint16_t thickness, bool filled) noexcept
+        : type(type), color(color), thickness(thickness), filled(filled) {}
 };
 
 /**

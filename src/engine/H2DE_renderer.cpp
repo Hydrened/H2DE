@@ -156,12 +156,15 @@ void H2DE_Renderer::renderSurfaces(const H2DE_Object* object) {
 void H2DE_Renderer::renderSurface(const H2DE_Object* object, H2DE_Surface* surface) {
     surfacesRendered++;
 
-    bool isTexture = (dynamic_cast<H2DE_Color*>(surface) == nullptr);
+    bool isColor = (dynamic_cast<H2DE_Color*>(surface) != nullptr);
+    bool isBorder = (dynamic_cast<H2DE_Border*>(surface) != nullptr);
 
-    if (isTexture) {
-        renderTexture(object, surface);
-    } else {
+    if (isColor) {
         renderColor(object, surface);
+    } else if (isBorder) {
+        renderBorder(object, surface);
+    } else {
+        renderTexture(object, surface);
     }
 }
 
@@ -203,6 +206,47 @@ void H2DE_Renderer::renderTextureRenderTexture(const H2DE_Object* object, H2DE_S
 
 // -- -- colors
 void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface) const {
+    renderPolygon(object, surface, false);
+}
+
+// -- -- border
+void H2DE_Renderer::renderBorder(const H2DE_Object* object, H2DE_Surface* surface) const {
+    H2DE_Border* border = dynamic_cast<H2DE_Border*>(surface);
+
+    if (border == nullptr) {
+        return;
+    }
+
+    if (border->getType() == H2DE_BORDER_TYPE_RECTANGLE) {
+        renderRectangle(object, border);
+    } else {
+        renderCircle(object, border);
+    }
+}
+
+void H2DE_Renderer::renderRectangle(const H2DE_Object* object, H2DE_Border* border) const {
+    renderPolygon(object, border, border->isFilled());
+}
+
+void H2DE_Renderer::renderCircle(const H2DE_Object* object, H2DE_Border* border) const {
+    SDL_Rect world_surfaceRect = R::renderSurfaceGetWorldDestRect(object, border);
+
+    const int halfWidth = static_cast<int>(H2DE::round(world_surfaceRect.w * 0.5f));
+    const int halfHeight = static_cast<int>(H2DE::round(world_surfaceRect.h * 0.5f));
+
+    SDL_Point center = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight };
+
+    H2DE_ColorRGB surfaceColor = border->getColor();
+    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
+
+    if (border->isFilled()) {
+        filledEllipseColor(renderer, center.x, center.y, halfWidth, halfHeight, static_cast<Uint32>(surfaceColor));
+    } else {
+        ellipseColor(renderer, center.x, center.y, halfWidth, halfHeight, static_cast<Uint32>(surfaceColor));
+    }
+}
+
+void H2DE_Renderer::renderPolygon(const H2DE_Object* object, H2DE_Surface* surface, bool filled) const {
     SDL_Rect world_surfaceRect = R::renderSurfaceGetWorldDestRect(object, surface);
     float world_surfaceRotation = R::renderSurfaceGetWorldRotation(object, surface);
     
@@ -227,7 +271,11 @@ void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface
     H2DE_ColorRGB surfaceColor = surface->getColor();
     surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
 
-    filledPolygonColor(renderer, vx.data(), vy.data(), 4, static_cast<Uint32>(surfaceColor));
+    if (filled) {
+        filledPolygonColor(renderer, vx.data(), vy.data(), corners.size(), static_cast<Uint32>(surfaceColor));
+    } else {
+        polygonColor(renderer, vx.data(), vy.data(), corners.size(), static_cast<Uint32>(surfaceColor));
+    }
 }
 
 // -- -- getters

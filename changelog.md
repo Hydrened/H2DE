@@ -1,3 +1,7 @@
+## H2DE-4.1.6
+#### ADDED
+- border surface
+
 ## H2DE-4.1.5
 #### FIXED
 - text fliped letters when changing camera origins
