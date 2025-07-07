@@ -67,11 +67,15 @@ private:
     void renderHitboxes(const H2DE_Object* object);
     void renderHitbox(const H2DE_LevelRect& world_hitboxRect, const H2DE_ColorRGB& color, bool absolute);
 
-    void renderPolygon(const H2DE_Object* object, H2DE_Surface* surface, bool filled) const;
+    void renderPixelRectangle(const H2DE_Object* object, const std::array<H2DE_PixelPos, 4>& corners, const H2DE_ColorRGB& color, bool filled) const;
+    void renderPixelCircle(const H2DE_PixelPos& pos, int radiusW, int radiusH, const H2DE_ColorRGB& color, bool filled) const;
 
     const float getBlockSize(float width) const;
     const float getGameBlockSize() const;
     const float getInterfaceBlockSize() const;
+
+    const std::array<H2DE_PixelPos, 4> getCorners(const H2DE_Object* object, H2DE_Surface* surface) const;
+
     SDL_Texture* getTexture(const std::string& textureName) const;
     bool isSurfaceVisible(const H2DE_Surface* surface) const;
     static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode) noexcept;

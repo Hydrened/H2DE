@@ -1,3 +1,7 @@
+## H2DE-4.1.7
+#### ADDED
+- border thickness
+
 ## H2DE-4.1.6
 #### ADDED
 - border surface

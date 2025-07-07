@@ -1730,8 +1730,7 @@ struct H2DE_BorderData {
      * @param thickness Border thickness in pixels
      * @param filled Whether the shape is filled or not
      */
-    constexpr H2DE_BorderData(H2DE_BorderType type, const H2DE_ColorRGB& color, uint16_t thickness, bool filled) noexcept
-        : type(type), color(color), thickness(thickness), filled(filled) {}
+    constexpr H2DE_BorderData(H2DE_BorderType type, const H2DE_ColorRGB& color, uint16_t thickness, bool filled) noexcept : type(type), color(color), thickness(thickness), filled(filled) {}
 };
 
 /**

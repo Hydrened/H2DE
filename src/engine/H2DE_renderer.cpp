@@ -168,6 +168,33 @@ void H2DE_Renderer::renderSurface(const H2DE_Object* object, H2DE_Surface* surfa
     }
 }
 
+// -- -- pixel
+void H2DE_Renderer::renderPixelRectangle(const H2DE_Object* object, const std::array<H2DE_PixelPos, 4>& corners, const H2DE_ColorRGB& color, bool filled) const {
+    const std::vector<Sint16> vx = {
+        static_cast<Sint16>(corners[0].x), static_cast<Sint16>(corners[1].x - 1), static_cast<Sint16>(corners[2].x - 1), static_cast<Sint16>(corners[3].x)
+    };
+    const std::vector<Sint16> vy = {
+        static_cast<Sint16>(corners[0].y), static_cast<Sint16>(corners[1].y), static_cast<Sint16>(corners[2].y - 1), static_cast<Sint16>(corners[3].y - 1)
+    };
+
+    H2DE_ColorRGB surfaceColor = color;
+    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
+
+    if (filled) {
+        filledPolygonColor(renderer, vx.data(), vy.data(), vx.size(), static_cast<Uint32>(surfaceColor));
+    } else {
+        polygonColor(renderer, vx.data(), vy.data(), vx.size(), static_cast<Uint32>(surfaceColor));
+    }
+}
+
+void H2DE_Renderer::renderPixelCircle(const H2DE_PixelPos& pos, int radiusW, int radiusH, const H2DE_ColorRGB& color, bool filled) const {
+    if (filled) {
+        filledEllipseColor(renderer, pos.x, pos.y, radiusW, radiusH, static_cast<Uint32>(color));
+    } else {
+        ellipseColor(renderer, pos.x, pos.y, radiusW, radiusH, static_cast<Uint32>(color));
+    }
+}
+
 // -- -- textures
 void H2DE_Renderer::renderTexture(const H2DE_Object* object, H2DE_Surface* surface) const {
     SDL_Texture* texture = getTexture(surface->getTextureName());
@@ -206,7 +233,7 @@ void H2DE_Renderer::renderTextureRenderTexture(const H2DE_Object* object, H2DE_S
 
 // -- -- colors
 void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface) const {
-    renderPolygon(object, surface, false);
+    renderPixelRectangle(object, getCorners(object, surface), surface->getColor(), false);
 }
 
 // -- -- border
@@ -225,7 +252,24 @@ void H2DE_Renderer::renderBorder(const H2DE_Object* object, H2DE_Surface* surfac
 }
 
 void H2DE_Renderer::renderRectangle(const H2DE_Object* object, H2DE_Border* border) const {
-    renderPolygon(object, border, border->isFilled());
+    std::array<H2DE_PixelPos, 4> corners = getCorners(object, border);
+
+    for (int i = 0; i < border->getThickness(); i++) {
+        corners[0] += { 1, 1 };
+        corners[1] += { -1, 1 };
+        corners[2] += { -1, -1 };
+        corners[3] += { 1, -1 };
+
+        if (corners.at(0).x > corners.at(1).x) {
+            break;
+        }
+
+        if (corners.at(0).y > corners.at(3).y) {
+            break;
+        }
+
+        renderPixelRectangle(object, corners, border->getColor(), border->isFilled());
+    }
 }
 
 void H2DE_Renderer::renderCircle(const H2DE_Object* object, H2DE_Border* border) const {
@@ -234,47 +278,21 @@ void H2DE_Renderer::renderCircle(const H2DE_Object* object, H2DE_Border* border)
     const int halfWidth = static_cast<int>(H2DE::round(world_surfaceRect.w * 0.5f));
     const int halfHeight = static_cast<int>(H2DE::round(world_surfaceRect.h * 0.5f));
 
-    SDL_Point center = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight };
+    const H2DE_PixelPos center = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight };
 
     H2DE_ColorRGB surfaceColor = border->getColor();
     surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
 
-    if (border->isFilled()) {
-        filledEllipseColor(renderer, center.x, center.y, halfWidth, halfHeight, static_cast<Uint32>(surfaceColor));
-    } else {
-        ellipseColor(renderer, center.x, center.y, halfWidth, halfHeight, static_cast<Uint32>(surfaceColor));
-    }
-}
+    bool isFilled = border->isFilled();
 
-void H2DE_Renderer::renderPolygon(const H2DE_Object* object, H2DE_Surface* surface, bool filled) const {
-    SDL_Rect world_surfaceRect = R::renderSurfaceGetWorldDestRect(object, surface);
-    float world_surfaceRotation = R::renderSurfaceGetWorldRotation(object, surface);
-    
-    const int halfWidth = static_cast<int>(H2DE::round(world_surfaceRect.w * 0.5f));
-    const int halfHeight = static_cast<int>(H2DE::round(world_surfaceRect.h * 0.5f));
+    int radiusW = halfWidth;
+    int radiusH = halfHeight;
 
-    const H2DE_PixelRect world_pixel_surfaceRect = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight, world_surfaceRect.w, world_surfaceRect.h };
-    const H2DE_PixelPivot world_pixel_pivot = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight };
-
-    std::array<H2DE_PixelPos, 4> corners = world_pixel_surfaceRect.getCorners();
-    for (H2DE_PixelPos& corner : corners) {
-        corner = corner.rotate(world_pixel_pivot, world_surfaceRotation);
-    }
-
-    const std::vector<Sint16> vx = {
-        static_cast<Sint16>(corners[0].x), static_cast<Sint16>(corners[1].x - 1), static_cast<Sint16>(corners[2].x - 1), static_cast<Sint16>(corners[3].x)
-    };
-    const std::vector<Sint16> vy = {
-        static_cast<Sint16>(corners[0].y), static_cast<Sint16>(corners[1].y), static_cast<Sint16>(corners[2].y - 1), static_cast<Sint16>(corners[3].y - 1)
-    };
-
-    H2DE_ColorRGB surfaceColor = surface->getColor();
-    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
-
-    if (filled) {
-        filledPolygonColor(renderer, vx.data(), vy.data(), corners.size(), static_cast<Uint32>(surfaceColor));
-    } else {
-        polygonColor(renderer, vx.data(), vy.data(), corners.size(), static_cast<Uint32>(surfaceColor));
+    for (int i = 0; i < border->getThickness(); i++) {
+        radiusW--;
+        radiusH--;
+        
+        renderPixelCircle(center, radiusW, radiusH, surfaceColor, isFilled);
     }
 }
 
@@ -388,6 +406,24 @@ const float H2DE_Renderer::getGameBlockSize() const {
 
 const float H2DE_Renderer::getInterfaceBlockSize() const {
     return getBlockSize(engine->camera->getInterfaceWidth());
+}
+
+const std::array<H2DE_PixelPos, 4> H2DE_Renderer::getCorners(const H2DE_Object* object, H2DE_Surface* surface) const {
+    SDL_Rect world_surfaceRect = R::renderSurfaceGetWorldDestRect(object, surface);
+    float world_surfaceRotation = R::renderSurfaceGetWorldRotation(object, surface);
+    
+    const int halfWidth = static_cast<int>(H2DE::round(world_surfaceRect.w * 0.5f));
+    const int halfHeight = static_cast<int>(H2DE::round(world_surfaceRect.h * 0.5f));
+
+    const H2DE_PixelRect world_pixel_surfaceRect = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight, world_surfaceRect.w, world_surfaceRect.h };
+    const H2DE_PixelPivot world_pixel_pivot = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight };
+
+    std::array<H2DE_PixelPos, 4> corners = world_pixel_surfaceRect.getCorners();
+    for (H2DE_PixelPos& corner : corners) {
+        corner = corner.rotate(world_pixel_pivot, world_surfaceRotation);
+    }
+
+    return corners;
 }
 
 SDL_Texture* H2DE_Renderer::getTexture(const std::string& textureName) const {
