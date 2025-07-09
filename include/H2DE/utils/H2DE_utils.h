@@ -13,17 +13,17 @@
 class H2DE_Object;
 class H2DE_ButtonObject;
 class H2DE_Surface;
+class H2DE_Timeline;
 
 template<typename H2DE_Rect_T>
 struct H2DE_Rect;
 struct H2DE_ColorHSV;
 
 /** @brief Type alias for delay identifiers. */
-using H2DE_DelayID = uint32_t;
-/** @brief Type alias for timeline animation identifiers. */
-using H2DE_TimelineID = uint32_t;
-/** @brief Type alias for channel identifiers, signed 8-bit integer. */
 using H2DE_ChannelID = int8_t;
+
+/** @brief Type alias for delay type. */
+using H2DE_Delay = H2DE_Timeline;
 
 /** @brief Minimum value for unsigned 8-bit integer. */
 #define H2DE_UINT8_MIN 0
@@ -1554,6 +1554,37 @@ struct H2DE_Time {
      * @param milliseconds Number of milliseconds.
      */
     constexpr H2DE_Time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint16_t milliseconds) noexcept : hours(hours), minutes(minutes), seconds(seconds), milliseconds(milliseconds) {}
+
+    /**
+     * @brief Converts the time to a float representing the total elapsed time in seconds.
+     * 
+     * This function converts the current time represented by the H2DE_Time object into a float value.
+     * The result is the total number of seconds, including the fractional part from milliseconds.
+     * 
+     * @return Elapsed time in seconds as a float.
+     */
+    constexpr float toElapsed() const noexcept {
+        return (hours * 3600.0f) + (minutes * 60.0f) + (seconds) + (milliseconds * 0.001f);
+    }
+
+    /**
+     * @brief Converts a float elapsed time in seconds into an H2DE_Time object.
+     * 
+     * This static function takes a float representing a duration in seconds, and decomposes it
+     * into hours, minutes, seconds, and milliseconds. It uses `H2DE::floor` and `H2DE::round` internally
+     * to compute each part precisely. The result is clamped to valid ranges for each time unit.
+     * 
+     * @param elapsed The total elapsed time in seconds.
+     * @return An H2DE_Time object representing the decomposed time.
+     */
+    static constexpr H2DE_Time toTime(float elapsed) noexcept {
+        return H2DE_Time(
+            static_cast<int>(elapsed) / 3600,
+            std::clamp((static_cast<int>(elapsed) % 3600) / 60, 0, 59),
+            std::clamp(static_cast<int>(elapsed) % 60, 0, 59),
+            std::clamp(H2DE::round((elapsed - H2DE::floor(elapsed)) * 1000.0f), 0, 999)
+        );
+    }
 };
 
 /**
@@ -1564,15 +1595,15 @@ struct H2DE_Time {
  * and the timeline in which it exists.
  */
 struct H2DE_ButtonEventData {
-    H2DE_ButtonObject* button;         /**< Pointer to the button that triggered the event. */
-    H2DE_TimelineID& timelineID;       /**< Reference to the timeline the button is part of. */
+    H2DE_ButtonObject* button;          /**< Pointer to the button that triggered the event. */
+    H2DE_Timeline* timeline;            /**< Reference to the timeline the button is part of. */
 
     /**
      * @brief Constructs an event data object for button events.
      * @param button Pointer to the button triggering the event.
      * @param id Reference to the timeline where the event occurred.
      */
-    constexpr H2DE_ButtonEventData(H2DE_ButtonObject* button, H2DE_TimelineID& id) noexcept : button(button), timelineID(id) {}
+    constexpr H2DE_ButtonEventData(H2DE_ButtonObject* button, H2DE_Timeline* timeline) noexcept : button(button), timeline(timeline) {}
 };
 
 /**

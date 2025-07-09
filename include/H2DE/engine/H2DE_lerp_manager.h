@@ -6,7 +6,7 @@ class H2DE_Engine;
 
 class H2DE_LerpManager {
 public:
-    static H2DE_TimelineID lerp(H2DE_Engine* engine, const H2DE_ColorRGB& origin, const H2DE_ColorRGB& destination, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(H2DE_ColorRGB)>& update, const std::function<void()>& completed, bool pauseSensitive = true) {
+    static H2DE_Timeline* lerp(H2DE_Engine* engine, const H2DE_ColorRGB& origin, const H2DE_ColorRGB& destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_ColorRGB)>& update, const std::function<void()>& completed, bool pauseSensitive = true) {
         const int redToAdd = destination.r - origin.r;
         const int greenToAdd = destination.g - origin.g;
         const int blueToAdd = destination.b - origin.b;
@@ -25,7 +25,7 @@ public:
         }, completed, 0, pauseSensitive);
     }
 
-    static H2DE_TimelineID lerp(H2DE_Engine* engine, const H2DE_Time& origin, const H2DE_Time& destination, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(H2DE_Time)>& update, const std::function<void()>& completed, bool pauseSensitive = true) {
+    static H2DE_Timeline* lerp(H2DE_Engine* engine, const H2DE_Time& origin, const H2DE_Time& destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_Time)>& update, const std::function<void()>& completed, bool pauseSensitive = true) {
         const int hrToAdd = destination.hours - origin.hours;
         const int minToAdd = destination.minutes - origin.minutes;
         const int secToAdd = destination.seconds - origin.seconds;
@@ -44,7 +44,7 @@ public:
     }
 
     template<typename H2DE_Lerp_T>
-    static H2DE_TimelineID lerp(H2DE_Engine* engine, H2DE_Lerp_T origin, H2DE_Lerp_T destination, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void(H2DE_Lerp_T)>& update, const std::function<void()>& completed, bool pauseSensitive = true) {
+    static H2DE_Timeline* lerp(H2DE_Engine* engine, H2DE_Lerp_T origin, H2DE_Lerp_T destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_Lerp_T)>& update, const std::function<void()>& completed, bool pauseSensitive = true) {
         const H2DE_Lerp_T valueToAdd = destination - origin;
 
         return engine->createTimeline(duration, easing, [update, origin, valueToAdd](float blend) {

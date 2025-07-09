@@ -18,6 +18,7 @@ H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fp
         renderer = new H2DE_Renderer(this, window->renderer, objects);
         audio = new H2DE_Audio(this);
         timelineManager = new H2DE_TimelineManager(this);
+        chronoManager = new H2DE_ChronoManager(this);
         camera = new H2DE_Camera(this, data.camera);
         objectManager = new H2DE_ObjectManager(this);
 
@@ -71,6 +72,11 @@ void H2DE_Engine::destroy() {
     if (timelineManager != nullptr) {
         delete timelineManager;
         timelineManager = nullptr;
+    }
+
+    if (chronoManager != nullptr) {
+        delete chronoManager;
+        chronoManager = nullptr;
     }
 
     if (settings != nullptr) {
@@ -183,6 +189,7 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
 void H2DE_Engine::update() {
     window->update();
     timelineManager->update();
+    chronoManager->update();
     audio->update();
 
     if (!paused) {
@@ -232,41 +239,18 @@ void H2DE_Engine::debugModePreviousFrame() {
 }
 
 // -- timeline
-H2DE_TimelineID H2DE_Engine::createTimeline(uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive) {
+H2DE_Timeline* H2DE_Engine::createTimeline(uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive) {
     return timelineManager->create(duration, easing, update, completed, loops, pauseSensitive);
 }
 
-void H2DE_Engine::pauseTimeline(H2DE_TimelineID id) {
-    timelineManager->pause(id);
-}
-
-void H2DE_Engine::resumeTimeline(H2DE_TimelineID id) {
-    timelineManager->resume(id);
-}
-
-void H2DE_Engine::togglePauseTimeline(H2DE_TimelineID id) {
-    timelineManager->togglePause(id);
-}
-
-void H2DE_Engine::resetTimeline(H2DE_TimelineID id) {
-    timelineManager->reset(id);
-}
-
-void H2DE_Engine::stopTimeline(H2DE_TimelineID id, bool callCompleted) {
-    timelineManager->stop(id, callCompleted);
-}
-
-bool H2DE_Engine::isTimelinePaused(H2DE_TimelineID id) const {
-    return timelineManager->isPaused(id);
-}
-
-bool H2DE_Engine::isTimelineStoped(H2DE_TimelineID id) const {
-    return timelineManager->isStoped(id);
-}
-
 // -- delay
-H2DE_DelayID H2DE_Engine::delay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive) {
+H2DE_Delay* H2DE_Engine::delay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive) {
     return timelineManager->create(duration, H2DE_EASING_LINEAR, nullptr, callback, 1, pauseSensitive);
+}
+
+// -- chrono
+H2DE_Chrono* H2DE_Engine::createChrono(const H2DE_Time& start, bool increasing, bool pauseSensitive) {
+    return chronoManager->create(start, increasing, pauseSensitive);
 }
 
 // -- objects

@@ -284,38 +284,38 @@ void H2DE_TextObject::setColor(const H2DE_ColorRGB& color) {
 }
 
 // -- lerp
-H2DE_TimelineID H2DE_TextObject::setContainer(const H2DE_Scale& container, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_TimelineID id = H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.container, container, duration, easing, [this](H2DE_Scale iv) {
+H2DE_Timeline* H2DE_TextObject::setContainer(const H2DE_Scale& container, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.container, container, duration, easing, [this](H2DE_Scale iv) {
         setContainer(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(id);
-    return id;
+    addTimelineToTimelines(timeline);
+    return timeline;
 }
 
-H2DE_TimelineID H2DE_TextObject::setFontSize(const H2DE_Scale& fontSize, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_TimelineID id = H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.fontSize, fontSize, duration, easing, [this](H2DE_Scale iv) {
+H2DE_Timeline* H2DE_TextObject::setFontSize(const H2DE_Scale& fontSize, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.fontSize, fontSize, duration, easing, [this](H2DE_Scale iv) {
         setFontSize(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(id);
-    return id;
+    addTimelineToTimelines(timeline);
+    return timeline;
 }
 
-H2DE_TimelineID H2DE_TextObject::setSpacing(const H2DE_Scale& spacing, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_TimelineID id = H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.spacing, spacing, duration, easing, [this](H2DE_Scale iv) {
+H2DE_Timeline* H2DE_TextObject::setSpacing(const H2DE_Scale& spacing, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Scale>(engine, textObjectData.text.spacing, spacing, duration, easing, [this](H2DE_Scale iv) {
         setSpacing(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(id);
-    return id;
+    addTimelineToTimelines(timeline);
+    return timeline;
 }
 
-H2DE_TimelineID H2DE_TextObject::setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_TimelineID id = H2DE_LerpManager::lerp(engine, textObjectData.text.color, color, duration, easing, [this](H2DE_ColorRGB iv) {
+H2DE_Timeline* H2DE_TextObject::setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp(engine, textObjectData.text.color, color, duration, easing, [this](H2DE_ColorRGB iv) {
         setColor(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(id);
-    return id;
+    addTimelineToTimelines(timeline);
+    return timeline;
 }

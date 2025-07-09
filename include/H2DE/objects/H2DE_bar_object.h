@@ -232,9 +232,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setMin(float min, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setMin(float min, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the maximum value of the bar.
      * 
@@ -245,9 +245,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setMax(float max, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setMax(float max, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the current value of the bar.
      * 
@@ -258,9 +258,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setValue(float value, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setValue(float value, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     using H2DE_DataType = H2DE_BarObjectData;
 

@@ -249,9 +249,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setTranslate(const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setTranslate(const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the camera's game width to a new value over time.
      * 
@@ -262,9 +262,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setGameWidth(float width, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setGameWidth(float width, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the interface width over time.
      * 
@@ -275,9 +275,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setInterfaceWidth(float width, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setInterfaceWidth(float width, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     friend class H2DE_Engine;
     friend class H2DE_Renderer;

@@ -21,9 +21,9 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
 }
 
 bool H2DE_ButtonObject::stopTimeline() {
-    if (currentTimelineID != H2DE_INVALID_TIMELINE_ID) {
-        engine->stopTimeline(currentTimelineID, true);
-        currentTimelineID = H2DE_INVALID_TIMELINE_ID;
+    if (currentTimeline != nullptr) {
+        currentTimeline->stop(true);
+        currentTimeline = nullptr;
         
         return true;
     }
@@ -72,24 +72,24 @@ void H2DE_ButtonObject::refreshMaxRadius() {
 
 void H2DE_ButtonObject::mouseDown() {
     if (buttonObjectData.onMouseDown && !disabled) {
-        buttonObjectData.onMouseDown({ this, currentTimelineID });
+        buttonObjectData.onMouseDown({ this, currentTimeline });
     }
 }
 
 void H2DE_ButtonObject::mouseUp() {
     if (buttonObjectData.onMouseUp && !disabled) {
-        buttonObjectData.onMouseUp({ this, currentTimelineID });
+        buttonObjectData.onMouseUp({ this, currentTimeline });
     }
 }
 
 void H2DE_ButtonObject::mouseHover() {
     if (buttonObjectData.onHover && !disabled) {
-        buttonObjectData.onHover({ this, currentTimelineID });
+        buttonObjectData.onHover({ this, currentTimeline });
     }
 }
 
 void H2DE_ButtonObject::mouseBlur() {
     if (buttonObjectData.onBlur && !disabled) {
-        buttonObjectData.onBlur({ this, currentTimelineID });
+        buttonObjectData.onBlur({ this, currentTimeline });
     }
 }

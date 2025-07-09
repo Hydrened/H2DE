@@ -93,9 +93,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Ttimeline controlling this animation.
      */
-    H2DE_TimelineID setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     using H2DE_DataType = H2DE_TextureData;
     

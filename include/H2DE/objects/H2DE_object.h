@@ -271,9 +271,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setTranslate(const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setTranslate(const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the scale of the object over time.
      * 
@@ -284,9 +284,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setScale(const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setScale(const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the rotation angle of the object over time.
      * 
@@ -297,9 +297,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setRotation(float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setRotation(float rotation, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the opacity (alpha) of the object over time.
      * 
@@ -310,9 +310,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
-    H2DE_TimelineID setOpacity(uint8_t opacity, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setOpacity(uint8_t opacity, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     /**
      * @brief Set the translation (position) of a named hitbox instantly.
@@ -379,7 +379,7 @@ public:
      * @param pauseSensitive If true, pauses animation on game pause.
      * @return Timeline ID for animation control.
      */
-    H2DE_TimelineID setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the scale of a named hitbox.
      * 
@@ -393,7 +393,7 @@ public:
      * @param pauseSensitive Pause-aware flag.
      * @return Timeline ID.
      */
-    H2DE_TimelineID setHitboxScale(const std::string& name, const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setHitboxScale(const std::string& name, const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the rotation of a named hitbox.
      * 
@@ -407,7 +407,7 @@ public:
      * @param pauseSensitive Pause-sensitive toggle.
      * @return Timeline ID.
      */
-    H2DE_TimelineID setHitboxRotation(const std::string& name, float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setHitboxRotation(const std::string& name, float rotation, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the color change of a named hitbox.
      * 
@@ -421,7 +421,7 @@ public:
      * @param pauseSensitive If true, pauses with game.
      * @return Timeline ID.
      */
-    H2DE_TimelineID setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     friend class H2DE_Engine;
     friend class H2DE_Renderer;
@@ -437,7 +437,7 @@ protected:
     H2DE_ObjectData objectData;
 
     std::vector<H2DE_Surface*> surfaceBuffers = {};
-    std::vector<H2DE_TimelineID> timelineIDsBuffer = {};
+    std::vector<H2DE_Timeline*> timelinesBuffer = {};
     std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
     float maxRadius;
 
@@ -446,7 +446,7 @@ protected:
 
     static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
     static void destroySurfaces(std::vector<H2DE_Surface*>& surfaces);
-    void removeTimeline(H2DE_TimelineID id);
+    void removeTimeline(H2DE_Timeline* timeline);
 
     virtual void update();
     void updateCollisions();
@@ -455,8 +455,8 @@ protected:
     virtual void refreshSurfaceBuffers() = 0;
     virtual void refreshMaxRadius() = 0;
 
-    inline void addTimelineToTimelines(H2DE_TimelineID id) {
-        timelineIDsBuffer.push_back(id);
+    inline void addTimelineToTimelines(H2DE_Timeline* timeline) {
+        timelinesBuffer.push_back(timeline);
     }
 
     template<typename H2DE_Surface_T>

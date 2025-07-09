@@ -249,7 +249,7 @@ private:
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
 
     bool disabled = false;
-    H2DE_TimelineID currentTimelineID = H2DE_INVALID_TIMELINE_ID;
+    H2DE_Timeline* currentTimeline = nullptr;
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     ~H2DE_ButtonObject() override;

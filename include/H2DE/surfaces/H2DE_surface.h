@@ -181,9 +181,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Ttimeline controlling this animation.
      */
-    H2DE_TimelineID setTranslate(const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setTranslate(const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the scale over time with easing and callback on completion.
      * 
@@ -192,9 +192,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Ttimeline controlling this animation.
      */
-    H2DE_TimelineID setScale(const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setScale(const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the rotation over time with easing and completion callback.
      * 
@@ -203,9 +203,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Ttimeline controlling this animation.
      */
-    H2DE_TimelineID setRotation(float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setRotation(float rotation, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     friend class H2DE_Renderer;
     friend class H2DE_Object;

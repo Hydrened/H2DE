@@ -7,15 +7,16 @@ H2DE_Sprite::H2DE_Sprite(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData&
 }
 
 void H2DE_Sprite::initDelay() {
-    delayId = engine->createTimeline(spriteData.delay, H2DE_EASING_LINEAR, nullptr, [this]() {
+    delay = engine->createTimeline(spriteData.delay, H2DE_EASING_LINEAR, nullptr, [this]() {
         nextFrame();
     }, H2DE_INFINITE_LOOP, spriteData.pauseSensitive);
 }
 
 // CLEANUP
 H2DE_Sprite::~H2DE_Sprite() {
-    if (delayId != H2DE_INVALID_DELAY_ID) {
-        engine->stopTimeline(delayId, false);
+    if (delay != nullptr) {
+        delay->stop(false);
+        delay = nullptr;
     }
 }
 
@@ -82,7 +83,7 @@ void H2DE_Sprite::setPauseSensitive(bool pauseSensitive) {
 }
 
 // -- lerp
-H2DE_TimelineID H2DE_Sprite::setColor(const H2DE_ColorRGB& color, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_Timeline* H2DE_Sprite::setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp(engine, spriteData.color, color, duration, easing, [this](H2DE_ColorRGB iv) {
         setColor(iv);
     }, completed, pauseSensitive);

@@ -54,19 +54,19 @@ void H2DE_Surface::setIndex(int index) {
 }
 
 // -- lerp
-H2DE_TimelineID H2DE_Surface::setTranslate(const H2DE_Translate& translate, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_Timeline* H2DE_Surface::setTranslate(const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Translate>(engine, surfaceData.transform.translate, translate, duration, easing, [this](H2DE_Translate iv) {
         setTranslate(iv);
     }, completed, pauseSensitive);
 }
 
-H2DE_TimelineID H2DE_Surface::setScale(const H2DE_Scale& scale, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_Timeline* H2DE_Surface::setScale(const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<H2DE_Scale>(engine, surfaceData.transform.scale, scale, duration, easing, [this](H2DE_Scale iv) {
         setScale(iv);
     }, completed, pauseSensitive);
 }
 
-H2DE_TimelineID H2DE_Surface::setRotation(float rotation, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+H2DE_Timeline* H2DE_Surface::setRotation(float rotation, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
     return H2DE_LerpManager::lerp<float>(engine, surfaceData.transform.rotation, rotation, duration, easing, [this](float iv) {
         setRotation(iv);
     }, completed, pauseSensitive);

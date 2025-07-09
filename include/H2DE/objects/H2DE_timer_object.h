@@ -64,7 +64,14 @@ public:
     }
 
     /**
+     * @brief Registers a callback to be triggered when the internal timer reaches a specific time.
      * 
+     * The callback will be invoked once the elapsed time matches the specified `target` time.
+     * 
+     * @param target The H2DE_Time at which the callback should be triggered.
+     * @param callback The function to execute when the target time is reached.
+     * @param once If true, the callback is called only once and removed after execution. 
+     *             If false, the callback remains and is triggered every time the timer hits the target.
      */
     void onReach(const H2DE_Time& target, const std::function<void()>& callback, bool once);
 
@@ -275,9 +282,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Ttimeline controlling this animation.
      */
-    H2DE_TimelineID setTime(const H2DE_Time& time, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setTime(const H2DE_Time& time, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the hours change over a duration.
      * 
@@ -288,9 +295,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Ttimeline controlling this animation.
      */
-    H2DE_TimelineID setHours(uint8_t hours, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setHours(uint8_t hours, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the minutes change over a duration.
      * 
@@ -301,9 +308,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Ttimeline controlling this animation.
      */
-    H2DE_TimelineID setMinutes(uint8_t minutes, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setMinutes(uint8_t minutes, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the seconds change over a duration.
      * 
@@ -314,9 +321,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Ttimeline controlling this animation.
      */
-    H2DE_TimelineID setSeconds(uint8_t seconds, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setSeconds(uint8_t seconds, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
     /**
      * @brief Animate the milliseconds change over a duration.
      * 
@@ -327,9 +334,9 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return H2DE_TimelineID ID of the timeline controlling this animation.
+     * @return Ttimeline controlling this animation.
      */
-    H2DE_TimelineID setMilliseconds(uint16_t milliseconds, H2DE_TimelineID duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setMilliseconds(uint16_t milliseconds, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
 
     using H2DE_DataType = H2DE_TimerObjectData;
     
@@ -349,7 +356,7 @@ private:
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
     std::vector<H2DE_OnReachEvent> onReachEvents = {};
 
-    H2DE_TimelineID timelineId = 0;
+    H2DE_Timeline* timeline = nullptr;
     float elapsed = 0.0f;
 
     H2DE_TimerObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TimerObjectData& timerObjectData);
@@ -366,11 +373,7 @@ private:
     void refreshMaxRadius() override;
     void refreshTimeline();
 
-    static H2DE_Time elapsedToTime(float elapsed);
     static std::string intToStr(int value, int nbDigits);
-    static constexpr float getElapsed(const H2DE_Time& time) noexcept {
-        return (time.hours * 3600.0f) + (time.minutes * 60.0f) + (time.seconds) + (time.milliseconds * 0.001f);
-    }
     const std::string getStringifiedTime() const;
 };
 
