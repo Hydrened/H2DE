@@ -26,5 +26,5 @@ void H2DE_BasicObject::refreshMaxRadius() {
     float maxHitboxesRadius = getMaxHitboxRadius();
     float maxSurfaceRadius = getMaxSurfaceRadius(surfaces);
     
-    maxRadius = std::max(maxHitboxesRadius, maxSurfaceRadius);
+    maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
 }

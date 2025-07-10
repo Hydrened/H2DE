@@ -1,8 +1,13 @@
 ## H2DE-4.1.6
 #### ADDED
 - border thickness
+- chronos
+- constexpr noexcept min, max and clamp
+- cout operator for H2DE_Time
 #### MODIFIED
 - button events parameters
+- timelines now gives a pointer to a timeline instead of a timeline ID (same for delays)
+- timer object based on chronos
 
 ## H2DE-4.1.6-b1
 #### ADDED

@@ -16,6 +16,7 @@
 
 #include <H2DE/objects/H2DE_object.h>
 class H2DE_TextObject;
+class H2DE_Chrono;
 
 /**
  * @class H2DE_TimerObject
@@ -343,35 +344,24 @@ public:
     friend class H2DE_Engine;
 
 private:
-    struct H2DE_OnReachEvent {
-        H2DE_Time target = H2DE_Time();
-        std::function<void()> callback = nullptr;
-        bool once = false;
-    };
-
-private:
     H2DE_TimerObjectData timerObjectData;
 
     H2DE_TextObject* textObject = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
-    std::vector<H2DE_OnReachEvent> onReachEvents = {};
 
-    H2DE_Timeline* timeline = nullptr;
-    float elapsed = 0.0f;
+    H2DE_Chrono* chrono = nullptr;
 
     H2DE_TimerObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TimerObjectData& timerObjectData);
     ~H2DE_TimerObject() override;
 
     void update() override;
 
-    void initElapsedTime() noexcept;
-    void initTimeline();
-    void destroyTimeline();
+    void initChrono();
+    void destroyChrono();
 
     void refreshTextObject();
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
-    void refreshTimeline();
 
     static std::string intToStr(int value, int nbDigits);
     const std::string getStringifiedTime() const;

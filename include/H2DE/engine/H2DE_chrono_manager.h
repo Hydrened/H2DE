@@ -20,7 +20,7 @@ private:
 
     H2DE_Chrono* create(const H2DE_Time& start, bool increasing = true, bool pauseSensitive = true);
 
-    static H2DE_Time elapsedToTime(float elapsed);
+    static H2DE_Time elapsedToTime(float elapsed) noexcept;
     static constexpr double getElapsed(const H2DE_Time& time) noexcept {
         return (time.hours * 3600.0) + (time.minutes * 60.0) + (time.seconds) + (time.milliseconds * 0.001);
     }

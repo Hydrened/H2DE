@@ -24,7 +24,7 @@ bool H2DE::randomBool() {
 float H2DE::lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EASING_LINEAR) {
     constexpr float PI = 3.14159265359f;
 
-    blend = std::clamp(blend, 0.0f, 1.0f);
+    blend = H2DE::clamp(blend, 0.0f, 1.0f);
 
     switch (easing) {
         case H2DE_EASING_EASE_IN: {

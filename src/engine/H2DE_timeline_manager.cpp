@@ -29,7 +29,7 @@ void H2DE_TimelineManager::update() {
 
 // ACTIONS
 H2DE_Timeline* H2DE_TimelineManager::create(uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive) {
-    float fixedDuration = std::max(static_cast<float>(duration) + engine->getDeltaTime() + 1, 1.0f);
+    float fixedDuration = H2DE::max(static_cast<float>(duration) + engine->getDeltaTime() + 1, 1.0f);
     H2DE_Timeline* timeline = new H2DE_Timeline(engine, this, fixedDuration, easing, update, completed, loops, pauseSensitive);
     timelines.push_back(timeline);
     return timeline;
@@ -39,18 +39,19 @@ void H2DE_TimelineManager::destroyTimeline(H2DE_Timeline* timeline, bool callCom
     auto it = std::find(timelines.begin(), timelines.end(), timeline);
     if (it != timelines.end()) {
 
-        H2DE_Timeline* timeline = *it;
+        H2DE_Timeline* t = *it;
 
         if (callCompleted) {
-            if (timeline->updateCall) {
-                timeline->updateCall(1.0f);
+            if (t->updateCall) {
+                t->updateCall(1.0f);
             }
 
-            if (timeline->completedCall) {
-                timeline->completedCall();
+            if (t->completedCall) {
+                t->completedCall();
             }
         }
 
+        delete t;
         timelines.erase(it);
     }
 }

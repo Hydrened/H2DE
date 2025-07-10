@@ -193,7 +193,7 @@ public:
      * @param pauseSensitive Whether the delay respects the engine's pause state (default true).
      * @return The unique ID of the created delay.
      */
-    H2DE_Delay* delay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive = true);
+    H2DE_Delay* createDelay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive = true);
 
     /**
      * @brief Creates a chrono with an optional start time and direction.

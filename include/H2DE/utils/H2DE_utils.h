@@ -26,9 +26,9 @@ using H2DE_ChannelID = int8_t;
 using H2DE_Delay = H2DE_Timeline;
 
 /** @brief Minimum value for unsigned 8-bit integer. */
-#define H2DE_UINT8_MIN 0
+#define H2DE_UINT8_MIN 0u
 /** @brief Maximum value for unsigned 8-bit integer. */
-#define H2DE_UINT8_MAX 255
+#define H2DE_UINT8_MAX 255u
 
 /** @brief Minimum value for 32-bit signed index. */
 #define H2DE_INDEX_MIN (-2147483648)
@@ -49,7 +49,7 @@ using H2DE_Delay = H2DE_Timeline;
 #define H2DE_MAX_VOLUME 100
 
 /** @brief Constant used to represent an infinite loop in timelines or animations. */
-#define H2DE_INFINITE_LOOP 4294967295
+#define H2DE_INFINITE_LOOP 4294967295u
 
 /**
  * @enum H2DE_WindowRatio
@@ -244,6 +244,46 @@ namespace H2DE {
     template<typename T>
     constexpr int ceil(T value) noexcept {
         return static_cast<int>(value) + (value > static_cast<T>(static_cast<int>(value)) ? 1 : 0);
+    }
+
+    /**
+     * @brief Returns the smallest of two values (constexpr).
+     * 
+     * @tparam T Comparable type.
+     * @param a First value.
+     * @param b Second value.
+     * @return The lesser of a and b.
+     */
+    template<typename T>
+    constexpr T min(T a, T b) noexcept {
+        return ((a < b) ? a : b);
+    }
+
+    /**
+     * @brief Returns the largest of two values (constexpr).
+     * 
+     * @tparam T Comparable type.
+     * @param a First value.
+     * @param b Second value.
+     * @return The greater of a and b.
+     */
+    template<typename T>
+    constexpr T max(T a, T b) noexcept {
+        return ((a > b) ? a : b);
+    }
+
+    /**
+     * @brief Clamps a value between a minimum and a maximum (constexpr).
+     * 
+     * @tparam T Comparable type.
+     * @param value Value to clamp.
+     * @param min Minimum bound.
+     * @param max Maximum bound.
+     * @return min if value < min, max if value > max, otherwise value.
+     */
+    template<typename T>
+    constexpr T clamp(T value, T min, T max) noexcept {
+        return H2DE::min(H2DE::max(value, min), max);
     }
 
     /**
@@ -448,9 +488,6 @@ struct H2DE_Vector2D {
 
     /**
      * @brief Stream output operator for easy debugging.
-     * @param os The output stream.
-     * @param vec The vector to output.
-     * @return Reference to the output stream.
      */
     friend inline std::ostream& operator<<(std::ostream& os, const H2DE_Vector2D<H2DE_Vector2D_T>& vec) {
         os << std::string("x: ") << vec.x << ", y: " << vec.y;
@@ -1283,9 +1320,6 @@ struct H2DE_ColorHSV {
 
     /**
      * @brief Outputs HSV color values to a stream (debug/logging).
-     * @param os Output stream.
-     * @param color HSV color to output.
-     * @return Reference to the stream.
      */
     friend inline std::ostream& operator<<(std::ostream& os, const H2DE_ColorHSV& color) {
         os << std::string("h: ") << color.h << ", s: " << color.s << ", v: " << color.v << ", a: " << color.a;
@@ -1580,10 +1614,24 @@ struct H2DE_Time {
     static constexpr H2DE_Time toTime(float elapsed) noexcept {
         return H2DE_Time(
             static_cast<int>(elapsed) / 3600,
-            std::clamp((static_cast<int>(elapsed) % 3600) / 60, 0, 59),
-            std::clamp(static_cast<int>(elapsed) % 60, 0, 59),
-            std::clamp(H2DE::round((elapsed - H2DE::floor(elapsed)) * 1000.0f), 0, 999)
+            H2DE::clamp((static_cast<int>(elapsed) % 3600) / 60, 0, 59),
+            H2DE::clamp(static_cast<int>(elapsed) % 60, 0, 59),
+            H2DE::clamp(H2DE::round((elapsed - H2DE::floor(elapsed)) * 1000.0f), 0, 999)
         );
+    }
+
+    /**
+     * @brief Outputs the H2DE_Time to an output stream in a readable format.
+     * 
+     * This operator allows H2DE_Time instances to be streamed (e.g., to std::cout)
+     * with a format like: "h: 1, m: 30, s: 45, ms: 250".
+     */
+    friend inline std::ostream& operator<<(std::ostream& os, const H2DE_Time& time) {
+        os << std::string("h: ") << static_cast<int>(time.hours);
+        os << std::string(", m: ") << static_cast<int>(time.minutes);
+        os << std::string(", s: ") << static_cast<int>(time.seconds);
+        os << std::string(", ms: ") << static_cast<int>(time.milliseconds);
+        return os;
     }
 };
 

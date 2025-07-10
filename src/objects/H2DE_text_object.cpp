@@ -178,7 +178,7 @@ const std::vector<std::vector<std::string>> H2DE_TextObject::getLines() const {
 }
 
 int H2DE_TextObject::getLineLength(const std::vector<std::string>& line) {
-    int length = std::max(line.size() - 1, (size_t)0);
+    int length = H2DE::max(line.size() - 1, (size_t)0);
 
     for (const std::string& word : line) {
         length += word.length();

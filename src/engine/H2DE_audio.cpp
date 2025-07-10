@@ -33,8 +33,8 @@ H2DE_Audio::~H2DE_Audio() {
 
 void H2DE_Audio::saveData() const {
     static H2DE_Settings* settings = engine->getSettings();
-    settings->setKeyValue("VOLUME", "song", std::to_string(std::clamp(songVolume, H2DE_MIN_VOLUME, H2DE_MAX_VOLUME)));
-    settings->setKeyValue("VOLUME", "sfx", std::to_string(std::clamp(sfxVolume, H2DE_MIN_VOLUME, H2DE_MAX_VOLUME)));
+    settings->setKeyValue("VOLUME", "song", std::to_string(H2DE::clamp(songVolume, H2DE_MIN_VOLUME, H2DE_MAX_VOLUME)));
+    settings->setKeyValue("VOLUME", "sfx", std::to_string(H2DE::clamp(sfxVolume, H2DE_MIN_VOLUME, H2DE_MAX_VOLUME)));
 }
 
 // UPDATE
@@ -177,7 +177,7 @@ int H2DE_Audio::getNextFreeChannel() const {
 }
 
 int H2DE_Audio::lerpVolume(int volume) {
-    volume = std::clamp(volume, H2DE_MIN_VOLUME, H2DE_MAX_VOLUME);
+    volume = H2DE::clamp(volume, H2DE_MIN_VOLUME, H2DE_MAX_VOLUME);
     float blend = volume * 0.01f;
     return H2DE::lerp(0, MIX_MAX_VOLUME, blend, H2DE_EASING_LINEAR);
 }

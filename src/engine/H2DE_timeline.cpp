@@ -20,7 +20,7 @@ bool H2DE_Timeline::update() {
     current += engine->getDeltaTime() * 1000.0f;
 
     if (updateCall) {
-        float blend = std::clamp(current, 0.0f, duration) / duration;
+        float blend = H2DE::clamp(current, 0.0f, duration) / duration;
         blend = H2DE::lerp(0.0f, 1.0f, blend, easing);
         updateCall(blend);
     }

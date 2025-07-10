@@ -38,8 +38,11 @@ void H2DE_Object::removeTimeline(H2DE_Timeline* timeline) {
 
 void H2DE_Object::stopTimelines() {
     for (H2DE_Timeline* timeline : timelinesBuffer) {
-        timeline->stop(false);
+        if (!engine->timelineManager->isStoped(timeline)) {
+            timeline->stop(false);
+        }
     }
+    timelinesBuffer.clear();
 }
 
 // UPDATE

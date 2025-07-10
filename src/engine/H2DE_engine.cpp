@@ -244,7 +244,7 @@ H2DE_Timeline* H2DE_Engine::createTimeline(uint32_t duration, H2DE_Easing easing
 }
 
 // -- delay
-H2DE_Delay* H2DE_Engine::delay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive) {
+H2DE_Delay* H2DE_Engine::createDelay(uint32_t duration, const std::function<void()>& callback, bool pauseSensitive) {
     return timelineManager->create(duration, H2DE_EASING_LINEAR, nullptr, callback, 1, pauseSensitive);
 }
 

@@ -4,7 +4,7 @@
 
 // INIT
 H2DE_Chrono::H2DE_Chrono(H2DE_Engine* e, H2DE_ChronoManager* m, const H2DE_Time& s, bool i, bool p) : engine(e), manager(m), current(s), increasing(i), pauseSensitive(p) {
-
+    current = H2DE_Time::toTime(H2DE::max(current.toElapsed(), 0.0f));
 }
 
 // UPDATE
@@ -26,7 +26,7 @@ void H2DE_Chrono::updateCurrentTime() {
     
     float elapsed = current.toElapsed();
     elapsed += engine->getDeltaTime() * deltaTimeMultiplier;
-    elapsed = std::max(elapsed, 0.0f);
+    elapsed = H2DE::max(elapsed, 0.0f);
     current = H2DE_Time::toTime(elapsed);
 }
 

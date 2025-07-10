@@ -73,7 +73,7 @@ void H2DE_Camera::updateGridObjectHitboxes() {
     constexpr float MAIN_GRID_SPACING = 5.0f;
     constexpr float EPSILON = 0.001f;
 
-    float step = std::max(H2DE::floor(data.gameWidth * REISIZE_GRID_FACTOR) * 2.0f, 1.0f);
+    float step = H2DE::max(H2DE::floor(data.gameWidth * REISIZE_GRID_FACTOR) * 2.0f, 1.0f);
 
     float startX = H2DE::round(minX) + H2DE::round(std::fmod(minX, step)) * -1;
 

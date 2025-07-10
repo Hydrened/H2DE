@@ -78,8 +78,8 @@ bool H2DE_Rect<H2DE_Rect_T>::collides(const H2DE_Vector2D<H2DE_Rect_T>& translat
     H2DE_Rect_T top = y - halfH;
     H2DE_Rect_T bottom = y + halfH;
 
-    H2DE_Rect_T closestX = std::clamp(translate.x, left, right);
-    H2DE_Rect_T closestY = std::clamp(translate.y, top, bottom);
+    H2DE_Rect_T closestX = H2DE::clamp(translate.x, left, right);
+    H2DE_Rect_T closestY = H2DE::clamp(translate.y, top, bottom);
 
     H2DE_Rect_T dx = translate.x - closestX;
     H2DE_Rect_T dy = translate.y - closestY;

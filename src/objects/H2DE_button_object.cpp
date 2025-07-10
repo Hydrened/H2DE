@@ -67,7 +67,7 @@ void H2DE_ButtonObject::refreshMaxRadius() {
     float maxHitboxesRadius = getMaxHitboxRadius();
     float maxSurfaceRadius = getMaxSurfaceRadius(surfaces);
     
-    maxRadius = std::max(maxHitboxesRadius, maxSurfaceRadius);
+    maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
 }
 
 void H2DE_ButtonObject::mouseDown() {
