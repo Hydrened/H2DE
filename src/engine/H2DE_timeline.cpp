@@ -5,6 +5,7 @@
 // INIT
 H2DE_Timeline::H2DE_Timeline(H2DE_Engine* en, H2DE_TimelineManager* m, uint32_t d, H2DE_Easing e, const std::function<void(float)>& u, const std::function<void()>& c, uint32_t l, bool p) : engine(en), manager(m) {
     duration = d;
+    easing = e;
     updateCall = u;
     completedCall = c;
     loops = l;

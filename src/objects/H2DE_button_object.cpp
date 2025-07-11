@@ -22,9 +22,7 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
 
 bool H2DE_ButtonObject::stopTimeline() {
     if (currentTimeline != nullptr) {
-        currentTimeline->stop(true);
-        currentTimeline = nullptr;
-        
+        currentTimeline->stop(false);
         return true;
     }
 

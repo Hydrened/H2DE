@@ -20,7 +20,7 @@ void H2DE_TimelineManager::update() {
         H2DE_Timeline* timeline = *it;
 
         if (!timeline->update()) {
-            it = timelines.erase(it);
+            destroyTimeline(timeline, false);
         } else {
             ++it;
         }

@@ -1,5 +1,12 @@
+## H2DE-4.1.7
+#### FIXED
+- timeline memory leak
+- timeline easing not working
+- buttons not working
+
 ## H2DE-4.1.6
 #### ADDED
+- border surface
 - border thickness
 - chronos
 - constexpr noexcept min, max and clamp
@@ -8,10 +15,6 @@
 - button events parameters
 - timelines now gives a pointer to a timeline instead of a timeline ID (same for delays)
 - timer object based on chronos
-
-## H2DE-4.1.6-b1
-#### ADDED
-- border surface
 
 ## H2DE-4.1.5
 #### FIXED
