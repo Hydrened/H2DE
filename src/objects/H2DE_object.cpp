@@ -134,6 +134,7 @@ void H2DE_Object::addHitbox(const std::string& name, const H2DE_Hitbox& hitbox) 
     hitboxes[name].transform.defaultPivot = hitbox.transform.pivot;
     
     refreshMaxRadius();
+    rescaleHitboxes();
 }
 
 bool H2DE_Object::removeHitbox(const std::string& name) {
@@ -161,6 +162,10 @@ void H2DE_Object::rescaleSurfaceBuffers() noexcept {
 }
 
 void H2DE_Object::rescaleHitboxes() noexcept {
+    if (isGrid) {
+        return;
+    }
+
     const float absoluteObjectScaleX = H2DE::abs(objectData.transform.scale.x);
     const float absoluteObjectScaleY = H2DE::abs(objectData.transform.scale.y);
     const H2DE_Scale absoluteObjectScale = { absoluteObjectScaleX, absoluteObjectScaleY };

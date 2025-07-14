@@ -233,7 +233,7 @@ void H2DE_Renderer::renderTextureRenderTexture(const H2DE_Object* object, H2DE_S
 
 // -- -- colors
 void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface) const {
-    renderPixelRectangle(object, getCorners(object, surface), surface->getColor(), false);
+    renderPixelRectangle(object, getCorners(object, surface), surface->getColor(), true);
 }
 
 // -- -- border

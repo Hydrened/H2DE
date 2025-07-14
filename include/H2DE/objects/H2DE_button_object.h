@@ -101,17 +101,6 @@ public:
     void mouseBlur();
 
     /**
-     * @brief Stop the button's timeline animation.
-     * 
-     * This function stops the currently running timeline associated with the button.
-     * The timeline ID is provided in the button events to allow animation control
-     * when interacting with the button (e.g. press, hover).
-     * 
-     * @return true if the timeline was successfully stopped, false otherwise.
-     */
-    bool stopTimeline();
-
-    /**
      * @brief Get the data specific to the button object.
      * 
      * Returns a copy of the internal `H2DE_ButtonObjectData` structure
@@ -247,9 +236,9 @@ private:
 
     H2DE_TextObject* textObject = nullptr;
     std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
+    H2DE_ButtonEventData eventData;
 
     bool disabled = false;
-    H2DE_Timeline* currentTimeline = nullptr;
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     ~H2DE_ButtonObject() override;

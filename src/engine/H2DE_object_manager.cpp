@@ -40,7 +40,7 @@ void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
             if (buttonRect.collides(mousePos)) {
 
                 if (button->buttonObjectData.onMouseDown) {
-                    button->buttonObjectData.onMouseDown({ button, button->currentTimeline });
+                    button->buttonObjectData.onMouseDown(button->eventData);
                 }
                 
                 mouseDown = button;
@@ -68,7 +68,7 @@ void H2DE_ObjectManager::handleMouseUpEvents(SDL_Event event) {
         const H2DE_LevelRect buttonRect = G::getHitboxRect(mouseDown, hitbox);
 
         if (buttonRect.collides(mousePos)) {
-            mouseDown->buttonObjectData.onMouseUp({ mouseDown, mouseDown->currentTimeline });
+            mouseDown->buttonObjectData.onMouseUp(mouseDown->eventData);
             mouseDown = nullptr;
             return;
         }
@@ -109,13 +109,13 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
 
             if (hovered != nullptr) {
                 if (hovered->buttonObjectData.onBlur) {
-                    hovered->buttonObjectData.onBlur({ hovered, hovered->currentTimeline });
+                    hovered->buttonObjectData.onBlur(hovered->eventData);
                 }
             }
 
             hovered = button;
             if (button->buttonObjectData.onHover) {
-                button->buttonObjectData.onHover({ button, button->currentTimeline });
+                button->buttonObjectData.onHover(button->eventData);
             }
 
             return;
@@ -149,7 +149,7 @@ void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
 
     if (!stillHovering) {
         if (hovered->buttonObjectData.onBlur) {
-            hovered->buttonObjectData.onBlur({ hovered, hovered->currentTimeline });
+            hovered->buttonObjectData.onBlur(hovered->eventData);
         }
 
         hovered = nullptr;

@@ -2,14 +2,16 @@
 #undef max
 
 // INIT
-H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod) : H2DE_Object(e, od), buttonObjectData(bod) {
+H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod) : H2DE_Object(e, od), buttonObjectData(bod), eventData({ this, nullptr }) {
     refreshSurfaceBuffers();
     refreshMaxRadius();
 }
 
 // CLEANUP
 H2DE_ButtonObject::~H2DE_ButtonObject() {
-    stopTimeline();
+    if (eventData.timeline != nullptr) {
+        eventData.timeline->stop(false);
+    }
 
     if (textObject != nullptr) {
         if (engine->destroyObject(textObject)) {
@@ -18,15 +20,6 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
     }
 
     H2DE_Object::destroySurfaces(surfaces);
-}
-
-bool H2DE_ButtonObject::stopTimeline() {
-    if (currentTimeline != nullptr) {
-        currentTimeline->stop(false);
-        return true;
-    }
-
-    return false;
 }
 
 // ACTIONS
@@ -70,24 +63,24 @@ void H2DE_ButtonObject::refreshMaxRadius() {
 
 void H2DE_ButtonObject::mouseDown() {
     if (buttonObjectData.onMouseDown && !disabled) {
-        buttonObjectData.onMouseDown({ this, currentTimeline });
+        buttonObjectData.onMouseDown(eventData);
     }
 }
 
 void H2DE_ButtonObject::mouseUp() {
     if (buttonObjectData.onMouseUp && !disabled) {
-        buttonObjectData.onMouseUp({ this, currentTimeline });
+        buttonObjectData.onMouseUp(eventData);
     }
 }
 
 void H2DE_ButtonObject::mouseHover() {
     if (buttonObjectData.onHover && !disabled) {
-        buttonObjectData.onHover({ this, currentTimeline });
+        buttonObjectData.onHover(eventData);
     }
 }
 
 void H2DE_ButtonObject::mouseBlur() {
     if (buttonObjectData.onBlur && !disabled) {
-        buttonObjectData.onBlur({ this, currentTimeline });
+        buttonObjectData.onBlur(eventData);
     }
 }

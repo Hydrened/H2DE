@@ -1,3 +1,7 @@
+## H2DE-4.1.8
+#### FIXED
+- objects hitboxes default scale 
+
 ## H2DE-4.1.7
 #### FIXED
 - timeline memory leak

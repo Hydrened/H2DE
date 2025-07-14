@@ -14,7 +14,7 @@ private:
     H2DE_TimelineManager(H2DE_Engine* engine);
     ~H2DE_TimelineManager();
 
-    void destroyTimeline(H2DE_Timeline* timeline, bool callCompleted);
+    std::vector<H2DE_Timeline*>::iterator destroyTimeline(H2DE_Timeline* timeline, bool callCompleted);
 
     void update();
 

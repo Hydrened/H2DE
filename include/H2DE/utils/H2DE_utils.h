@@ -583,7 +583,7 @@ struct H2DE_Vector2D {
      * @return H2DE_Rect representing the rectangle.
      */
     constexpr H2DE_Rect<H2DE_Vector2D_T> makeRect(const H2DE_Vector2D<H2DE_Vector2D_T>& scale) const noexcept {
-        return H2DE_Rect<H2DE_Vector2D_T>{ x, y, scale.x, scale.y };   
+        return H2DE_Rect<H2DE_Vector2D_T>{ x, y, scale.x, scale.y };
     }
     /**
      * @brief Create a rectangle at this vector's position with zero size.
@@ -1706,10 +1706,10 @@ struct H2DE_BarObjectData {
  */
 struct H2DE_ButtonObjectData {
     H2DE_Text text = H2DE_Text();                                       /**< Text displayed on the button. */
-    std::function<void(H2DE_ButtonEventData)> onMouseDown = nullptr;    /**< Callback triggered when the button is pressed down. */
-    std::function<void(H2DE_ButtonEventData)> onMouseUp = nullptr;      /**< Callback triggered when the button is released. */
-    std::function<void(H2DE_ButtonEventData)> onHover = nullptr;        /**< Callback triggered when the mouse hovers over the button. */
-    std::function<void(H2DE_ButtonEventData)> onBlur = nullptr;         /**< Callback triggered when the mouse stops hovering the button. */
+    std::function<void(H2DE_ButtonEventData&)> onMouseDown = nullptr;   /**< Callback triggered when the button is pressed down. */
+    std::function<void(H2DE_ButtonEventData&)> onMouseUp = nullptr;     /**< Callback triggered when the button is released. */
+    std::function<void(H2DE_ButtonEventData&)> onHover = nullptr;       /**< Callback triggered when the mouse hovers over the button. */
+    std::function<void(H2DE_ButtonEventData&)> onBlur = nullptr;        /**< Callback triggered when the mouse stops hovering the button. */
     bool pauseSensitive = true;                                         /**< Whether the button events are sensitive to game pause state. */
 };
 

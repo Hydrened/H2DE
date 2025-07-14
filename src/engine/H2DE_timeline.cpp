@@ -53,5 +53,5 @@ void H2DE_Timeline::reset() noexcept {
 }
 
 void H2DE_Timeline::stop(bool callCompleted) noexcept {
-    manager->destroyTimeline(this, callCompleted); 
+    manager->destroyTimeline(this, callCompleted);
 }
