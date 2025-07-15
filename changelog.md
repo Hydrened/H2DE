@@ -1,3 +1,7 @@
+## H2DE-4.1.9
+#### ADDED
+- border placement
+
 ## H2DE-4.1.8
 #### FIXED
 - objects hitboxes default scale 

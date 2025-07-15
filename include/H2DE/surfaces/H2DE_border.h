@@ -39,6 +39,13 @@ public:
         return borderData.type;
     }
     /**
+     * @brief Returns the current border placement relative to the shape's edge.
+     * @return The border placement as a H2DE_BorderPlacement enum value.
+     */
+    constexpr H2DE_BorderPlacement getPlacement() const noexcept {
+        return borderData.placement;
+    }
+    /**
      * @brief Returns the current border color.
      * @return The color of the border as a H2DE_ColorRGB.
      */
@@ -66,6 +73,13 @@ public:
      */
     inline void setType(H2DE_BorderType type) noexcept {
         borderData.type = type;
+    }
+    /**
+     * @brief Sets the border placement relative to the shape's edge.
+     * @param placement New border placement to apply.
+     */
+    inline void setPlacement(H2DE_BorderPlacement placement) noexcept {
+        borderData.placement = placement;
     }
     /**
      * @brief Instantly set the modulating color.

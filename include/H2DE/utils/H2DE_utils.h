@@ -146,6 +146,20 @@ enum H2DE_BorderType {
 };
 
 /**
+ * @enum H2DE_BorderPlacement
+ * @brief Represents the placement of the border relative to the shape's outline.
+ * 
+ * - H2DE_BORDER_PLACEMENT_CENTER: Border is centered on the shape's edge (half inside, half outside).
+ * - H2DE_BORDER_PLACEMENT_INNER: Border is fully inside the shape's boundary.
+ * - H2DE_BORDER_PLACEMENT_OUTER: Border is fully outside the shape's boundary.
+ */
+enum H2DE_BorderPlacement {
+    H2DE_BORDER_PLACEMENT_CENTER,   /**< Border centered on the edge */
+    H2DE_BORDER_PLACEMENT_INNER,    /**< Border fully inside the shape */
+    H2DE_BORDER_PLACEMENT_OUTER     /**< Border fully outside the shape */
+};
+
+/**
  * @enum H2DE_ScaleMode
  * @brief Defines how textures or sprites are scaled.
  * 
@@ -1811,10 +1825,11 @@ struct H2DE_ColorData {
  * Contains data such as border type, color, thickness, and fill status.
  */
 struct H2DE_BorderData {
-    H2DE_BorderType type = H2DE_BORDER_TYPE_RECTANGLE;      /**< Shape of the border (rectangle or circle) */
-    H2DE_ColorRGB color = H2DE_ColorRGB();                  /**< Color of the border */
-    uint16_t thickness = 1;                                 /**< Thickness of the border in pixels */
-    bool filled = false;                                    /**< Whether the shape is filled (true) or just outlined (false) */
+    H2DE_BorderType type = H2DE_BORDER_TYPE_RECTANGLE;                  /**< Shape of the border (rectangle or circle) */
+    H2DE_BorderPlacement placement = H2DE_BORDER_PLACEMENT_CENTER;      /**< Placement of the border relative to the shape's edge */
+    H2DE_ColorRGB color = H2DE_ColorRGB();                              /**< Color of the border */
+    uint16_t thickness = 1;                                             /**< Thickness of the border in pixels */
+    bool filled = false;                                                /**< Whether the shape is filled (true) or just outlined (false) */
 
     /** 
      * @brief Default constructor. 
@@ -1824,11 +1839,12 @@ struct H2DE_BorderData {
     /**
      * @brief Custom constructor to initialize all fields.
      * @param type Border shape type
+     * @param placement Border placement
      * @param color Border color
      * @param thickness Border thickness in pixels
      * @param filled Whether the shape is filled or not
      */
-    constexpr H2DE_BorderData(H2DE_BorderType type, const H2DE_ColorRGB& color, uint16_t thickness, bool filled) noexcept : type(type), color(color), thickness(thickness), filled(filled) {}
+    constexpr H2DE_BorderData(H2DE_BorderType type, H2DE_BorderPlacement placement, const H2DE_ColorRGB& color, uint16_t thickness, bool filled) noexcept : type(type), placement(placement), color(color), thickness(thickness), filled(filled) {}
 };
 
 /**

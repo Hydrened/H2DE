@@ -254,7 +254,18 @@ void H2DE_Renderer::renderBorder(const H2DE_Object* object, H2DE_Surface* surfac
 void H2DE_Renderer::renderRectangle(const H2DE_Object* object, H2DE_Border* border) const {
     std::array<H2DE_PixelPos, 4> corners = getCorners(object, border);
 
-    for (int i = 0; i < border->getThickness(); i++) {
+    const uint16_t& thickness = border->getThickness();
+
+    const H2DE_BorderPlacement& placement = border->getPlacement();
+    int placementOffset = (placement == H2DE_BORDER_PLACEMENT_CENTER) ? H2DE::round(thickness * 0.5f) :
+        (placement == H2DE_BORDER_PLACEMENT_OUTER) ? thickness : 0;
+
+    corners[0] += { -placementOffset, -placementOffset };
+    corners[1] += { placementOffset, -placementOffset };
+    corners[2] += { placementOffset, placementOffset };
+    corners[3] += { -placementOffset, placementOffset };
+
+    for (int i = 0; i < thickness; i++) {
         corners[0] += { 1, 1 };
         corners[1] += { -1, 1 };
         corners[2] += { -1, -1 };
@@ -285,10 +296,16 @@ void H2DE_Renderer::renderCircle(const H2DE_Object* object, H2DE_Border* border)
 
     bool isFilled = border->isFilled();
 
-    int radiusW = halfWidth;
-    int radiusH = halfHeight;
+    const uint16_t& thickness = border->getThickness();
 
-    for (int i = 0; i < border->getThickness(); i++) {
+    const H2DE_BorderPlacement& placement = border->getPlacement();
+    int placementOffset = (placement == H2DE_BORDER_PLACEMENT_CENTER) ? H2DE::round(thickness * 0.5f) :
+        (placement == H2DE_BORDER_PLACEMENT_OUTER) ? thickness : 0;
+
+    int radiusW = halfWidth + placementOffset;
+    int radiusH = halfHeight + placementOffset;
+
+    for (int i = 0; i < thickness; i++) {
         radiusW--;
         radiusH--;
         
