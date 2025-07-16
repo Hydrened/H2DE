@@ -1,10 +1,13 @@
 #include "H2DE/engine/H2DE_error.h"
 
+#include "H2DE/utils/H2DE_utils.h"
+
 // LOG
 void H2DE_Error::log(const std::string& message, int color) {
     const std::string type = color == 1 ? "ERROR" : "Waring";
     std::string colorCode = "\033[3" + std::to_string(color) + "m";
-    std::cerr << "H2DE => " << colorCode << type << "\033[0m: " << message << std::endl;
+
+    H2DE::print("H2DE => " + colorCode + type + "\033[0m: " + message); 
 }
 
 void H2DE_Error::logWarning(const std::string& message) {

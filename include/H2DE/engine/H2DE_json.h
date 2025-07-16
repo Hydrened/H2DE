@@ -204,7 +204,7 @@ namespace H2DE_Json {
             static_cast<uint8_t>(static_cast<int>(color["r"])),
             static_cast<uint8_t>(static_cast<int>(color["g"])),
             static_cast<uint8_t>(static_cast<int>(color["b"])),
-            ((alpha) ? static_cast<uint8_t>(static_cast<int>(color["a"])) : static_cast<uint8_t>(static_cast<int>(H2DE_UINT8_MAX))),
+            ((alpha) ? static_cast<uint8_t>(static_cast<int>(color["a"])) : static_cast<uint8_t>(static_cast<int>(H2DE_OPACITY_MAX))),
         };
     }
     /**

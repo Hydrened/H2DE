@@ -1,6 +1,6 @@
 CXX = g++
 APP_NAME = H2DE
-CPP_VERSION = c++17
+CPP_VERSION = 20
 
 BIN_DIR = bin
 OBJECT_DIR = $(BIN_DIR)/objects
@@ -8,7 +8,7 @@ INCLUDE_DIR = include
 LIB_DIR = lib
 SRC_DIR = src
 
-CXX_FLAGS = -std=$(CPP_VERSION) -m64 -I$(INCLUDE_DIR) -I$(INCLUDE_DIR)/$(APP_NAME)
+CXX_FLAGS = -std=c++$(CPP_VERSION) -m64 -I$(INCLUDE_DIR) -I$(INCLUDE_DIR)/$(APP_NAME)
 SDL_FLAGS = -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_gfx
 LD_FLAGS = -L$(LIB_DIR) -lmingw32 $(SDL_FLAGS) -lbase64
 DLL_FLAG = -Wl,--out-implib,$(LIB_DIR)/$(APP_NAME).lib

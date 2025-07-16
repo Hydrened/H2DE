@@ -7,9 +7,6 @@
 #include <random>
 #include <SDL2/SDL_video.h>
 
-#undef max
-#undef min
-
 class H2DE_Object;
 class H2DE_ButtonObject;
 class H2DE_Surface;
@@ -19,16 +16,15 @@ template<typename H2DE_Rect_T>
 struct H2DE_Rect;
 struct H2DE_ColorHSV;
 
-/** @brief Type alias for delay identifiers. */
-using H2DE_ChannelID = int8_t;
-
-/** @brief Type alias for delay type. */
-using H2DE_Delay = H2DE_Timeline;
-
 /** @brief Minimum value for unsigned 8-bit integer. */
 #define H2DE_UINT8_MIN 0u
 /** @brief Maximum value for unsigned 8-bit integer. */
 #define H2DE_UINT8_MAX 255u
+
+/** @brief Minimum value for opacity (fully transparent). */
+#define H2DE_OPACITY_Min H2DE_UINT8_MIN
+/** @brief Maximum value for opacity (fully opaque). */
+#define H2DE_OPACITY_MAX H2DE_UINT8_MAX
 
 /** @brief Minimum value for 32-bit signed index. */
 #define H2DE_INDEX_MIN (-2147483648)
@@ -50,6 +46,28 @@ using H2DE_Delay = H2DE_Timeline;
 
 /** @brief Constant used to represent an infinite loop in timelines or animations. */
 #define H2DE_INFINITE_LOOP 4294967295u
+
+/** @brief Type alias for delay identifiers. */
+using H2DE_ChannelID = int8_t;
+
+/**
+ * @class H2DE_Delay
+ * @brief Represents a one-shot time delay or timeout handler.
+ * 
+ * The H2DE_Delay class provides a simple mechanism for executing a callback 
+ * after a specified duration. It is useful for scheduling one-time events, 
+ * timeouts, or delayed actions without interpolation or animation.
+ * 
+ * Features include:
+ * 
+ * - Configurable delay duration.
+ * - Pause, resume, reset, and stop control.
+ * - Callback execution upon completion.
+ * 
+ * Delays are updated by the H2DE_TimelineManager and are automatically 
+ * removed once completed or manually stopped.
+ */
+using H2DE_Delay = H2DE_Timeline;
 
 /**
  * @enum H2DE_WindowRatio
@@ -272,7 +290,6 @@ namespace H2DE {
     constexpr T min(T a, T b) noexcept {
         return ((a < b) ? a : b);
     }
-
     /**
      * @brief Returns the largest of two values (constexpr).
      * 
@@ -285,7 +302,6 @@ namespace H2DE {
     constexpr T max(T a, T b) noexcept {
         return ((a > b) ? a : b);
     }
-
     /**
      * @brief Clamps a value between a minimum and a maximum (constexpr).
      * 
@@ -298,6 +314,45 @@ namespace H2DE {
     template<typename T>
     constexpr T clamp(T value, T min, T max) noexcept {
         return H2DE::min(H2DE::max(value, min), max);
+    }
+
+    /**
+     * @brief Prints a value to std::cout followed by a newline.
+     * 
+     * Generic template for any type that supports operator<<.
+     * 
+     * @tparam T Type of the value to print.
+     * @param value The value to print.
+     */
+    template<typename T>
+    inline void print(const T& value) {
+        std::cout << value << std::endl;
+    }
+    /**
+     * @brief Prints a boolean value as "true" or "false" to std::cout followed by a newline.
+     * 
+     * Specialized template for bool type.
+     * 
+     * @tparam T Must be bool.
+     * @param value Boolean value to print.
+     */
+    template<typename T>
+    requires (std::same_as<T, bool>)
+    inline void print(const T& value) {
+        std::cout << (value ? "true" : "false") << std::endl;
+    }
+    /**
+     * @brief Prints an unsigned integral value casted to long long to std::cout followed by a newline.
+     * 
+     * This avoids printing unsigned char or unsigned short as characters.
+     * 
+     * @tparam T Unsigned integral type except bool.
+     * @param value Unsigned value to print.
+     */
+    template<typename T>
+    requires (std::is_unsigned_v<T> && !std::same_as<T, bool>)
+    inline void print(const T& value) {
+        std::cout << static_cast<long long>(value) << std::endl;
     }
 
     /**
@@ -500,11 +555,8 @@ struct H2DE_Vector2D {
         return !(*this > other);
     }
 
-    /**
-     * @brief Stream output operator for easy debugging.
-     */
     friend inline std::ostream& operator<<(std::ostream& os, const H2DE_Vector2D<H2DE_Vector2D_T>& vec) {
-        os << std::string("x: ") << vec.x << ", y: " << vec.y;
+        os << "[x: " << vec.x << ", y: " << vec.y << "]";
         return os;
     }
 
@@ -814,11 +866,8 @@ struct H2DE_Rect {
         };
     }
 
-    /**
-     * @brief Stream insertion operator for debug output.
-     */
     friend inline std::ostream& operator<<(std::ostream& os, const H2DE_Rect<H2DE_Rect_T>& rect) {
-        os << std::string("x: ") << rect.x << ", y: " << rect.y << ", w: " << rect.w << ", h: " << rect.h;
+        os << "[x: " << rect.x << ", y: " << rect.y << ", w: " << rect.w << ", h: " << rect.h << "]";
         return os;
     }
 
@@ -1128,7 +1177,7 @@ struct H2DE_ColorRGB {
     uint8_t r = H2DE_UINT8_MAX;     /**< Red channel (0-255) */
     uint8_t g = H2DE_UINT8_MAX;     /**< Green channel (0-255) */
     uint8_t b = H2DE_UINT8_MAX;     /**< Blue channel (0-255) */
-    uint8_t a = H2DE_UINT8_MAX;     /**< Alpha channel (0-255), default 255 (opaque) */
+    uint8_t a = H2DE_OPACITY_MAX;   /**< Alpha channel (0-255), default 255 (opaque) */
 
     /**
      * @brief Default constructor initializes to white opaque.
@@ -1140,7 +1189,7 @@ struct H2DE_ColorRGB {
      * @param green Green channel value.
      * @param blue Blue channel value.
      */
-    constexpr H2DE_ColorRGB(uint8_t red, uint8_t green, uint8_t blue) noexcept : r(red), g(green), b(blue), a(H2DE_UINT8_MAX) {}
+    constexpr H2DE_ColorRGB(uint8_t red, uint8_t green, uint8_t blue) noexcept : r(red), g(green), b(blue), a(H2DE_OPACITY_MAX) {}
     /**
      * @brief Constructor with red, green, blue and alpha channels.
      * @param red Red channel value.
@@ -1180,11 +1229,8 @@ struct H2DE_ColorRGB {
         return !(*this == other);
     }
 
-    /**
-     * @brief Stream output operator for debug.
-     */
     friend inline std::ostream& operator<<(std::ostream& os, const H2DE_ColorRGB& color) {
-        os << std::string("r: ") << static_cast<int>(color.r) << ", g: " << static_cast<int>(color.g) << ", b: " << static_cast<int>(color.b) << ", a: " << static_cast<int>(color.a);
+        os << "[r: " << static_cast<int>(color.r) << ", g: " << static_cast<int>(color.g) << ", b: " << static_cast<int>(color.b) << ", a: " << static_cast<int>(color.a) << "]";
         return os;
     }
 
@@ -1332,11 +1378,8 @@ struct H2DE_ColorHSV {
         return !(*this == other);
     }
 
-    /**
-     * @brief Outputs HSV color values to a stream (debug/logging).
-     */
     friend inline std::ostream& operator<<(std::ostream& os, const H2DE_ColorHSV& color) {
-        os << std::string("h: ") << color.h << ", s: " << color.s << ", v: " << color.v << ", a: " << color.a;
+        os << "[h: " << color.h << ", s: " << color.s << ", v: " << color.v << ", a: " << color.a << "]";
         return os;
     }
 
@@ -1461,6 +1504,22 @@ struct H2DE_Padding {
      * @param left Left padding.
      */
     constexpr H2DE_Padding(float top, float right, float bottom, float left) noexcept : top(top), right(right), bottom(bottom), left(left) {}
+
+    /**
+     * @brief Outputs the H2DE_Padding to an output stream in a readable format.
+     * 
+     * This operator allows H2DE_Padding instances to be streamed (e.g., to std::cout)
+     * with a format like: "top: 10, right: 5, bottom: 10, left: 5".
+     *
+     * Useful for debugging or logging layout information.
+     */
+    friend inline std::ostream& operator<<(std::ostream& os, const H2DE_Padding& padding) {
+        os << "[top: " << padding.top;
+        os << ", right: " << padding.right;
+        os << ", bottom: " << padding.bottom;
+        os << ", left: " << padding.left << "]";
+        return os;
+    }
 };
 
 /**
@@ -1538,6 +1597,21 @@ public:
      * @param pivot The pivot point.
      */
     constexpr H2DE_Transform(const H2DE_Translate& translate, const H2DE_Scale& scale, float rotation, const H2DE_Pivot& pivot) noexcept : translate(translate), defaultTranslate(translate), scale(scale), defaultScale(scale), rotation(rotation), pivot(pivot), defaultPivot(pivot) {}
+
+    /**
+     * @brief Outputs the H2DE_Transform to an output stream in a readable format.
+     * 
+     * This operator allows H2DE_Transform instances to be streamed (e.g., to std::cout)
+     * 
+     * Useful for debugging transformation data such as position, scale, rotation, and pivot.
+     */
+    friend inline std::ostream& operator<<(std::ostream& os, const H2DE_Transform& transform) {
+        os << "[translate: " << transform.translate;
+        os << ", scale: " << transform.scale;
+        os << ", rotation: " << transform.rotation;
+        os << ", pivot: " << transform.pivot << "]";
+        return os;
+    }
 
 private:
     H2DE_Translate defaultTranslate = { 0.0f, 0.0f };
@@ -1641,10 +1715,10 @@ struct H2DE_Time {
      * with a format like: "h: 1, m: 30, s: 45, ms: 250".
      */
     friend inline std::ostream& operator<<(std::ostream& os, const H2DE_Time& time) {
-        os << std::string("h: ") << static_cast<int>(time.hours);
-        os << std::string(", m: ") << static_cast<int>(time.minutes);
-        os << std::string(", s: ") << static_cast<int>(time.seconds);
-        os << std::string(", ms: ") << static_cast<int>(time.milliseconds);
+        os << "[hours: " << static_cast<int>(time.hours);
+        os << ", minutes: " << static_cast<int>(time.minutes);
+        os << ", seconds: " << static_cast<int>(time.seconds);
+        os << ", milliseconds: " << static_cast<int>(time.milliseconds) << "]";
         return os;
     }
 };
@@ -1674,7 +1748,7 @@ struct H2DE_ButtonEventData {
  */
 struct H2DE_ObjectData {
     H2DE_Transform transform = H2DE_Transform();    /**< Object's transformation data (position, scale, rotation, pivot). */
-    uint8_t opacity = H2DE_UINT8_MAX;               /**< Opacity value from 0 (transparent) to 255 (fully opaque). */
+    uint8_t opacity = H2DE_OPACITY_MAX;             /**< Opacity value from 0 (transparent) to 255 (fully opaque). */
     bool absolute = false;                          /**< If true, the position is absolute; otherwise relative. */
     int index = 0;                                  /**< Object index identifier. */
 

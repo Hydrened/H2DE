@@ -1,5 +1,6 @@
 #include "H2DE/engine/H2DE_camera.h"
 #include "H2DE/engine/H2DE_lerp_manager.h"
+
 #undef min
 #undef max
 

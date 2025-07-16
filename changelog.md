@@ -1,3 +1,9 @@
+## H2DE-4.1.10
+#### ADDED
+- padding cout operator
+- transform cout operator
+- print
+
 ## H2DE-4.1.9
 #### ADDED
 - border placement

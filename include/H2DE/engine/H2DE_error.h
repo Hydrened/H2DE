@@ -1,7 +1,6 @@
 #ifndef H2DE_ERROR_H
 #define H2DE_ERROR_H
 
-#include <iostream>
 #include <string>
 
 class H2DE_Error {

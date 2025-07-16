@@ -178,7 +178,7 @@ void H2DE_Renderer::renderPixelRectangle(const H2DE_Object* object, const std::a
     };
 
     H2DE_ColorRGB surfaceColor = color;
-    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
+    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_OPACITY_MAX));
 
     if (filled) {
         filledPolygonColor(renderer, vx.data(), vy.data(), vx.size(), static_cast<Uint32>(surfaceColor));
@@ -211,7 +211,7 @@ void H2DE_Renderer::renderTextureSetProperties(const H2DE_Object* object, H2DE_S
     const SDL_ScaleMode scaleMode = R::getScaleMode(surface->surfaceData.scaleMode);
     const SDL_BlendMode blendMode = R::getBlendMode(surface->surfaceData.blendMode);
 
-    uint8_t opacity = H2DE::round((getOpacityBlend(color.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
+    uint8_t opacity = H2DE::round((getOpacityBlend(color.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_OPACITY_MAX));
 
     SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
     SDL_SetTextureAlphaMod(texture, opacity);
@@ -292,7 +292,7 @@ void H2DE_Renderer::renderCircle(const H2DE_Object* object, H2DE_Border* border)
     const H2DE_PixelPos center = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight };
 
     H2DE_ColorRGB surfaceColor = border->getColor();
-    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_UINT8_MAX));
+    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_OPACITY_MAX));
 
     bool isFilled = border->isFilled();
 

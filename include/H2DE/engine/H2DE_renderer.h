@@ -82,7 +82,7 @@ private:
     static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode) noexcept;
 
     static constexpr float getOpacityBlend(uint8_t opacity) noexcept {
-        return (static_cast<float>(opacity) / static_cast<float>(H2DE_UINT8_MAX));
+        return (static_cast<float>(opacity) / static_cast<float>(H2DE_OPACITY_MAX));
     }
 
     H2DE_SubPixelPos levelToSubPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const;

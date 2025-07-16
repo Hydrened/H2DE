@@ -48,7 +48,8 @@ void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory)
     textureBuffer.clear();
     soundBuffer.clear();
 
-    std::cout << std::endl << "H2DE => Loading complete" << std::endl;
+    std::cout << std::endl;
+    H2DE::print("H2DE => Loading complete");
 }
 
 void H2DE_AssetLoaderManager::importFile(const std::filesystem::path& file) {
