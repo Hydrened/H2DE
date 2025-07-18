@@ -31,7 +31,13 @@ void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
     const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
 
+    H2DE_MouseButton mouseButton = H2DE_ObjectManager::getH2DEButton(event.button.button);
+
     for (H2DE_ButtonObject* button : getValidButtons()) {
+        if (!(mouseButton & button->getMouseButton())) {
+            continue;
+        }
+
         const H2DE_Translate mousePos = (button->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 
         for (const auto& [name, hitbox] : button->hitboxes) {
@@ -56,6 +62,12 @@ void H2DE_ObjectManager::handleMouseUpEvents(SDL_Event event) {
     }
 
     if (!mouseDown->buttonObjectData.onMouseUp || mouseDown->disabled) {
+        return;
+    }
+
+    H2DE_MouseButton mouseButton = H2DE_ObjectManager::getH2DEButton(event.button.button);
+
+    if (!(mouseButton & mouseDown->getMouseButton())) {
         return;
     }
 
@@ -204,4 +216,13 @@ const std::vector<H2DE_ButtonObject*> H2DE_ObjectManager::getValidButtons() cons
     } 
 
     return res;
+}
+
+H2DE_MouseButton H2DE_ObjectManager::getH2DEButton(Uint8 sdlButton) {
+    switch (sdlButton) {
+        case SDL_BUTTON_LEFT: return H2DE_MOUSE_BUTTON_LEFT;
+        case SDL_BUTTON_RIGHT: return H2DE_MOUSE_BUTTON_RIGHT;
+        case SDL_BUTTON_MIDDLE: return H2DE_MOUSE_BUTTON_MIDDLE;
+        default: return H2DE_MOUSE_BUTTON_LEFT;
+    }
 }

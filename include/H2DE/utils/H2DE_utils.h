@@ -1,6 +1,9 @@
 #ifndef H2DE_UTILS_H
 #define H2DE_UTILS_H
 
+#undef min
+#undef max
+
 #include <functional>
 #include <iostream>
 #include <optional>
@@ -22,7 +25,7 @@ struct H2DE_ColorHSV;
 #define H2DE_UINT8_MAX 255u
 
 /** @brief Minimum value for opacity (fully transparent). */
-#define H2DE_OPACITY_Min H2DE_UINT8_MIN
+#define H2DE_OPACITY_MIN H2DE_UINT8_MIN
 /** @brief Maximum value for opacity (fully opaque). */
 #define H2DE_OPACITY_MAX H2DE_UINT8_MAX
 
@@ -174,7 +177,29 @@ enum H2DE_BorderType {
 enum H2DE_BorderPlacement {
     H2DE_BORDER_PLACEMENT_CENTER,   /**< Border centered on the edge */
     H2DE_BORDER_PLACEMENT_INNER,    /**< Border fully inside the shape */
-    H2DE_BORDER_PLACEMENT_OUTER     /**< Border fully outside the shape */
+    H2DE_BORDER_PLACEMENT_OUTER,    /**< Border fully outside the shape */
+};
+
+/**
+ * @enum H2DE_MouseButton
+ * @brief Represents mouse buttons that can be used to trigger interactions.
+ * 
+ * This enum allows you to specify which mouse button(s) should be detected
+ * for an interaction.
+ * You can combine multiple values using bitwise OR to allow several buttons.
+ * 
+ * - H2DE_MOUSE_BUTTON_LEFT: Left mouse button.
+ * - H2DE_MOUSE_BUTTON_RIGHT: Right mouse button.
+ * - H2DE_MOUSE_BUTTON_MIDDLE: Middle mouse button (usually the scroll wheel).
+ * - H2DE_MOUSE_BUTTON_LEFT_AND_RIGHT: Both left and right buttons.
+ * - H2DE_MOUSE_BUTTON_ALL: All mouse buttons (left, right, and middle).
+ */
+enum H2DE_MouseButton {
+    H2DE_MOUSE_BUTTON_LEFT              = 0b0001,   /**< Left mouse button */
+    H2DE_MOUSE_BUTTON_RIGHT             = 0b0010,   /**< Right mouse button */
+    H2DE_MOUSE_BUTTON_MIDDLE            = 0b0100,   /**< Middle mouse button (scroll wheel) */
+    H2DE_MOUSE_BUTTON_LEFT_AND_RIGHT    = 0b0011,   /**< Both left and right buttons */
+    H2DE_MOUSE_BUTTON_ALL               = 0b0111,   /**< All mouse buttons */
 };
 
 /**
@@ -1794,6 +1819,7 @@ struct H2DE_BarObjectData {
  */
 struct H2DE_ButtonObjectData {
     H2DE_Text text = H2DE_Text();                                       /**< Text displayed on the button. */
+    H2DE_MouseButton mouseButton = H2DE_MOUSE_BUTTON_LEFT;              /**< Mouse button(s) that trigger interactions on the button. */
     std::function<void(H2DE_ButtonEventData&)> onMouseDown = nullptr;   /**< Callback triggered when the button is pressed down. */
     std::function<void(H2DE_ButtonEventData&)> onMouseUp = nullptr;     /**< Callback triggered when the button is released. */
     std::function<void(H2DE_ButtonEventData&)> onHover = nullptr;       /**< Callback triggered when the mouse hovers over the button. */

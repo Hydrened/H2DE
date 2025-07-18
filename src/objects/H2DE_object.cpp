@@ -42,6 +42,7 @@ void H2DE_Object::stopTimelines() {
             timeline->stop(false);
         }
     }
+    
     timelinesBuffer.clear();
 }
 

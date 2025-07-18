@@ -112,6 +112,17 @@ public:
         return buttonObjectData;
     }
     /**
+     * @brief Get the mouse button(s) configured to trigger this button.
+     * 
+     * Returns the `H2DE_MouseButton` value that defines which mouse button(s)
+     * can interact with this button (e.g., LEFT, RIGHT, MIDDLE, or combinations).
+     * 
+     * @return The configured mouse button(s) for this button.
+     */
+    constexpr H2DE_MouseButton getMouseButton() const {
+        return buttonObjectData.mouseButton;
+    }
+    /**
      * @brief Check if the button is sensitive to the game's pause state.
      * 
      * Returns true if the button reacts differently (or is disabled) when the game is paused,
@@ -175,6 +186,17 @@ public:
         return textObject; 
     }
 
+    /**
+     * @brief Set the mouse button(s) that can trigger this button.
+     * 
+     * Allows you to define which mouse button(s) should be detected
+     * for interaction with this button (e.g., LEFT, RIGHT, MIDDLE, or combined).
+     * 
+     * @param mouseButton The mouse button(s) to use for triggering the button.
+     */
+    inline void setMouseButton(H2DE_MouseButton mouseButton) noexcept {
+        buttonObjectData.mouseButton = mouseButton;
+    }
     /**
      * @brief Set the callback function triggered when the button is pressed down.
      * 

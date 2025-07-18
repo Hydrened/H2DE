@@ -21,6 +21,7 @@ void H2DE_TimelineManager::update() {
 
         if (!timeline->update()) {
             it = destroyTimeline(timeline, false);
+            
         } else {
             ++it;
         }
@@ -39,7 +40,7 @@ std::vector<H2DE_Timeline*>::iterator H2DE_TimelineManager::destroyTimeline(H2DE
     auto it = std::find(timelines.begin(), timelines.end(), timeline);
 
     if (it == timelines.end()) {
-        H2DE_Error::throwError("Can't delete timeline: Timeline not found");
+        return timelines.end();
     }
 
     H2DE_Timeline* t = *it;
@@ -60,6 +61,10 @@ std::vector<H2DE_Timeline*>::iterator H2DE_TimelineManager::destroyTimeline(H2DE
 
 // GETTER
 bool H2DE_TimelineManager::isStoped(H2DE_Timeline* timeline) const {
+    if (timeline == nullptr) {
+        return true;
+    }
+
     const auto it = std::find(timelines.begin(), timelines.end(), timeline);
     return (it == timelines.end());
 }

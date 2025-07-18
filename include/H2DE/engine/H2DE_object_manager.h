@@ -25,6 +25,7 @@ private:
     void refreshButtonBuffer(const std::vector<H2DE_Object*>& objects);
 
     const std::vector<H2DE_ButtonObject*> getValidButtons() const;
+    static H2DE_MouseButton getH2DEButton(Uint8 sdlButton);
 
     friend class H2DE_Engine;
 };

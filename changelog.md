@@ -1,3 +1,9 @@
+## H2DE-4.1.11
+#### ADDED
+- mouse button specification
+#### FIXED
+- destroying object when ending a object lerp effect crash 
+
 ## H2DE-4.1.10
 #### ADDED
 - padding cout operator
