@@ -1,3 +1,10 @@
+## H2DE-4.1.12
+#### ADDED
+- json file exists
+- convert value to json
+#### MODIFIED
+- lerp functions completed call is now nullptr by default
+
 ## H2DE-4.1.11
 #### ADDED
 - mouse button specification

@@ -234,7 +234,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Timeline controlling this animation.
      */
-    H2DE_Timeline* setMin(float min, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setMin(float min, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the maximum value of the bar.
      * 
@@ -247,7 +247,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Timeline controlling this animation.
      */
-    H2DE_Timeline* setMax(float max, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setMax(float max, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the current value of the bar.
      * 
@@ -260,7 +260,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Timeline controlling this animation.
      */
-    H2DE_Timeline* setValue(float value, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setValue(float value, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
     using H2DE_DataType = H2DE_BarObjectData;
 

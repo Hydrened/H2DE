@@ -84,6 +84,19 @@ namespace H2DE_Json {
     bool write(const std::filesystem::path& path, const json& data, bool encode);
 
     /**
+     * @brief Check if a file exists at the given path.
+     * 
+     * Verifies whether a file or directory exists at the specified `path`.
+     * Uses the filesystem API to perform the check.
+     * 
+     * @param path The path to check for existence.
+     * @return true if the file or directory exists, false otherwise.
+     */
+    inline bool exists(const std::filesystem::path& path) {
+        return std::filesystem::exists(path);
+    }
+
+    /**
      * @brief Extract an integer from a JSON value.
      * 
      * Converts the JSON value to an int.
@@ -224,6 +237,100 @@ namespace H2DE_Json {
             static_cast<float>(color["v"]),
             ((alpha) ? static_cast<float>(color["a"]) : 1.0f),
         };
+    }
+
+    /**
+     * @brief Convert a value to a JSON object.
+     * 
+     * Generic fallback for types that are already JSON-compatible.
+     * 
+     * @tparam T The type of the value to convert.
+     * @param v The value to convert.
+     * @return JSON object representing the value.
+     */
+    template<typename T>
+    inline json toJson(const T& v) {
+        return v;
+    }
+
+    /**
+     * @brief Convert a 2D vector to a JSON object.
+     * 
+     * Serializes a vector of type H2DE_Vector2D<T> into a JSON object
+     * with "x" and "y" fields.
+     * 
+     * @tparam H2DE_Vector2D_T The type of the vector components.
+     * @param vector The vector to convert.
+     * @return JSON object with "x" and "y" fields.
+     */
+    template<typename H2DE_Vector2D_T>
+    inline json toJson(const H2DE_Vector2D<H2DE_Vector2D_T>& vector) {
+        return { { "x", vector.x }, { "y", vector.y } };
+    }
+
+    /**
+     * @brief Convert a rectangle to a JSON object.
+     * 
+     * Serializes a rectangle of type H2DE_Rect<T> into a JSON object
+     * with "x", "y", "w", and "h" fields.
+     * 
+     * @tparam H2DE_Rect_T The type of the rectangle components.
+     * @param rect The rectangle to convert.
+     * @return JSON object with "x", "y", "w", and "h" fields.
+     */
+    template<typename H2DE_Rect_T>
+    inline json toJson(const H2DE_Rect<H2DE_Rect_T>& rect) {
+        return { { "x", rect.x }, { "y", rect.y }, { "w", rect.w }, { "h", rect.h } };
+    }
+
+    /**
+     * @brief Convert an RGB color to a JSON object.
+     * 
+     * Serializes a H2DE_ColorRGB struct into a JSON object.
+     * If `alpha` is true, includes the "a" field.
+     * 
+     * @param rgb The RGB color to convert.
+     * @param alpha Whether to include the alpha component.
+     * @return JSON object with "r", "g", "b", and optionally "a".
+     */
+    inline json toJson(const H2DE_ColorRGB& rgb, bool alpha) {
+        return alpha
+            ? json{
+                { "r", rgb.r },
+                { "g", rgb.g },
+                { "b", rgb.b },
+                { "a", rgb.a }
+            }
+            : json {
+                { "r", rgb.r },
+                { "g", rgb.g },
+                { "b", rgb.b }
+            };
+    }
+
+    /**
+     * @brief Convert an HSV color to a JSON object.
+     * 
+     * Serializes a H2DE_ColorHSV struct into a JSON object.
+     * If `alpha` is true, includes the "a" field.
+     * 
+     * @param hsv The HSV color to convert.
+     * @param alpha Whether to include the alpha component.
+     * @return JSON object with "h", "s", "v", and optionally "a".
+     */
+    inline json toJson(const H2DE_ColorHSV& hsv, bool alpha) {
+        return alpha
+            ? json{
+                { "h", hsv.h },
+                { "s", hsv.s },
+                { "v", hsv.v },
+                { "a", hsv.a }
+            }
+            : json {
+                { "h", hsv.h },
+                { "s", hsv.s },
+                { "v", hsv.v }
+            };
     }
 };
 

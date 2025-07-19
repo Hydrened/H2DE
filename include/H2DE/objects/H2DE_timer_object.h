@@ -285,7 +285,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Ttimeline controlling this animation.
      */
-    H2DE_Timeline* setTime(const H2DE_Time& time, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setTime(const H2DE_Time& time, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the hours change over a duration.
      * 
@@ -298,7 +298,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Ttimeline controlling this animation.
      */
-    H2DE_Timeline* setHours(uint8_t hours, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setHours(uint8_t hours, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the minutes change over a duration.
      * 
@@ -311,7 +311,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Ttimeline controlling this animation.
      */
-    H2DE_Timeline* setMinutes(uint8_t minutes, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setMinutes(uint8_t minutes, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the seconds change over a duration.
      * 
@@ -324,7 +324,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Ttimeline controlling this animation.
      */
-    H2DE_Timeline* setSeconds(uint8_t seconds, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setSeconds(uint8_t seconds, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the milliseconds change over a duration.
      * 
@@ -337,7 +337,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Ttimeline controlling this animation.
      */
-    H2DE_Timeline* setMilliseconds(uint16_t milliseconds, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive = true);
+    H2DE_Timeline* setMilliseconds(uint16_t milliseconds, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
     using H2DE_DataType = H2DE_TimerObjectData;
     
