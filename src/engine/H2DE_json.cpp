@@ -1,4 +1,6 @@
 #include "H2DE/engine/H2DE_json.h"
+
+#include "H2DE/engine/H2DE_codec.h"
 #include "H2DE/engine/H2DE_error.h"
 
 // CREATE
@@ -32,8 +34,7 @@ json H2DE_Json::read(const std::filesystem::path& path) {
         return json{};
     }
 
-    std::string fileContent;
-    file >> fileContent;
+    std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
 
     try {
@@ -42,7 +43,7 @@ json H2DE_Json::read(const std::filesystem::path& path) {
         try {
             data = json::parse(fileContent);
         } catch (const std::exception& encodeError) {
-            data = json::parse(base64_decode(fileContent));
+            data = json::parse(H2DE_Codec::decode(fileContent));
         }
 
         if (data.is_discarded()) {
@@ -67,7 +68,8 @@ bool H2DE_Json::write(const std::filesystem::path& path, const json& data, bool 
     }
 
     if (encode) {
-        file << base64_encode(data.dump());
+        file << H2DE_Codec::encode(data.dump());
+
     } else {
         file << data;
     }

@@ -1,3 +1,7 @@
+## H2DE-4.1.13
+#### ADDED
+- encode / decode with custom key for json encoding / decoding
+
 ## H2DE-4.1.12
 #### ADDED
 - json file exists

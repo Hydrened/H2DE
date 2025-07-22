@@ -15,7 +15,6 @@
 
 #include <H2DE/utils/H2DE_utils.h>
 #include <nlohmann/json.hpp>
-#include <base64/base64.h>
 #include <fstream>
 #include <iostream>
 
