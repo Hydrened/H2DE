@@ -1,4 +1,6 @@
 #include "H2DE/engine/H2DE_engine.h"
+
+#include <windows.h>
 #include "H2DE/engine/H2DE_error.h"
 
 // INIT

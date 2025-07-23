@@ -1,10 +1,6 @@
 #include "H2DE/surfaces/H2DE_border.h"
+
 #include "H2DE/engine/H2DE_lerp_manager.h"
-
-// INIT
-H2DE_Border::H2DE_Border(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceData& sd, const H2DE_BorderData& bd) noexcept : H2DE_Surface(e, o, sd), borderData(bd) {
-
-}
 
 // SETTER
 H2DE_Timeline* H2DE_Border::setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {

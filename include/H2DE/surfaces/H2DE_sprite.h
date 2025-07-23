@@ -16,6 +16,8 @@
 
 #include <H2DE/surfaces/H2DE_surface.h>
 
+using H2DE_Delay = H2DE_Timeline;
+
 /**
  * @class H2DE_Sprite
  * @brief Represents an animated sprite surface with frame control in the H2DE engine.
@@ -172,7 +174,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Ttimeline controlling this animation.
      */
-    H2DE_Timeline* setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
     using H2DE_DataType = H2DE_SpriteData;
 

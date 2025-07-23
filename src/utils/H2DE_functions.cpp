@@ -21,7 +21,7 @@ bool H2DE::randomBool() {
     return (dist(e) == 0);
 }
 
-float H2DE::lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EASING_LINEAR) {
+float H2DE::lerp(float min, float max, float blend, H2DE_Easing easing) {
     constexpr float PI = 3.14159265359f;
 
     blend = H2DE::clamp(blend, 0.0f, 1.0f);

@@ -18,7 +18,7 @@ private:
     uint32_t loadedAssets = 0;
     uint32_t assetsToLoad = 0;
 
-    H2DE_AssetLoaderManager(H2DE_Engine* engine, SDL_Renderer* renderer) noexcept;
+    H2DE_AssetLoaderManager(H2DE_Engine* engine, SDL_Renderer* renderer) noexcept : engine(engine), renderer(renderer) {};
     ~H2DE_AssetLoaderManager() noexcept = default;
 
     void importFile(const std::filesystem::path& file);

@@ -273,7 +273,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Timeline controlling this animation.
      */
-    H2DE_Timeline* setTranslate(const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setTranslate(const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the scale of the object over time.
      * 
@@ -286,7 +286,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Timeline controlling this animation.
      */
-    H2DE_Timeline* setScale(const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setScale(const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the rotation angle of the object over time.
      * 
@@ -299,7 +299,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Timeline controlling this animation.
      */
-    H2DE_Timeline* setRotation(float rotation, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setRotation(float rotation, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the opacity (alpha) of the object over time.
      * 
@@ -312,7 +312,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Timeline controlling this animation.
      */
-    H2DE_Timeline* setOpacity(uint8_t opacity, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setOpacity(uint8_t opacity, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
     /**
      * @brief Set the translation (position) of a named hitbox instantly.
@@ -379,7 +379,7 @@ public:
      * @param pauseSensitive If true, pauses animation on game pause.
      * @return Timeline ID for animation control.
      */
-    H2DE_Timeline* setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the scale of a named hitbox.
      * 
@@ -393,7 +393,7 @@ public:
      * @param pauseSensitive Pause-aware flag.
      * @return Timeline ID.
      */
-    H2DE_Timeline* setHitboxScale(const std::string& name, const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setHitboxScale(const std::string& name, const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the rotation of a named hitbox.
      * 
@@ -407,7 +407,7 @@ public:
      * @param pauseSensitive Pause-sensitive toggle.
      * @return Timeline ID.
      */
-    H2DE_Timeline* setHitboxRotation(const std::string& name, float rotation, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setHitboxRotation(const std::string& name, float rotation, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the color change of a named hitbox.
      * 
@@ -421,7 +421,7 @@ public:
      * @param pauseSensitive If true, pauses with game.
      * @return Timeline ID.
      */
-    H2DE_Timeline* setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
     friend class H2DE_Engine;
     friend class H2DE_Renderer;
@@ -441,7 +441,7 @@ protected:
     std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
     float maxRadius;
 
-    H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData) noexcept;
+    H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData) noexcept : engine(engine), objectData(objectData) {};
     virtual ~H2DE_Object();
 
     static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);

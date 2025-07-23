@@ -1,6 +1,6 @@
 #include "H2DE/objects/H2DE_bar_object.h"
+
 #include "H2DE/engine/H2DE_lerp_manager.h"
-#undef max
 
 // INIT
 H2DE_BarObject::H2DE_BarObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_BarObjectData& bod) : H2DE_Object(e, od), barObjectData(bod) {
@@ -31,7 +31,7 @@ void H2DE_BarObject::refreshMaxRadius() {
     float maxFrontSurfaceRadius = getMaxSurfaceRadius(frontSurfaces);
     float maxBackgroundSurfaceRadius = getMaxSurfaceRadius(backgroundSurfaces);
 
-    maxRadius = std::max({maxHitboxesRadius, maxFrontSurfaceRadius, maxBackgroundSurfaceRadius});
+    maxRadius = H2DE::max(maxHitboxesRadius, maxFrontSurfaceRadius, maxBackgroundSurfaceRadius);
 }
 
 // SETTER

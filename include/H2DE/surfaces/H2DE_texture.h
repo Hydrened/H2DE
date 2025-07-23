@@ -95,7 +95,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Ttimeline controlling this animation.
      */
-    H2DE_Timeline* setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
     using H2DE_DataType = H2DE_TextureData;
     
@@ -105,7 +105,7 @@ public:
 private:
     H2DE_TextureData textureData;
 
-    H2DE_Texture(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) noexcept;
+    H2DE_Texture(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) noexcept : H2DE_Surface(engine, object, surfaceData), textureData(textureData) {};
     ~H2DE_Texture() override = default;
 
     inline bool isVisible() const noexcept override {

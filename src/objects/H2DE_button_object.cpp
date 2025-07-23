@@ -1,5 +1,4 @@
 #include "H2DE/objects/H2DE_button_object.h"
-#undef max
 
 // INIT
 H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod) : H2DE_Object(e, od), buttonObjectData(bod), eventData({ this, nullptr }) {

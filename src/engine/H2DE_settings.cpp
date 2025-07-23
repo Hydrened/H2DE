@@ -1,4 +1,5 @@
 #include "H2DE/engine/H2DE_settings.h"
+
 #include "H2DE/engine/H2DE_error.h"
 
 // INIT

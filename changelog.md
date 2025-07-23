@@ -1,3 +1,10 @@
+## H2DE-4.1.14
+#### ADDED
+- min and max with more than 2 parameters
+#### MODIFIED
+- lerp functions easing is now H2DE_EASING_LINEAR by default
+- reorganized utils header
+
 ## H2DE-4.1.13
 #### ADDED
 - encode / decode with custom key for json encoding / decoding

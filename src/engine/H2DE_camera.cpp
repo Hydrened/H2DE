@@ -1,8 +1,6 @@
 #include "H2DE/engine/H2DE_camera.h"
-#include "H2DE/engine/H2DE_lerp_manager.h"
 
-#undef min
-#undef max
+#include "H2DE/engine/H2DE_lerp_manager.h"
 
 // INIT
 H2DE_Camera::H2DE_Camera(H2DE_Engine* e, const H2DE_CameraData& d) : engine(e), data(d) {

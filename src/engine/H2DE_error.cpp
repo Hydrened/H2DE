@@ -4,7 +4,7 @@
 
 // LOG
 void H2DE_Error::log(const std::string& message, int color) {
-    const std::string type = color == 1 ? "ERROR" : "Waring";
+    const std::string type = color == 1 ? "ERROR" : "Warning";
     std::string colorCode = "\033[3" + std::to_string(color) + "m";
 
     H2DE::print("H2DE => " + colorCode + type + "\033[0m: " + message); 

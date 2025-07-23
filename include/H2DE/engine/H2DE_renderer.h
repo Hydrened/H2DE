@@ -3,6 +3,7 @@
 
 #include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
+class H2DE_Surface;
 class H2DE_Border;
 
 class H2DE_Renderer {

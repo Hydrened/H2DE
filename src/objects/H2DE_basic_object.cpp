@@ -1,5 +1,4 @@
 #include "H2DE/objects/H2DE_basic_object.h"
-#undef max
 
 // INIT
 H2DE_BasicObject::H2DE_BasicObject(H2DE_Engine* e, const H2DE_ObjectData& od) : H2DE_Object(e, od) {

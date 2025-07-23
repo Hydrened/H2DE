@@ -1,11 +1,28 @@
 #ifndef H2DE_TIMELINE_MANAGER_H
 #define H2DE_TIMELINE_MANAGER_H
 
-#undef max
-
 #include <H2DE/engine/H2DE_engine.h>
 #include <H2DE/engine/H2DE_timeline.h>
 class H2DE_Engine;
+
+/**
+ * @class H2DE_Delay
+ * @brief Represents a one-shot time delay or timeout handler.
+ * 
+ * The H2DE_Delay class provides a simple mechanism for executing a callback 
+ * after a specified duration. It is useful for scheduling one-time events, 
+ * timeouts, or delayed actions without interpolation or animation.
+ * 
+ * Features include:
+ * 
+ * - Configurable delay duration.
+ * - Pause, resume, reset, and stop control.
+ * - Callback execution upon completion.
+ * 
+ * Delays are updated by the H2DE_TimelineManager and are automatically 
+ * removed once completed or manually stopped.
+ */
+using H2DE_Delay = H2DE_Timeline;
 
 class H2DE_TimelineManager {
 private:

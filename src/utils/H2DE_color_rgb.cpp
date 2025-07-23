@@ -8,8 +8,8 @@ H2DE_ColorRGB::operator H2DE_ColorHSV() const {
     float g_f = g / 255.0f;
     float b_f = b / 255.0f;
 
-    float max = std::max({r_f, g_f, b_f});
-    float min = std::min({r_f, g_f, b_f});
+    float max = H2DE::max(r_f, g_f, b_f);
+    float min = H2DE::min(r_f, g_f, b_f);
     float delta = max - min;
 
     hsv.v = max;

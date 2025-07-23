@@ -19,7 +19,7 @@ OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJECT_DIR)/%.o, $(SRC))
 
 all:
 	make init
-	make engine -j14
+	make engine -j16
 	make tr
 
 init:

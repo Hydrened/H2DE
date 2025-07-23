@@ -114,7 +114,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Ttimeline controlling this animation.
      */
-    H2DE_Timeline* setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     
     /**
      * @brief Animate the modulating thickness over time with easing and completion callback.
@@ -126,7 +126,7 @@ public:
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Ttimeline controlling this animation.
      */
-    H2DE_Timeline* setThickness(uint16_t thickness, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setThickness(uint16_t thickness, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
     using H2DE_DataType = H2DE_BorderData;
     
@@ -135,7 +135,7 @@ public:
 private:
     H2DE_BorderData borderData;
 
-    H2DE_Border(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_BorderData& borderData) noexcept;
+    H2DE_Border(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_BorderData& borderData) noexcept : H2DE_Surface(engine, object, surfaceData), borderData(borderData) {};
     ~H2DE_Border() override = default;
 
     inline std::string getTextureName() const override {

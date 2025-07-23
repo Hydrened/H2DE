@@ -1,10 +1,6 @@
 #include "H2DE/engine/H2DE_asset_loader_manager.h"
+
 #include "H2DE/engine/H2DE_error.h"
-
-// INIT
-H2DE_AssetLoaderManager::H2DE_AssetLoaderManager(H2DE_Engine* e, SDL_Renderer* r) noexcept : engine(e), renderer(r) {
-
-}
 
 // ACTIONS
 void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory) {

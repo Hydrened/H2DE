@@ -12,18 +12,8 @@
  * camera, timeline animations, and object management to provide a flexible 2D game framework.
  */
 
-#include <algorithm>
-#include <array>
-#include <filesystem>
-#include <fstream>
-#include <functional>
-#include <iomanip>
-#include <iostream>
 #include <map>
-#include <optional>
-#include <sstream>
-#include <vector>
-#include <windows.h>
+#include <filesystem>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -54,6 +44,8 @@ class H2DE_ChronoManager;
 class H2DE_Chrono;
 class H2DE_Camera;
 class H2DE_ObjectManager;
+
+using H2DE_Delay = H2DE_Timeline;
 
 /**
  * @class H2DE_Engine
