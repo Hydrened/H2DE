@@ -58,7 +58,7 @@ struct H2DE_Vector2D {
      * @param divider The scalar divisor.
      * @return The scaled vector.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator/(float divider) const noexcept {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> operator/(float divider) const {
         return H2DE_Vector2D{ static_cast<H2DE_Vector2D_T>(x / divider), static_cast<H2DE_Vector2D_T>(y / divider) };
     }
 
@@ -85,7 +85,7 @@ struct H2DE_Vector2D {
      * @param divider The scalar divisor.
      * @return Reference to this vector after scaling.
      */
-    H2DE_Vector2D<H2DE_Vector2D_T>& operator/=(float divider) noexcept;
+    H2DE_Vector2D<H2DE_Vector2D_T>& operator/=(float divider);
 
     /**
      * @brief Equality operator.
@@ -198,14 +198,14 @@ struct H2DE_Vector2D {
      * @brief Returns a new vector with the X component divided by a given divider.
      * @param divider Divider to divide the X component by.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideX(float divider) const noexcept {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideX(float divider) const {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ static_cast<H2DE_Vector2D_T>(x / divider), y };
     }
     /**
      * @brief Returns a new vector with the Y component divided by a given divider.
      * @param divider Divider to divide the Y component by.
      */
-    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideY(float divider) const noexcept {
+    constexpr H2DE_Vector2D<H2DE_Vector2D_T> divideY(float divider) const {
         return H2DE_Vector2D<H2DE_Vector2D_T>{ x, static_cast<H2DE_Vector2D_T>(y / divider) };
     }
 

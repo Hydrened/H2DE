@@ -1,3 +1,11 @@
+## H2DE-4.2.0
+#### ADDED
+- load assets async
+#### FIXED
+- divide functions not noexcept
+#### MODIFIED
+- create and destroy engine are now is H2DE namespace
+
 ## H2DE-4.1.14
 #### ADDED
 - min and max with more than 2 parameters

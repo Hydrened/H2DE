@@ -81,7 +81,7 @@ struct H2DE_Rect {
      * @param divider The value to divide by.
      * @return A new scaled rectangle.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> operator/(float divider) const noexcept {
+    constexpr H2DE_Rect<H2DE_Rect_T> operator/(float divider) const {
         return H2DE_Rect<H2DE_Rect_T>{
             static_cast<H2DE_Rect_T>(x / divider),
             static_cast<H2DE_Rect_T>(y / divider),
@@ -113,7 +113,7 @@ struct H2DE_Rect {
      * @param divider The scalar to divide by.
      * @return Reference to this rect after division.
      */
-    H2DE_Rect<H2DE_Rect_T>& operator/=(float divider) noexcept;
+    H2DE_Rect<H2DE_Rect_T>& operator/=(float divider);
 
     /**
      * @brief Checks equality between two rectangles.
@@ -195,14 +195,14 @@ struct H2DE_Rect {
      * @brief Returns a new rectangle with position divided by divider, size unchanged.
      * @param divider Value to divide position by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideTranslate(float divider) const noexcept {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideTranslate(float divider) const {
         return H2DE_Rect<H2DE_Rect_T>{ static_cast<H2DE_Rect_T>(x / divider), static_cast<H2DE_Rect_T>(y / divider), w, h };
     }
     /**
      * @brief Returns a new rectangle with size divided by divider, position unchanged.
      * @param divider Value to divide size by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideScale(float divider) const noexcept {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideScale(float divider) const {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, static_cast<H2DE_Rect_T>(w / divider), static_cast<H2DE_Rect_T>(h / divider) };
     }
 
@@ -297,28 +297,28 @@ struct H2DE_Rect {
      * @brief Returns a new rectangle with the X component divided by a given divider.
      * @param divider Divider to divide the X component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideX(float divider) const noexcept {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideX(float divider) const {
         return H2DE_Rect<H2DE_Rect_T>{ static_cast<H2DE_Rect_T>(x / divider), y, w, h };
     }
     /**
      * @brief Returns a new rectangle with the Y component divided by a given divider.
      * @param divider Divider to divide the Y component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideY(float divider) const noexcept {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideY(float divider) const {
         return H2DE_Rect<H2DE_Rect_T>{ x, static_cast<H2DE_Rect_T>(y / divider), w, h };
     }
     /**
      * @brief Returns a new rectangle with the W component divided by a given divider.
      * @param divider Divider to divide the W component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideW(float divider) const noexcept {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideW(float divider) const {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, static_cast<H2DE_Rect_T>(w / divider), h };
     }
     /**
      * @brief Returns a new rectangle with the H component divided by a given divider.
      * @param divider Divider to divide the H component by.
      */
-    constexpr H2DE_Rect<H2DE_Rect_T> divideH(float divider) const noexcept {
+    constexpr H2DE_Rect<H2DE_Rect_T> divideH(float divider) const {
         return H2DE_Rect<H2DE_Rect_T>{ x, y, w, static_cast<H2DE_Rect_T>(h / divider) };
     }
 

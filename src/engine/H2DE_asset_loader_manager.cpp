@@ -1,9 +1,77 @@
 #include "H2DE/engine/H2DE_asset_loader_manager.h"
 
+#include <thread>
 #include "H2DE/engine/H2DE_error.h"
 
+// UPDATE
+void H2DE_AssetLoaderManager::update() {
+    loadTexturesFromBuffer();
+    loadSoundsFromBuffer();
+}
+
+void H2DE_AssetLoaderManager::loadTexturesFromBuffer() {
+    static std::unordered_map<std::string, SDL_Texture*>& textures = engine->renderer->textures;
+
+    if (surfaceBuffer.empty()) {
+        return;
+    }
+
+    std::unordered_map<std::string, SDL_Surface*> surfaceBufferToProcess;
+
+    {
+        std::lock_guard<std::mutex> lock(loadMutex);
+        if (!surfaceBuffer.empty()) {
+            surfaceBufferToProcess = std::move(surfaceBuffer);
+            surfaceBuffer.clear();
+        }
+    }
+
+    for (const auto& [name, surface] : surfaceBufferToProcess) {
+        auto it = textures.find(name);
+        if (it != textures.end()) {
+            H2DE_Error::logWarning("Texture \"" + name + "\" has been overridden");
+        }
+
+        textures[name] = SDL_CreateTextureFromSurface(renderer, surface);
+    }
+}
+
+void H2DE_AssetLoaderManager::loadSoundsFromBuffer() {
+    static std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->audio->sounds;
+
+    if (soundBuffer.empty()) {
+        return;
+    }
+
+    std::unordered_map<std::string, Mix_Chunk*> soundBufferToProcess;
+
+    {
+        std::lock_guard<std::mutex> lock(loadMutex);
+        if (!soundBuffer.empty()) {
+            soundBufferToProcess = std::move(soundBuffer);
+            soundBuffer.clear();
+        }
+    }
+
+    for (const auto& [name, sound] : soundBufferToProcess) {
+        auto it = sounds.find(name);
+        if (it != sounds.end()) {
+            H2DE_Error::logWarning("Sound \"" + name + "\" has been overridden");
+        }
+
+        sounds[name] = sound;
+    }
+}
+
 // ACTIONS
-void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory) {
+
+// -- load assets
+void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory, const std::function<void(float)>& progress, const std::function<void()>& completed, bool sync) {
+    if (loading) {
+        H2DE_Error::logWarning("Engine is already loading assets");
+        return;
+    }
+
     if (!std::filesystem::exists(directory)) {
         H2DE_Error::logWarning("Asset directory not found");
         return;
@@ -14,90 +82,133 @@ void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory)
         return;
     }
 
-    const std::vector<std::filesystem::path> filesToLoad = getFilesToLoad(directory);
+    filesToLoad = getFilesToLoad(directory);
     assetsToLoad = filesToLoad.size();
+    loadedAssets = 0;
+    loading = true;
 
+    if (sync) {
+        loadAssetsSync(directory);
+    } else {
+        loadAssetsAsync(directory, progress, completed);
+    }
+}
+
+void H2DE_AssetLoaderManager::loadAssetsSync(const std::filesystem::path& directory) {
     for (const std::filesystem::path& file : filesToLoad) {
-        importFile(file);
-    }
+        const H2DE_AssetLoaderManager::H2DE_LoadedAsset& loadedAsset = loadFile(file, true);
 
-    std::unordered_map<std::string, SDL_Texture*>& textures = engine->renderer->textures;
-    for (const auto& [name, texture] : textureBuffer) {
-        auto it = textures.find(name);
-        if (it != textures.end()) {
-            H2DE_Error::logWarning("Texture \"" + name + "\" has been overridden");
+        switch (loadedAsset.type) {
+            case H2DE_AssetLoaderManager::H2DE_ASSET_TYPE_SURFACE: surfaceBuffer[loadedAsset.name] = loadedAsset.surface; break;
+            case H2DE_AssetLoaderManager::H2DE_ASSET_TYPE_SOUND: soundBuffer[loadedAsset.name] = loadedAsset.sound; break;
+            default: break;
         }
 
-        textures[name] = texture;
+        update();
+        assetLoadedSync();
     }
-
-    std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->audio->sounds;
-    for (const auto& [name, sound] : soundBuffer) {
-        auto it = sounds.find(name);
-        if (it != sounds.end()) {
-            H2DE_Error::logWarning("Sound \"" + name + "\" has been overridden");
-        }
-
-        sounds[name] = sound;
-    }
-
-    textureBuffer.clear();
-    soundBuffer.clear();
 
     std::cout << std::endl;
     H2DE::print("H2DE => Loading complete");
+
+    loadedAssets = 0;
+    assetsToLoad = 0;
+    loading = false;
 }
 
-void H2DE_AssetLoaderManager::importFile(const std::filesystem::path& file) {
+void H2DE_AssetLoaderManager::loadAssetsAsync(const std::filesystem::path& directory, const std::function<void(float)>& p, const std::function<void()>& completed) {
+    progress = p;
+
+    std::thread([this, completed]() {
+        for (const std::filesystem::path& file : filesToLoad) {
+            const H2DE_AssetLoaderManager::H2DE_LoadedAsset& loadedAsset = loadFile(file, false);
+            
+            {
+                std::lock_guard<std::mutex> lock(loadMutex);
+
+                if (loadedAsset.surface != nullptr) {
+                    surfaceBuffer[loadedAsset.name] = loadedAsset.surface;
+                }
+
+                if (loadedAsset.sound != nullptr) {
+                    soundBuffer[loadedAsset.name] = loadedAsset.sound;
+                }
+            }
+
+            assetLoadedAsync();
+        }
+
+        {
+            std::lock_guard<std::mutex> lock(loadMutex);
+            loadedAssets = 0;
+            assetsToLoad = 0;
+            loading = false;
+            progress = nullptr;
+
+            if (completed) {
+                completed();
+            }
+
+        }
+    }).detach();
+}
+
+// -- load asset
+H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadFile(const std::filesystem::path& file, bool sync) {
     const std::filesystem::path extension = file.extension();
 
     const bool isImg = (std::find(supportedImg.begin(), supportedImg.end(), extension) != supportedImg.end());
     const bool isSound = (std::find(supportedSound.begin(), supportedSound.end(), extension) != supportedSound.end());
 
     if (isImg) {
-        importTexture(file);
+        return loadTexture(file, sync);
+
     } else if (isSound) {
-        importSound(file);
+        return loadSound(file, sync);
+
+    } else {
+        return H2DE_AssetLoaderManager::H2DE_LoadedAsset();
     }
 }
 
-void H2DE_AssetLoaderManager::importTexture(const std::filesystem::path& file) {
-    SDL_Texture* texture = IMG_LoadTexture(renderer, file.string().c_str());
+H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadTexture(const std::filesystem::path& file, bool sync) {
+    std::unordered_map<std::string, SDL_Texture*>& textures = engine->renderer->textures;
+    SDL_Surface* surface = IMG_Load(file.string().c_str());
     const std::string name = file.filename().string();
 
-    if (texture != nullptr) {
-        if (textureBuffer.find(name) != textureBuffer.end()) {
+    if (surface != nullptr) {
+        if (textures.find(name) != textures.end()) {
             H2DE_Error::logWarning("Texture \"" + name + "\" has been overridden");
         }
-
-        textureBuffer[name] = texture;
         
     } else {
-        H2DE_Error::logError("Texture \"" + name + "\" can't be loaded: " + SDL_GetError());
+        H2DE_Error::throwError("Texture \"" + name + "\" can't be loaded: " + SDL_GetError());
+        return H2DE_AssetLoaderManager::H2DE_LoadedAsset();
     }
 
-    assetImported();
+    return { H2DE_ASSET_TYPE_SURFACE, name, surface, nullptr };
 }
 
-void H2DE_AssetLoaderManager::importSound(const std::filesystem::path& file) {
+H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadSound(const std::filesystem::path& file, bool sync) {
+    std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->audio->sounds;
     Mix_Chunk* sound = Mix_LoadWAV(file.string().c_str());
     const std::string name = file.filename().string();
 
     if (sound != nullptr) {
-        if (soundBuffer.find(name) != soundBuffer.end()) {
+        if (sounds.find(name) != sounds.end()) {
             H2DE_Error::logWarning("Sound \"" + name + "\" has been overridden");
         }
-    
-        soundBuffer[name] = sound;
 
     } else {
-        H2DE_Error::logError("Sound \"" + name + "\" can't be loaded");
+        H2DE_Error::throwError("Sound \"" + name + "\" can't be loaded");
+        return H2DE_AssetLoaderManager::H2DE_LoadedAsset();
     }
 
-    assetImported();
+    return { H2DE_ASSET_TYPE_SOUND, name, nullptr, sound };
 }
 
-void H2DE_AssetLoaderManager::assetImported() {
+// -- asset loaded
+void H2DE_AssetLoaderManager::assetLoadedSync() {
     constexpr uint8_t barWidth = 30;
 
     loadedAssets++;
@@ -114,12 +225,32 @@ void H2DE_AssetLoaderManager::assetImported() {
     std::cout.flush();
 }
 
+void H2DE_AssetLoaderManager::assetLoadedAsync() {
+    refreshObjectsSurfaceBuffers();
+
+    if (!progress) {
+        return;
+    }
+
+    loadedAssets++;
+    const float blend = static_cast<float>(loadedAssets) / assetsToLoad;
+    progress(blend);
+}
+
+// -- load font
 void H2DE_AssetLoaderManager::loadFont(const std::string& name, const H2DE_Font& font) {
     if (engine->fonts.find(name) != engine->fonts.end()) {
         H2DE_Error::logWarning("Font \"" + name + "\" has been overridden");
     }
 
     engine->fonts[name] = font;
+}
+
+// -- refresh
+void H2DE_AssetLoaderManager::refreshObjectsSurfaceBuffers() {
+    for (H2DE_Object* object : engine->objects) {
+        object->refreshSurfaceBuffers();
+    }
 }
 
 // GETTER

@@ -108,6 +108,20 @@ void H2DE_Object::updateTimelineBuffer() {
 // ACTIONS
 
 // -- surfaces
+template H2DE_Border* H2DE_Object::addSurface<H2DE_Border>(std::unordered_map<std::string, H2DE_Surface*>&, const std::string&, const H2DE_SurfaceData&, const H2DE_BorderData&);
+template H2DE_Color* H2DE_Object::addSurface<H2DE_Color>(std::unordered_map<std::string, H2DE_Surface*>&, const std::string&, const H2DE_SurfaceData&, const H2DE_ColorData&);
+template H2DE_Sprite* H2DE_Object::addSurface<H2DE_Sprite>(std::unordered_map<std::string, H2DE_Surface*>&, const std::string&, const H2DE_SurfaceData&, const H2DE_SpriteData&);
+template H2DE_Texture* H2DE_Object::addSurface<H2DE_Texture>(std::unordered_map<std::string, H2DE_Surface*>&, const std::string&, const H2DE_SurfaceData&, const H2DE_TextureData&);
+
+template<typename H2DE_Surface_T>
+H2DE_Surface_T* H2DE_Object::addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
+    H2DE_Surface_T* surface = new H2DE_Surface_T(engine, this, surfaceData, specificData);
+    surfaces[name] = surface;
+    refreshMaxRadius();
+    refreshSurfaceBuffers();
+    return surface;
+}
+
 bool H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
     auto it = surfaces.find(name);
 
@@ -184,6 +198,26 @@ void H2DE_Object::rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& 
 }
 
 // GETTER
+template H2DE_Border* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
+template H2DE_Color* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
+template H2DE_Sprite* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
+template H2DE_Texture* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
+
+template<typename H2DE_Surface_T>
+H2DE_Surface_T* H2DE_Object::getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+    auto it = surfaces.find(name);
+    if (it == surfaces.end()) {
+        H2DE_Error::throwError("Surface named \"" + name + "\" not found");
+    }
+
+    H2DE_Surface_T* castedSurface = dynamic_cast<H2DE_Surface_T*>(it->second);
+    if (castedSurface == nullptr) {
+        H2DE_Error::throwError("Can't cast surface \"" + name +  "\" to template type");
+    }
+
+    return castedSurface;
+}
+
 const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
     std::vector<H2DE_Surface*> res;
     res.reserve(surfaces.size());

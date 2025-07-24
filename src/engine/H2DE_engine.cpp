@@ -29,7 +29,7 @@ H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : data(d), fps(data.window.fp
     }
 }
 
-H2DE_Engine* H2DE_CreateEngine(const H2DE_EngineData& data) {
+H2DE_Engine* H2DE::createEngine(const H2DE_EngineData& data) {
     return new H2DE_Engine(data);
 }
 
@@ -102,7 +102,7 @@ void H2DE_Engine::destroyObjects() {
     }
 }
 
-void H2DE_DestroyEngine(H2DE_Engine* engine) {
+void H2DE::destroyEngine(H2DE_Engine* engine) {
     if (engine != nullptr) {
         delete engine;
     }
@@ -190,6 +190,9 @@ void H2DE_Engine::handleEvents(SDL_Event event) {
 // UPDATE
 void H2DE_Engine::update() {
     window->update();
+
+    assetLoaderManager->update();
+
     timelineManager->update();
     chronoManager->update();
     audio->update();
@@ -213,8 +216,12 @@ void H2DE_Engine::updateObjects() {
 // ACTIONS
 
 // -- assets
-void H2DE_Engine::loadAssets(const std::string& directory) {
-    assetLoaderManager->loadAssets(directory);
+void H2DE_Engine::loadAssetsSync(const std::string& directory) {
+    assetLoaderManager->loadAssets(directory, nullptr, nullptr, true);
+}
+
+void H2DE_Engine::loadAssetsAsync(const std::string& directory, const std::function<void(float)>& progress, const std::function<void()>& completed) {
+    assetLoaderManager->loadAssets(directory, progress, completed, false);
 }
 
 void H2DE_Engine::loadFont(const std::string& name, const H2DE_Font& font) {
@@ -258,6 +265,51 @@ H2DE_Chrono* H2DE_Engine::createChrono(const H2DE_Time& start, bool increasing, 
 // -- objects
 void H2DE_Engine::refreshObjectManager() {
     objectManager->refreshButtonBuffer(objects);
+}
+
+template H2DE_BasicObject* H2DE_Engine::createObject<H2DE_BasicObject>(const H2DE_ObjectData& objectData);
+template H2DE_BarObject* H2DE_Engine::createObject<H2DE_BarObject, H2DE_BarObjectData>(const H2DE_ObjectData&, H2DE_BarObjectData&&);
+template H2DE_ButtonObject* H2DE_Engine::createObject<H2DE_ButtonObject, H2DE_ButtonObjectData>(const H2DE_ObjectData&, H2DE_ButtonObjectData&&);
+template H2DE_TextObject* H2DE_Engine::createObject<H2DE_TextObject, H2DE_TextObjectData>(const H2DE_ObjectData&, H2DE_TextObjectData&&);
+template H2DE_TimerObject* H2DE_Engine::createObject<H2DE_TimerObject, H2DE_TimerObjectData>(const H2DE_ObjectData&, H2DE_TimerObjectData&&);
+
+template H2DE_BarObject* H2DE_Engine::createObject<H2DE_BarObject, H2DE_BarObjectData&>(const H2DE_ObjectData&, H2DE_BarObjectData&);
+template H2DE_ButtonObject* H2DE_Engine::createObject<H2DE_ButtonObject, H2DE_ButtonObjectData&>(const H2DE_ObjectData&, H2DE_ButtonObjectData&);
+template H2DE_TextObject* H2DE_Engine::createObject<H2DE_TextObject, H2DE_TextObjectData&>(const H2DE_ObjectData&, H2DE_TextObjectData&);
+template H2DE_TimerObject* H2DE_Engine::createObject<H2DE_TimerObject, H2DE_TimerObjectData&>(const H2DE_ObjectData&, H2DE_TimerObjectData&);
+
+template<typename H2DE_Object_T, typename... H2DE_SpecificObjectData_T>
+H2DE_Object_T* H2DE_Engine::createObject(const H2DE_ObjectData& objectData, H2DE_SpecificObjectData_T&&... specificObjectData) {
+    H2DE_Object_T* object = nullptr;
+
+    constexpr int nbArgs = sizeof...(H2DE_SpecificObjectData_T);
+    constexpr bool hasDataType = has_H2DE_DataType<H2DE_Object_T>::value;
+
+    if (nbArgs > 1) {
+        static_assert((hasDataType && nbArgs == 1) || (!hasDataType && nbArgs == 0), "Invalid arguments passed to createObject");
+    }
+    
+    constexpr bool objectHasNoSpecificDataType = (!hasDataType && nbArgs == 0);
+    constexpr bool objectHasSpecificDataType = (hasDataType && nbArgs == 1);
+
+    if constexpr (objectHasNoSpecificDataType) {
+        object = new H2DE_Object_T(this, objectData);
+
+    } else if constexpr (objectHasSpecificDataType) {
+        object = new H2DE_Object_T(this, objectData, std::forward<H2DE_SpecificObjectData_T>(specificObjectData)...);
+    
+    } else {
+        return nullptr;
+    }
+
+    objects.push_back(object);
+
+    constexpr bool isButtonObject = (std::is_same_v<H2DE_Object_T, H2DE_ButtonObject>);
+    if constexpr (isButtonObject) {
+        refreshObjectManager();
+    }
+
+    return object;
 }
 
 bool H2DE_Engine::destroyObject(H2DE_Object* object) {

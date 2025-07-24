@@ -18,7 +18,6 @@
  */
 
 #include <H2DE/engine/H2DE_engine.h>
-#include <H2DE/engine/H2DE_error.h>
 class H2DE_Engine;
 class H2DE_Texture;
 class H2DE_Sprite;
@@ -431,6 +430,7 @@ public:
     friend class H2DE_Sprite;
     friend class H2DE_Color;
     friend class H2DE_ObjectManager;
+    friend class H2DE_AssetLoaderManager;
 
 protected:
     H2DE_Engine* engine;
@@ -460,29 +460,12 @@ protected:
     }
 
     template<typename H2DE_Surface_T>
-    H2DE_Surface_T* addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
-        H2DE_Surface_T* surface = new H2DE_Surface_T(engine, this, surfaceData, specificData);
-        surfaces[name] = surface;
-        refreshMaxRadius();
-        refreshSurfaceBuffers();
-        return surface;
-    }
+    H2DE_Surface_T* addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData);
+
     bool removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
 
     template<typename H2DE_Surface_T>
-    static H2DE_Surface_T* getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
-        auto it = surfaces.find(name);
-        if (it == surfaces.end()) {
-            H2DE_Error::throwError("Surface named \"" + name + "\" not found");
-        }
-
-        H2DE_Surface_T* castedSurface = dynamic_cast<H2DE_Surface_T*>(it->second);
-        if (castedSurface == nullptr) {
-            H2DE_Error::throwError("Can't cast surface \"" + name +  "\" to template type");
-        }
-
-        return castedSurface;
-    }
+    static H2DE_Surface_T* getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
 
     static const std::vector<H2DE_Surface*> getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
     static const std::array<H2DE_Translate, 4> getCorners(const H2DE_Transform& transform);

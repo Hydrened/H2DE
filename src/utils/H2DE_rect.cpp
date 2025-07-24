@@ -32,7 +32,7 @@ H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator*=(float multiplier) noe
 }
 
 template<typename H2DE_Rect_T>
-H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) noexcept {
+H2DE_Rect<H2DE_Rect_T>& H2DE_Rect<H2DE_Rect_T>::operator/=(float divider) {
     x /= divider;
     y /= divider;
     w /= divider;
