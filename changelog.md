@@ -1,3 +1,7 @@
+## H2DE-4.2.1
+#### FIXED
+- bar object front surface not working
+
 ## H2DE-4.2.0
 #### ADDED
 - load assets async

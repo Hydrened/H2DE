@@ -62,7 +62,7 @@ private:
     float renderSurfaceGetWorldRotation(const H2DE_Object* object, H2DE_Surface* surface) const noexcept;
     SDL_Point renderSurfaceGetLocalPivot(const H2DE_Object* object, H2DE_Surface* surface) const;
     static SDL_RendererFlip renderSurfaceGetWorldFlip(const H2DE_Object* object, H2DE_Surface* surface) noexcept;
-    static std::optional<SDL_Rect> renderSurfaceGetPossibleSrcRect(H2DE_Surface* surface);
+    std::optional<SDL_Rect> renderSurfaceGetPossibleSrcRect(const H2DE_Object* object, H2DE_Surface* surface) const;
 
     void renderObjectsHitboxes();
     void renderHitboxes(const H2DE_Object* object);

@@ -265,6 +265,7 @@ public:
     using H2DE_DataType = H2DE_BarObjectData;
 
     friend class H2DE_Engine;
+    friend class H2DE_Renderer;
 
 private:
     H2DE_BarObjectData barObjectData;
@@ -277,6 +278,10 @@ private:
 
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
+
+    constexpr float getFrontBlend() const {
+        return H2DE::clamp((getValue() - getMin()) / (getMax() - getMin()), 0.0f, 1.0f);
+    }
 };
 
 #endif

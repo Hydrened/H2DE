@@ -323,35 +323,6 @@ struct H2DE_Rect {
     }
 
     /**
-     * @brief Returns a new rectangle with the X component set to a given value.
-     * @param value New value for the X component.
-     */
-    constexpr H2DE_Rect<H2DE_Rect_T> setX(H2DE_Rect_T value) const noexcept {
-        return H2DE_Rect<H2DE_Rect_T>{ value, y, w, h };
-    }
-    /**
-     * @brief Returns a new rectangle with the Y component set to a given value.
-     * @param value New value for the Y component.
-     */
-    constexpr H2DE_Rect<H2DE_Rect_T> setY(H2DE_Rect_T value) const noexcept {
-        return H2DE_Rect<H2DE_Rect_T>{ x, value, w, h };
-    }
-    /**
-     * @brief Returns a new rectangle with the W component set to a given value.
-     * @param value New value for the W component.
-     */
-    constexpr H2DE_Rect<H2DE_Rect_T> setW(H2DE_Rect_T value) const noexcept {
-        return H2DE_Rect<H2DE_Rect_T>{ x, y, value, h };
-    }
-    /**
-     * @brief Returns a new rectangle with the H component set to a given value.
-     * @param value New value for the H component.
-     */
-    constexpr H2DE_Rect<H2DE_Rect_T> setH(H2DE_Rect_T value) const noexcept {
-        return H2DE_Rect<H2DE_Rect_T>{ x, y, w, value };
-    }
-
-    /**
      * @brief Returns position vector of the rectangle center.
      */
     constexpr H2DE_Vector2D<H2DE_Rect_T> getTranslate() const noexcept {
@@ -387,6 +358,35 @@ struct H2DE_Rect {
      */
     constexpr H2DE_Rect_T getMaxY() const noexcept {
         return (y + static_cast<H2DE_Rect_T>(h * 0.5f));
+    }
+
+    /**
+     * @brief Returns a new rectangle with the X component set to a given value.
+     * @param value New value for the X component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> setX(H2DE_Rect_T value) const noexcept {
+        return H2DE_Rect<H2DE_Rect_T>{ value, y, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the Y component set to a given value.
+     * @param value New value for the Y component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> setY(H2DE_Rect_T value) const noexcept {
+        return H2DE_Rect<H2DE_Rect_T>{ x, value, w, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the W component set to a given value.
+     * @param value New value for the W component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> setW(H2DE_Rect_T value) const noexcept {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, value, h };
+    }
+    /**
+     * @brief Returns a new rectangle with the H component set to a given value.
+     * @param value New value for the H component.
+     */
+    constexpr H2DE_Rect<H2DE_Rect_T> setH(H2DE_Rect_T value) const noexcept {
+        return H2DE_Rect<H2DE_Rect_T>{ x, y, w, value };
     }
 
     /**

@@ -225,7 +225,7 @@ void H2DE_Renderer::renderTextureRenderTexture(const H2DE_Object* object, H2DE_S
     SDL_Point local_surfaceCenter = R::renderSurfaceGetLocalPivot(object, surface);
     SDL_RendererFlip world_surfaceFlip = R::renderSurfaceGetWorldFlip(object, surface);
 
-    std::optional<SDL_Rect> possibleSrcRect = renderSurfaceGetPossibleSrcRect(surface);
+    std::optional<SDL_Rect> possibleSrcRect = renderSurfaceGetPossibleSrcRect(object, surface);
     SDL_Rect* srcRect = ((possibleSrcRect.has_value()) ? &possibleSrcRect.value() : nullptr);
 
     SDL_RenderCopyEx(renderer, texture, srcRect, &world_surfaceRect, world_surfaceRotation, &local_surfaceCenter, world_surfaceFlip);
@@ -318,7 +318,26 @@ SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object,
     bool xIsInverted = engine->camera->isXOriginInverted();
     bool yIsInverted = engine->camera->isYOriginInverted();
 
-    const H2DE_LevelRect surfaceRect = G::getSurfaceRect(object, surface, xIsInverted, yIsInverted);
+    H2DE_LevelRect surfaceRect = G::getSurfaceRect(object, surface, xIsInverted, yIsInverted);
+    const H2DE_BarObject* bar = dynamic_cast<const H2DE_BarObject*>(object);
+
+    if (bar != nullptr) {
+        
+        bool isFrontSurface = false;
+        for (const auto& [name, frontSurface] : bar->getFrontSurfaces()) {
+            if (surface == frontSurface) {
+                isFrontSurface = true;
+                break;
+            }
+        }
+
+        if (isFrontSurface) {
+            float frontBarBlend = bar->getFrontBlend();
+            surfaceRect.x = (surfaceRect.w - surfaceRect.multiplyW(frontBarBlend).w) * -0.5f;
+            surfaceRect = surfaceRect.multiplyW(frontBarBlend);
+        }
+    }
+
     return static_cast<SDL_Rect>(subPixelToPixelRect(levelToSubPixelRect(surfaceRect, object->objectData.absolute)));
 }
 
@@ -345,15 +364,25 @@ SDL_RendererFlip H2DE_Renderer::renderSurfaceGetWorldFlip(const H2DE_Object* obj
     }
 }
 
-std::optional<SDL_Rect> H2DE_Renderer::renderSurfaceGetPossibleSrcRect(H2DE_Surface* surface) {
-    const std::optional<H2DE_PixelRect> possibleSrcRect = surface->getSrcRect();
+std::optional<SDL_Rect> H2DE_Renderer::renderSurfaceGetPossibleSrcRect(const H2DE_Object* object, H2DE_Surface* surface) const {
+    const H2DE_BarObject* bar = dynamic_cast<const H2DE_BarObject*>(object);
+    std::optional<H2DE_PixelRect> possibleSrcRect = surface->getSrcRect();
 
-    if (possibleSrcRect.has_value()) {
-        H2DE_PixelRect value = possibleSrcRect.value();
-        return SDL_Rect{ value.x, value.y, value.w, value.h };
+    if (bar == nullptr && !possibleSrcRect) {
+        return std::nullopt;
     }
 
-    return std::nullopt;
+    float blend = 1.0f;
+    if (bar != nullptr) {
+        blend = bar->getFrontBlend();
+    }
+
+    H2DE_PixelRect src = !possibleSrcRect.has_value()
+        ? H2DE_PixelPos{ 0, 0 }.makeRect(engine->getTextureSize(surface->getTextureName()))
+        : possibleSrcRect.value();
+
+    src = src.multiplyW(blend);
+    return SDL_Rect{ src.x, src.y, src.w, src.h };
 }
 
 // -- hitboxes
