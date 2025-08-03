@@ -1,5 +1,4 @@
-#ifndef H2DE_CHRONO_MANAGER_H
-#define H2DE_CHRONO_MANAGER_H
+#pragma once
 
 #include <H2DE/engine/H2DE_engine.h>
 #include <H2DE/engine/H2DE_chrono.h>
@@ -28,5 +27,3 @@ private:
     friend class H2DE_Engine;
     friend class H2DE_Chrono;
 };
-
-#endif

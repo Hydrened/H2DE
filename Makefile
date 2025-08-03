@@ -1,7 +1,7 @@
-CXX = g++
 APP_NAME = H2DE
 CPP_VERSION = 20
 
+CXX = g++
 BIN_DIR = bin
 OBJECT_DIR = $(BIN_DIR)/objects
 INCLUDE_DIR = include

@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_OBJECT_H
-#define H2DE_UTILS_OBJECT_H
+#pragma once
 
 #include <functional>
 #include <H2DE/utils/H2DE_utils.h>
@@ -123,5 +122,3 @@ struct H2DE_TimerObjectData {
     bool increasing = true;                 /**< Whether the timer is increasing (false for decreasing). */
     bool pauseSensitive = true;             /**< Whether the timer is sensitive to pause state. */
 };
-
-#endif

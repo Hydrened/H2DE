@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_MATH_H
-#define H2DE_UTILS_MATH_H
+#pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
 
@@ -143,5 +142,3 @@ namespace H2DE {
      */
     float lerp(float min, float max, float blend, H2DE_Easing easing = H2DE_EASING_LINEAR);
 };
-
-#endif

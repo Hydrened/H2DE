@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_RECT_H
-#define H2DE_UTILS_RECT_H
+#pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
 
@@ -444,5 +443,3 @@ struct H2DE_Rect {
 using H2DE_PixelRect = H2DE_Rect<int>;
 /** @brief Alias for rectangle used in level coordinates (float). */
 using H2DE_LevelRect = H2DE_Rect<float>;
-
-#endif

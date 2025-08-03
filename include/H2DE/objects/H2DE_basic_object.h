@@ -1,5 +1,4 @@
-#ifndef H2DE_BASIC_OBJECT_H
-#define H2DE_BASIC_OBJECT_H
+#pragma once
 
 /**
  * @file H2DE_basic_object.h
@@ -99,5 +98,3 @@ private:
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef H2DE_LERP_MANAGER_H
-#define H2DE_LERP_MANAGER_H
+#pragma once
 
 #include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
@@ -25,5 +24,3 @@ public:
         }, completed, 0, pauseSensitive);
     }
 };
-
-#endif

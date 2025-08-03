@@ -1,5 +1,4 @@
-#ifndef H2DE_CHRONO_H
-#define H2DE_CHRONO_H
+#pragma once
 
 /**
  * @file H2DE_chrono.h
@@ -216,5 +215,3 @@ private:
     void updateCurrentTime();
     void updateOnReachEvents();
 };
-
-#endif

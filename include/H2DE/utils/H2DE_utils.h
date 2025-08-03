@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_H
-#define H2DE_UTILS_H
+#pragma once
 
 #include <iostream>
 #include <optional>
@@ -20,5 +19,3 @@
 
 #include <H2DE/utils/H2DE_object.h>
 #include <H2DE/utils/H2DE_surface.h>
-
-#endif

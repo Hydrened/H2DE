@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_BASIC_STUCTS_H
-#define H2DE_UTILS_BASIC_STUCTS_H
+#pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
 
@@ -256,5 +255,3 @@ struct H2DE_EngineData {
     H2DE_WindowData window = H2DE_WindowData();     /** Settings related to the main application window. */
     H2DE_CameraData camera = H2DE_CameraData();     /** Settings related to the main in-game camera. */
 };
-
-#endif

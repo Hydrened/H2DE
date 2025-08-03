@@ -1,5 +1,4 @@
-#ifndef H2DE_TEXT_OBJECT_H
-#define H2DE_TEXT_OBJECT_H
+#pragma once
 
 /**
  * @file H2DE_text_object.h
@@ -244,5 +243,3 @@ private:
         return (textObjectData.text.text == ""); 
     }
 };
-
-#endif

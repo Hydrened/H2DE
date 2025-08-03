@@ -1,5 +1,4 @@
-#ifndef H2DE_SURFACE_H
-#define H2DE_SURFACE_H
+#pragma once
 
 /**
  * @file H2DE_surface.h
@@ -235,5 +234,3 @@ private:
 #include <H2DE/surfaces/H2DE_sprite.h>
 #include <H2DE/surfaces/H2DE_color.h>
 #include <H2DE/surfaces/H2DE_border.h>
-
-#endif

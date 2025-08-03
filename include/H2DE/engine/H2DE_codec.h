@@ -1,5 +1,4 @@
-#ifndef H2DE_CODEC_H
-#define H2DE_CODEC_H
+#pragma once
 
 #include <base64/base64.h>
 #include <string>
@@ -16,5 +15,3 @@ public:
 private:
     static std::string xorEncryptDecrypt(const std::string& s);
 };
-
-#endif

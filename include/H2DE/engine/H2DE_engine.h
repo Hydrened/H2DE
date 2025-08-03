@@ -1,5 +1,4 @@
-#ifndef H2DE_ENGINE_H
-#define H2DE_ENGINE_H
+#pragma once
 
 /**
  * @file H2DE_Engine.h
@@ -469,4 +468,4 @@ private:
     static bool isPositionGreater(H2DE_Object* a, H2DE_Object* b);
 };
 
-#endif
+#include <H2DE/engine/H2DE_engine.inl>

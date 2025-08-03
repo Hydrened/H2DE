@@ -1,5 +1,4 @@
-#ifndef H2DE_WINDOW_H
-#define H2DE_WINDOW_H
+#pragma once
 
 /**
  * @file H2DE_window.h
@@ -149,5 +148,3 @@ private:
         return (fullscreen) ? SDL_WINDOW_FULLSCREEN_DESKTOP : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
     }
 };
-
-#endif

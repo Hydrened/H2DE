@@ -267,51 +267,6 @@ void H2DE_Engine::refreshObjectManager() {
     objectManager->refreshButtonBuffer(objects);
 }
 
-template H2DE_BasicObject* H2DE_Engine::createObject<H2DE_BasicObject>(const H2DE_ObjectData& objectData);
-template H2DE_BarObject* H2DE_Engine::createObject<H2DE_BarObject, H2DE_BarObjectData>(const H2DE_ObjectData&, H2DE_BarObjectData&&);
-template H2DE_ButtonObject* H2DE_Engine::createObject<H2DE_ButtonObject, H2DE_ButtonObjectData>(const H2DE_ObjectData&, H2DE_ButtonObjectData&&);
-template H2DE_TextObject* H2DE_Engine::createObject<H2DE_TextObject, H2DE_TextObjectData>(const H2DE_ObjectData&, H2DE_TextObjectData&&);
-template H2DE_TimerObject* H2DE_Engine::createObject<H2DE_TimerObject, H2DE_TimerObjectData>(const H2DE_ObjectData&, H2DE_TimerObjectData&&);
-
-template H2DE_BarObject* H2DE_Engine::createObject<H2DE_BarObject, H2DE_BarObjectData&>(const H2DE_ObjectData&, H2DE_BarObjectData&);
-template H2DE_ButtonObject* H2DE_Engine::createObject<H2DE_ButtonObject, H2DE_ButtonObjectData&>(const H2DE_ObjectData&, H2DE_ButtonObjectData&);
-template H2DE_TextObject* H2DE_Engine::createObject<H2DE_TextObject, H2DE_TextObjectData&>(const H2DE_ObjectData&, H2DE_TextObjectData&);
-template H2DE_TimerObject* H2DE_Engine::createObject<H2DE_TimerObject, H2DE_TimerObjectData&>(const H2DE_ObjectData&, H2DE_TimerObjectData&);
-
-template<typename H2DE_Object_T, typename... H2DE_SpecificObjectData_T>
-H2DE_Object_T* H2DE_Engine::createObject(const H2DE_ObjectData& objectData, H2DE_SpecificObjectData_T&&... specificObjectData) {
-    H2DE_Object_T* object = nullptr;
-
-    constexpr int nbArgs = sizeof...(H2DE_SpecificObjectData_T);
-    constexpr bool hasDataType = has_H2DE_DataType<H2DE_Object_T>::value;
-
-    if (nbArgs > 1) {
-        static_assert((hasDataType && nbArgs == 1) || (!hasDataType && nbArgs == 0), "Invalid arguments passed to createObject");
-    }
-    
-    constexpr bool objectHasNoSpecificDataType = (!hasDataType && nbArgs == 0);
-    constexpr bool objectHasSpecificDataType = (hasDataType && nbArgs == 1);
-
-    if constexpr (objectHasNoSpecificDataType) {
-        object = new H2DE_Object_T(this, objectData);
-
-    } else if constexpr (objectHasSpecificDataType) {
-        object = new H2DE_Object_T(this, objectData, std::forward<H2DE_SpecificObjectData_T>(specificObjectData)...);
-    
-    } else {
-        return nullptr;
-    }
-
-    objects.push_back(object);
-
-    constexpr bool isButtonObject = (std::is_same_v<H2DE_Object_T, H2DE_ButtonObject>);
-    if constexpr (isButtonObject) {
-        refreshObjectManager();
-    }
-
-    return object;
-}
-
 bool H2DE_Engine::destroyObject(H2DE_Object* object) {
     auto it = std::find(objects.begin(), objects.end(), object);
 

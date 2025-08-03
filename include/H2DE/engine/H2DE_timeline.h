@@ -1,5 +1,4 @@
-#ifndef H2DE_TIMELINE_H
-#define H2DE_TIMELINE_H
+#pragma once
 
 /**
  * @file H2DE_timeline.h
@@ -104,5 +103,3 @@ private:
 
     friend class H2DE_TimelineManager;
 };
-
-#endif

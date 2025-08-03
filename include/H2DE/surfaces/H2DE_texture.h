@@ -1,5 +1,4 @@
-#ifndef H2DE_SURFACE_TEXTURE_H
-#define H2DE_SURFACE_TEXTURE_H
+#pragma once
 
 /**
  * @file H2DE_texture.h
@@ -112,5 +111,3 @@ private:
         return (!isHidden() && textureData.color.isVisible());
     }
 };
-
-#endif

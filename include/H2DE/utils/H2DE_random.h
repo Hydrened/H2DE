@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_RANDOM_H
-#define H2DE_UTILS_RANDOM_H
+#pragma once
 
 #include <random>
 #include <H2DE/utils/H2DE_utils.h>
@@ -59,5 +58,3 @@ namespace H2DE {
         return vector.at(H2DE::randomIndexFromVector(vector));
     }
 };
-
-#endif

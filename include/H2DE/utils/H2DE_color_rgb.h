@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_COLOR_RGB_H
-#define H2DE_UTILS_COLOR_RGB_H
+#pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
 struct H2DE_ColorHSV;
@@ -155,5 +154,3 @@ struct H2DE_ColorRGB {
         return (a != 0);
     }
 };
-
-#endif

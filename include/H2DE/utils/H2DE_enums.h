@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_ENUMS_H
-#define H2DE_UTILS_ENUMS_H
+#pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
 
@@ -166,5 +165,3 @@ enum H2DE_BlendMode {
     H2DE_BLEND_MODE_INVALID,    /**< Invalid mode */
     H2DE_BLEND_MODE_NONE,       /**< No blending */
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef H2DE_CAMERA_H
-#define H2DE_CAMERA_H
+#pragma once
 
 /**
  * @file H2DE_camera.h
@@ -304,5 +303,3 @@ private:
 
     H2DE_Scale getScale(float width) const;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef H2DE_OBJECT_H
-#define H2DE_OBJECT_H
+#pragma once
 
 /**
  * @file H2DE_bject.h
@@ -488,10 +487,10 @@ private:
     void stopTimelines();
 };
 
+#include <H2DE/objects/H2DE_object.inl>
+
 #include <H2DE/objects/H2DE_bar_object.h>
 #include <H2DE/objects/H2DE_basic_object.h>
 #include <H2DE/objects/H2DE_button_object.h>
 #include <H2DE/objects/H2DE_text_object.h>
 #include <H2DE/objects/H2DE_timer_object.h>
-
-#endif

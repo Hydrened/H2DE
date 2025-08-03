@@ -1,5 +1,4 @@
-#ifndef H2DE_TIMELINE_MANAGER_H
-#define H2DE_TIMELINE_MANAGER_H
+#pragma once
 
 #include <H2DE/engine/H2DE_engine.h>
 #include <H2DE/engine/H2DE_timeline.h>
@@ -45,5 +44,3 @@ private:
     friend class H2DE_Timeline;
     friend class H2DE_Object;
 };
-
-#endif

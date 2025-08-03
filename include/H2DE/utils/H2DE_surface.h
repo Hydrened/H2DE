@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_SURFACE_H
-#define H2DE_UTILS_SURFACE_H
+#pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
 
@@ -98,5 +97,3 @@ struct H2DE_BorderData {
      */
     constexpr H2DE_BorderData(H2DE_BorderType type, H2DE_BorderPlacement placement, const H2DE_ColorRGB& color, uint16_t thickness, bool filled) noexcept : type(type), placement(placement), color(color), thickness(thickness), filled(filled) {}
 };
-
-#endif

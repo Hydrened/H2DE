@@ -1,5 +1,4 @@
-#ifndef H2DE_SURFACE_COLOR_H
-#define H2DE_SURFACE_COLOR_H
+#pragma once
 
 /**
  * @file H2DE_color.h
@@ -87,5 +86,3 @@ private:
         return (!isHidden() && colorData.color.isVisible());
     }
 };
-
-#endif

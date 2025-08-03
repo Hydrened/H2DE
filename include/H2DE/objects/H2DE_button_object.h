@@ -1,5 +1,4 @@
-#ifndef H2DE_BUTTON_OBJECT_H
-#define H2DE_BUTTON_OBJECT_H
+#pragma once
 
 /**
  * @file H2DE_button_object.h
@@ -269,5 +268,3 @@ private:
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
 };
-
-#endif

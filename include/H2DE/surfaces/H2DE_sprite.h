@@ -1,5 +1,4 @@
-#ifndef H2DE_SURFACE_SPRITE_H
-#define H2DE_SURFACE_SPRITE_H
+#pragma once
 
 /**
  * @file H2DE_sprite.h
@@ -197,5 +196,3 @@ private:
         return (!isHidden() && spriteData.color.isVisible()); 
     }
 };
-
-#endif

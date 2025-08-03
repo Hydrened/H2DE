@@ -7,7 +7,7 @@
  * Hydren 2 Dimensional Engine (H2DE)
  * https://github.com/Hydrened/H2DE
  * 
- * Version: 4.2.1
+ * Version: 4.2.2
  * 
  * Copyright (C) 2024-2025
  * 
@@ -18,9 +18,6 @@
  * You can include this file to gain access to the core features of H2DE.
  */
 
-#ifndef H2DE_H
-#define H2DE_H
+#pragma once
 
 #include <H2DE/engine/H2DE_engine.h>
-
-#endif

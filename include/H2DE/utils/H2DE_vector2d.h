@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_VECTOR2D_H
-#define H2DE_UTILS_VECTOR2D_H
+#pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
 template<typename H2DE_Rect_T>
@@ -305,5 +304,3 @@ using H2DE_Translate = H2DE_Vector2D<float>;
 using H2DE_Scale = H2DE_Vector2D<float>;
 /** @brief Pivot point with floating-point precision. */
 using H2DE_Pivot = H2DE_Vector2D<float>;
-
-#endif

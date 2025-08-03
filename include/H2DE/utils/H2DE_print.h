@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_PRINT_H
-#define H2DE_UTILS_PRINT_H
+#pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
 
@@ -43,5 +42,3 @@ namespace H2DE {
         std::cout << static_cast<long long>(value) << std::endl;
     }
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef H2DE_JSON_H
-#define H2DE_JSON_H
+#pragma once
 
 /**
  * @file H2DE_json.h
@@ -332,5 +331,3 @@ namespace H2DE_Json {
             };
     }
 };
-
-#endif

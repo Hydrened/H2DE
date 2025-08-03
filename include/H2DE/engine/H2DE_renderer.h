@@ -1,5 +1,4 @@
-#ifndef H2DE_RENDERER_H
-#define H2DE_RENDERER_H
+#pragma once
 
 #include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
@@ -97,5 +96,3 @@ private:
     friend class H2DE_Engine;
     friend class H2DE_AssetLoaderManager;
 };
-
-#endif

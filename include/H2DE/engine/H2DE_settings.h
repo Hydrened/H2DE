@@ -1,5 +1,4 @@
-#ifndef H2DE_SETTINGS_H
-#define H2DE_SETTINGS_H
+#pragma once
 
 /**
  * @file H2DE_settings.h
@@ -127,5 +126,3 @@ private:
     bool isKey(const std::string& line) const noexcept;
     const std::pair<std::string, std::string> getKeyAndValue(const std::string& line) const;
 };
-
-#endif

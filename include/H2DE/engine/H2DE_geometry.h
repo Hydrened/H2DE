@@ -1,5 +1,4 @@
-#ifndef H2DE_GEOMETRY_H
-#define H2DE_GEOMETRY_H
+#pragma once
 
 #include <H2DE/engine/H2DE_engine.h>
 class H2DE_Object;
@@ -56,5 +55,3 @@ private:
 };
 
 using G = H2DE_Geometry;
-
-#endif

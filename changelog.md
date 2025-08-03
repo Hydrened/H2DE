@@ -1,3 +1,7 @@
+## H2DE-4.2.2
+#### FIXED
+- createObject template not always working
+
 ## H2DE-4.2.1
 #### FIXED
 - bar object front surface not working

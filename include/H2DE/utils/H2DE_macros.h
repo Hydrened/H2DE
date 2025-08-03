@@ -1,5 +1,4 @@
-#ifndef H2DE_UTILS_MACROS_H
-#define H2DE_UTILS_MACROS_H
+#pragma once
 
 #include <SDL2/SDL_video.h>
 #include <H2DE/utils/H2DE_utils.h>
@@ -37,5 +36,3 @@
 
 /** @brief Constant used to center a window on the screen when creating it. */
 #define H2DE_WINDOW_POS_CENTERED SDL_WINDOWPOS_CENTERED
-
-#endif

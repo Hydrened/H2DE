@@ -1,5 +1,4 @@
-#ifndef H2DE_ERROR_H
-#define H2DE_ERROR_H
+#pragma once
 
 #include <string>
 
@@ -12,5 +11,3 @@ public:
 private:
     static void log(const std::string& message, int color);
 };
-
-#endif

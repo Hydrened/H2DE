@@ -1,5 +1,4 @@
-#ifndef H2DE_TIMER_OBJECT_H
-#define H2DE_TIMER_OBJECT_H
+#pragma once
 
 /**
  * @file H2DE_timer_object.h
@@ -366,5 +365,3 @@ private:
     static std::string intToStr(int value, int nbDigits);
     const std::string getStringifiedTime() const;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef H2DE_AUIDIO_H
-#define H2DE_AUIDIO_H
+#pragma once
 
 /**
  * @file H2DE_audio.h
@@ -204,5 +203,3 @@ private:
     int getNextFreeChannel() const;
     static int lerpVolume(int volume);
 };
-
-#endif

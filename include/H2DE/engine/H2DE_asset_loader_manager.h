@@ -1,5 +1,4 @@
-#ifndef H2DE_ASSET_LOADER_MANAGER_H
-#define H2DE_ASSET_LOADER_MANAGER_H
+#pragma once
 
 #include <mutex>
 #include <H2DE/engine/H2DE_engine.h>
@@ -66,5 +65,3 @@ private:
     friend class H2DE_Engine;
     friend class H2DE_Window;
 };
-
-#endif

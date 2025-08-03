@@ -1,5 +1,4 @@
-#ifndef H2DE_SURFACE_BORDER_H
-#define H2DE_SURFACE_BORDER_H
+#pragma once
 
 /**
  * @file H2DE_border.h
@@ -148,5 +147,3 @@ private:
         return (!isHidden() && borderData.color.isVisible() && borderData.thickness != 0);
     }
 };
-
-#endif
