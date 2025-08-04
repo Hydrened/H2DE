@@ -216,15 +216,18 @@ void H2DE_Engine::updateObjects() {
 // ACTIONS
 
 // -- assets
-void H2DE_Engine::loadAssetsSync(const std::string& directory) {
+void H2DE_Engine::loadAssetsSync(const std::string& directory, bool silentLoad) {
+    assetLoaderManager->silentLoad = silentLoad;
     assetLoaderManager->loadAssets(directory, nullptr, nullptr, true);
 }
 
-void H2DE_Engine::loadAssetsAsync(const std::string& directory, const std::function<void(float)>& progress, const std::function<void()>& completed) {
+void H2DE_Engine::loadAssetsAsync(const std::string& directory, const std::function<void(float)>& progress, const std::function<void()>& completed, bool silentLoad) {
+    assetLoaderManager->silentLoad = silentLoad;
     assetLoaderManager->loadAssets(directory, progress, completed, false);
 }
 
-void H2DE_Engine::loadFont(const std::string& name, const H2DE_Font& font) {
+void H2DE_Engine::loadFont(const std::string& name, const H2DE_Font& font, bool silentLoad) {
+    assetLoaderManager->silentLoad = silentLoad;
     assetLoaderManager->loadFont(name, font);
 }
 

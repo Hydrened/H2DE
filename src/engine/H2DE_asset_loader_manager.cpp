@@ -27,11 +27,6 @@ void H2DE_AssetLoaderManager::loadTexturesFromBuffer() {
     }
 
     for (const auto& [name, surface] : surfaceBufferToProcess) {
-        auto it = textures.find(name);
-        if (it != textures.end()) {
-            H2DE_Error::logWarning("Texture \"" + name + "\" has been overridden");
-        }
-
         textures[name] = SDL_CreateTextureFromSurface(renderer, surface);
     }
 }
@@ -54,11 +49,6 @@ void H2DE_AssetLoaderManager::loadSoundsFromBuffer() {
     }
 
     for (const auto& [name, sound] : soundBufferToProcess) {
-        auto it = sounds.find(name);
-        if (it != sounds.end()) {
-            H2DE_Error::logWarning("Sound \"" + name + "\" has been overridden");
-        }
-
         sounds[name] = sound;
     }
 }
@@ -68,17 +58,23 @@ void H2DE_AssetLoaderManager::loadSoundsFromBuffer() {
 // -- load assets
 void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory, const std::function<void(float)>& progress, const std::function<void()>& completed, bool sync) {
     if (loading) {
-        H2DE_Error::logWarning("Engine is already loading assets");
+        if (!silentLoad) {
+            H2DE_Error::logWarning("Engine is already loading assets");
+        }
         return;
     }
 
     if (!std::filesystem::exists(directory)) {
-        H2DE_Error::logWarning("Asset directory not found");
+        if (!silentLoad) {
+            H2DE_Error::logWarning("Asset directory not found");
+        }
         return;
     }
 
     if (!std::filesystem::is_directory(directory)) {
-        H2DE_Error::logError("Path isn't a directory");
+        if (!silentLoad) {
+            H2DE_Error::logError("Path isn't a directory");
+        }
         return;
     }
 
@@ -108,8 +104,10 @@ void H2DE_AssetLoaderManager::loadAssetsSync(const std::filesystem::path& direct
         assetLoadedSync();
     }
 
-    std::cout << std::endl;
-    H2DE::print("H2DE => Loading complete");
+    if (!silentLoad) {
+        std::cout << std::endl;
+        H2DE::print("H2DE => Loading complete");
+    }
 
     loadedAssets = 0;
     assetsToLoad = 0;
@@ -178,7 +176,9 @@ H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadTexture(c
 
     if (surface != nullptr) {
         if (textures.find(name) != textures.end()) {
-            H2DE_Error::logWarning("Texture \"" + name + "\" has been overridden");
+            if (!silentLoad) {
+                H2DE_Error::logWarning("Texture \"" + name + "\" has been overridden");
+            }
         }
         
     } else {
@@ -196,7 +196,9 @@ H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadSound(con
 
     if (sound != nullptr) {
         if (sounds.find(name) != sounds.end()) {
-            H2DE_Error::logWarning("Sound \"" + name + "\" has been overridden");
+            if (!silentLoad) {
+                H2DE_Error::logWarning("Sound \"" + name + "\" has been overridden");
+            }
         }
 
     } else {
@@ -212,6 +214,11 @@ void H2DE_AssetLoaderManager::assetLoadedSync() {
     constexpr uint8_t barWidth = 30;
 
     loadedAssets++;
+
+    if (silentLoad) {
+        return;
+    }
+
     const float blend = static_cast<float>(loadedAssets) / assetsToLoad;
     const int percentage = static_cast<int>(blend * 100);
     const int squares = static_cast<int>(blend * barWidth);
@@ -240,7 +247,9 @@ void H2DE_AssetLoaderManager::assetLoadedAsync() {
 // -- load font
 void H2DE_AssetLoaderManager::loadFont(const std::string& name, const H2DE_Font& font) {
     if (engine->fonts.find(name) != engine->fonts.end()) {
-        H2DE_Error::logWarning("Font \"" + name + "\" has been overridden");
+        if (!silentLoad) {
+            H2DE_Error::logWarning("Font \"" + name + "\" has been overridden");
+        }
     }
 
     engine->fonts[name] = font;

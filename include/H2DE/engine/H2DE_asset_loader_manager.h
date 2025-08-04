@@ -38,6 +38,8 @@ private:
 
     std::mutex loadMutex;
 
+    bool silentLoad = false;
+
     H2DE_AssetLoaderManager(H2DE_Engine* engine, SDL_Renderer* renderer) noexcept : engine(engine), renderer(renderer) {};
     ~H2DE_AssetLoaderManager() noexcept = default;
 
@@ -61,7 +63,7 @@ private:
     void refreshObjectsSurfaceBuffers();
     
     const std::vector<std::filesystem::path> getFilesToLoad(const std::filesystem::path& directory) const;
-    
+
     friend class H2DE_Engine;
     friend class H2DE_Window;
 };

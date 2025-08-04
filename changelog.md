@@ -1,3 +1,9 @@
+## H2DE-4.2.3
+#### ADDED
+- loadings on silent mode
+#### FIXED
+- async load double warning when overriding an asset
+
 ## H2DE-4.2.2
 #### FIXED
 - createObject template not always working

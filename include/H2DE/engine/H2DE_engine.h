@@ -120,8 +120,9 @@ public:
      * If a file with the same name already exists in the cache, it will be overridden (a warning is logged).
      * 
      * @param directory Path to the folder containing the assets to load.
+     * @param silentLoad If true, suppresses override warnings and disables the progress bar display.
      */
-    void loadAssetsSync(const std::string& directory);
+    void loadAssetsSync(const std::string& directory, bool silentLoad = false);
     /**
      * @brief Loads all supported assets asynchronously from a given directory.
      * 
@@ -133,8 +134,9 @@ public:
      * @param directory Path to the folder containing the assets to load.
      * @param progress Callback function that receives the current progress as a float from 0.0f to 1.0f.
      * @param completed Callback function called once all assets are loaded and stored in buffers.
+     * @param silentLoad If true, suppresses override warnings.
      */
-    void loadAssetsAsync(const std::string& directory, const std::function<void(float)>& progress, const std::function<void()>& completed);
+    void loadAssetsAsync(const std::string& directory, const std::function<void(float)>& progress, const std::function<void()>& completed, bool silentLoad = false);
     /**
      * @brief Loads or overrides a font with the given name in the engine's font collection.
      * 
@@ -142,8 +144,9 @@ public:
      * 
      * @param name The unique identifier for the font.
      * @param font The font data to load.
+     * @param silentLoad If true, suppresses override warnings.
      */
-    void loadFont(const std::string& name, const H2DE_Font& font);
+    void loadFont(const std::string& name, const H2DE_Font& font, bool silentLoad = false);
 
     /**
      * @brief Enables or disables the debug mode of the engine.
