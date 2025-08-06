@@ -282,7 +282,7 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return Ttimeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
     H2DE_Timeline* setTime(const H2DE_Time& time, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
@@ -295,7 +295,7 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return Ttimeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
     H2DE_Timeline* setHours(uint8_t hours, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
@@ -308,7 +308,7 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return Ttimeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
     H2DE_Timeline* setMinutes(uint8_t minutes, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
@@ -321,7 +321,7 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return Ttimeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
     H2DE_Timeline* setSeconds(uint8_t seconds, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
@@ -334,7 +334,7 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return Ttimeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
     H2DE_Timeline* setMilliseconds(uint16_t milliseconds, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 

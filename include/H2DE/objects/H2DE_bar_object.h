@@ -7,7 +7,7 @@
  * This header declares the H2DE_BarObject class, which inherits from H2DE_Object and provides a flexible 2D bar component 
  * capable of displaying dynamic values using surfaces for the background and foreground. It supports both direct and animated updates.
  * 
- * Surfaces can be added either to the front (e.g. fill texture) or to the background (e.g. static panel) with fine-grained control.
+ * Surfaces can be added either to the fill or to the background (e.g. static panel) with fine-grained control.
  * 
  * The bar’s value, minimum, and maximum can be modified directly or animated with timeline support and easing functions.
  */
@@ -22,7 +22,7 @@
  * It can be used for health bars, loading bars, mana bars, experience bars, etc.
  * 
  * This object supports:
- * - Custom front and background surfaces (textures, sprites, or colors).
+ * - Custom fill and background surfaces (textures, sprites, or colors).
  * - Real-time or animated value updates (with easing support).
  * - Access to the underlying bar data and surface management.
  * 
@@ -31,9 +31,9 @@
 class H2DE_BarObject : public H2DE_Object {
 public:
     /**
-     * @brief Add a surface to the front of the bar.
+     * @brief Add a surface to the fill of the bar.
      * 
-     * This function adds a surface (texture, sprite, or color) in front of the bar,
+     * This function adds a surface (texture, sprite, or color) in fill of the bar,
      * which visually represents the actual filling part of the bar.
      * 
      * @tparam H2DE_Surface_T The type of the surface (e.g. Texture, Sprite, Color).
@@ -43,20 +43,20 @@ public:
      * @return A pointer to the created surface, or nullptr on failure.
      */
     template<typename H2DE_Surface_T>
-    inline H2DE_Surface_T* addSurfaceToFront(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
-        return H2DE_Object::addSurface<H2DE_Surface_T>(frontSurfaces, name, surfaceData, specificData);
+    inline H2DE_Surface_T* addSurfaceToFill(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
+        return H2DE_Object::addSurface<H2DE_Surface_T>(fillSurfaces, name, surfaceData, specificData);
     }
     /**
-     * @brief Remove a front surface from the bar.
+     * @brief Remove a fill surface from the bar.
      * 
-     * This removes a surface that was previously added in front of the bar
+     * This removes a surface that was previously added in fill of the bar
      * using its unique name.
      * 
      * @param name The name of the surface to remove.
      * @return true if the surface was removed successfully, false otherwise.
      */
-    inline bool removeSurfaceFromFront(const std::string& name) {
-        return H2DE_Object::removeSurface(frontSurfaces, name);
+    inline bool removeSurfaceFromFill(const std::string& name) {
+        return H2DE_Object::removeSurface(fillSurfaces, name);
     }
     
     /**
@@ -130,15 +130,15 @@ public:
     }
 
     /**
-     * @brief Get all front surfaces of the bar.
+     * @brief Get all fill surfaces of the bar.
      * 
-     * Returns a map containing all surfaces rendered in front of the bar background.
+     * Returns a map containing all surfaces rendered in fill of the bar background.
      * These typically include the foreground bar fill or decorative elements.
      * 
      * @return A map of surface names to H2DE_Surface pointers.
      */
-    inline std::unordered_map<std::string, H2DE_Surface*> getFrontSurfaces() const noexcept {
-        return frontSurfaces;
+    inline std::unordered_map<std::string, H2DE_Surface*> getFillSurfaces() const noexcept {
+        return fillSurfaces;
     }
     /**
      * @brief Get all background surfaces of the bar.
@@ -152,9 +152,9 @@ public:
         return backgroundSurfaces;
     }
     /**
-     * @brief Get a front surface by name and type.
+     * @brief Get a fill surface by name and type.
      * 
-     * Retrieves a specific surface from the front layer, cast to the requested surface type.
+     * Retrieves a specific surface from the fill layer, cast to the requested surface type.
      * If the name does not exist or the type is incorrect, returns nullptr.
      * 
      * @tparam H2DE_Surface_T The expected surface type (Texture, Sprite, Color, etc.).
@@ -162,8 +162,8 @@ public:
      * @return A pointer to the surface, or nullptr if not found or mismatched.
      */
     template<typename H2DE_Surface_T>
-    inline H2DE_Surface_T* getFrontSurface(const std::string& name) const {
-        return H2DE_Object::getSurface<H2DE_Surface_T>(frontSurfaces, name);
+    inline H2DE_Surface_T* getFillSurface(const std::string& name) const {
+        return H2DE_Object::getSurface<H2DE_Surface_T>(fillSurfaces, name);
     }
     /**
      * @brief Get a background surface by name and type.
@@ -180,12 +180,12 @@ public:
         return H2DE_Object::getSurface<H2DE_Surface_T>(backgroundSurfaces, name);
     }
     /**
-     * @brief Checks whether a front surface with the given name exists.
+     * @brief Checks whether a fill surface with the given name exists.
      * @param name Name of the surface to check.
-     * @return true if the front surface exists, false otherwise.
+     * @return true if the fill surface exists, false otherwise.
      */
-    inline bool hasFrontSurface(const std::string& name) const {
-        return H2DE_Object::hasSurface(frontSurfaces, name); 
+    inline bool hasFillSurface(const std::string& name) const {
+        return H2DE_Object::hasSurface(fillSurfaces, name); 
 }
     /**
      * @brief Checks whether a background surface with the given name exists.
@@ -269,7 +269,7 @@ public:
 private:
     H2DE_BarObjectData barObjectData;
 
-    std::unordered_map<std::string, H2DE_Surface*> frontSurfaces = {};
+    std::unordered_map<std::string, H2DE_Surface*> fillSurfaces = {};
     std::unordered_map<std::string, H2DE_Surface*> backgroundSurfaces = {};
 
     H2DE_BarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
@@ -278,7 +278,8 @@ private:
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
 
-    constexpr float getFrontBlend() const {
+    constexpr float getFillBlend() const {
         return H2DE::clamp((getValue() - getMin()) / (getMax() - getMin()), 0.0f, 1.0f);
     }
+    bool isSurfaceFill(H2DE_Surface* surface) const;
 };

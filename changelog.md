@@ -1,3 +1,10 @@
+## H2DE-4.2.4
+#### FIXED
+- setting higher value than maximum for bar object
+- bar background surfaces not working
+#### MODIFIED
+- bar front surfaces are now fill surfaces
+
 ## H2DE-4.2.3
 #### ADDED
 - loadings on silent mode

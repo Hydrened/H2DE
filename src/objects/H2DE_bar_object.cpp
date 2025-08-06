@@ -10,28 +10,41 @@ H2DE_BarObject::H2DE_BarObject(H2DE_Engine* e, const H2DE_ObjectData& od, const 
 
 // CLEANUP
 H2DE_BarObject::~H2DE_BarObject() {
-    H2DE_Object::destroySurfaces(frontSurfaces);
+    H2DE_Object::destroySurfaces(fillSurfaces);
     H2DE_Object::destroySurfaces(backgroundSurfaces);
 }
 
 // ACTIONS
 void H2DE_BarObject::refreshSurfaceBuffers() {
     const std::vector<H2DE_Surface*> sortedBackgroundSurfaces = H2DE_Object::getSortedSurfaces(backgroundSurfaces);
-    const std::vector<H2DE_Surface*> sortedFrontSurfaces = H2DE_Object::getSortedSurfaces(frontSurfaces);
+    std::vector<H2DE_Surface*> sortedFillSurfaces = H2DE_Object::getSortedSurfaces(fillSurfaces);
 
     surfaceBuffers.clear();
-    surfaceBuffers.reserve(sortedFrontSurfaces.size() + sortedBackgroundSurfaces.size());
+    surfaceBuffers.reserve(sortedBackgroundSurfaces.size() + sortedFillSurfaces.size());
     surfaceBuffers.insert(surfaceBuffers.end(), sortedBackgroundSurfaces.begin(), sortedBackgroundSurfaces.end());
-    surfaceBuffers.insert(surfaceBuffers.end(), sortedFrontSurfaces.begin(), sortedFrontSurfaces.end());
+    surfaceBuffers.insert(surfaceBuffers.end(), sortedFillSurfaces.begin(), sortedFillSurfaces.end());
+    surfaceBuffers = H2DE_Object::getSortedSurfaces(surfaceBuffers);
+
     rescaleSurfaceBuffers();
 }
 
 void H2DE_BarObject::refreshMaxRadius() {
     float maxHitboxesRadius = getMaxHitboxRadius();
-    float maxFrontSurfaceRadius = getMaxSurfaceRadius(frontSurfaces);
+    float maxFillSurfaceRadius = getMaxSurfaceRadius(fillSurfaces);
     float maxBackgroundSurfaceRadius = getMaxSurfaceRadius(backgroundSurfaces);
 
-    maxRadius = H2DE::max(maxHitboxesRadius, maxFrontSurfaceRadius, maxBackgroundSurfaceRadius);
+    maxRadius = H2DE::max(maxHitboxesRadius, maxFillSurfaceRadius, maxBackgroundSurfaceRadius);
+}
+
+// GETTER
+bool H2DE_BarObject::isSurfaceFill(H2DE_Surface* surface) const {
+    for (const auto& [name, fillSurface] : fillSurfaces) {
+        if (surface == fillSurface) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // SETTER
@@ -72,6 +85,8 @@ H2DE_Timeline* H2DE_BarObject::setMax(float max, uint32_t duration, H2DE_Easing 
 }
 
 H2DE_Timeline* H2DE_BarObject::setValue(float value, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+    value = H2DE::clamp(value, barObjectData.min, barObjectData.max);
+
     H2DE_Timeline* timeline = H2DE_LerpManager::lerp<float>(engine, barObjectData.value, value, duration, easing, [this](float iv) {
         setValue(iv);
     }, completed, pauseSensitive);

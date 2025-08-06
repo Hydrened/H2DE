@@ -192,8 +192,14 @@ const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(std::unordered_m
         res.push_back(surface);
     }
 
+    return getSortedSurfaces(res);
+}
+
+const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(std::vector<H2DE_Surface*>& surfaces) {
+    std::vector<H2DE_Surface*> res = surfaces;
+
     std::sort(res.begin(), res.end(), [](H2DE_Surface* a, H2DE_Surface* b) {
-        return a->surfaceData.index < b->surfaceData.index;
+        return (a->surfaceData.index < b->surfaceData.index);
     });
 
     return res;

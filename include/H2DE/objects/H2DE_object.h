@@ -467,6 +467,7 @@ protected:
     static H2DE_Surface_T* getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
 
     static const std::vector<H2DE_Surface*> getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
+    static const std::vector<H2DE_Surface*> getSortedSurfaces(std::vector<H2DE_Surface*>& surfaces);
     static const std::array<H2DE_Translate, 4> getCorners(const H2DE_Transform& transform);
 
     static inline bool hasSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {

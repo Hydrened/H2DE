@@ -322,19 +322,10 @@ SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object,
     const H2DE_BarObject* bar = dynamic_cast<const H2DE_BarObject*>(object);
 
     if (bar != nullptr) {
-        
-        bool isFrontSurface = false;
-        for (const auto& [name, frontSurface] : bar->getFrontSurfaces()) {
-            if (surface == frontSurface) {
-                isFrontSurface = true;
-                break;
-            }
-        }
-
-        if (isFrontSurface) {
-            float frontBarBlend = bar->getFrontBlend();
-            surfaceRect.x = (surfaceRect.w - surfaceRect.multiplyW(frontBarBlend).w) * -0.5f;
-            surfaceRect = surfaceRect.multiplyW(frontBarBlend);
+        if (bar->isSurfaceFill(surface)) {
+            float fillBarBlend = bar->getFillBlend();
+            surfaceRect.x = (surfaceRect.w - surfaceRect.multiplyW(fillBarBlend).w) * -0.5f;
+            surfaceRect = surfaceRect.multiplyW(fillBarBlend);
         }
     }
 
@@ -374,7 +365,9 @@ std::optional<SDL_Rect> H2DE_Renderer::renderSurfaceGetPossibleSrcRect(const H2D
 
     float blend = 1.0f;
     if (bar != nullptr) {
-        blend = bar->getFrontBlend();
+        if (bar->isSurfaceFill(surface)) {
+            blend = bar->getFillBlend();
+        }
     }
 
     H2DE_PixelRect src = !possibleSrcRect.has_value()

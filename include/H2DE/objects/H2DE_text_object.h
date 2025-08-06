@@ -173,7 +173,7 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return Ttimeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
     H2DE_Timeline* setContainer(const H2DE_Scale& container, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
@@ -186,7 +186,7 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return Ttimeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
     H2DE_Timeline* setFontSize(const H2DE_Scale& fontSize, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
@@ -199,7 +199,7 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return Ttimeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
     H2DE_Timeline* setSpacing(const H2DE_Scale& spacing, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
@@ -213,7 +213,7 @@ public:
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
-     * @return Ttimeline controlling this animation.
+     * @return Timeline controlling this animation.
      */
     H2DE_Timeline* setColor(const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
