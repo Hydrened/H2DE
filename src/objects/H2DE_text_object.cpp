@@ -107,24 +107,53 @@ void H2DE_TextObject::refreshMaxRadius() {
 }
 
 // GETTER
+const std::string H2DE_TextObject::getFormatedText() const {
+    const std::string txt = textObjectData.text.text;
+    std::string res = "";
+
+    for (int i = 0; i < txt.length() - 1; i++) {
+        const char& cc = txt.at(i);
+        const char& nc = txt.at(i + 1);
+
+        if (nc == '\n' && cc == ' ') {
+            continue;
+        }
+
+        if (cc != '\n') {
+            res += cc;
+            continue;
+        }
+
+        res += '\n';
+        if (nc != ' ') {
+            res += ' ';
+        }
+    }
+
+    return res + txt.substr(txt.length() - 1, 1);
+}
+
 const std::vector<std::string> H2DE_TextObject::getWords() const {
     if (isTextNull()) {
         return {};
     }
 
     std::vector<std::string> words = {};
-    std::string text = textObjectData.text.text;
+    std::string text = getFormatedText();
 
     size_t start = 0;
     while (start < text.size()) {
+        bool lineBreak = (text.find('\n', start) != std::string::npos);
         size_t end = text.find(' ', start);
 
         if (end == std::string::npos) {
+            const std::string word = text.substr(start) + (lineBreak ? "\n" : "");
             words.push_back(text.substr(start));
             break;
         }
 
-        words.push_back(text.substr(start, end - start));
+        const std::string word = text.substr(start, end - start) + (lineBreak ? "\n" : "");
+        words.push_back(word);
         start = end + 1;
 
         while (start < text.size() && text[start] == ' ') {
@@ -172,6 +201,12 @@ const std::vector<std::vector<std::string>> H2DE_TextObject::getLines() const {
 
             lines[currentLineIndex].push_back(word);
         }
+
+        bool lineBreak = (word.find('\n') != std::string::npos);
+        if (lineBreak) {
+            lines.push_back({});
+            currentLineIndex++;
+        }
     }
 
     return lines;
@@ -182,6 +217,11 @@ int H2DE_TextObject::getLineLength(const std::vector<std::string>& line) {
 
     for (const std::string& word : line) {
         length += word.length();
+
+        bool lineBreak = (word.find('\n') != std::string::npos);
+        if (lineBreak) {
+            length -= 2;
+        }
     }
 
     return length;

@@ -4,30 +4,30 @@
 #include "H2DE/engine/H2DE_error.h"
 
 // CREATE
-bool H2DE_Json::create(const std::filesystem::path& path, bool override, bool encode) {
+bool H2DE::Json::create(const std::filesystem::path& path, bool override, bool encode) {
     if (!override && std::filesystem::exists(path)) {
         return false;
     }
 
-    return H2DE_Json::write(path, json{}, encode);
+    return H2DE::Json::write(path, json{}, encode);
 }
 
-bool H2DE_Json::create(const std::filesystem::path& path, const json& data, bool override, bool encode) {
+bool H2DE::Json::create(const std::filesystem::path& path, const json& data, bool override, bool encode) {
     if (!override && std::filesystem::exists(path)) {
         return false;
     }
 
-    return H2DE_Json::write(path, data, encode);
+    return H2DE::Json::write(path, data, encode);
 }
 
 // READ
-json H2DE_Json::read(const std::filesystem::path& path) {
+json H2DE::Json::read(const std::filesystem::path& path) {
     if (!std::filesystem::exists(path)) {
         H2DE_Error::logError("File not found:" + path.string());
         return json{};
     }
 
-    std::ifstream file(path);
+    std::ifstream file(path, std::ios::binary);
 
     if (!file) {
         H2DE_Error::logError("Failed to open file: " + path.string());
@@ -40,15 +40,15 @@ json H2DE_Json::read(const std::filesystem::path& path) {
     try {
         json data;
 
-        try {
-            data = json::parse(fileContent);
-        } catch (const std::exception& encodeError) {
-            data = json::parse(H2DE_Codec::decode(fileContent));
-        }
+        const std::string encodedSignature = "H2DEENC";
+        bool isEncoded = (fileContent.size() >= encodedSignature.length())
+            ? (fileContent.substr(0, encodedSignature.length()) == encodedSignature)
+            : false;
 
-        if (data.is_discarded()) {
-            H2DE_Error::logError("Invalid JSON format in file: " + path.string());
-            return json{};
+        if (isEncoded) {
+            data = json::parse(H2DE_Codec::decode(fileContent.substr(encodedSignature.length())));
+        } else {
+            data = json::parse(fileContent);
         }
 
         return data;
@@ -60,18 +60,21 @@ json H2DE_Json::read(const std::filesystem::path& path) {
 }
 
 // WRITE
-bool H2DE_Json::write(const std::filesystem::path& path, const json& data, bool encode) {
-    std::ofstream file(path);
+bool H2DE::Json::write(const std::filesystem::path& path, const json& data, bool encode) {
+    std::ofstream file(path, std::ios::binary);
     if (!file) {
         H2DE_Error::logError("Failed to open file for writing: " + path.string());
         return false;
     }
 
+    const std::string encodedSignature = "H2DEENC";
+
     if (encode) {
+        file << encodedSignature;
         file << H2DE_Codec::encode(data.dump());
 
     } else {
-        file << data;
+        file << data.dump();
     }
 
     if (!file.good()) {

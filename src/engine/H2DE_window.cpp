@@ -229,3 +229,31 @@ void H2DE_Window::setRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio) {
     customRatio = (H2DE_WINDOW_RATIO_CUSTOM) ? static_cast<float>(data.size.x) / static_cast<float>(data.size.y) : 0.0f;
     fixRatioSize(getSize());
 }
+
+void H2DE_Window::setCursor(H2DE_Cursor c) {
+    if (cursor != nullptr) {
+        SDL_FreeCursor(cursor);
+    }
+
+    cursor = SDL_CreateSystemCursor(H2DE_Window::getSDLCursor(c));
+    SDL_SetCursor(cursor);
+}
+
+// GETTER
+SDL_SystemCursor H2DE_Window::getSDLCursor(H2DE_Cursor cursor) {
+    switch (cursor) {
+        case H2DE_CURSOR_ARROW: return SDL_SYSTEM_CURSOR_ARROW;
+        case H2DE_CURSOR_IBEAM: return SDL_SYSTEM_CURSOR_IBEAM;
+        case H2DE_CURSOR_WAIT: return SDL_SYSTEM_CURSOR_WAIT;
+        case H2DE_CURSOR_CROSSHAIR: return SDL_SYSTEM_CURSOR_CROSSHAIR;
+        case H2DE_CURSOR_WAITARROW: return SDL_SYSTEM_CURSOR_WAITARROW;
+        case H2DE_CURSOR_SIZENWSE: return SDL_SYSTEM_CURSOR_SIZENWSE;
+        case H2DE_CURSOR_SIZENESW: return SDL_SYSTEM_CURSOR_SIZENESW;
+        case H2DE_CURSOR_SIZEWE: return SDL_SYSTEM_CURSOR_SIZEWE;
+        case H2DE_CURSOR_SIZENS: return SDL_SYSTEM_CURSOR_SIZENS;
+        case H2DE_CURSOR_SIZEALL: return SDL_SYSTEM_CURSOR_SIZEALL;
+        case H2DE_CURSOR_NO: return SDL_SYSTEM_CURSOR_NO;
+        case H2DE_CURSOR_HAND: return SDL_SYSTEM_CURSOR_HAND;
+        default: return SDL_SYSTEM_CURSOR_ARROW;
+    }
+}

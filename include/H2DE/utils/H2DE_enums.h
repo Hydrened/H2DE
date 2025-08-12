@@ -165,3 +165,35 @@ enum H2DE_BlendMode {
     H2DE_BLEND_MODE_INVALID,    /**< Invalid mode */
     H2DE_BLEND_MODE_NONE,       /**< No blending */
 };
+
+/**
+ * @enum H2DE_Cursor
+ * @brief Defines the available system cursors for rendering.
+ * 
+ * - ARROW: Default arrow pointer.
+ * - IBEAM: Text selection (I-beam) cursor.
+ * - WAIT: Wait or loading indicator.
+ * - CROSSHAIR: Crosshair cursor for precision selection.
+ * - WAITARROW: Combined wait and arrow cursor.
+ * - SIZENWSE: Diagonal resize from top-left to bottom-right.
+ * - SIZENESW: Diagonal resize from top-right to bottom-left.
+ * - SIZEWE: Horizontal resize.
+ * - SIZENS: Vertical resize.
+ * - SIZEALL: All-direction move cursor.
+ * - NO: "Not allowed" or unavailable action cursor.
+ * - HAND: Hand cursor, typically used for clickable elements.
+ */
+enum H2DE_Cursor {
+    H2DE_CURSOR_ARROW,          /**< Default arrow pointer */
+    H2DE_CURSOR_IBEAM,          /**< Text selection (I-beam) */
+    H2DE_CURSOR_WAIT,           /**< Wait or loading */
+    H2DE_CURSOR_CROSSHAIR,      /**< Precision selection crosshair */
+    H2DE_CURSOR_WAITARROW,      /**< Wait + arrow */
+    H2DE_CURSOR_SIZENWSE,       /**< Diagonal resize */
+    H2DE_CURSOR_SIZENESW,       /**< Diagonal resize */
+    H2DE_CURSOR_SIZEWE,         /**< Horizontal resize */
+    H2DE_CURSOR_SIZENS,         /**< Vertical resize */
+    H2DE_CURSOR_SIZEALL,        /**< Move in all directions */
+    H2DE_CURSOR_NO,             /**< Not allowed / unavailable */
+    H2DE_CURSOR_HAND,           /**< Clickable element pointer */
+};

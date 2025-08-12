@@ -1,3 +1,12 @@
+## H2DE-4.2.5
+#### ADDED
+- line break for text object
+- set cursor
+#### FIXED
+- json read encoded files crash
+#### MODIFIED
+- Json namespace is now in H2DE namespace
+
 ## H2DE-4.2.4
 #### FIXED
 - setting higher value than maximum for bar object

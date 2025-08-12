@@ -45,9 +45,9 @@ private:
 
     void update();
 
-    H2DE_LoadedAsset loadFile(const std::filesystem::path& file, bool sync);
-    H2DE_LoadedAsset loadTexture(const std::filesystem::path& file, bool sync);
-    H2DE_LoadedAsset loadSound(const std::filesystem::path& file, bool sync);
+    H2DE_LoadedAsset loadFile(const std::filesystem::path& file);
+    H2DE_LoadedAsset loadTexture(const std::filesystem::path& file);
+    H2DE_LoadedAsset loadSound(const std::filesystem::path& file);
 
     void assetLoadedSync();
     void assetLoadedAsync();

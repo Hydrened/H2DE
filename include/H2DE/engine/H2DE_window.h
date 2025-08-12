@@ -117,6 +117,15 @@ public:
      * @param ratio The desired window aspect ratio setting.
      */
     void setRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio);
+    /**
+     * @brief Change the current mouse cursor.
+     * 
+     * Sets the system cursor to the one specified in the cursor parameter.
+     * This affects the cursor appearance immediately in the game window.
+     * 
+     * @param cursor The desired cursor type, from the ::H2DE_Cursor enumeration.
+     */
+    void setCursor(H2DE_Cursor cursor);
     
     friend class H2DE_Engine;
 
@@ -127,6 +136,7 @@ private:
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
 
+    SDL_Cursor* cursor = nullptr;
     H2DE_PixelSize oldSize = { 0, 0 };
     float customRatio = 0.0f;
 
@@ -147,4 +157,5 @@ private:
     constexpr const SDL_WindowFlags getFlags(bool fullscreen, bool resizable) {
         return (fullscreen) ? SDL_WINDOW_FULLSCREEN_DESKTOP : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
     }
+    static SDL_SystemCursor getSDLCursor(H2DE_Cursor cursor);
 };

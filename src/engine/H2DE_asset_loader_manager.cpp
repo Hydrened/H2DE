@@ -92,7 +92,7 @@ void H2DE_AssetLoaderManager::loadAssets(const std::filesystem::path& directory,
 
 void H2DE_AssetLoaderManager::loadAssetsSync(const std::filesystem::path& directory) {
     for (const std::filesystem::path& file : filesToLoad) {
-        const H2DE_AssetLoaderManager::H2DE_LoadedAsset& loadedAsset = loadFile(file, true);
+        const H2DE_AssetLoaderManager::H2DE_LoadedAsset& loadedAsset = loadFile(file);
 
         switch (loadedAsset.type) {
             case H2DE_AssetLoaderManager::H2DE_ASSET_TYPE_SURFACE: surfaceBuffer[loadedAsset.name] = loadedAsset.surface; break;
@@ -119,7 +119,7 @@ void H2DE_AssetLoaderManager::loadAssetsAsync(const std::filesystem::path& direc
 
     std::thread([this, completed]() {
         for (const std::filesystem::path& file : filesToLoad) {
-            const H2DE_AssetLoaderManager::H2DE_LoadedAsset& loadedAsset = loadFile(file, false);
+            const H2DE_AssetLoaderManager::H2DE_LoadedAsset& loadedAsset = loadFile(file);
             
             {
                 std::lock_guard<std::mutex> lock(loadMutex);
@@ -152,24 +152,24 @@ void H2DE_AssetLoaderManager::loadAssetsAsync(const std::filesystem::path& direc
 }
 
 // -- load asset
-H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadFile(const std::filesystem::path& file, bool sync) {
+H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadFile(const std::filesystem::path& file) {
     const std::filesystem::path extension = file.extension();
 
     const bool isImg = (std::find(supportedImg.begin(), supportedImg.end(), extension) != supportedImg.end());
     const bool isSound = (std::find(supportedSound.begin(), supportedSound.end(), extension) != supportedSound.end());
 
     if (isImg) {
-        return loadTexture(file, sync);
+        return loadTexture(file);
 
     } else if (isSound) {
-        return loadSound(file, sync);
+        return loadSound(file);
 
     } else {
         return H2DE_AssetLoaderManager::H2DE_LoadedAsset();
     }
 }
 
-H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadTexture(const std::filesystem::path& file, bool sync) {
+H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadTexture(const std::filesystem::path& file) {
     std::unordered_map<std::string, SDL_Texture*>& textures = engine->renderer->textures;
     SDL_Surface* surface = IMG_Load(file.string().c_str());
     const std::string name = file.filename().string();
@@ -189,7 +189,7 @@ H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadTexture(c
     return { H2DE_ASSET_TYPE_SURFACE, name, surface, nullptr };
 }
 
-H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadSound(const std::filesystem::path& file, bool sync) {
+H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadSound(const std::filesystem::path& file) {
     std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->audio->sounds;
     Mix_Chunk* sound = Mix_LoadWAV(file.string().c_str());
     const std::string name = file.filename().string();

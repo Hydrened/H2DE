@@ -231,6 +231,7 @@ private:
     void refreshSurfaceBuffers() override;
     void refreshMaxRadius() override;
 
+    const std::string getFormatedText() const;
     const std::vector<std::string> getWords() const;
     const std::vector<std::vector<std::string>> getLines() const;
 
