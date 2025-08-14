@@ -57,14 +57,14 @@ public:
         return textObjectData.text.font;
     }
     /**
-     * @brief Get the container scale.
+     * @brief Get the bounds scale.
      * 
-     * Returns the scale of the container used for containing the text.
+     * Returns the scale of the bounds used for containing the text.
      * 
-     * @return The scale of the container as an H2DE_Scale value.
+     * @return The scale of the bounds as an H2DE_Scale value.
      */
-    constexpr H2DE_Scale getContainer() const noexcept {
-        return textObjectData.text.container;
+    constexpr H2DE_Scale getBounds() const noexcept {
+        return textObjectData.text.bounds;
     }
     /**
      * @brief Get the font size scale.
@@ -73,7 +73,7 @@ public:
      * 
      * @return The font size scale as an H2DE_Scale value.
      */
-    constexpr H2DE_Scale getFontSize() const noexcept {
+    constexpr float getFontSize() const noexcept {
         return textObjectData.text.fontSize;
     }
     /**
@@ -106,6 +106,17 @@ public:
     constexpr H2DE_ColorRGB getColor() const noexcept {
         return textObjectData.text.color;
     }
+    /**
+     * @brief Get the padding of the text.
+     * 
+     * Returns the padding currently applied around the rendered text.
+     * Padding defines the spacing between the text content and the edges of its rendering area.
+     * 
+     * @return The text padding as an H2DE_Padding struct.
+     */
+    constexpr H2DE_Padding getPadding() const noexcept {
+        return textObjectData.text.padding;
+    }
 
     /**
      * @brief Set the text string to display.
@@ -124,13 +135,13 @@ public:
      */
     void setFont(const std::string& font);
     /**
-     * @brief Set the container scale immediately.
+     * @brief Set the bounds scale immediately.
      * 
-     * Adjusts the container scale without animation.
+     * Adjusts the bounds scale without animation.
      * 
-     * @param container The new container scale.
+     * @param bounds The new bounds scale.
      */
-    void setContainer(const H2DE_Scale& container);
+    void setBounds(const H2DE_Scale& bounds);
     /**
      * @brief Set the font size scale immediately.
      * 
@@ -138,7 +149,7 @@ public:
      * 
      * @param fontSize The new font size scale.
      */
-    void setFontSize(const H2DE_Scale& fontSize);
+    void setFontSize(float fontSize);
     /**
      * @brief Set the spacing between characters immediately.
      * 
@@ -164,31 +175,40 @@ public:
      */
     void setColor(const H2DE_ColorRGB& color);
     /**
-     * @brief Animate the container scale change over time.
+     * @brief Set the padding of the text immediately.
+     * 
+     * Changes the padding applied around the text without animation.
+     * Padding defines the spacing between the text content and the edges of its rendering area.
+     * 
+     * @param padding The new text padding.
+     */
+    void setPadding(const H2DE_Padding& padding);
+    /**
+     * @brief Animate the bounds scale change over time.
      * 
      * Smoothly changes the cotnainer scale from current to target value using timeline animation.
      * 
-     * @param container The target container scale.
+     * @param bounds The target bounds scale.
      * @param duration Duration of the animation.
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Timeline controlling this animation.
      */
-    H2DE_Timeline* setContainer(const H2DE_Scale& container, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setBounds(const H2DE_Scale& bounds, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the font size change over time.
      * 
-     * Smoothly changes the font size scale from current to target value using timeline animation.
+     * Smoothly changes the font size from current to target value using timeline animation.
      * 
-     * @param fontSize The target font size scale.
+     * @param fontSize The target font size size.
      * @param duration Duration of the animation.
      * @param easing Easing function to apply for interpolation.
      * @param completed Callback function called once the animation finishes.
      * @param pauseSensitive If true, animation pauses when the game is paused.
      * @return Timeline controlling this animation.
      */
-    H2DE_Timeline* setFontSize(const H2DE_Scale& fontSize, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
+    H2DE_Timeline* setFontSize(float fontSize, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
     /**
      * @brief Animate the spacing change over time.
      * 
@@ -232,13 +252,20 @@ private:
     void refreshMaxRadius() override;
 
     const std::string getFormatedText() const;
+    const std::string getFormatedWord(const std::string& word) const;
+
     const std::vector<std::string> getWords() const;
     const std::vector<std::vector<std::string>> getLines() const;
 
-    static int getLineLength(const std::vector<std::string>& line);
+    float getCharWidth(const char& c) const;
+    float getWordWidth(const std::string& word) const;
+    float getLineWidth(const std::vector<std::string>& line) const;
+    float getTextHeight() const;
 
-    float getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const noexcept;
     float getStartingOffsetX(const std::vector<std::string>& line) const;
+    float getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const;
+
+    float getFixedFontSize() const;
 
     inline bool isTextNull() const {
         return (textObjectData.text.text == ""); 

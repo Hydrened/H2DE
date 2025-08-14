@@ -1,6 +1,7 @@
 #pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
+#include <unordered_map>
 
 /**
  * @struct H2DE_Padding
@@ -118,8 +119,8 @@ private:
 struct H2DE_Text {
     std::string text = "";                                          /** Text content to display. */
     std::string font = "";                                          /** Font name or path to use for rendering the text. */
-    H2DE_Scale container = { 10.0f, 10.0f };                        /** Zone for the text to be written in. */
-    H2DE_Scale fontSize = { 1.0f, 1.0f };                           /** Font size scale for X and Y axes. */
+    H2DE_Scale bounds = { 10.0f, 10.0f };                           /** Zone for the text to be written in. */
+    float fontSize = 1.0f;                                          /** Font size scale for X and Y axes. */
     H2DE_Scale spacing = { 0.1f, 0.3f };                            /** Spacing between characters (X) and lines (Y). */
     H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_CENTER_CENTER;       /** Text alignment (horizontal and vertical). */
     H2DE_ColorRGB color = H2DE_ColorRGB();                          /** Color of the text. */
@@ -199,13 +200,44 @@ struct H2DE_Time {
  * @struct H2DE_Font
  * @brief Represents font data including texture, character sizing, spacing, and rendering modes.
  */
-struct H2DE_Font {
+struct OLD_H2DE_Font {
     std::string textureName = "";                           /**< Name of the texture used for the font */ 
     H2DE_PixelSize charSize = { 0, 0 };                     /**< Size of each character in pixels */
     int spacing = 0;                                        /**< Spacing between characters */
     std::string charOrder = "";                             /**< Order of characters in the texture */
     H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;      /**< Scaling mode for rendering */
     H2DE_BlendMode blendMode = H2DE_BLEND_MODE_BLEND;       /**< Blending mode for rendering */
+};
+
+/**
+ * @struct H2DE_Font
+ * @brief Represents font data including character definitions, texture, spacing, and rendering modes.
+ */
+struct H2DE_Font {
+    /**
+     * @struct H2DE_Char
+     * @brief Represents a single character in the font.
+     */
+    struct H2DE_Char {
+        char character = 'a';   /**< The character itself */
+        int width = 0;          /**< Width of the character in pixels */
+    };
+
+    std::string textureName = "";                       /**< Name of the texture used for the font */
+    std::vector<H2DE_Char> characters = {};             /**< List of characters defined in the font */
+    int ascent = 0;                                     /**< Distance from the baseline to the top of the character area (pixels above the character if centered) */
+    int descent = 0;                                    /**< Distance from the baseline to the bottom of the character area (pixels below the character if centered) */
+    int spacing = 0;                                    /**< Spacing between characters */
+    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;  /**< Scaling mode for rendering the font */
+    H2DE_BlendMode blendMode = H2DE_BLEND_MODE_BLEND;   /**< Blending mode for rendering the font */
+
+private:
+    mutable std::unordered_map<std::string, H2DE_PixelRect> _characters = {};
+    mutable int _characterHeight = 0;
+    mutable int _fixedCharacterHeight = 0;
+
+    friend class H2DE_AssetLoaderManager;
+    friend class H2DE_TextObject;
 };
 
 /**

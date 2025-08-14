@@ -1,3 +1,13 @@
+## H2DE-4.2.6
+#### ADDED
+- printl
+- font's characters can have a unique size
+- font ascent
+- font descent
+#### MODIFIED
+- renomed text container to bounds
+- font size is now a float representing the characters' height
+
 ## H2DE-4.2.5
 #### ADDED
 - line break for text object

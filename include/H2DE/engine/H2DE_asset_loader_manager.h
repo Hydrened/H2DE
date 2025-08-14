@@ -56,6 +56,7 @@ private:
     void loadAssetsSync(const std::filesystem::path& directory);
     void loadAssetsAsync(const std::filesystem::path& directory, const std::function<void(float)>& progress, const std::function<void()>& completed);
     void loadFont(const std::string& name, const H2DE_Font& font);
+    void buildFontCache(const H2DE_Font& font);
     
     void loadTexturesFromBuffer();
     void loadSoundsFromBuffer();

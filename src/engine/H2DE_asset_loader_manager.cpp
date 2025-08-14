@@ -252,7 +252,23 @@ void H2DE_AssetLoaderManager::loadFont(const std::string& name, const H2DE_Font&
         }
     }
 
+    buildFontCache(font);
     engine->fonts[name] = font;
+}
+
+void H2DE_AssetLoaderManager::buildFontCache(const H2DE_Font& font) {
+    const H2DE_PixelSize textureSize = engine->getTextureSize(font.textureName);
+    const int& spacing = font.spacing;
+
+    int lastSrcX = 0;
+
+    for (const H2DE_Font::H2DE_Char& character : font.characters) {
+        font._characters[std::string(1, character.character)] = { lastSrcX, 0, character.width, textureSize.y };
+        lastSrcX += character.width + spacing;
+    }
+    
+    font._characterHeight = textureSize.y;
+    font._fixedCharacterHeight = textureSize.y - (font.ascent + font.descent);
 }
 
 // -- refresh
