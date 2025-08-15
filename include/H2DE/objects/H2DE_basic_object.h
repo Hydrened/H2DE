@@ -39,7 +39,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* addSurface(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
-        return H2DE_Object::addSurface<H2DE_Surface_T>(surfaces, name, surfaceData, specificData);
+        return H2DE_Object::_addSurface<H2DE_Surface_T>(_surfaces, name, surfaceData, specificData);
     }
     /**
      * @brief Remove a surface from the object.
@@ -50,7 +50,7 @@ public:
      * @return true if the surface was found and removed, false otherwise.
      */
     inline bool removeSurface(const std::string& name) {
-        return H2DE_Object::removeSurface(surfaces, name);
+        return H2DE_Object::_removeSurface(_surfaces, name);
     }
 
     /**
@@ -62,7 +62,7 @@ public:
      * @return A map of surface names to their respective surface pointers.
      */
     inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const noexcept {
-        return surfaces; 
+        return _surfaces; 
 }
     /**
      * @brief Get a surface by name and cast it to a specific type.
@@ -76,7 +76,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* getSurface(const std::string& name) const {
-        return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); 
+        return H2DE_Object::_getSurface<H2DE_Surface_T>(_surfaces, name); 
 }
     /**
      * @brief Checks whether a surface with the given name exists.
@@ -84,17 +84,17 @@ public:
      * @return true if the surface exists, false otherwise.
      */
     inline bool hasSurface(const std::string& name) const {
-        return H2DE_Object::hasSurface(surfaces, name);
+        return H2DE_Object::_hasSurface(_surfaces, name);
     }
 
     friend class H2DE_Engine;
 
 private:
-    std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
+    std::unordered_map<std::string, H2DE_Surface*> _surfaces = {};
 
     H2DE_BasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
     ~H2DE_BasicObject() override;
 
-    void refreshSurfaceBuffers() override;
-    void refreshMaxRadius() override;
+    void _refreshSurfaceBuffers() override;
+    void _refreshMaxRadius() override;
 };

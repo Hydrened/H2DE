@@ -170,36 +170,36 @@ public:
     friend class H2DE_AssetLoaderManager;
 
 private:
-    struct H2DE_AudioChannel {
+    struct _H2DE_AudioChannel {
         bool pauseSensitive = true;
         bool manuallyPaused = false;
     };
 
 private:
-    H2DE_Engine* engine;
+    H2DE_Engine* _engine;
 
-    std::unordered_map<std::string, Mix_Chunk*> sounds;
-    std::unordered_map<H2DE_ChannelID, H2DE_AudioChannel> channels = {};
+    std::unordered_map<std::string, Mix_Chunk*> _sounds;
+    std::unordered_map<H2DE_ChannelID, _H2DE_AudioChannel> _channels = {};
 
-    int songVolume = 100;
-    int sfxVolume = 100;
+    int _songVolume = 100;
+    int _sfxVolume = 100;
 
     H2DE_Audio(H2DE_Engine* engine);
     ~H2DE_Audio();
 
-    void initSettings() const;
-    void loadData();
+    void _initSettings() const;
+    void _loadData();
 
-    void saveData() const;
+    void _saveData() const;
 
-    void update();
+    void _update();
 
-    void pause();
-    void resume();
+    void _pause();
+    void _resume();
 
-    H2DE_ChannelID playChunk(bool isSong, const std::string& soundName, uint32_t loops, bool pauseSensitive = true);
+    H2DE_ChannelID _playChunk(bool isSong, const std::string& soundName, uint32_t loops, bool pauseSensitive = true);
 
-    Mix_Chunk* getChunk(const std::string& soundName) const;
-    int getNextFreeChannel() const;
-    static int lerpVolume(int volume);
+    Mix_Chunk* _getChunk(const std::string& soundName) const;
+    int _getNextFreeChannel() const;
+    static int _lerpVolume(int volume);
 };

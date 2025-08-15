@@ -2,28 +2,28 @@
 
 // INIT
 H2DE_BasicObject::H2DE_BasicObject(H2DE_Engine* e, const H2DE_ObjectData& od) : H2DE_Object(e, od) {
-    refreshSurfaceBuffers();
-    refreshMaxRadius();
+    _refreshSurfaceBuffers();
+    _refreshMaxRadius();
 }
 
 // CLEANUP
 H2DE_BasicObject::~H2DE_BasicObject() {
-    H2DE_Object::destroySurfaces(surfaces);
+    H2DE_Object::_destroySurfaces(_surfaces);
 }
 
 // ACTIONS
-void H2DE_BasicObject::refreshSurfaceBuffers() {
-    const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::getSortedSurfaces(surfaces);
+void H2DE_BasicObject::_refreshSurfaceBuffers() {
+    const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
 
-    surfaceBuffers.clear();
-    surfaceBuffers.reserve(sortedSurfaces.size());
-    surfaceBuffers.insert(surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
-    rescaleSurfaceBuffers();
+    _surfaceBuffers.clear();
+    _surfaceBuffers.reserve(sortedSurfaces.size());
+    _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
+    _rescaleSurfaceBuffers();
 }
 
-void H2DE_BasicObject::refreshMaxRadius() {
-    float maxHitboxesRadius = getMaxHitboxRadius();
-    float maxSurfaceRadius = getMaxSurfaceRadius(surfaces);
+void H2DE_BasicObject::_refreshMaxRadius() {
+    float maxHitboxesRadius = _getMaxHitboxRadius();
+    float maxSurfaceRadius = _getMaxSurfaceRadius(_surfaces);
     
-    maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
+    _maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
 }

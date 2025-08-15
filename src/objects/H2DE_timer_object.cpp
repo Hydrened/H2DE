@@ -1,117 +1,116 @@
 #include "H2DE/objects/H2DE_timer_object.h"
-
 #include "H2DE/engine/H2DE_lerp_manager.h"
 
 // INIT
-H2DE_TimerObject::H2DE_TimerObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TimerObjectData& tod) : H2DE_Object(e, od), timerObjectData(tod) {
-    refreshSurfaceBuffers();
-    refreshMaxRadius();
-    initChrono();
+H2DE_TimerObject::H2DE_TimerObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TimerObjectData& tod) : H2DE_Object(e, od), _timerObjectData(tod) {
+    _refreshSurfaceBuffers();
+    _refreshMaxRadius();
+    _initChrono();
 }
 
-void H2DE_TimerObject::initChrono() {
-    chrono = engine->createChrono(timerObjectData.time, timerObjectData.increasing, timerObjectData.pauseSensitive);
+void H2DE_TimerObject::_initChrono() {
+    _chrono = _engine->createChrono(_timerObjectData.time, _timerObjectData.increasing, _timerObjectData.pauseSensitive);
 }
 
 // CLEANUP
 H2DE_TimerObject::~H2DE_TimerObject() {
-    destroyChrono();
+    _destroyChrono();
 
-    if (textObject != nullptr) {
-        if (engine->destroyObject(textObject)) {
-            textObject = nullptr;
+    if (_textObject != nullptr) {
+        if (_engine->destroyObject(_textObject)) {
+            _textObject = nullptr;
         }
     }
 
-    H2DE_Object::destroySurfaces(surfaces);
+    H2DE_Object::_destroySurfaces(_surfaces);
 }
 
-void H2DE_TimerObject::destroyChrono() {
-    chrono->stop();
+void H2DE_TimerObject::_destroyChrono() {
+    _chrono->stop();
 }
 
 // UPDATE
-void H2DE_TimerObject::update() {
-    timerObjectData.time = chrono->getTime();
-    textObject->setText(getStringifiedTime());
+void H2DE_TimerObject::_update() {
+    _timerObjectData.time = _chrono->getTime();
+    _textObject->setText(_getStringifiedTime());
 }
 
 // ACTIONS
-void H2DE_TimerObject::refreshTextObject() {
-    if (textObject != nullptr) {
-        if (engine->destroyObject(textObject)) {
-            textObject = nullptr;
+void H2DE_TimerObject::_refreshTextObject() {
+    if (_textObject != nullptr) {
+        if (_engine->destroyObject(_textObject)) {
+            _textObject = nullptr;
         }
     }
 
-    H2DE_ObjectData od = objectData;
+    H2DE_ObjectData od = _objectData;
     od.index++;
 
     H2DE_TextObjectData tod = H2DE_TextObjectData();
-    timerObjectData.text.text = getStringifiedTime();
-    tod.text = timerObjectData.text;
+    _timerObjectData.text.text = _getStringifiedTime();
+    tod.text = _timerObjectData.text;
 
-    textObject = engine->createObject<H2DE_TextObject>(od, tod);
+    _textObject = _engine->createObject<H2DE_TextObject>(od, tod);
 }
 
-void H2DE_TimerObject::refreshSurfaceBuffers() {
-    refreshTextObject();
+void H2DE_TimerObject::_refreshSurfaceBuffers() {
+    _refreshTextObject();
 
-    const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::getSortedSurfaces(surfaces);
+    const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
 
-    surfaceBuffers.clear();
-    surfaceBuffers.reserve(sortedSurfaces.size());
-    surfaceBuffers.insert(surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
-    rescaleSurfaceBuffers();
+    _surfaceBuffers.clear();
+    _surfaceBuffers.reserve(sortedSurfaces.size());
+    _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
+    _rescaleSurfaceBuffers();
 }
 
-void H2DE_TimerObject::refreshMaxRadius() {
-    float maxHitboxesRadius = getMaxHitboxRadius();
-    float maxSurfaceRadius = getMaxSurfaceRadius(surfaces);
+void H2DE_TimerObject::_refreshMaxRadius() {
+    float maxHitboxesRadius = _getMaxHitboxRadius();
+    float maxSurfaceRadius = _getMaxSurfaceRadius(_surfaces);
     
-    maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
+    _maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
 }
 
 void H2DE_TimerObject::onReach(const H2DE_Time& target, const std::function<void()>& callback, bool once) {
-    chrono->onReach(target, callback, once);
+    _chrono->onReach(target, callback, once);
 }
 
 void H2DE_TimerObject::pause() {
-    chrono->pause();
+    _chrono->pause();
 }
 
 void H2DE_TimerObject::resume() {
-    chrono->resume();
+    _chrono->resume();
 }
 
 void H2DE_TimerObject::togglePause() {
-    chrono->togglePause();
+    _chrono->togglePause();
 }
 
 // GETTER
-std::string H2DE_TimerObject::intToStr(int value, int nbDigits) {
+std::string H2DE_TimerObject::_intToStr(int value, int nbDigits) {
     std::ostringstream oss;
     oss << std::setfill('0') << std::setw(nbDigits) << value;
     return oss.str();
 }
 
-const std::string H2DE_TimerObject::getStringifiedTime() const {
+const std::string H2DE_TimerObject::_getStringifiedTime() const {
     std::string res = "";
 
-    if (timerObjectData.displayHours) {
-        res += std::to_string(timerObjectData.time.hours) + timerObjectData.separator;
+    if (_timerObjectData.displayHours) {
+        res += std::to_string(_timerObjectData.time.hours) + _timerObjectData.separator;
     }
 
-    if (timerObjectData.displayMinutes) {
-        res += H2DE_TimerObject::intToStr(timerObjectData.time.minutes, 2) + timerObjectData.separator;
+    if (_timerObjectData.displayMinutes) {
+        res += H2DE_TimerObject::_intToStr(_timerObjectData.time.minutes, 2) + _timerObjectData.separator;
     }
 
-    if (timerObjectData.displaySeconds) {
-        res += H2DE_TimerObject::intToStr(timerObjectData.time.seconds, 2) + timerObjectData.separator;
+    if (_timerObjectData.displaySeconds) {
+        res += H2DE_TimerObject::_intToStr(_timerObjectData.time.seconds, 2) + _timerObjectData.separator;
     }
 
-    if (timerObjectData.displayMilliseconds) {
-        res += H2DE_TimerObject::intToStr(timerObjectData.time.milliseconds, 3) + timerObjectData.separator;
+    if (_timerObjectData.displayMilliseconds) {
+        res += H2DE_TimerObject::_intToStr(_timerObjectData.time.milliseconds, 3) + _timerObjectData.separator;
     }
 
     res.pop_back();
@@ -119,94 +118,94 @@ const std::string H2DE_TimerObject::getStringifiedTime() const {
 }
 
 bool H2DE_TimerObject::isPaused() const {
-    return chrono->isPaused();
+    return _chrono->isPaused();
 }
 
 // SETTER
 
 // -- non lerp
 void H2DE_TimerObject::setTime(const H2DE_Time& time) {
-    timerObjectData.time = time;
-    chrono->setTime(time);
-    refreshSurfaceBuffers();
+    _timerObjectData.time = time;
+    _chrono->setTime(time);
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_TimerObject::setHours(uint8_t hours) {
-    timerObjectData.time.hours = hours;
-    chrono->setHours(hours);
-    refreshSurfaceBuffers();
+    _timerObjectData.time.hours = hours;
+    _chrono->setHours(hours);
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_TimerObject::setMinutes(uint8_t minutes) {
-    timerObjectData.time.minutes = minutes;
-    chrono->setMinutes(minutes);
-    refreshSurfaceBuffers();
+    _timerObjectData.time.minutes = minutes;
+    _chrono->setMinutes(minutes);
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_TimerObject::setSeconds(uint8_t seconds) {
-    timerObjectData.time.seconds = seconds;
-    chrono->setSeconds(seconds);
-    refreshSurfaceBuffers();
+    _timerObjectData.time.seconds = seconds;
+    _chrono->setSeconds(seconds);
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_TimerObject::setMilliseconds(uint16_t milliseconds) {
-    timerObjectData.time.milliseconds = milliseconds;
-    chrono->setMilliseconds(milliseconds);
-    refreshSurfaceBuffers();
+    _timerObjectData.time.milliseconds = milliseconds;
+    _chrono->setMilliseconds(milliseconds);
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_TimerObject::setIncreasing(bool increasing) {
-    timerObjectData.increasing = increasing;
-    chrono->setSetIncreasing(increasing);
+    _timerObjectData.increasing = increasing;
+    _chrono->setSetIncreasing(increasing);
 }
 
 void H2DE_TimerObject::setPauseSensitive(bool pauseSensitive) {
-    timerObjectData.pauseSensitive = pauseSensitive;
-    chrono->setPauseSensitive(pauseSensitive);
+    _timerObjectData.pauseSensitive = pauseSensitive;
+    _chrono->setPauseSensitive(pauseSensitive);
 }
 
 // lerp
 H2DE_Timeline* H2DE_TimerObject::setTime(const H2DE_Time& time, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp(engine, timerObjectData.time, time, duration, easing, [this](H2DE_Time iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp(_engine, _timerObjectData.time, time, duration, easing, [this](H2DE_Time iv) {
         setTime(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_TimerObject::setHours(uint8_t hours, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint8_t>(engine, timerObjectData.time.hours, hours, duration, easing, [this](uint8_t iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint8_t>(_engine, _timerObjectData.time.hours, hours, duration, easing, [this](uint8_t iv) {
         setHours(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_TimerObject::setMinutes(uint8_t minutes, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint8_t>(engine, timerObjectData.time.minutes, minutes, duration, easing, [this](uint8_t iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint8_t>(_engine, _timerObjectData.time.minutes, minutes, duration, easing, [this](uint8_t iv) {
         setMinutes(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_TimerObject::setSeconds(uint8_t seconds, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint8_t>(engine, timerObjectData.time.seconds, seconds, duration, easing, [this](uint8_t iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint8_t>(_engine, _timerObjectData.time.seconds, seconds, duration, easing, [this](uint8_t iv) {
         setSeconds(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_TimerObject::setMilliseconds(uint16_t milliseconds, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint16_t>(engine, timerObjectData.time.milliseconds, milliseconds, duration, easing, [this](uint8_t iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint16_t>(_engine, _timerObjectData.time.milliseconds, milliseconds, duration, easing, [this](uint8_t iv) {
         setMilliseconds(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }

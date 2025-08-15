@@ -1,34 +1,33 @@
 #include "H2DE/engine/H2DE_settings.h"
-
 #include "H2DE/engine/H2DE_error.h"
 
 // INIT
-H2DE_Settings::H2DE_Settings(H2DE_Engine* e) : engine(e) {
-    initFile();
-    refreshValues();
+H2DE_Settings::H2DE_Settings(H2DE_Engine* e) : _engine(e) {
+    _initFile();
+    _refreshValues();
 }
 
-void H2DE_Settings::initFile() {
-    if (!std::filesystem::exists(path)) {
-        std::ofstream file(path);
+void H2DE_Settings::_initFile() {
+    if (!std::filesystem::exists(_path)) {
+        std::ofstream file(_path);
     }
 }
 
-void H2DE_Settings::refreshValues() {
-    std::ifstream file(path);
+void H2DE_Settings::_refreshValues() {
+    std::ifstream file(_path);
     if (!file) {
         H2DE_Error::throwError("Error reading settings.ini");
     }
 
-    values.clear();
+    _values.clear();
     std::string line;
     std::optional<std::string> currentSection = std::nullopt;
 
     while (std::getline(file, line)) {
 
-        if (isSection(line)) {
+        if (_isSection(line)) {
             currentSection = line.substr(1, line.length() - 2);
-            values[currentSection.value()] = {};
+            _values[currentSection.value()] = {};
             continue;
         }
 
@@ -36,17 +35,17 @@ void H2DE_Settings::refreshValues() {
             continue;
         }
 
-        if (!isKey(line)) {
+        if (!_isKey(line)) {
             continue;
         }
 
-        const std::pair<std::string, std::string> value = getKeyAndValue(line);
-        values[currentSection.value()][value.first] = value.second;
+        const std::pair<std::string, std::string> value = _getKeyAndValue(line);
+        _values[currentSection.value()][value.first] = value.second;
     }
 }
 
-void H2DE_Settings::refreshFile() {
-    std::ofstream file(path, std::ios::trunc);
+void H2DE_Settings::_refreshFile() {
+    std::ofstream file(_path, std::ios::trunc);
 
     if (!file.is_open()) {
         H2DE_Error::throwError("Error reading settings.ini");
@@ -54,7 +53,7 @@ void H2DE_Settings::refreshFile() {
     }
 
     bool isFirstLine = true;
-    for (const auto& [section, keys] : values) {
+    for (const auto& [section, keys] : _values) {
 
         if (!isFirstLine) {
             file << "\n\n";
@@ -70,23 +69,23 @@ void H2DE_Settings::refreshFile() {
     }
 
     file.close();
-    refreshValues();
+    _refreshValues();
 }
 
 // ACTIONS
 bool H2DE_Settings::addSection(const std::string& name) {
-    if (hasSection(name)) {
+    if (_hasSection(name)) {
         return false;
     }
 
-    std::ofstream file(path, std::ios::app);
+    std::ofstream file(_path, std::ios::app);
 
     if (file.is_open()) {
         file << "\n\n";
         file << "[" + name + "]";
         file.close();
 
-        refreshValues();
+        _refreshValues();
         return true;
 
     } else {
@@ -96,32 +95,32 @@ bool H2DE_Settings::addSection(const std::string& name) {
 }
 
 bool H2DE_Settings::addKey(const std::string& section, const std::string& key, const std::string& value) {
-    if (hasKey(section, key)) {
+    if (_hasKey(section, key)) {
         return false;
     }
 
-    values[section][key] = value;
-    refreshFile();
+    _values[section][key] = value;
+    _refreshFile();
 
     return true;
 }
 
 // GETTER
-bool H2DE_Settings::hasSection(const std::string& section) const {
-    auto it = values.find(section);
-    return (it != values.end());
+bool H2DE_Settings::_hasSection(const std::string& section) const {
+    auto it = _values.find(section);
+    return (it != _values.end());
 }
 
-bool H2DE_Settings::hasKey(const std::string& section, const std::string& key) const {
-    if (!hasSection(section)) {
+bool H2DE_Settings::_hasKey(const std::string& section, const std::string& key) const {
+    if (!_hasSection(section)) {
         return false;
     }
 
-    auto it = values.at(section).find(key);
-    return (it != values.at(section).end());
+    auto it = _values.at(section).find(key);
+    return (it != _values.at(section).end());
 }
 
-bool H2DE_Settings::isSection(const std::string& line) const {
+bool H2DE_Settings::_isSection(const std::string& line) const {
     if (line.length() == 0) {
         return false;
     }
@@ -132,7 +131,7 @@ bool H2DE_Settings::isSection(const std::string& line) const {
     return (isNameValid && isLineASection);
 }
 
-bool H2DE_Settings::isKey(const std::string& line) const noexcept {
+bool H2DE_Settings::_isKey(const std::string& line) const noexcept {
     if (line.length() == 0) {
         return false;
     }
@@ -146,26 +145,26 @@ bool H2DE_Settings::isKey(const std::string& line) const noexcept {
     return hasKey;
 }
 
-const std::pair<std::string, std::string> H2DE_Settings::getKeyAndValue(const std::string& line) const {
+const std::pair<std::string, std::string> H2DE_Settings::_getKeyAndValue(const std::string& line) const {
     const size_t equalPos = line.find('=');
     return { line.substr(0, equalPos), line.substr(equalPos + 1) };
 }
 
 std::string H2DE_Settings::getKeyString(const std::string& section, const std::string& key, const std::string& defaultValue) const {
-    if (!hasKey(section, key)) {
+    if (!_hasKey(section, key)) {
         return defaultValue;
     }
 
-    return values.at(section).at(key);
+    return _values.at(section).at(key);
 }
 
 int H2DE_Settings::getKeyInteger(const std::string& section, const std::string& key, int defaultValue) const {
-    if (!hasKey(section, key)) {
+    if (!_hasKey(section, key)) {
         return defaultValue;
     }
 
     try {
-        int value = std::stoi(values.at(section).at(key));
+        int value = std::stoi(_values.at(section).at(key));
         return value;
 
     } catch (const std::exception& e) {
@@ -175,21 +174,21 @@ int H2DE_Settings::getKeyInteger(const std::string& section, const std::string& 
 }
 
 bool H2DE_Settings::getKeyBoolean(const std::string& section, const std::string& key, bool defaultValue) const {
-    if (!hasKey(section, key)) {
+    if (!_hasKey(section, key)) {
         return defaultValue;
     }
 
-    return (values.at(section).at(key) == "true");
+    return (_values.at(section).at(key) == "true");
 }
 
 // SETTER
 bool H2DE_Settings::setKeyValue(const std::string& section, const std::string& key, const std::string& value) {
-    if (!hasKey(section, key)) {
+    if (!_hasKey(section, key)) {
         return false;
     }
 
-    values[section][key] = value;
-    refreshFile();
+    _values[section][key] = value;
+    _refreshFile();
 
     return true;
 }

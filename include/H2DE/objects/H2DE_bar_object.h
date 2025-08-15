@@ -44,7 +44,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* addSurfaceToFill(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
-        return H2DE_Object::addSurface<H2DE_Surface_T>(fillSurfaces, name, surfaceData, specificData);
+        return H2DE_Object::_addSurface<H2DE_Surface_T>(_fillSurfaces, name, surfaceData, specificData);
     }
     /**
      * @brief Remove a fill surface from the bar.
@@ -56,7 +56,7 @@ public:
      * @return true if the surface was removed successfully, false otherwise.
      */
     inline bool removeSurfaceFromFill(const std::string& name) {
-        return H2DE_Object::removeSurface(fillSurfaces, name);
+        return H2DE_Object::_removeSurface(_fillSurfaces, name);
     }
     
     /**
@@ -72,7 +72,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* addSurfaceToBackground(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
-        return H2DE_Object::addSurface<H2DE_Surface_T>(backgroundSurfaces, name, surfaceData, specificData);
+        return H2DE_Object::_addSurface<H2DE_Surface_T>(_backgroundSurfaces, name, surfaceData, specificData);
     }
     /**
      * @brief Remove a background surface from the bar.
@@ -83,7 +83,7 @@ public:
      * @return true if the surface was removed successfully, false otherwise.
      */
     inline bool removeSurfaceFromBackground(const std::string& name) {
-        return H2DE_Object::removeSurface(backgroundSurfaces, name);
+        return H2DE_Object::_removeSurface(_backgroundSurfaces, name);
     }
 
     /**
@@ -95,7 +95,7 @@ public:
      * @return The current H2DE_BarObjectData structure.
      */
     constexpr H2DE_BarObjectData getBarData() const noexcept {
-        return barObjectData; 
+        return _barObjectData; 
 }
     /**
      * @brief Get the minimum value of the bar.
@@ -105,7 +105,7 @@ public:
      * @return The minimum float value of the bar.
      */
     constexpr float getMin() const noexcept {
-        return barObjectData.min;
+        return _barObjectData.min;
     }
     /**
      * @brief Get the maximum value of the bar.
@@ -115,7 +115,7 @@ public:
      * @return The maximum float value of the bar.
      */
     constexpr float getMax() const noexcept {
-        return barObjectData.max;
+        return _barObjectData.max;
     }
     /**
      * @brief Get the current value of the bar.
@@ -126,7 +126,7 @@ public:
      * @return The current float value of the bar.
      */
     constexpr float getValue() const noexcept {
-        return barObjectData.value;
+        return _barObjectData.value;
     }
 
     /**
@@ -138,7 +138,7 @@ public:
      * @return A map of surface names to H2DE_Surface pointers.
      */
     inline std::unordered_map<std::string, H2DE_Surface*> getFillSurfaces() const noexcept {
-        return fillSurfaces;
+        return _fillSurfaces;
     }
     /**
      * @brief Get all background surfaces of the bar.
@@ -149,7 +149,7 @@ public:
      * @return A map of surface names to H2DE_Surface pointers.
      */
     inline std::unordered_map<std::string, H2DE_Surface*> getBackgroundSurfaces() const noexcept {
-        return backgroundSurfaces;
+        return _backgroundSurfaces;
     }
     /**
      * @brief Get a fill surface by name and type.
@@ -163,7 +163,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* getFillSurface(const std::string& name) const {
-        return H2DE_Object::getSurface<H2DE_Surface_T>(fillSurfaces, name);
+        return H2DE_Object::_getSurface<H2DE_Surface_T>(_fillSurfaces, name);
     }
     /**
      * @brief Get a background surface by name and type.
@@ -177,7 +177,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* getBackgroundSurface(const std::string& name) const {
-        return H2DE_Object::getSurface<H2DE_Surface_T>(backgroundSurfaces, name);
+        return H2DE_Object::_getSurface<H2DE_Surface_T>(_backgroundSurfaces, name);
     }
     /**
      * @brief Checks whether a fill surface with the given name exists.
@@ -185,7 +185,7 @@ public:
      * @return true if the fill surface exists, false otherwise.
      */
     inline bool hasFillSurface(const std::string& name) const {
-        return H2DE_Object::hasSurface(fillSurfaces, name); 
+        return H2DE_Object::_hasSurface(_fillSurfaces, name); 
 }
     /**
      * @brief Checks whether a background surface with the given name exists.
@@ -193,7 +193,7 @@ public:
      * @return true if the background surface exists, false otherwise.
      */
     inline bool hasBackgroundSurface(const std::string& name) const {
-        return H2DE_Object::hasSurface(backgroundSurfaces, name);
+        return H2DE_Object::_hasSurface(_backgroundSurfaces, name);
     }
 
     /**
@@ -267,19 +267,19 @@ public:
     friend class H2DE_Renderer;
 
 private:
-    H2DE_BarObjectData barObjectData;
+    H2DE_BarObjectData _barObjectData;
 
-    std::unordered_map<std::string, H2DE_Surface*> fillSurfaces = {};
-    std::unordered_map<std::string, H2DE_Surface*> backgroundSurfaces = {};
+    std::unordered_map<std::string, H2DE_Surface*> _fillSurfaces = {};
+    std::unordered_map<std::string, H2DE_Surface*> _backgroundSurfaces = {};
 
     H2DE_BarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
     ~H2DE_BarObject() override;
 
-    void refreshSurfaceBuffers() override;
-    void refreshMaxRadius() override;
+    void _refreshSurfaceBuffers() override;
+    void _refreshMaxRadius() override;
 
-    constexpr float getFillBlend() const {
+    constexpr float _getFillBlend() const {
         return H2DE::clamp((getValue() - getMin()) / (getMax() - getMin()), 0.0f, 1.0f);
     }
-    bool isSurfaceFill(H2DE_Surface* surface) const;
+    bool _isSurfaceFill(H2DE_Surface* surface) const;
 };

@@ -34,7 +34,7 @@ public:
      * @return The full data structure of the text object.
      */
     inline H2DE_TextObjectData getTextData() const noexcept {
-        return textObjectData;
+        return _textObjectData;
     }
     /**
      * @brief Get the text string displayed by the text object.
@@ -44,7 +44,7 @@ public:
      * @return The displayed text as a std::string.
      */
     inline std::string getText() const {
-        return textObjectData.text.text;
+        return _textObjectData.text.text;
     }
     /**
      * @brief Get the font name used for rendering the text.
@@ -54,7 +54,7 @@ public:
      * @return The font name as a std::string.
      */
     inline std::string getFont() const {
-        return textObjectData.text.font;
+        return _textObjectData.text.font;
     }
     /**
      * @brief Get the bounds scale.
@@ -64,7 +64,7 @@ public:
      * @return The scale of the bounds as an H2DE_Scale value.
      */
     constexpr H2DE_Scale getBounds() const noexcept {
-        return textObjectData.text.bounds;
+        return _textObjectData.text.bounds;
     }
     /**
      * @brief Get the font size scale.
@@ -74,7 +74,7 @@ public:
      * @return The font size scale as an H2DE_Scale value.
      */
     constexpr float getFontSize() const noexcept {
-        return textObjectData.text.fontSize;
+        return _textObjectData.text.fontSize;
     }
     /**
      * @brief Get the spacing between characters.
@@ -84,7 +84,7 @@ public:
      * @return The character spacing as an H2DE_Scale value.
      */
     constexpr H2DE_Scale getSpacing() const noexcept {
-        return textObjectData.text.spacing;
+        return _textObjectData.text.spacing;
     }
     /**
      * @brief Get the horizontal alignment of the text.
@@ -94,7 +94,7 @@ public:
      * @return The text alignment as an H2DE_TextAlign enum value.
      */
     constexpr H2DE_TextAlign getTextAlign() const noexcept {
-        return textObjectData.text.textAlign;
+        return _textObjectData.text.textAlign;
     }
     /**
      * @brief Get the color of the text.
@@ -104,7 +104,7 @@ public:
      * @return The text color as an H2DE_ColorRGB struct.
      */
     constexpr H2DE_ColorRGB getColor() const noexcept {
-        return textObjectData.text.color;
+        return _textObjectData.text.color;
     }
     /**
      * @brief Get the padding of the text.
@@ -115,7 +115,7 @@ public:
      * @return The text padding as an H2DE_Padding struct.
      */
     constexpr H2DE_Padding getPadding() const noexcept {
-        return textObjectData.text.padding;
+        return _textObjectData.text.padding;
     }
 
     /**
@@ -243,31 +243,31 @@ public:
     friend class H2DE_ButtonObject;
 
 private:
-    H2DE_TextObjectData textObjectData;
+    H2DE_TextObjectData _textObjectData;
 
     H2DE_TextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     ~H2DE_TextObject() override;
 
-    void refreshSurfaceBuffers() override;
-    void refreshMaxRadius() override;
+    void _refreshSurfaceBuffers() override;
+    void _refreshMaxRadius() override;
 
-    const std::string getFormatedText() const;
-    const std::string getFormatedWord(const std::string& word) const;
+    const std::string _getFormatedText() const;
+    const std::string _getFormatedWord(const std::string& word) const;
 
-    const std::vector<std::string> getWords() const;
-    const std::vector<std::vector<std::string>> getLines() const;
+    const std::vector<std::string> _getWords() const;
+    const std::vector<std::vector<std::string>> _getLines() const;
 
-    float getCharWidth(const char& c) const;
-    float getWordWidth(const std::string& word) const;
-    float getLineWidth(const std::vector<std::string>& line) const;
-    float getTextHeight() const;
+    float _getCharWidth(const char& c) const;
+    float _getWordWidth(const std::string& word) const;
+    float _getLineWidth(const std::vector<std::string>& line) const;
+    float _getTextHeight() const;
 
-    float getStartingOffsetX(const std::vector<std::string>& line) const;
-    float getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const;
+    float _getStartingOffsetX(const std::vector<std::string>& line) const;
+    float _getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const;
 
-    float getFixedFontSize() const;
+    float _getFixedFontSize() const;
 
-    inline bool isTextNull() const {
-        return (textObjectData.text.text == ""); 
+    inline bool _isTextNull() const {
+        return (_textObjectData.text.text == ""); 
     }
 };

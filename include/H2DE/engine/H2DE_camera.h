@@ -54,7 +54,7 @@ public:
      * @return true if the rectangle intersects the camera viewport, false otherwise.
      */
     inline bool containsRect(const H2DE_LevelRect& rect) const {
-        return getWorldRect().collides(rect);
+        return getGameWorldRect().collides(rect);
     }
     /**
      * @brief Check if a point is inside the camera's viewport.
@@ -65,7 +65,7 @@ public:
      * @return true if the point is inside the camera's viewport, false otherwise.
      */
     inline bool containsPoint(const H2DE_Translate& translate) const {
-        return getWorldRect().collides(translate);
+        return getGameWorldRect().collides(translate);
     }
 
     /**
@@ -74,7 +74,7 @@ public:
      * @return A copy of the current H2DE_CameraData.
      */
     inline H2DE_CameraData getData() const noexcept {
-        return data;
+        return _data;
     }
     /**
      * @brief Get the camera's current position in world coordinates.
@@ -82,7 +82,7 @@ public:
      * @return The translation vector of the camera.
      */
     constexpr H2DE_Translate getTranslate() const noexcept {
-        return data.translate;
+        return _data.translate;
     }
     /**
      * @brief Calculate and get the game scale based on the game width.
@@ -90,7 +90,7 @@ public:
      * @return The scale factor used for game rendering.
      */
     inline H2DE_Scale getGameScale() const {
-        return getScale(data.gameWidth);
+        return _getScale(_data.gameWidth);
     }
     /**
      * @brief Calculate and get the interface scale based on the interface width.
@@ -98,25 +98,31 @@ public:
      * @return The scale factor used for interface/UI rendering.
      */
     inline H2DE_Scale getInterfaceScale() const {
-        return getScale(data.interfaceWidth);
+        return _getScale(_data.interfaceWidth);
     }
     /**
-     * @brief Get the camera's world rectangle, representing its viewport.
+     * @brief Calculate and get the world rectangle for the game, taking into account the game scale and translation.
      * 
-     * Uses the camera's translate position and game scale to build the rectangle.
-     * 
-     * @return The rectangular area covered by the camera in world coordinates.
+     * @return The rectangle representing the game world in level coordinates.
      */
-    inline H2DE_LevelRect getWorldRect() const {
+    inline H2DE_LevelRect getGameWorldRect() const {
         return getTranslate().makeRect(getGameScale());
     }
+    /**
+     * @brief Calculate and get the world rectangle for the interface/UI, based on the interface scale.
+     * 
+     * @return The rectangle representing the interface world in level coordinates.
+     */
+    inline H2DE_LevelRect getInterfaceWorldRect() const {
+        return H2DE_Translate{ 0.0f, 0.0f }.makeRect(getInterfaceScale());
+    } 
     /**
      * @brief Get the camera's game width.
      * 
      * @return The width used for game scale calculations.
      */
     constexpr float getGameWidth() const noexcept {
-        return data.gameWidth;
+        return _data.gameWidth;
     }
     /**
      * @brief Get the camera's interface width.
@@ -124,7 +130,7 @@ public:
      * @return The width used for interface scale calculations.
      */
     constexpr float getInterfaceWidth() const noexcept {
-        return data.interfaceWidth;
+        return _data.interfaceWidth;
     }
     /**
      * @brief Get the smoothing factor for camera movement.
@@ -132,7 +138,7 @@ public:
      * @return The smoothing coefficient.
      */
     constexpr float getSmoothing() const noexcept {
-        return data.smoothing;
+        return _data.smoothing;
     }
     /**
      * @brief Get the camera's padding settings.
@@ -140,7 +146,7 @@ public:
      * @return Padding around the camera viewport.
      */
     constexpr H2DE_Padding getPadding() const noexcept {
-        return data.padding;
+        return _data.padding;
     }
     /**
      * @brief Get the horizontal origin face of the camera.
@@ -148,7 +154,7 @@ public:
      * @return The X axis origin enum value.
      */
     constexpr H2DE_Face getXOrigin() const noexcept {
-        return data.xOrigin;
+        return _data.xOrigin;
     }
     /**
      * @brief Get the vertical origin face of the camera.
@@ -156,7 +162,7 @@ public:
      * @return The Y axis origin enum value.
      */
     constexpr H2DE_Face getYOrigin() const noexcept {
-        return data.yOrigin;
+        return _data.yOrigin;
     }
     /**
      * @brief Check if the horizontal origin is inverted (right side).
@@ -164,7 +170,7 @@ public:
      * @return true if origin is on the right, false otherwise.
      */
     constexpr bool isXOriginInverted() const noexcept{
-        return (data.xOrigin == H2DE_FACE_RIGHT);
+        return (_data.xOrigin == H2DE_FACE_RIGHT);
     }
     /**
      * @brief Check if the vertical origin is inverted (bottom side).
@@ -172,7 +178,7 @@ public:
      * @return true if origin is on the bottom, false otherwise.
      */
     constexpr bool isYOriginInverted() const noexcept {
-        return (data.yOrigin == H2DE_FACE_BOTTOM);
+        return (_data.yOrigin == H2DE_FACE_BOTTOM);
     }
 
     /**
@@ -193,7 +199,7 @@ public:
      * @param width New interface width value.
      */
     inline void setInterfaceWidth(float width) noexcept {
-        data.interfaceWidth = width;
+        _data.interfaceWidth = width;
     }
     /**
      * @brief Set the smoothing factor for camera movements.
@@ -201,7 +207,7 @@ public:
      * @param smoothing New smoothing coefficient.
      */
     inline void setSmoothing(float smoothing) noexcept {
-        data.smoothing = smoothing;
+        _data.smoothing = smoothing;
     }
     /**
      * @brief Set the padding around the camera viewport.
@@ -209,7 +215,7 @@ public:
      * @param padding New padding settings.
      */
     inline void setPadding(const H2DE_Padding& padding) noexcept {
-        data.padding = padding;
+        _data.padding = padding;
     }
     /**
      * @brief Set the horizontal origin face of the camera.
@@ -217,7 +223,7 @@ public:
      * @param xOrigin New horizontal origin enum.
      */
     inline void setXOrigin(H2DE_Face xOrigin) noexcept {
-        data.xOrigin = xOrigin;
+        _data.xOrigin = xOrigin;
     }
     /**
      * @brief Set the vertical origin face of the camera.
@@ -225,7 +231,7 @@ public:
      * @param yOrigin New vertical origin enum.
      */
     inline void setYOrigin(H2DE_Face yOrigin) noexcept {
-        data.yOrigin = yOrigin;
+        _data.yOrigin = yOrigin;
     }
     /**
      * @brief Enable or disable rendering the grid on top.
@@ -233,7 +239,7 @@ public:
      * @param state true to draw grid on top, false otherwise.
      */
     inline void setGridOnTop(bool state) noexcept {
-        onTop = state;
+        _onTop = state;
     }
 
     /**
@@ -281,25 +287,25 @@ public:
     friend class H2DE_Renderer;
 
 private:
-    H2DE_Engine* engine;
-    H2DE_CameraData data;
+    H2DE_Engine* _engine;
+    H2DE_CameraData _data;
 
-    H2DE_BasicObject* grid = nullptr;
-    bool onTop = false;
+    H2DE_BasicObject* _grid = nullptr;
+    bool _onTop = false;
 
     H2DE_Camera(H2DE_Engine* engine, const H2DE_CameraData& data);
     ~H2DE_Camera();
 
-    void initGrid();
+    void _initGrid();
 
-    void destroyGrid();
-    void destroyGridHitboxes();
+    void _destroyGrid();
+    void _destroyGridHitboxes();
 
-    void update();
-    void updateGrid();
-    void updateGridObjectTransform();
-    void updateGridObjectHitboxes();
-    void updateCrosshair();
+    void _update();
+    void _updateGrid();
+    void _updateGridObjectTransform();
+    void _updateGridObjectHitboxes();
+    void _updateCrosshair();
 
-    H2DE_Scale getScale(float width) const;
+    H2DE_Scale _getScale(float width) const;
 };

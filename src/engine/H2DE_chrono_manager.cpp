@@ -1,5 +1,4 @@
 #include "H2DE/engine/H2DE_chrono_manager.h"
-
 #include "H2DE/engine/H2DE_error.h"
 
 // INIT
@@ -25,7 +24,7 @@ void H2DE_ChronoManager::destroyChrono(H2DE_Chrono* chrono) {
 // UPDATE
 void H2DE_ChronoManager::update() {
     for (H2DE_Chrono* chrono : chronos) {
-        chrono->update();
+        chrono->_update();
     }
 }
 

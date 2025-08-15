@@ -108,7 +108,7 @@ public:
      * @brief Stops the main engine loop by setting the running flag to false.
      */
     inline void stop() noexcept {
-        isRunning = false;
+        _isRunning = false;
     }
 
      /**
@@ -154,13 +154,13 @@ public:
      * @param state True to enable debug mode, false to disable.
      */
     inline void debugMode(bool state) noexcept {
-        debugModeEnabled = state;
+        _debugModeEnabled = state;
     }
     /**
      * @brief Toggles the current state of the debug mode.
      */
     inline void toggleDebugMode() noexcept {
-        debugMode(!debugModeEnabled);
+        debugMode(!_debugModeEnabled);
     }
 
     /**
@@ -169,13 +169,13 @@ public:
      * @param state True to enable object debug mode, false to disable.
      */
     inline void debugObjects(bool state) noexcept {
-        debugObjectEnabled = state;
+        _debugObjectEnabled = state;
     }
     /**
      * @brief Toggles the debug visualization state for objects.
      */
     inline void toggleDebugObject() noexcept {
-        debugObjectEnabled = !debugObjectEnabled;
+        _debugObjectEnabled = !_debugObjectEnabled;
     }
 
     /**
@@ -191,19 +191,19 @@ public:
      * @brief Pauses the engine, stopping updates.
      */
     inline void pause() noexcept {
-        paused = true;
+        _paused = true;
     }
     /**
      * @brief Resumes the engine from a paused state.
      */
     inline void resume() noexcept {
-        paused = false;
+        _paused = false;
     }
     /**
      * @brief Toggles the paused state of the engine.
      */
     inline void togglePause() noexcept {
-        paused = !paused;
+        _paused = !_paused;
     }
 
     /**
@@ -272,42 +272,42 @@ public:
      * @return A copy of the H2DE_EngineData struct used to initialize the engine.
      */
     inline H2DE_EngineData getData() const noexcept {
-        return data;
+        return _data;
     }
     /**
      * @brief Gets a pointer to the engine settings.
      * @return Pointer to the H2DE_Settings instance.
      */
     inline H2DE_Settings* getSettings() const noexcept {
-        return settings;
+        return _settings;
     }
     /**
      * @brief Gets a pointer to the engine window.
      * @return Pointer to the H2DE_Window instance.
      */
     inline H2DE_Window* getWindow() const noexcept {
-        return window;
+        return _window;
     }
     /**
      * @brief Gets a pointer to the engine audio manager.
      * @return Pointer to the H2DE_Audio instance.
      */
     inline H2DE_Audio* getAudio() const noexcept {
-        return audio;
+        return _audio;
     }
     /**
      * @brief Gets a pointer to the engine camera.
      * @return Pointer to the H2DE_Camera instance.
      */
     inline H2DE_Camera* getCamera() const noexcept {
-        return camera;
+        return _camera;
     }
     /**
      * @brief Gets the target frames per second (FPS) of the engine.
      * @return The FPS value as a 16-bit unsigned integer.
      */
     constexpr uint16_t getFPS() const noexcept {
-        return fps;
+        return _fps;
     }
     /**
      * @brief Gets the current frame rate.
@@ -315,28 +315,28 @@ public:
      * @return The current FPS as a float, optionally rounded.
      */
     inline float getCurrentFPS(bool round = true) const noexcept {
-        return (round) ? H2DE::round(currentFPS) : currentFPS; 
+        return (round) ? H2DE::round(_currentFPS) : _currentFPS; 
     }
     /**
      * @brief Gets the delta time between the last two frames in seconds.
      * @return Delta time as a float.
      */
     constexpr float getDeltaTime() const noexcept {
-        return deltaTime;
+        return _deltaTime;
     }
     /**
      * @brief Gets the fixed delta time based on the target FPS.
      * @return Fixed delta time as a float.
      */
     constexpr float getFixedDeltaTime() const noexcept {
-        return 1.0f / static_cast<float>(fps);
+        return 1.0f / static_cast<float>(_fps);
     }
     /**
      * @brief Checks if the engine is currently paused.
      * @return True if paused, false otherwise.
      */
     constexpr bool isPaused() const noexcept {
-        return paused;
+        return _paused;
     }
 
     /**
@@ -363,7 +363,7 @@ public:
      * @return Mouse position as H2DE_Translate in game world space.
      */
     inline const H2DE_Translate getMouseGamePos() const {
-        return getMousePos(false);
+        return _getMousePos(false);
     }
     /**
      * @brief Gets the mouse position in the user interface coordinates.
@@ -373,7 +373,7 @@ public:
      * @return Mouse position as H2DE_Translate in UI space.
      */
     inline const H2DE_Translate getMouseInterfacePos() const {
-        return getMousePos(true);
+        return _getMousePos(true);
     }
 
     /**
@@ -392,21 +392,21 @@ public:
      * @param FPS The desired FPS value as a 16-bit unsigned integer.
      */
     inline void setFPS(uint16_t FPS) noexcept {
-        fps = FPS;
+        _fps = FPS;
     }
     /**
      * @brief Sets a custom callback function to handle SDL events.
      * @param call A std::function taking SDL_Event as parameter.
      */
     inline void setHandleEventCall(const std::function<void(SDL_Event)>& call) noexcept{
-        handleEventsCall = call;
+        _handleEventsCall = call;
     }
     /**
      * @brief Sets a custom callback function to be called every update frame.
      * @param call A std::function with no parameters.
      */
     inline void setUpdateCall(const std::function<void()>& call) noexcept {
-        updateCall = call;
+        _updateCall = call;
     }
 
     friend class H2DE_Window;
@@ -420,55 +420,55 @@ public:
     
 private:
     template<typename, typename = void>
-    struct has_H2DE_DataType : std::false_type {};
+    struct _hasH2DE_DataType : std::false_type {};
 
     template<typename T>
-    struct has_H2DE_DataType<T, std::void_t<typename T::H2DE_DataType>> : std::true_type {};
+    struct _hasH2DE_DataType<T, std::void_t<typename T::H2DE_DataType>> : std::true_type {};
 
-    H2DE_EngineData data;
+    H2DE_EngineData _data;
 
-    H2DE_Settings* settings = nullptr;
-    H2DE_Window* window = nullptr;
-    H2DE_AssetLoaderManager* assetLoaderManager = nullptr;
-    H2DE_Renderer* renderer = nullptr;
-    H2DE_Audio* audio = nullptr;
-    H2DE_TimelineManager* timelineManager = nullptr;
-    H2DE_ChronoManager* chronoManager = nullptr;
-    H2DE_Camera* camera = nullptr;
-    H2DE_ObjectManager* objectManager = nullptr;
+    H2DE_Settings* _settings = nullptr;
+    H2DE_Window* _window = nullptr;
+    H2DE_AssetLoaderManager* _assetLoaderManager = nullptr;
+    H2DE_Renderer* _renderer = nullptr;
+    H2DE_Audio* _audio = nullptr;
+    H2DE_TimelineManager* _timelineManager = nullptr;
+    H2DE_ChronoManager* _chronoManager = nullptr;
+    H2DE_Camera* _camera = nullptr;
+    H2DE_ObjectManager* _objectManager = nullptr;
 
-    uint16_t fps = 0;
-    float currentFPS = 0;
-    float deltaTime = 0.0f;
-    bool isRunning = false;
-    bool paused = false;
+    uint16_t _fps = 0;
+    float _currentFPS = 0;
+    float _deltaTime = 0.0f;
+    bool _isRunning = false;
+    bool _paused = false;
 
-    bool debugModeEnabled = false;
-    bool debugObjectEnabled = false;
+    bool _debugModeEnabled = false;
+    bool _debugObjectEnabled = false;
 
-    std::function<void(SDL_Event)> handleEventsCall = nullptr;
-    std::function<void()> updateCall = nullptr;
+    std::function<void(SDL_Event)> _handleEventsCall = nullptr;
+    std::function<void()> _updateCall = nullptr;
 
-    std::unordered_map<std::string, H2DE_Font> fonts = {};
-    std::vector<H2DE_Object*> objects = {};
+    std::unordered_map<std::string, H2DE_Font> _fonts = {};
+    std::vector<H2DE_Object*> _objects = {};
 
-    H2DE_PixelPos mousePos = { 0, 0 };
+    H2DE_PixelPos _mousePos = { 0, 0 };
 
     H2DE_Engine(const H2DE_EngineData& data);
     ~H2DE_Engine();
 
-    void handleEvents(SDL_Event event);
-    void update();
-    void updateObjects();
+    void _handleEvents(SDL_Event event);
+    void _update();
+    void _updateObjects();
 
-    void refreshObjectManager();
+    void _refreshObjectManager();
 
-    void destroy();
-    void destroyObjects();
+    void _destroy();
+    void _destroyObjects();
 
-    const H2DE_Translate getMousePos(bool absolute) const;
+    const H2DE_Translate _getMousePos(bool absolute) const;
 
-    static bool isPositionGreater(H2DE_Object* a, H2DE_Object* b);
+    static bool _isPositionGreater(H2DE_Object* a, H2DE_Object* b);
 };
 
 #include <H2DE/engine/H2DE_engine.inl>

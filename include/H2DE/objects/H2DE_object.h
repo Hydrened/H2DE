@@ -67,13 +67,13 @@ public:
      * @brief Show the object (make it visible when rendering).
      */
     inline void show() noexcept {
-        hidden = false; 
+        _hidden = false; 
     }
     /**
      * @brief Hide the object (exclude it from rendering).
      */
     inline void hide() noexcept {
-        hidden = true; 
+        _hidden = true; 
     }
 
     /**
@@ -85,7 +85,7 @@ public:
      * @return The current object data.
      */
     constexpr H2DE_ObjectData getObjectData() const noexcept {
-        return objectData;
+        return _objectData;
     }
     /**
      * @brief Get the object's full transform.
@@ -95,7 +95,7 @@ public:
      * @return The current transform state of the object.
      */
     constexpr H2DE_Transform getTransform() const noexcept {
-        return objectData.transform; 
+        return _objectData.transform; 
     }
     /**
      * @brief Get the translation (position) of the object.
@@ -103,7 +103,7 @@ public:
      * @return The current position (x, y) in pixels.
      */
     constexpr H2DE_Translate getTranslate() const noexcept {
-        return objectData.transform.translate;
+        return _objectData.transform.translate;
     }
     /**
      * @brief Get the scale of the object.
@@ -111,7 +111,7 @@ public:
      * @return The current scale on x and y axes.
      */
     constexpr H2DE_Scale getScale() const noexcept {
-        return objectData.transform.scale;
+        return _objectData.transform.scale;
     }
     /**
      * @brief Get the rotation of the object in degrees.
@@ -119,7 +119,7 @@ public:
      * @return The rotation angle in degrees.
      */
     constexpr float getRotation() const noexcept {
-        return objectData.transform.rotation;
+        return _objectData.transform.rotation;
     }
     /**
      * @brief Get the pivot point of the object.
@@ -129,7 +129,7 @@ public:
      * @return The pivot coordinates (usually between 0.0 and 1.0).
      */
     constexpr H2DE_Pivot getPivot() const noexcept {
-        return objectData.transform.pivot;
+        return _objectData.transform.pivot;
     }
     /**
      * @brief Get the object's opacity.
@@ -137,7 +137,7 @@ public:
      * @return An 8-bit value from 0 (fully transparent) to 255 (fully opaque).
      */
     constexpr uint8_t getOpacity() const noexcept {
-        return objectData.opacity;
+        return _objectData.opacity;
     }
     /**
      * @brief Check if the object's position is absolute.
@@ -147,7 +147,7 @@ public:
      * @return true if the object is rendered in absolute (screen-space) coordinates.
      */
     constexpr bool isAbsolute() const noexcept {
-        return objectData.absolute;
+        return _objectData.absolute;
     }
     /**
      * @brief Get the rendering index of the object.
@@ -157,7 +157,7 @@ public:
      * @return The render order index.
      */
     constexpr int getIndex() const noexcept {
-        return objectData.index;
+        return _objectData.index;
     }
     /**
      * @brief Check if the object is hidden.
@@ -165,7 +165,7 @@ public:
      * @return true if hidden, false if visible.
      */
     constexpr bool isHidden() const noexcept {
-        return hidden;
+        return _hidden;
     }
     
     /**
@@ -176,7 +176,7 @@ public:
      * @return A map of hitbox names to their respective H2DE_Hitbox data.
      */
     inline std::unordered_map<std::string, H2DE_Hitbox> getHitboxes() const noexcept {
-        return hitboxes; 
+        return _hitboxes; 
     }
     /**
      * @brief Get a specific hitbox by name.
@@ -204,7 +204,7 @@ public:
      * @return true if the hitbox exists, false otherwise.
      */
     inline bool hasHitbox(const std::string& name) const {
-        return (hitboxes.find(name) != hitboxes.end()); 
+        return (_hitboxes.find(name) != _hitboxes.end()); 
     }
 
     /**
@@ -432,60 +432,60 @@ public:
     friend class H2DE_AssetLoaderManager;
 
 protected:
-    H2DE_Engine* engine;
-    H2DE_ObjectData objectData;
+    H2DE_Engine* _engine;
+    H2DE_ObjectData _objectData;
 
-    std::vector<H2DE_Surface*> surfaceBuffers = {};
-    std::vector<H2DE_Timeline*> timelinesBuffer = {};
-    std::unordered_map<std::string, H2DE_Hitbox> hitboxes = {};
-    float maxRadius;
+    std::vector<H2DE_Surface*> _surfaceBuffers = {};
+    std::vector<H2DE_Timeline*> _timelinesBuffer = {};
+    std::unordered_map<std::string, H2DE_Hitbox> _hitboxes = {};
+    float _maxRadius;
 
-    H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData) noexcept : engine(engine), objectData(objectData) {};
+    H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData) noexcept : _engine(engine), _objectData(objectData) {};
     virtual ~H2DE_Object();
 
-    static void destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
-    static void destroySurfaces(std::vector<H2DE_Surface*>& surfaces);
-    void removeTimeline(H2DE_Timeline* timeline);
+    static void _destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
+    static void _destroySurfaces(std::vector<H2DE_Surface*>& surfaces);
+    void _removeTimeline(H2DE_Timeline* timeline);
 
-    virtual void update();
-    void updateCollisions();
-    void updateTimelineBuffer();
+    virtual void _update();
+    void _updateCollisions();
+    void _updateTimelineBuffer();
 
-    virtual void refreshSurfaceBuffers() = 0;
-    virtual void refreshMaxRadius() = 0;
+    virtual void _refreshSurfaceBuffers() = 0;
+    virtual void _refreshMaxRadius() = 0;
 
-    inline void addTimelineToTimelines(H2DE_Timeline* timeline) {
-        timelinesBuffer.push_back(timeline);
+    inline void _addTimelineToTimelines(H2DE_Timeline* timeline) {
+        _timelinesBuffer.push_back(timeline);
     }
 
     template<typename H2DE_Surface_T>
-    H2DE_Surface_T* addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData);
+    H2DE_Surface_T* _addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData);
 
-    bool removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
+    bool _removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
 
     template<typename H2DE_Surface_T>
-    static H2DE_Surface_T* getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
+    static H2DE_Surface_T* _getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
 
-    static const std::vector<H2DE_Surface*> getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
-    static const std::vector<H2DE_Surface*> getSortedSurfaces(std::vector<H2DE_Surface*>& surfaces);
-    static const std::array<H2DE_Translate, 4> getCorners(const H2DE_Transform& transform);
+    static const std::vector<H2DE_Surface*> _getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
+    static const std::vector<H2DE_Surface*> _getSortedSurfaces(std::vector<H2DE_Surface*>& surfaces);
+    static const std::array<H2DE_Translate, 4> _getCorners(const H2DE_Transform& transform);
 
-    static inline bool hasSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+    static inline bool _hasSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
         return (surfaces.find(name) != surfaces.end()); 
     }
 
-    void rescaleSurfaceBuffers() noexcept;
-    void rescaleHitboxes() noexcept;
-    static void rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) noexcept;
+    void _rescaleSurfaceBuffers() noexcept;
+    void _rescaleHitboxes() noexcept;
+    static void _rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) noexcept;
 
-    float getMaxHitboxRadius() const;
-    float getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const;
+    float _getMaxHitboxRadius() const;
+    float _getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const;
 
 private:
-    bool hidden = false;
-    bool isGrid = false;
+    bool _hidden = false;
+    bool _isGrid = false;
 
-    void stopTimelines();
+    void _stopTimelines();
 };
 
 #include <H2DE/objects/H2DE_object.inl>

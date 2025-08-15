@@ -1,5 +1,4 @@
 #include "H2DE/engine/H2DE_timeline_manager.h"
-
 #include "H2DE/engine/H2DE_error.h"
 
 // INIT
@@ -19,7 +18,7 @@ void H2DE_TimelineManager::update() {
     for (auto it = timelines.begin(); it != timelines.end(); ) {
         H2DE_Timeline* timeline = *it;
 
-        if (!timeline->update()) {
+        if (!timeline->_update()) {
             it = destroyTimeline(timeline, false);
             
         } else {
@@ -46,12 +45,12 @@ std::vector<H2DE_Timeline*>::iterator H2DE_TimelineManager::destroyTimeline(H2DE
     H2DE_Timeline* t = *it;
 
     if (callCompleted) {
-        if (t->updateCall) {
-            t->updateCall(1.0f);
+        if (t->_updateCall) {
+            t->_updateCall(1.0f);
         }
 
-        if (t->completedCall) {
-            t->completedCall();
+        if (t->_completedCall) {
+            t->_completedCall();
         }
     }
 

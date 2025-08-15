@@ -1,5 +1,4 @@
 #include "H2DE/engine/H2DE_json.h"
-
 #include "H2DE/engine/H2DE_codec.h"
 #include "H2DE/engine/H2DE_error.h"
 

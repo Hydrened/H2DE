@@ -38,7 +38,7 @@ public:
      * until `resume()` is called.
      */
     inline void pause() noexcept {
-        paused = true;
+        _paused = true;
     }
     /**
      * @brief Resumes the timeline if it was paused.
@@ -46,7 +46,7 @@ public:
      * Calling this function allows the timeline to continue updating.
      */
     inline void resume() noexcept {
-        paused = false;
+        _paused = false;
     }
     /**
      * @brief Toggles the pause state of the timeline.
@@ -54,7 +54,7 @@ public:
      * If the timeline is paused, it will resume. If it's running, it will be paused.
      */
     inline void togglePause() noexcept {
-        paused = !paused;
+        _paused = !_paused;
     }
     /**
      * @brief Resets the timeline to its initial state.
@@ -79,27 +79,27 @@ public:
      * @return true if the timeline is paused, false otherwise.
      */
     constexpr bool isPaused() const noexcept {
-        return paused;
+        return _paused;
     }
     
 private:
-    H2DE_Engine* engine;
-    H2DE_TimelineManager* manager;
+    H2DE_Engine* _engine;
+    H2DE_TimelineManager* _manager;
 
-    float current = 0.0f;
-    float duration = 0.0f;
-    uint32_t loops = 0;
-    uint32_t currentLoop = 0;
-    H2DE_Easing easing = H2DE_EASING_LINEAR;
-    std::function<void(float)> updateCall = nullptr;
-    std::function<void()> completedCall = nullptr;
-    bool pauseSensitive = true;
-    bool paused = false;
+    float _current = 0.0f;
+    float _duration = 0.0f;
+    uint32_t _loops = 0;
+    uint32_t _currentLoop = 0;
+    H2DE_Easing _easing = H2DE_EASING_LINEAR;
+    std::function<void(float)> _updateCall = nullptr;
+    std::function<void()> _completedCall = nullptr;
+    bool _pauseSensitive = true;
+    bool _paused = false;
 
     H2DE_Timeline(H2DE_Engine* engine, H2DE_TimelineManager* manager, uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
     ~H2DE_Timeline() noexcept = default;
 
-    bool update();
+    bool _update();
 
     friend class H2DE_TimelineManager;
 };

@@ -96,6 +96,7 @@ struct H2DE_ButtonObjectData {
     std::function<void(H2DE_ButtonEventData&)> onMouseUp = nullptr;     /**< Callback triggered when the button is released. */
     std::function<void(H2DE_ButtonEventData&)> onHover = nullptr;       /**< Callback triggered when the mouse hovers over the button. */
     std::function<void(H2DE_ButtonEventData&)> onBlur = nullptr;        /**< Callback triggered when the mouse stops hovering the button. */
+    H2DE_Cursor cursor = H2DE_CURSOR_ARROW;                             /**< Cursor to display when the mouse hovers over the button. */
     bool pauseSensitive = true;                                         /**< Whether the button events are sensitive to game pause state. */
 };
 

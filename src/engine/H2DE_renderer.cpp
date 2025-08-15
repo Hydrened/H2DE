@@ -1,5 +1,4 @@
 #include "H2DE/engine/H2DE_renderer.h"
-
 #include "H2DE/engine/H2DE_geometry.h"
 
 // INIT
@@ -55,7 +54,7 @@ void H2DE_Renderer::sortObjects() {
         int indexB = b->getIndex();
 
         if (indexA == indexB) {
-            return H2DE_Engine::isPositionGreater(a, b);
+            return H2DE_Engine::_isPositionGreater(a, b);
         }
 
         return (indexA < indexB);
@@ -63,7 +62,7 @@ void H2DE_Renderer::sortObjects() {
 }
 
 void H2DE_Renderer::renderObjects() {
-    bool gridOnTop = engine->camera->onTop;
+    bool gridOnTop = engine->_camera->_onTop;
 
     if (!gridOnTop) {
         renderGrid();
@@ -87,33 +86,33 @@ void H2DE_Renderer::renderObject(const H2DE_Object* object) {
         return;
     }
 
-    if (!engine->camera->containsObject(object) && !object->objectData.absolute) {
+    if (!engine->_camera->containsObject(object) && !object->_objectData.absolute) {
         return;
     }
 
-    if (!object->isGrid) {
+    if (!object->_isGrid) {
         objectsRendered++;
     }
 
     renderSurfaces(object);
 
-    if (engine->debugObjectEnabled && !object->isGrid) {
+    if (engine->_debugObjectEnabled && !object->_isGrid) {
         renderObjectAddHitboxesToBuffer(object);
     }
 }
 
 // -- grid
 void H2DE_Renderer::renderGrid() {
-    if (!engine->camera->getData().grid) {
+    if (!engine->_camera->getData().grid) {
         return;
     }
 
-    H2DE_Object* grid = engine->camera->grid;
+    H2DE_Object* grid = engine->_camera->_grid;
 
-    bool xIsInverted = engine->camera->isXOriginInverted();
-    bool yIsInverted = engine->camera->isYOriginInverted();
+    bool xIsInverted = engine->_camera->isXOriginInverted();
+    bool yIsInverted = engine->_camera->isYOriginInverted();
 
-    for (const auto& [name, hitbox] : grid->hitboxes) {
+    for (const auto& [name, hitbox] : grid->_hitboxes) {
         if (name.substr(0, 1) == "c") {
             continue;
         }
@@ -124,14 +123,14 @@ void H2DE_Renderer::renderGrid() {
 }
 
 void H2DE_Renderer::renderCrosshair() {
-    if (!engine->camera->getData().grid) {
+    if (!engine->_camera->getData().grid) {
         return;
     }
 
-    H2DE_Object* grid = engine->camera->grid;
+    H2DE_Object* grid = engine->_camera->_grid;
 
-    bool xIsInverted = engine->camera->isXOriginInverted();
-    bool yIsInverted = engine->camera->isYOriginInverted();
+    bool xIsInverted = engine->_camera->isXOriginInverted();
+    bool yIsInverted = engine->_camera->isYOriginInverted();
 
     const H2DE_Hitbox& crosshairHitboxW = grid->getHitbox("cw");
     const H2DE_Hitbox& crosshairHitboxH = grid->getHitbox("ch");
@@ -146,7 +145,7 @@ void H2DE_Renderer::renderCrosshair() {
 
 // -- surfaces
 void H2DE_Renderer::renderSurfaces(const H2DE_Object* object) {
-    for (H2DE_Surface* surface : object->surfaceBuffers) {
+    for (H2DE_Surface* surface : object->_surfaceBuffers) {
         if (isSurfaceVisible(surface)) {
             renderSurface(object, surface);
         }
@@ -178,7 +177,7 @@ void H2DE_Renderer::renderPixelRectangle(const H2DE_Object* object, const std::a
     };
 
     H2DE_ColorRGB surfaceColor = color;
-    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_OPACITY_MAX));
+    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->_objectData.opacity)) * static_cast<float>(H2DE_OPACITY_MAX));
 
     if (filled) {
         filledPolygonColor(renderer, vx.data(), vy.data(), vx.size(), static_cast<Uint32>(surfaceColor));
@@ -208,10 +207,10 @@ void H2DE_Renderer::renderTexture(const H2DE_Object* object, H2DE_Surface* surfa
 
 void H2DE_Renderer::renderTextureSetProperties(const H2DE_Object* object, H2DE_Surface* surface, SDL_Texture* texture) const {
     const H2DE_ColorRGB color = surface->getColor();
-    const SDL_ScaleMode scaleMode = R::getScaleMode(surface->surfaceData.scaleMode);
-    const SDL_BlendMode blendMode = R::getBlendMode(surface->surfaceData.blendMode);
+    const SDL_ScaleMode scaleMode = R::getScaleMode(surface->_surfaceData.scaleMode);
+    const SDL_BlendMode blendMode = R::getBlendMode(surface->_surfaceData.blendMode);
 
-    uint8_t opacity = H2DE::round((getOpacityBlend(color.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_OPACITY_MAX));
+    uint8_t opacity = H2DE::round((getOpacityBlend(color.a) * getOpacityBlend(object->_objectData.opacity)) * static_cast<float>(H2DE_OPACITY_MAX));
 
     SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
     SDL_SetTextureAlphaMod(texture, opacity);
@@ -292,7 +291,7 @@ void H2DE_Renderer::renderCircle(const H2DE_Object* object, H2DE_Border* border)
     const H2DE_PixelPos center = { world_surfaceRect.x + halfWidth, world_surfaceRect.y + halfHeight };
 
     H2DE_ColorRGB surfaceColor = border->getColor();
-    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->objectData.opacity)) * static_cast<float>(H2DE_OPACITY_MAX));
+    surfaceColor.a = H2DE::round((getOpacityBlend(surfaceColor.a) * getOpacityBlend(object->_objectData.opacity)) * static_cast<float>(H2DE_OPACITY_MAX));
 
     bool isFilled = border->isFilled();
 
@@ -315,21 +314,21 @@ void H2DE_Renderer::renderCircle(const H2DE_Object* object, H2DE_Border* border)
 
 // -- -- getters
 SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object, H2DE_Surface* surface) const {
-    bool xIsInverted = engine->camera->isXOriginInverted();
-    bool yIsInverted = engine->camera->isYOriginInverted();
+    bool xIsInverted = engine->_camera->isXOriginInverted();
+    bool yIsInverted = engine->_camera->isYOriginInverted();
 
     H2DE_LevelRect surfaceRect = G::getSurfaceRect(object, surface, xIsInverted, yIsInverted);
     const H2DE_BarObject* bar = dynamic_cast<const H2DE_BarObject*>(object);
 
     if (bar != nullptr) {
-        if (bar->isSurfaceFill(surface)) {
-            float fillBarBlend = bar->getFillBlend();
+        if (bar->_isSurfaceFill(surface)) {
+            float fillBarBlend = bar->_getFillBlend();
             surfaceRect.x = (surfaceRect.w - surfaceRect.multiplyW(fillBarBlend).w) * -0.5f;
             surfaceRect = surfaceRect.multiplyW(fillBarBlend);
         }
     }
 
-    return static_cast<SDL_Rect>(subPixelToPixelRect(levelToSubPixelRect(surfaceRect, object->objectData.absolute)));
+    return static_cast<SDL_Rect>(subPixelToPixelRect(levelToSubPixelRect(surfaceRect, object->_objectData.absolute)));
 }
 
 float H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE_Object* object, H2DE_Surface* surface) const noexcept {
@@ -337,15 +336,15 @@ float H2DE_Renderer::renderSurfaceGetWorldRotation(const H2DE_Object* object, H2
 }
 
 SDL_Point H2DE_Renderer::renderSurfaceGetLocalPivot(const H2DE_Object* object, H2DE_Surface* surface) const {
-    bool objIsAbsolute = object->objectData.absolute;
-    const H2DE_SubPixelSize pixel_surfaceScale = R::levelToSubPixelSize(surface->surfaceData.transform.scale * 0.5f, objIsAbsolute);
+    bool objIsAbsolute = object->_objectData.absolute;
+    const H2DE_SubPixelSize pixel_surfaceScale = R::levelToSubPixelSize(surface->_surfaceData.transform.scale * 0.5f, objIsAbsolute);
 
     return static_cast<SDL_Point>(pixel_surfaceScale);
 }
 
 SDL_RendererFlip H2DE_Renderer::renderSurfaceGetWorldFlip(const H2DE_Object* object, H2DE_Surface* surface) noexcept {
-    H2DE_Flip objFlip = G::getFlipFromScale(object->objectData.transform.scale);
-    H2DE_Flip surFlip = G::getFlipFromScale(surface->surfaceData.transform.scale);
+    H2DE_Flip objFlip = G::getFlipFromScale(object->_objectData.transform.scale);
+    H2DE_Flip surFlip = G::getFlipFromScale(surface->_surfaceData.transform.scale);
     H2DE_Flip addedFlip = G::addFlip(objFlip, surFlip);
 
     switch (addedFlip) {
@@ -365,8 +364,8 @@ std::optional<SDL_Rect> H2DE_Renderer::renderSurfaceGetPossibleSrcRect(const H2D
 
     float blend = 1.0f;
     if (bar != nullptr) {
-        if (bar->isSurfaceFill(surface)) {
-            blend = bar->getFillBlend();
+        if (bar->_isSurfaceFill(surface)) {
+            blend = bar->_getFillBlend();
         }
     }
 
@@ -393,8 +392,8 @@ void H2DE_Renderer::renderHitboxes(const H2DE_Object* object) {
     const H2DE_Translate objectTranslate = object->getTranslate();
     bool objectIsAbsolute = object->isAbsolute();
 
-    bool xIsInverted = engine->camera->isXOriginInverted();
-    bool yIsInverted = engine->camera->isYOriginInverted();
+    bool xIsInverted = engine->_camera->isXOriginInverted();
+    bool yIsInverted = engine->_camera->isYOriginInverted();
 
     for (const auto& [name, hitbox] : object->getHitboxes()) {
         if (!hitbox.color.isVisible()) {
@@ -402,11 +401,11 @@ void H2DE_Renderer::renderHitboxes(const H2DE_Object* object) {
         }
 
         const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(object, hitbox, xIsInverted, yIsInverted);
-        if (!engine->camera->containsRect(world_hitboxRect) && !objectIsAbsolute) {
+        if (!engine->_camera->containsRect(world_hitboxRect) && !objectIsAbsolute) {
             continue;
         }
 
-        if (!object->isGrid) {
+        if (!object->_isGrid) {
             hitboxesRendered++;
         }
 
@@ -430,7 +429,7 @@ void H2DE_Renderer::renderHitbox(const H2DE_LevelRect& world_hitboxRect, const H
 
 // GETTER
 const float H2DE_Renderer::getBlockSize(float width) const {
-    float blockSize = engine->window->getSize().x / width;
+    float blockSize = engine->_window->getSize().x / width;
 
     if (blockSize <= 0.0f) {
         blockSize = 0.1f;
@@ -440,11 +439,11 @@ const float H2DE_Renderer::getBlockSize(float width) const {
 }
 
 const float H2DE_Renderer::getGameBlockSize() const {
-    return getBlockSize(engine->camera->getGameWidth());
+    return getBlockSize(engine->_camera->getGameWidth());
 }
 
 const float H2DE_Renderer::getInterfaceBlockSize() const {
-    return getBlockSize(engine->camera->getInterfaceWidth());
+    return getBlockSize(engine->_camera->getInterfaceWidth());
 }
 
 const std::array<H2DE_PixelPos, 4> H2DE_Renderer::getCorners(const H2DE_Object* object, H2DE_Surface* surface) const {
@@ -476,7 +475,7 @@ SDL_Texture* H2DE_Renderer::getTexture(const std::string& textureName) const {
 
 bool H2DE_Renderer::isSurfaceVisible(const H2DE_Surface* surface) const {
     bool surfaceIsValid = (textures.find(surface->getTextureName()) != textures.end() || surface->getTextureName() == "/");
-    return (surfaceIsValid && surface->isVisible());
+    return (surfaceIsValid && surface->_isVisible());
 }
 
 // -- sdl getters
@@ -503,11 +502,11 @@ SDL_BlendMode H2DE_Renderer::getBlendMode(H2DE_BlendMode blendMode) noexcept {
 H2DE_Renderer::H2DE_SubPixelPos H2DE_Renderer::levelToSubPixelPos(const H2DE_LevelRect& world_rect, bool absolute) const {
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
 
-    H2DE_LevelRect world_cameraRect = engine->camera->getWorldRect();
+    H2DE_LevelRect world_cameraRect = engine->_camera->getGameWorldRect();
     H2DE_Translate world_translate = world_rect.getTranslate();
 
-    bool xIsInverted = engine->camera->isXOriginInverted();
-    bool yIsInverted = engine->camera->isYOriginInverted();
+    bool xIsInverted = engine->_camera->isXOriginInverted();
+    bool yIsInverted = engine->_camera->isYOriginInverted();
 
     if (xIsInverted) {
         world_cameraRect.x *= -1;
@@ -518,7 +517,7 @@ H2DE_Renderer::H2DE_SubPixelPos H2DE_Renderer::levelToSubPixelPos(const H2DE_Lev
     }
 
     if (absolute) {
-        world_translate += engine->camera->getInterfaceScale() * 0.5f;
+        world_translate += engine->_camera->getInterfaceScale() * 0.5f;
     } else {
         world_translate += world_cameraRect.getScale() * 0.5f - world_cameraRect.getTranslate();
     }
@@ -549,12 +548,12 @@ H2DE_Translate H2DE_Renderer::pixelToLevel(const H2DE_PixelPos& pos, bool absolu
     const float blockSize = (absolute) ? getInterfaceBlockSize() : getGameBlockSize();
     H2DE_Translate res = H2DE_Translate{ static_cast<float>(pos.x), static_cast<float>(pos.y) };
 
-    bool xIsInverted = engine->camera->isXOriginInverted();
-    bool yIsInverted = engine->camera->isYOriginInverted();
+    bool xIsInverted = engine->_camera->isXOriginInverted();
+    bool yIsInverted = engine->_camera->isYOriginInverted();
 
     const H2DE_Scale cameraHalfScale = (absolute)
-        ? engine->camera->getInterfaceScale() * 0.5f
-        : engine->camera->getGameScale() * 0.5f;
+        ? engine->_camera->getInterfaceScale() * 0.5f
+        : engine->_camera->getGameScale() * 0.5f;
 
     res /= blockSize;
     res -= cameraHalfScale;
@@ -569,7 +568,7 @@ H2DE_Translate H2DE_Renderer::pixelToLevel(const H2DE_PixelPos& pos, bool absolu
         }
 
     } else {
-        H2DE_Translate cameraTranslate = engine->camera->getTranslate();
+        H2DE_Translate cameraTranslate = engine->_camera->getTranslate();
 
         if (xIsInverted) {
             cameraTranslate.x *= -1.0f;

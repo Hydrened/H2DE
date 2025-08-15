@@ -1,5 +1,4 @@
 #include "H2DE/engine/H2DE_error.h"
-
 #include "H2DE/utils/H2DE_utils.h"
 
 // LOG

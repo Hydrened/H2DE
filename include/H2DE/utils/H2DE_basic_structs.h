@@ -83,7 +83,7 @@ public:
      * @param rotation The rotation in degrees.
      * @param pivot The pivot point.
      */
-    constexpr H2DE_Transform(const H2DE_Translate& translate, const H2DE_Scale& scale, float rotation, const H2DE_Pivot& pivot) noexcept : translate(translate), defaultTranslate(translate), scale(scale), defaultScale(scale), rotation(rotation), pivot(pivot), defaultPivot(pivot) {}
+    constexpr H2DE_Transform(const H2DE_Translate& translate, const H2DE_Scale& scale, float rotation, const H2DE_Pivot& pivot) noexcept : translate(translate), _defaultTranslate(translate), scale(scale), _defaultScale(scale), rotation(rotation), pivot(pivot), _defaultPivot(pivot) {}
 
     /**
      * @brief Outputs the H2DE_Transform to an output stream in a readable format.
@@ -101,9 +101,9 @@ public:
     }
 
 private:
-    H2DE_Translate defaultTranslate = { 0.0f, 0.0f };
-    H2DE_Scale defaultScale = { 1.0f, 1.0f };
-    H2DE_Pivot defaultPivot = { 0.0f, 0.0f };
+    H2DE_Translate _defaultTranslate = { 0.0f, 0.0f };
+    H2DE_Scale _defaultScale = { 1.0f, 1.0f };
+    H2DE_Pivot _defaultPivot = { 0.0f, 0.0f };
 
     friend class H2DE_Object;
     friend class H2DE_Surface;
@@ -119,7 +119,7 @@ private:
 struct H2DE_Text {
     std::string text = "";                                          /** Text content to display. */
     std::string font = "";                                          /** Font name or path to use for rendering the text. */
-    H2DE_Scale bounds = { 10.0f, 10.0f };                           /** Zone for the text to be written in. */
+    H2DE_Scale bounds = { 0.0f, 0.0f };                             /** Zone for the text to be written in. */
     float fontSize = 1.0f;                                          /** Font size scale for X and Y axes. */
     H2DE_Scale spacing = { 0.1f, 0.3f };                            /** Spacing between characters (X) and lines (Y). */
     H2DE_TextAlign textAlign = H2DE_TEXT_ALIGN_CENTER_CENTER;       /** Text alignment (horizontal and vertical). */
@@ -219,17 +219,17 @@ struct H2DE_Font {
      * @brief Represents a single character in the font.
      */
     struct H2DE_Char {
-        char character = 'a';   /**< The character itself */
-        int width = 0;          /**< Width of the character in pixels */
+        char character = 'a';       /**< The character itself */
+        int width = 0;              /**< Width of the character in pixels */
     };
 
-    std::string textureName = "";                       /**< Name of the texture used for the font */
-    std::vector<H2DE_Char> characters = {};             /**< List of characters defined in the font */
-    int ascent = 0;                                     /**< Distance from the baseline to the top of the character area (pixels above the character if centered) */
-    int descent = 0;                                    /**< Distance from the baseline to the bottom of the character area (pixels below the character if centered) */
-    int spacing = 0;                                    /**< Spacing between characters */
-    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;  /**< Scaling mode for rendering the font */
-    H2DE_BlendMode blendMode = H2DE_BLEND_MODE_BLEND;   /**< Blending mode for rendering the font */
+    std::string textureName = "";                           /**< Name of the texture used for the font */
+    std::vector<H2DE_Char> characters = {};                 /**< List of characters defined in the font */
+    int ascent = 0;                                         /**< Distance from the baseline to the top of the character area (pixels above the character if centered) */
+    int descent = 0;                                        /**< Distance from the baseline to the bottom of the character area (pixels below the character if centered) */
+    int spacing = 0;                                        /**< Spacing between characters */
+    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;      /**< Scaling mode for rendering the font */
+    H2DE_BlendMode blendMode = H2DE_BLEND_MODE_BLEND;       /**< Blending mode for rendering the font */
 
 private:
     mutable std::unordered_map<std::string, H2DE_PixelRect> _characters = {};

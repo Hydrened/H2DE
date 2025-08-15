@@ -1,3 +1,12 @@
+## H2DE-4.2.7
+#### ADDED
+- version macros
+- camera game interface world rect
+- button hover cursor
+#### MODIFIED
+- camera get world rect is now get game world rect
+- renomed private members with "_" prefix
+
 ## H2DE-4.2.6
 #### ADDED
 - printl

@@ -1,7 +1,6 @@
 #include "H2DE/engine/H2DE_asset_loader_manager.h"
-
-#include <thread>
 #include "H2DE/engine/H2DE_error.h"
+#include <thread>
 
 // UPDATE
 void H2DE_AssetLoaderManager::update() {
@@ -10,7 +9,7 @@ void H2DE_AssetLoaderManager::update() {
 }
 
 void H2DE_AssetLoaderManager::loadTexturesFromBuffer() {
-    static std::unordered_map<std::string, SDL_Texture*>& textures = engine->renderer->textures;
+    static std::unordered_map<std::string, SDL_Texture*>& textures = engine->_renderer->textures;
 
     if (surfaceBuffer.empty()) {
         return;
@@ -32,7 +31,7 @@ void H2DE_AssetLoaderManager::loadTexturesFromBuffer() {
 }
 
 void H2DE_AssetLoaderManager::loadSoundsFromBuffer() {
-    static std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->audio->sounds;
+    static std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->_audio->_sounds;
 
     if (soundBuffer.empty()) {
         return;
@@ -170,7 +169,7 @@ H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadFile(cons
 }
 
 H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadTexture(const std::filesystem::path& file) {
-    std::unordered_map<std::string, SDL_Texture*>& textures = engine->renderer->textures;
+    std::unordered_map<std::string, SDL_Texture*>& textures = engine->_renderer->textures;
     SDL_Surface* surface = IMG_Load(file.string().c_str());
     const std::string name = file.filename().string();
 
@@ -190,7 +189,7 @@ H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadTexture(c
 }
 
 H2DE_AssetLoaderManager::H2DE_LoadedAsset H2DE_AssetLoaderManager::loadSound(const std::filesystem::path& file) {
-    std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->audio->sounds;
+    std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->_audio->_sounds;
     Mix_Chunk* sound = Mix_LoadWAV(file.string().c_str());
     const std::string name = file.filename().string();
 
@@ -246,14 +245,14 @@ void H2DE_AssetLoaderManager::assetLoadedAsync() {
 
 // -- load font
 void H2DE_AssetLoaderManager::loadFont(const std::string& name, const H2DE_Font& font) {
-    if (engine->fonts.find(name) != engine->fonts.end()) {
+    if (engine->_fonts.find(name) != engine->_fonts.end()) {
         if (!silentLoad) {
             H2DE_Error::logWarning("Font \"" + name + "\" has been overridden");
         }
     }
 
     buildFontCache(font);
-    engine->fonts[name] = font;
+    engine->_fonts[name] = font;
 }
 
 void H2DE_AssetLoaderManager::buildFontCache(const H2DE_Font& font) {
@@ -273,8 +272,8 @@ void H2DE_AssetLoaderManager::buildFontCache(const H2DE_Font& font) {
 
 // -- refresh
 void H2DE_AssetLoaderManager::refreshObjectsSurfaceBuffers() {
-    for (H2DE_Object* object : engine->objects) {
-        object->refreshSurfaceBuffers();
+    for (H2DE_Object* object : engine->_objects) {
+        object->_refreshSurfaceBuffers();
     }
 }
 

@@ -11,6 +11,7 @@ private:
 
     H2DE_ButtonObject* mouseDown = nullptr;
     H2DE_ButtonObject* hovered = nullptr;
+    H2DE_Cursor oldCursor = H2DE_CURSOR_ARROW;
 
     H2DE_ObjectManager(H2DE_Engine* engine);
     ~H2DE_ObjectManager() noexcept = default;
@@ -27,4 +28,5 @@ private:
     static H2DE_MouseButton getH2DEButton(Uint8 sdlButton);
 
     friend class H2DE_Engine;
+    friend class H2DE_Window;
 };

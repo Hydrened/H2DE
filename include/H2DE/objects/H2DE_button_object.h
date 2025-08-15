@@ -47,7 +47,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* addSurface(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
-        return H2DE_Object::addSurface<H2DE_Surface_T>(surfaces, name, surfaceData, specificData);
+        return H2DE_Object::_addSurface<H2DE_Surface_T>(_surfaces, name, surfaceData, specificData);
     }
     /**
      * @brief Remove a surface from the object.
@@ -58,20 +58,20 @@ public:
      * @return true if the surface was found and removed, false otherwise.
      */
     inline bool removeSurface(const std::string& name) {
-        return H2DE_Object::removeSurface(surfaces, name);
+        return H2DE_Object::_removeSurface(_surfaces, name);
     }
 
     /**
      * @brief Enable the button (makes it active).
      */
     inline void enable() { 
-        disabled = false;
+        _disabled = false;
     }
     /**
      * @brief Disable the button (makes it inactive).
      */
     inline void disable() {
-        disabled = true;
+        _disabled = true;
     }
 
     /**
@@ -108,7 +108,7 @@ public:
      * @return A copy of the button's data.
      */
     inline H2DE_ButtonObjectData getButtonData() const {
-        return buttonObjectData;
+        return _buttonObjectData;
     }
     /**
      * @brief Get the mouse button(s) configured to trigger this button.
@@ -119,7 +119,19 @@ public:
      * @return The configured mouse button(s) for this button.
      */
     constexpr H2DE_MouseButton getMouseButton() const {
-        return buttonObjectData.mouseButton;
+        return _buttonObjectData.mouseButton;
+    }
+    /**
+     * @brief Get the cursor displayed when hovering over this button.
+     * 
+     * Returns the `H2DE_Cursor` value that defines the cursor shape
+     * shown while the mouse is hovering over the button 
+     * (e.g., ARROW, HAND, or other custom cursors).
+     * 
+     * @return The configured cursor for this button.
+     */
+    constexpr H2DE_Cursor getCursor() const {
+        return _buttonObjectData.cursor;
     }
     /**
      * @brief Check if the button is sensitive to the game's pause state.
@@ -130,14 +142,14 @@ public:
      * @return true if pause sensitive, false if not.
      */
     constexpr bool isPauseSensitive() const noexcept {
-        return buttonObjectData.pauseSensitive; 
+        return _buttonObjectData.pauseSensitive; 
     }
     /**
      * @brief Check if the button is disabled.
      * @return true if disabled, false otherwise.
      */
     constexpr bool isDisabled() const noexcept {
-        return disabled; 
+        return _disabled; 
     }
 
     /**
@@ -149,7 +161,7 @@ public:
      * @return A map of surface names to their respective surface pointers.
      */
     inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const noexcept {
-        return surfaces; 
+        return _surfaces; 
     }
     /**
      * @brief Get a surface by name and cast it to a specific type.
@@ -163,7 +175,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* getSurface(const std::string& name) const {
-        return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name); 
+        return H2DE_Object::_getSurface<H2DE_Surface_T>(_surfaces, name); 
     }
     /**
      * @brief Checks whether a surface with the given name exists.
@@ -171,7 +183,7 @@ public:
      * @return true if the surface exists, false otherwise.
      */
     inline bool hasSurface(const std::string& name) const {
-        return H2DE_Object::hasSurface(surfaces, name);
+        return H2DE_Object::_hasSurface(_surfaces, name);
     }
     /**
      * @brief Get the text object associated with the button.
@@ -182,7 +194,7 @@ public:
      * @return Pointer to the button's text object, or nullptr if none.
      */
     inline H2DE_TextObject* getTextObject() const noexcept {
-        return textObject; 
+        return _textObject; 
     }
 
     /**
@@ -194,7 +206,7 @@ public:
      * @param mouseButton The mouse button(s) to use for triggering the button.
      */
     inline void setMouseButton(H2DE_MouseButton mouseButton) noexcept {
-        buttonObjectData.mouseButton = mouseButton;
+        _buttonObjectData.mouseButton = mouseButton;
     }
     /**
      * @brief Set the callback function triggered when the button is pressed down.
@@ -204,7 +216,7 @@ public:
      * @param onMouseDown The function to call on mouse down event.
      */
     inline void setMouseDown(const std::function<void(H2DE_ButtonEventData)>& onMouseDown) noexcept {
-        buttonObjectData.onMouseDown = onMouseDown;
+        _buttonObjectData.onMouseDown = onMouseDown;
     }
     /**
      * @brief Set the callback function triggered when the mouse button is released.
@@ -214,7 +226,7 @@ public:
      * @param onMouseUp The function to call on mouse up event.
      */
     inline void setMouseUp(const std::function<void(H2DE_ButtonEventData)>& onMouseUp) noexcept {
-        buttonObjectData.onMouseUp = onMouseUp;
+        _buttonObjectData.onMouseUp = onMouseUp;
     }
     /**
      * @brief Set the callback function triggered when the mouse starts hovering over the button.
@@ -224,7 +236,7 @@ public:
      * @param onHover The function to call on mouse hover event.
      */
     inline void setMouseHover(const std::function<void(H2DE_ButtonEventData)>& onHover) noexcept {
-        buttonObjectData.onHover = onHover;
+        _buttonObjectData.onHover = onHover;
     }
     /**
      * @brief Set the callback function triggered when the mouse stops hovering over the button.
@@ -234,7 +246,18 @@ public:
      * @param onBlur The function to call on mouse blur event.
      */
     inline void setMouseBlur(const std::function<void(H2DE_ButtonEventData)>& onBlur) noexcept {
-        buttonObjectData.onBlur = onBlur;
+        _buttonObjectData.onBlur = onBlur;
+    }
+    /**
+     * @brief Set the cursor displayed when hovering over the button.
+     * 
+     * Defines the `H2DE_Cursor` value to be shown when the mouse is
+     * hovering over the button (e.g., ARROW, HAND, or custom cursor).
+     * 
+     * @param cursor The cursor to display while hovering over the button.
+     */
+    inline void setCursor(H2DE_Cursor cursor) noexcept {
+        _buttonObjectData.cursor = cursor;
     }
     /**
      * @brief Set whether the button's events are sensitive to the engine's pause state.
@@ -244,7 +267,7 @@ public:
      * @param pauseSensitive True to make the button sensitive to pause, false otherwise.
      */
     inline void setPauseSensitive(bool pauseSensitive) noexcept { 
-        buttonObjectData.pauseSensitive = pauseSensitive; 
+        _buttonObjectData.pauseSensitive = pauseSensitive; 
     }
 
     using H2DE_DataType = H2DE_ButtonObjectData;
@@ -253,18 +276,18 @@ public:
     friend class H2DE_ObjectManager;
 
 private:
-    H2DE_ButtonObjectData buttonObjectData;
+    H2DE_ButtonObjectData _buttonObjectData;
 
-    H2DE_TextObject* textObject = nullptr;
-    std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
-    H2DE_ButtonEventData eventData;
+    H2DE_TextObject* _textObject = nullptr;
+    std::unordered_map<std::string, H2DE_Surface*> _surfaces = {};
+    H2DE_ButtonEventData _eventData;
 
-    bool disabled = false;
+    bool _disabled = false;
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     ~H2DE_ButtonObject() override;
 
-    void refreshTextObject();
-    void refreshSurfaceBuffers() override;
-    void refreshMaxRadius() override;
+    void _refreshTextObject();
+    void _refreshSurfaceBuffers() override;
+    void _refreshMaxRadius() override;
 };

@@ -28,42 +28,42 @@ public:
      * @return A copy of the current H2DE_BorderData.
      */
     constexpr H2DE_BorderData getBorderData() const noexcept {
-        return borderData;
+        return _borderData;
     }
     /**
      * @brief Returns the current border type (rectangle or circle).
      * @return The border type as a H2DE_BorderType enum value.
      */
     constexpr H2DE_BorderType getType() const noexcept {
-        return borderData.type;
+        return _borderData.type;
     }
     /**
      * @brief Returns the current border placement relative to the shape's edge.
      * @return The border placement as a H2DE_BorderPlacement enum value.
      */
     constexpr H2DE_BorderPlacement getPlacement() const noexcept {
-        return borderData.placement;
+        return _borderData.placement;
     }
     /**
      * @brief Returns the current border color.
      * @return The color of the border as a H2DE_ColorRGB.
      */
     inline H2DE_ColorRGB getColor() const noexcept override {
-        return borderData.color;
+        return _borderData.color;
     }
     /**
      * @brief Returns the current border thickness in pixels.
-     * @return Border thickness as an unsigned 16-bit integer.
+     * @return _Border thickness as an unsigned 16-bit integer.
      */
     constexpr uint16_t getThickness() const noexcept {
-        return borderData.thickness;
+        return _borderData.thickness;
     }
     /**
      * @brief Checks if the border is filled or just outlined.
      * @return true if the border is filled, false if it's only an outline.
      */
     constexpr bool isFilled() const noexcept {
-        return borderData.filled;
+        return _borderData.filled;
     }
 
     /**
@@ -71,14 +71,14 @@ public:
      * @param type New border type to apply.
      */
     inline void setType(H2DE_BorderType type) noexcept {
-        borderData.type = type;
+        _borderData.type = type;
     }
     /**
      * @brief Sets the border placement relative to the shape's edge.
      * @param placement New border placement to apply.
      */
     inline void setPlacement(H2DE_BorderPlacement placement) noexcept {
-        borderData.placement = placement;
+        _borderData.placement = placement;
     }
     /**
      * @brief Instantly set the modulating color.
@@ -86,21 +86,21 @@ public:
      * @param color New color to set.
      */
     inline void setColor(const H2DE_ColorRGB& color) noexcept {
-        borderData.color = color;
+        _borderData.color = color;
     }
     /**
      * @brief Sets the border thickness.
      * @param thickness New thickness value in pixels.
      */
     inline void setThickness(uint16_t thickness) noexcept {
-        borderData.thickness = thickness;
+        _borderData.thickness = thickness;
     }
     /**
      * @brief Sets whether the border should be filled or just outlined.
      * @param filled true to fill the border, false for outline only.
      */
     inline void setFilled(bool filled) noexcept {
-        borderData.filled = filled;
+        _borderData.filled = filled;
     }
 
     /**
@@ -132,9 +132,9 @@ public:
     friend class H2DE_Object;
 
 private:
-    H2DE_BorderData borderData;
+    H2DE_BorderData _borderData;
 
-    H2DE_Border(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_BorderData& borderData) noexcept : H2DE_Surface(engine, object, surfaceData), borderData(borderData) {};
+    H2DE_Border(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_BorderData& borderData) noexcept : H2DE_Surface(engine, object, surfaceData), _borderData(borderData) {};
     ~H2DE_Border() override = default;
 
     inline std::string getTextureName() const override {
@@ -143,7 +143,7 @@ private:
     inline std::optional<H2DE_PixelRect> getSrcRect() const noexcept override {
         return std::nullopt;
     }
-    inline bool isVisible() const noexcept override {
-        return (!isHidden() && borderData.color.isVisible() && borderData.thickness != 0);
+    inline bool _isVisible() const noexcept override {
+        return (!isHidden() && _borderData.color.isVisible() && _borderData.thickness != 0);
     }
 };

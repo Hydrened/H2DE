@@ -3,6 +3,29 @@
 #include <SDL2/SDL_video.h>
 #include <H2DE/utils/H2DE_utils.h>
 
+#define H2DE_VERSION_MAJOR 4
+#define H2DE_VERSION_MINOR 2
+#define H2DE_VERSION_PATCH 7
+#define H2DE_VERSION_BETA 0
+
+#define H2DE_STR_HELPER(x) #x
+#define H2DE_STR(x) H2DE_STR_HELPER(x)
+
+#if H2DE_VERSION_BETA > 0
+    #define H2DE_VERSION \
+        H2DE_STR(H2DE_VERSION_MAJOR) "." \
+        H2DE_STR(H2DE_VERSION_MINOR) "." \
+        H2DE_STR(H2DE_VERSION_PATCH) "-b" \
+        H2DE_STR(H2DE_VERSION_BETA)
+#else
+    #define H2DE_VERSION \
+        H2DE_STR(H2DE_VERSION_MAJOR) "." \
+        H2DE_STR(H2DE_VERSION_MINOR) "." \
+        H2DE_STR(H2DE_VERSION_PATCH)
+#endif
+
+#define H2DE_VERSION_NUM (H2DE_VERSION_MAJOR * 10000 + H2DE_VERSION_MINOR * 100 + H2DE_VERSION_PATCH)
+
 /** @brief Minimum value for unsigned 8-bit integer. */
 #define H2DE_UINT8_MIN 0u
 /** @brief Maximum value for unsigned 8-bit integer. */

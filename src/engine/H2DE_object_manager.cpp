@@ -1,5 +1,4 @@
 #include "H2DE/engine/H2DE_object_manager.h"
-
 #include "H2DE/engine/H2DE_geometry.h"
 
 // INIT
@@ -38,15 +37,15 @@ void H2DE_ObjectManager::handleMouseDownEvents(SDL_Event event) {
             continue;
         }
 
-        const H2DE_Translate mousePos = (button->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
+        const H2DE_Translate mousePos = (button->_objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 
-        for (const auto& [name, hitbox] : button->hitboxes) {
+        for (const auto& [name, hitbox] : button->_hitboxes) {
             const H2DE_LevelRect buttonRect = G::getHitboxRect(button, hitbox);
 
             if (buttonRect.collides(mousePos)) {
 
-                if (button->buttonObjectData.onMouseDown) {
-                    button->buttonObjectData.onMouseDown(button->eventData);
+                if (button->_buttonObjectData.onMouseDown) {
+                    button->_buttonObjectData.onMouseDown(button->_eventData);
                 }
                 
                 mouseDown = button;
@@ -61,7 +60,7 @@ void H2DE_ObjectManager::handleMouseUpEvents(SDL_Event event) {
         return;
     }
 
-    if (!mouseDown->buttonObjectData.onMouseUp || mouseDown->disabled) {
+    if (!mouseDown->_buttonObjectData.onMouseUp || mouseDown->_disabled) {
         return;
     }
 
@@ -74,13 +73,13 @@ void H2DE_ObjectManager::handleMouseUpEvents(SDL_Event event) {
     const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
 
-    const H2DE_Translate mousePos = (mouseDown->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
+    const H2DE_Translate mousePos = (mouseDown->_objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 
-    for (const auto& [name, hitbox] : mouseDown->hitboxes) {
+    for (const auto& [name, hitbox] : mouseDown->_hitboxes) {
         const H2DE_LevelRect buttonRect = G::getHitboxRect(mouseDown, hitbox);
 
         if (buttonRect.collides(mousePos)) {
-            mouseDown->buttonObjectData.onMouseUp(mouseDown->eventData);
+            mouseDown->_buttonObjectData.onMouseUp(mouseDown->_eventData);
             mouseDown = nullptr;
             return;
         }
@@ -92,13 +91,9 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
 
     for (H2DE_ButtonObject* button : getValidButtons()) {
-        if (!button->buttonObjectData.onHover && !button->buttonObjectData.onBlur) {
-            continue;
-        }
+        const H2DE_Translate mousePos = (button->_objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 
-        const H2DE_Translate mousePos = (button->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
-
-        for (const auto& [name, hitbox] : button->hitboxes) {
+        for (const auto& [name, hitbox] : button->_hitboxes) {
             const H2DE_LevelRect buttonRect = G::getHitboxRect(button, hitbox);
 
             if (!buttonRect.collides(mousePos)) {
@@ -110,25 +105,29 @@ void H2DE_ObjectManager::handleHoverEvents(SDL_Event event) {
                     continue;
                 }
 
-                if (hovered->objectData.index > button->objectData.index) {
+                if (hovered->_objectData.index > button->_objectData.index) {
                     continue;
                 }
 
-                if (H2DE_Engine::isPositionGreater(button, hovered)) {
+                if (H2DE_Engine::_isPositionGreater(button, hovered)) {
                     continue;
                 }
             }
 
             if (hovered != nullptr) {
-                if (hovered->buttonObjectData.onBlur) {
-                    hovered->buttonObjectData.onBlur(hovered->eventData);
+                if (hovered->_buttonObjectData.onBlur) {
+                    hovered->_buttonObjectData.onBlur(hovered->_eventData);
                 }
+
+                engine->_window->setCursor(oldCursor);
             }
 
             hovered = button;
-            if (button->buttonObjectData.onHover) {
-                button->buttonObjectData.onHover(button->eventData);
+            if (button->_buttonObjectData.onHover) {
+                button->_buttonObjectData.onHover(button->_eventData);
             }
+
+            engine->_window->_setHoverCursor(button->_buttonObjectData.cursor);
 
             return;
         }
@@ -140,7 +139,7 @@ void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
         return;
     }
 
-    if (hovered->disabled) {
+    if (hovered->_disabled) {
         return;
     }
 
@@ -148,9 +147,9 @@ void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
 
     const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
     const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
-    const H2DE_Translate mousePos = (hovered->objectData.absolute) ? mouseInterfacePos : mouseGamePos;
+    const H2DE_Translate mousePos = (hovered->_objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 
-    for (const auto& [name, hitbox] : hovered->hitboxes) {
+    for (const auto& [name, hitbox] : hovered->_hitboxes) {
         const H2DE_LevelRect buttonRect = G::getHitboxRect(hovered, hitbox);
 
         if (buttonRect.collides(mousePos)) {
@@ -160,10 +159,11 @@ void H2DE_ObjectManager::handleBlurEvents(SDL_Event event) {
     }
 
     if (!stillHovering) {
-        if (hovered->buttonObjectData.onBlur) {
-            hovered->buttonObjectData.onBlur(hovered->eventData);
+        if (hovered->_buttonObjectData.onBlur) {
+            hovered->_buttonObjectData.onBlur(hovered->_eventData);
         }
 
+        engine->_window->setCursor(oldCursor);
         hovered = nullptr;
     }
 }
@@ -188,7 +188,7 @@ void H2DE_ObjectManager::refreshButtonBuffer(const std::vector<H2DE_Object*>& ob
         int indexB = b->getIndex();
 
         if (indexA == indexB) {
-            return H2DE_Engine::isPositionGreater(a, b);
+            return H2DE_Engine::_isPositionGreater(a, b);
         }
 
         return (indexA > indexB);
@@ -200,15 +200,15 @@ const std::vector<H2DE_ButtonObject*> H2DE_ObjectManager::getValidButtons() cons
     std::vector<H2DE_ButtonObject*> res;
 
     for (H2DE_ButtonObject* button : buttons) {
-        if (button->hidden) {
+        if (button->_hidden) {
             continue;
         }
 
-        if (button->disabled) {
+        if (button->_disabled) {
             continue;
         }
 
-        if (engine->paused && button->buttonObjectData.pauseSensitive) {
+        if (engine->_paused && button->_buttonObjectData.pauseSensitive) {
             continue;
         }
 

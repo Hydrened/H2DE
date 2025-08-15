@@ -16,7 +16,7 @@ public:
         return H2DE_Geometry::getRect(object, hitbox.transform, 90.0f, xIsInverted, yIsInverted, false);
     }
     inline static H2DE_LevelRect getSurfaceRect(const H2DE_Object* object, H2DE_Surface* surface, bool xIsInverted = false, bool yIsInverted = false) {
-        return H2DE_Geometry::getRect(object, surface->getTransform(), 1.0f, xIsInverted, yIsInverted, surface->fromText);
+        return H2DE_Geometry::getRect(object, surface->getTransform(), 1.0f, xIsInverted, yIsInverted, surface->_fromText);
     }
 
     inline static float getHitboxRotation(const H2DE_Object* object, const H2DE_Hitbox& hitbox) noexcept {

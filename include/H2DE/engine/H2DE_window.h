@@ -30,7 +30,7 @@ public:
      * @return The current H2DE_WindowData.
      */
     constexpr H2DE_WindowData getData() const noexcept {
-        return data; 
+        return _data; 
     }
     /**
      * @brief Get the current position of the window on screen.
@@ -130,32 +130,37 @@ public:
     friend class H2DE_Engine;
 
 private:
-    H2DE_Engine* engine;
-    H2DE_WindowData data;
+    H2DE_Engine* _engine;
+    H2DE_WindowData _data;
 
-    SDL_Window* window = nullptr;
-    SDL_Renderer* renderer = nullptr;
+    SDL_Window* _window = nullptr;
+    SDL_Renderer* _renderer = nullptr;
 
-    SDL_Cursor* cursor = nullptr;
-    H2DE_PixelSize oldSize = { 0, 0 };
-    float customRatio = 0.0f;
+    SDL_Cursor* _cursor = nullptr;
+    H2DE_PixelSize _oldSize = { 0, 0 };
+    float _customRatio = 0.0f;
+    H2DE_Cursor _oldCursor = H2DE_CURSOR_ARROW;
 
     H2DE_Window(H2DE_Engine* engine, const H2DE_WindowData& data);
     ~H2DE_Window();
 
-    void initSDL() const;
-    void initSettings() const;
-    void create();
+    void _initSDL() const;
+    void _initSettings() const;
+    void _create();
 
-    void saveState() const;
-    void quitSDL() const;
+    void _saveState() const;
+    void _quitSDL() const;
 
-    void update();
+    void _update();
 
-    void fixRatioSize(const H2DE_PixelSize& size);
+    void _fixRatioSize(const H2DE_PixelSize& size);
 
-    constexpr const SDL_WindowFlags getFlags(bool fullscreen, bool resizable) {
+    constexpr const SDL_WindowFlags _getFlags(bool fullscreen, bool resizable) {
         return (fullscreen) ? SDL_WINDOW_FULLSCREEN_DESKTOP : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
     }
-    static SDL_SystemCursor getSDLCursor(H2DE_Cursor cursor);
+    static SDL_SystemCursor _getSDLCursor(H2DE_Cursor cursor);
+
+    void _setHoverCursor(H2DE_Cursor cursor);
+
+    friend class H2DE_ObjectManager;
 };

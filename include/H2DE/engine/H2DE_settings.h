@@ -108,21 +108,21 @@ public:
     friend class H2DE_Engine;
 
 private:
-    H2DE_Engine* engine;
+    H2DE_Engine* _engine;
 
-    const std::filesystem::path path = "settings.ini";
-    std::map<std::string, std::map<std::string, std::string>> values = {};
+    const std::filesystem::path _path = "settings.ini";
+    std::map<std::string, std::map<std::string, std::string>> _values = {};
 
     H2DE_Settings(H2DE_Engine* engine);
     ~H2DE_Settings() noexcept = default;
 
-    void initFile();
-    void refreshValues();
-    void refreshFile();
+    void _initFile();
+    void _refreshValues();
+    void _refreshFile();
 
-    bool hasSection(const std::string& section) const;
-    bool hasKey(const std::string& section, const std::string& key) const;
-    bool isSection(const std::string& line) const;
-    bool isKey(const std::string& line) const noexcept;
-    const std::pair<std::string, std::string> getKeyAndValue(const std::string& line) const;
+    bool _hasSection(const std::string& section) const;
+    bool _hasKey(const std::string& section, const std::string& key) const;
+    bool _isSection(const std::string& line) const;
+    bool _isKey(const std::string& line) const noexcept;
+    const std::pair<std::string, std::string> _getKeyAndValue(const std::string& line) const;
 };

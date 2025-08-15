@@ -1,15 +1,14 @@
 #include "H2DE/objects/H2DE_object.h"
-
 #include "H2DE/engine/H2DE_lerp_manager.h"
 #include "H2DE/engine/H2DE_geometry.h"
 #include "H2DE/engine/H2DE_error.h"
 
 // CLEANUP
 H2DE_Object::~H2DE_Object() {
-    stopTimelines();
+    _stopTimelines();
 }
 
-void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
+void H2DE_Object::_destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
     for (const auto& [name, surface] : surfaces) {
         delete surface;
     }
@@ -17,7 +16,7 @@ void H2DE_Object::destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>
     surfaces.clear();
 }
 
-void H2DE_Object::destroySurfaces(std::vector<H2DE_Surface*>& surfaces) {
+void H2DE_Object::_destroySurfaces(std::vector<H2DE_Surface*>& surfaces) {
     for (H2DE_Surface* surface : surfaces) {
         delete surface;
     }
@@ -25,38 +24,38 @@ void H2DE_Object::destroySurfaces(std::vector<H2DE_Surface*>& surfaces) {
     surfaces.clear();
 }
 
-void H2DE_Object::removeTimeline(H2DE_Timeline* timeline) {
-    auto it = std::find(timelinesBuffer.begin(), timelinesBuffer.end(), timeline);
-    if (it != timelinesBuffer.end()) {
-        timelinesBuffer.erase(it);
+void H2DE_Object::_removeTimeline(H2DE_Timeline* timeline) {
+    auto it = std::find(_timelinesBuffer.begin(), _timelinesBuffer.end(), timeline);
+    if (it != _timelinesBuffer.end()) {
+        _timelinesBuffer.erase(it);
     }
 }
 
-void H2DE_Object::stopTimelines() {
-    for (H2DE_Timeline* timeline : timelinesBuffer) {
-        if (!engine->timelineManager->isStoped(timeline)) {
+void H2DE_Object::_stopTimelines() {
+    for (H2DE_Timeline* timeline : _timelinesBuffer) {
+        if (!_engine->_timelineManager->isStoped(timeline)) {
             timeline->stop(false);
         }
     }
     
-    timelinesBuffer.clear();
+    _timelinesBuffer.clear();
 }
 
 // UPDATE
-void H2DE_Object::update() {
-    updateCollisions();
-    updateTimelineBuffer();
+void H2DE_Object::_update() {
+    _updateCollisions();
+    _updateTimelineBuffer();
 }
 
-void H2DE_Object::updateCollisions() {
-    if (hidden || objectData.absolute || isGrid) {
+void H2DE_Object::_updateCollisions() {
+    if (_hidden || _objectData.absolute || _isGrid) {
         return;
     }
 
-    bool xIsInverted = engine->camera->isXOriginInverted();
-    bool yIsInverted = engine->camera->isYOriginInverted();
+    bool xIsInverted = _engine->_camera->isXOriginInverted();
+    bool yIsInverted = _engine->_camera->isYOriginInverted();
 
-    for (const auto& [name, hitbox] : hitboxes) {
+    for (const auto& [name, hitbox] : _hitboxes) {
         if (!hitbox.onCollide) {
             continue;
         }
@@ -64,14 +63,14 @@ void H2DE_Object::updateCollisions() {
         const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(this, hitbox, xIsInverted, yIsInverted);
         const int& collisionIndex = hitbox.collisionIndex;
 
-        for (H2DE_Object* otherObject : engine->objects) {
-            if (otherObject == this || otherObject->objectData.absolute || otherObject->hidden || otherObject->isGrid) {
+        for (H2DE_Object* otherObject : _engine->_objects) {
+            if (otherObject == this || otherObject->_objectData.absolute || otherObject->_hidden || otherObject->_isGrid) {
                 continue;
             }
 
-            const H2DE_ObjectData& otherObjectData = otherObject->objectData;
+            const H2DE_ObjectData& otherObjectData = otherObject->_objectData;
 
-            for (const auto& [otherName, otherHitbox] : otherObject->hitboxes) {
+            for (const auto& [otherName, otherHitbox] : otherObject->_hitboxes) {
                 if (collisionIndex != otherHitbox.collisionIndex) {
                     continue;
                 }
@@ -95,10 +94,10 @@ void H2DE_Object::updateCollisions() {
     }
 }
 
-void H2DE_Object::updateTimelineBuffer() {
-    for (auto it = timelinesBuffer.begin(); it != timelinesBuffer.end(); ) {
-        if (engine->timelineManager->isStoped(*it)) {
-            it = timelinesBuffer.erase(it);
+void H2DE_Object::_updateTimelineBuffer() {
+    for (auto it = _timelinesBuffer.begin(); it != _timelinesBuffer.end(); ) {
+        if (_engine->_timelineManager->isStoped(*it)) {
+            it = _timelinesBuffer.erase(it);
         } else {
             ++it;
         }
@@ -108,15 +107,15 @@ void H2DE_Object::updateTimelineBuffer() {
 // ACTIONS
 
 // -- surfaces
-bool H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+bool H2DE_Object::_removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
     auto it = surfaces.find(name);
 
     bool removed = (it != surfaces.end());
 
     if (removed) {
         surfaces.erase(it);
-        refreshMaxRadius();
-        refreshSurfaceBuffers();
+        _refreshMaxRadius();
+        _refreshSurfaceBuffers();
     }
 
     return removed;
@@ -124,67 +123,67 @@ bool H2DE_Object::removeSurface(std::unordered_map<std::string, H2DE_Surface*>& 
 
 // -- hitboxes
 void H2DE_Object::addHitbox(const std::string& name, const H2DE_Hitbox& hitbox) {
-    hitboxes[name] = hitbox;
+    _hitboxes[name] = hitbox;
 
-    hitboxes[name].transform.defaultTranslate = hitbox.transform.translate;
-    hitboxes[name].transform.defaultScale = hitbox.transform.scale;
-    hitboxes[name].transform.defaultPivot = hitbox.transform.pivot;
+    _hitboxes[name].transform._defaultTranslate = hitbox.transform.translate;
+    _hitboxes[name].transform._defaultScale = hitbox.transform.scale;
+    _hitboxes[name].transform._defaultPivot = hitbox.transform.pivot;
     
-    refreshMaxRadius();
-    rescaleHitboxes();
+    _refreshMaxRadius();
+    _rescaleHitboxes();
 }
 
 bool H2DE_Object::removeHitbox(const std::string& name) {
-    auto it = hitboxes.find(name);
+    auto it = _hitboxes.find(name);
     
-    bool removed = (it != hitboxes.end());
+    bool removed = (it != _hitboxes.end());
 
     if (removed) {
-        hitboxes.erase(it);
-        refreshMaxRadius();
+        _hitboxes.erase(it);
+        _refreshMaxRadius();
     }
 
     return removed;
 }
 
 // -- rescale
-void H2DE_Object::rescaleSurfaceBuffers() noexcept {
-    const float absoluteObjectScaleX = H2DE::abs(objectData.transform.scale.x);
-    const float absoluteObjectScaleY = H2DE::abs(objectData.transform.scale.y);
+void H2DE_Object::_rescaleSurfaceBuffers() noexcept {
+    const float absoluteObjectScaleX = H2DE::abs(_objectData.transform.scale.x);
+    const float absoluteObjectScaleY = H2DE::abs(_objectData.transform.scale.y);
     const H2DE_Scale absoluteObjectScale = { absoluteObjectScaleX, absoluteObjectScaleY };
 
-    for (H2DE_Surface* surface : surfaceBuffers) {
-        H2DE_Object::rescaleTransform(surface->surfaceData.transform, absoluteObjectScale);
+    for (H2DE_Surface* surface : _surfaceBuffers) {
+        H2DE_Object::_rescaleTransform(surface->_surfaceData.transform, absoluteObjectScale);
     }
 }
 
-void H2DE_Object::rescaleHitboxes() noexcept {
-    if (isGrid) {
+void H2DE_Object::_rescaleHitboxes() noexcept {
+    if (_isGrid) {
         return;
     }
 
-    const float absoluteObjectScaleX = H2DE::abs(objectData.transform.scale.x);
-    const float absoluteObjectScaleY = H2DE::abs(objectData.transform.scale.y);
+    const float absoluteObjectScaleX = H2DE::abs(_objectData.transform.scale.x);
+    const float absoluteObjectScaleY = H2DE::abs(_objectData.transform.scale.y);
     const H2DE_Scale absoluteObjectScale = { absoluteObjectScaleX, absoluteObjectScaleY };
 
-    for (auto& [name, hitbox] : hitboxes) {
-        H2DE_Object::rescaleTransform(hitbox.transform, absoluteObjectScale);
+    for (auto& [name, hitbox] : _hitboxes) {
+        H2DE_Object::_rescaleTransform(hitbox.transform, absoluteObjectScale);
     }
 }
 
-void H2DE_Object::rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) noexcept {
-    transform.translate.x = transform.defaultTranslate.x * scale.x;
-    transform.translate.y = transform.defaultTranslate.y * scale.y;
+void H2DE_Object::_rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) noexcept {
+    transform.translate.x = transform._defaultTranslate.x * scale.x;
+    transform.translate.y = transform._defaultTranslate.y * scale.y;
 
-    transform.scale.x = transform.defaultScale.x * scale.x;
-    transform.scale.y = transform.defaultScale.y * scale.y;
+    transform.scale.x = transform._defaultScale.x * scale.x;
+    transform.scale.y = transform._defaultScale.y * scale.y;
 
-    transform.pivot.x = transform.defaultPivot.x * scale.x;
-    transform.pivot.y = transform.defaultPivot.y * scale.y;
+    transform.pivot.x = transform._defaultPivot.x * scale.x;
+    transform.pivot.y = transform._defaultPivot.y * scale.y;
 }
 
 // GETTER
-const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
+const std::vector<H2DE_Surface*> H2DE_Object::_getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
     std::vector<H2DE_Surface*> res;
     res.reserve(surfaces.size());
 
@@ -192,20 +191,20 @@ const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(std::unordered_m
         res.push_back(surface);
     }
 
-    return getSortedSurfaces(res);
+    return _getSortedSurfaces(res);
 }
 
-const std::vector<H2DE_Surface*> H2DE_Object::getSortedSurfaces(std::vector<H2DE_Surface*>& surfaces) {
+const std::vector<H2DE_Surface*> H2DE_Object::_getSortedSurfaces(std::vector<H2DE_Surface*>& surfaces) {
     std::vector<H2DE_Surface*> res = surfaces;
 
     std::sort(res.begin(), res.end(), [](H2DE_Surface* a, H2DE_Surface* b) {
-        return (a->surfaceData.index < b->surfaceData.index);
+        return (a->_surfaceData.index < b->_surfaceData.index);
     });
 
     return res;
 }
 
-const std::array<H2DE_Translate, 4> H2DE_Object::getCorners(const H2DE_Transform& transform) {
+const std::array<H2DE_Translate, 4> H2DE_Object::_getCorners(const H2DE_Transform& transform) {
     const H2DE_Translate& translate = transform.translate;
     const H2DE_Pivot& pivot = transform.pivot;
     const float& rotation = transform.rotation;
@@ -228,8 +227,8 @@ const std::array<H2DE_Translate, 4> H2DE_Object::getCorners(const H2DE_Transform
 }
 
 const H2DE_Hitbox& H2DE_Object::getHitbox(const std::string& name) const {
-    auto it = hitboxes.find(name);
-    if (it == hitboxes.end()) {
+    auto it = _hitboxes.find(name);
+    if (it == _hitboxes.end()) {
         H2DE_Error::logError("Hitbox named \"" + name + "\" not found");
     }
         
@@ -242,12 +241,12 @@ const H2DE_LevelRect H2DE_Object::getHitboxWorldRect(const std::string& name) co
     return hitboxTransform.translate.makeRect(absScale).addTranslate(getTranslate());
 }
 
-float H2DE_Object::getMaxHitboxRadius() const {
+float H2DE_Object::_getMaxHitboxRadius() const {
     float res = 0.0f;
-    const H2DE_Translate world_objectTranslate = objectData.transform.translate;
+    const H2DE_Translate world_objectTranslate = _objectData.transform.translate;
 
-    for (const auto& [name, hitbox] : hitboxes) {
-        for (const H2DE_Translate& corner : H2DE_Object::getCorners(hitbox.transform)) {
+    for (const auto& [name, hitbox] : _hitboxes) {
+        for (const H2DE_Translate& corner : H2DE_Object::_getCorners(hitbox.transform)) {
 
             const H2DE_Translate world_hitboxCorner = corner + world_objectTranslate;
             float distance = H2DE::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
@@ -261,12 +260,12 @@ float H2DE_Object::getMaxHitboxRadius() const {
     return std::sqrt(res);
 }
 
-float H2DE_Object::getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const {
+float H2DE_Object::_getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const {
     float res = 0.0f;
-    const H2DE_Translate world_objectTranslate = objectData.transform.translate;
+    const H2DE_Translate world_objectTranslate = _objectData.transform.translate;
 
     for (const auto& [name, surface] : surfaces) {
-        for (const H2DE_Translate& corner : H2DE_Object::getCorners(surface->getTransform())) {
+        for (const H2DE_Translate& corner : H2DE_Object::_getCorners(surface->getTransform())) {
 
             const H2DE_Translate world_hitboxCorner = corner + world_objectTranslate;
             float distance = H2DE::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
@@ -284,159 +283,159 @@ float H2DE_Object::getMaxSurfaceRadius(const std::unordered_map<std::string, H2D
 
 // -- non lerp
 void H2DE_Object::setTranslate(const H2DE_Translate& translate) {
-    objectData.transform.translate = translate;
-    refreshSurfaceBuffers();
+    _objectData.transform.translate = translate;
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setScale(const H2DE_Scale& scale) {
-    objectData.transform.scale = scale;
-    refreshSurfaceBuffers();
-    rescaleHitboxes();
+    _objectData.transform.scale = scale;
+    _refreshSurfaceBuffers();
+    _rescaleHitboxes();
 }
 
 void H2DE_Object::setRotation(float rotation) {
-    objectData.transform.rotation = rotation;
-    refreshSurfaceBuffers();
+    _objectData.transform.rotation = rotation;
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setPivot(const H2DE_Pivot& pivot) {
-    objectData.transform.pivot = pivot;
-    refreshSurfaceBuffers();
+    _objectData.transform.pivot = pivot;
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setOpacity(uint8_t opacity) {
-    objectData.opacity = opacity;
-    refreshSurfaceBuffers();
+    _objectData.opacity = opacity;
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setAbsolute(bool absolute) {
-    objectData.absolute = absolute;
-    refreshSurfaceBuffers();
+    _objectData.absolute = absolute;
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setIndex(int index) {
-    objectData.index = index;
-    refreshSurfaceBuffers();
+    _objectData.index = index;
+    _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Translate& translate) {
     if (hasHitbox(name)) {
-        hitboxes[name].transform.translate = translate;
-        hitboxes[name].transform.defaultTranslate = translate;
-        refreshMaxRadius();
+        _hitboxes[name].transform.translate = translate;
+        _hitboxes[name].transform._defaultTranslate = translate;
+        _refreshMaxRadius();
     }
 }
 
 void H2DE_Object::setHitboxScale(const std::string& name, const H2DE_Scale& scale) {
     if (hasHitbox(name)) {
-        hitboxes[name].transform.scale = scale;
-        hitboxes[name].transform.defaultScale = scale;
-        refreshMaxRadius();
+        _hitboxes[name].transform.scale = scale;
+        _hitboxes[name].transform._defaultScale = scale;
+        _refreshMaxRadius();
     }
 }
 
 void H2DE_Object::setHitboxRotation(const std::string& name, float rotation) {
     if (hasHitbox(name)) {
-        hitboxes[name].transform.rotation = rotation;
-        refreshMaxRadius();
+        _hitboxes[name].transform.rotation = rotation;
+        _refreshMaxRadius();
     }
 }
 
 void H2DE_Object::setHitboxPivot(const std::string& name, const H2DE_Pivot& pivot) {
     if (hasHitbox(name)) {
-        hitboxes[name].transform.pivot = pivot;
-        hitboxes[name].transform.defaultPivot = pivot;
-        refreshMaxRadius();
+        _hitboxes[name].transform.pivot = pivot;
+        _hitboxes[name].transform._defaultPivot = pivot;
+        _refreshMaxRadius();
     }
 }
 
 void H2DE_Object::setHitboxColor(const std::string& name, const H2DE_ColorRGB& color) {
     if (hasHitbox(name)) {
-        hitboxes[name].color = color;
+        _hitboxes[name].color = color;
     }
 }
 
 void H2DE_Object::setHitboxCollisionIndex(const std::string& name, int collisionIndex) {
     if (hasHitbox(name)) {
-        hitboxes[name].collisionIndex = collisionIndex;
+        _hitboxes[name].collisionIndex = collisionIndex;
     }
 }
 
 void H2DE_Object::setHitboxOnCollide(const std::string& name, const std::function<void(H2DE_Object*, H2DE_Face)>& onCollide) {
     if (hasHitbox(name)) {
-        hitboxes[name].onCollide = onCollide;
+        _hitboxes[name].onCollide = onCollide;
     }
 }
 
 // -- lerp
 H2DE_Timeline* H2DE_Object::setTranslate(const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Translate>(engine, objectData.transform.translate, translate, duration, easing, [this](H2DE_Translate iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Translate>(_engine, _objectData.transform.translate, translate, duration, easing, [this](H2DE_Translate iv) {
         setTranslate(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_Object::setScale(const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Scale>(engine, objectData.transform.scale, scale, duration, easing, [this](H2DE_Scale iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Scale>(_engine, _objectData.transform.scale, scale, duration, easing, [this](H2DE_Scale iv) {
         setScale(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_Object::setRotation(float rotation, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline =  H2DE_LerpManager::lerp<float>(engine, objectData.transform.rotation, rotation, duration, easing, [this](float iv) {
+    H2DE_Timeline* timeline =  H2DE_LerpManager::lerp<float>(_engine, _objectData.transform.rotation, rotation, duration, easing, [this](float iv) {
         setRotation(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_Object::setOpacity(uint8_t opacity, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint8_t>(engine, objectData.opacity, opacity, duration, easing, [this](uint8_t iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<uint8_t>(_engine, _objectData.opacity, opacity, duration, easing, [this](uint8_t iv) {
         setOpacity(iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Translate>(engine, getHitbox(name).transform.translate, translate, duration, easing, [this, name](H2DE_Translate iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Translate>(_engine, getHitbox(name).transform.translate, translate, duration, easing, [this, name](H2DE_Translate iv) {
         setHitboxTranslate(name, iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_Object::setHitboxScale(const std::string& name, const H2DE_Scale& scale, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Scale>(engine, getHitbox(name).transform.scale, scale, duration, easing, [this, name](H2DE_Scale iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Scale>(_engine, getHitbox(name).transform.scale, scale, duration, easing, [this, name](H2DE_Scale iv) {
         setHitboxScale(name, iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_Object::setHitboxRotation(const std::string& name, float rotation, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<float>(engine, getHitbox(name).transform.rotation, rotation, duration, easing, [this, name](float iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp<float>(_engine, getHitbox(name).transform.rotation, rotation, duration, easing, [this, name](float iv) {
         setHitboxRotation(name, iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }
 
 H2DE_Timeline* H2DE_Object::setHitboxColor(const std::string& name, const H2DE_ColorRGB& color, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
-    H2DE_Timeline* timeline = H2DE_LerpManager::lerp(engine, getHitbox(name).color, color, duration, easing, [this, name](H2DE_ColorRGB iv) {
+    H2DE_Timeline* timeline = H2DE_LerpManager::lerp(_engine, getHitbox(name).color, color, duration, easing, [this, name](H2DE_ColorRGB iv) {
         setHitboxColor(name, iv);
     }, completed, pauseSensitive);
 
-    addTimelineToTimelines(timeline);
+    _addTimelineToTimelines(timeline);
     return timeline;
 }

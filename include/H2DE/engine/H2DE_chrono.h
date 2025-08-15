@@ -36,25 +36,25 @@ public:
      * @brief Pauses the chrono.
      */
     inline void pause() noexcept {
-        paused = true;
+        _paused = true;
     }
     /**
      * @brief Resumes the chrono.
      */
     inline void resume() noexcept {
-        paused = false;
+        _paused = false;
     }
     /**
      * @brief Toggles the pause state.
      */
     inline void togglePause() noexcept {
-        paused = !paused;
+        _paused = !_paused;
     }
     /**
      * @brief Resets the current time to 0.
      */
     inline void reset() noexcept {
-        current = H2DE_Time();
+        _current = H2DE_Time();
     }
     /**
      * @brief Stops and destroys this chrono instance via the manager.
@@ -78,7 +78,7 @@ public:
      * @return A copy of the current H2DE_Time object.
      */
     constexpr H2DE_Time getTime() const noexcept {
-        return current;
+        return _current;
     }
     /**
      * @brief Gets the current number of hours.
@@ -86,7 +86,7 @@ public:
      * @return Hours component (0–255).
      */
     constexpr uint8_t getHours() const noexcept {
-        return current.hours;
+        return _current.hours;
     }
     /**
      * @brief Gets the current number of minutes.
@@ -94,7 +94,7 @@ public:
      * @return Minutes component (0–59).
      */
     constexpr uint8_t getMinutes() const noexcept {
-        return current.minutes;
+        return _current.minutes;
     }
     /**
      * @brief Gets the current number of seconds.
@@ -102,7 +102,7 @@ public:
      * @return Seconds component (0–59).
      */
     constexpr uint8_t getSeconds() const noexcept {
-        return current.seconds;
+        return _current.seconds;
     }
     /**
      * @brief Gets the current number of milliseconds.
@@ -110,25 +110,25 @@ public:
      * @return Milliseconds component (0–999).
      */
     constexpr uint16_t getMilliseconds() const noexcept {
-        return current.milliseconds;
+        return _current.milliseconds;
     }
     /**
      * @brief Checks if the chrono is paused.
      */
     constexpr bool isPaused() const noexcept {
-        return paused;
+        return _paused;
     }
     /**
      * @brief Checks if the chrono is increasing (vs decreasing).
      */
     constexpr bool isIncreasing() const noexcept {
-        return increasing;
+        return _increasing;
     }
     /**
      * @brief Checks if the chrono is affected by engine pause.
      */
     constexpr bool isPauseSensitive() const noexcept {
-        return pauseSensitive;
+        return _pauseSensitive;
     }
 
     /**
@@ -137,7 +137,7 @@ public:
      * @param time The new time to assign.
      */
     inline void setTime(const H2DE_Time& time) noexcept {
-        current = time;
+        _current = time;
     }
     /**
      * @brief Sets the hours component of the current time.
@@ -145,7 +145,7 @@ public:
      * @param hours New hour value (0–255).
      */
     inline void setHours(uint8_t hours) noexcept {
-        current.hours = hours;
+        _current.hours = hours;
     }
     /**
      * @brief Sets the minutes component of the current time.
@@ -153,7 +153,7 @@ public:
      * @param minutes New minute value (0–59).
      */
     inline void setMinutes(uint8_t minutes) noexcept {
-        current.minutes = minutes;
+        _current.minutes = minutes;
     }
     /**
      * @brief Sets the seconds component of the current time.
@@ -161,7 +161,7 @@ public:
      * @param seconds New second value (0–59).
      */
     inline void setSeconds(uint8_t seconds) noexcept {
-        current.seconds = seconds;
+        _current.seconds = seconds;
     }
     /**
      * @brief Sets the milliseconds component of the current time.
@@ -169,7 +169,7 @@ public:
      * @param milliseconds New millisecond value (0–999).
      */
     inline void setMilliseconds(uint16_t milliseconds) noexcept {
-        current.milliseconds = milliseconds;
+        _current.milliseconds = milliseconds;
     }
     /**
      * @brief Sets whether the chrono should count up or down.
@@ -177,7 +177,7 @@ public:
      * @param increasing If true, the chrono increases over time. If false, it decreases.
      */
     inline void setSetIncreasing(bool increasing) noexcept {
-        this->increasing = increasing;
+        _increasing = increasing;
     }
     /**
      * @brief Sets whether the chrono is affected by engine pause.
@@ -185,33 +185,33 @@ public:
      * @param pauseSensitive If true, the chrono pauses when the engine is paused.
      */
     inline void setPauseSensitive(bool pauseSensitive) noexcept {
-        this->pauseSensitive = pauseSensitive;
+        _pauseSensitive = pauseSensitive;
     }
 
     friend class H2DE_ChronoManager;
 
 private:
-    struct H2DE_OnReachEvent {
+    struct _H2DE_OnReachEvent {
         H2DE_Time target = H2DE_Time();
         std::function<void()> callback = nullptr;
         bool once = true;
     };
 
 private:
-    H2DE_Engine* engine;
-    H2DE_ChronoManager* manager;
+    H2DE_Engine* _engine;
+    H2DE_ChronoManager* _manager;
 
-    H2DE_Time current = H2DE_Time();
-    bool increasing = true;
-    bool pauseSensitive = true;
-    bool paused = false;
+    H2DE_Time _current = H2DE_Time();
+    bool _increasing = true;
+    bool _pauseSensitive = true;
+    bool _paused = false;
 
-    std::vector<H2DE_OnReachEvent> onReachEvents = {};
+    std::vector<_H2DE_OnReachEvent> _onReachEvents = {};
 
     H2DE_Chrono(H2DE_Engine* engine, H2DE_ChronoManager* manager, const H2DE_Time& start, bool increasing = true, bool pauseSensitive = true);
     ~H2DE_Chrono() noexcept = default;
 
-    void update();
-    void updateCurrentTime();
-    void updateOnReachEvents();
+    void _update();
+    void _updateCurrentTime();
+    void _updateOnReachEvents();
 };

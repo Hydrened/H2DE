@@ -49,7 +49,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* addSurface(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
-        return H2DE_Object::addSurface<H2DE_Surface_T>(surfaces, name, surfaceData, specificData);
+        return H2DE_Object::_addSurface<H2DE_Surface_T>(_surfaces, name, surfaceData, specificData);
     }
     /**
      * @brief Remove a surface from the object.
@@ -60,7 +60,7 @@ public:
      * @return true if the surface was found and removed, false otherwise.
      */
     inline bool removeSurface(const std::string& name) {
-        return H2DE_Object::removeSurface(surfaces, name);
+        return H2DE_Object::_removeSurface(_surfaces, name);
     }
 
     /**
@@ -81,7 +81,7 @@ public:
      * Sets all time components (hours, minutes, seconds, milliseconds) back to 0.
      */
     inline void reset() noexcept { 
-        timerObjectData.time = { 0, 0, 0, 0 };
+        _timerObjectData.time = { 0, 0, 0, 0 };
     }
     /**
      * @brief Pause the timer.
@@ -116,7 +116,7 @@ public:
      * @return The complete timer data.
      */
     inline H2DE_TimerObjectData getTimerData() const {
-        return timerObjectData;
+        return _timerObjectData;
     }
     /**
      * @brief Get the current time of the timer.
@@ -126,7 +126,7 @@ public:
      * @return The current time.
      */
     constexpr H2DE_Time getTime() const noexcept {
-        return timerObjectData.time; 
+        return _timerObjectData.time; 
     }
     /**
      * @brief Get the hours component of the timer.
@@ -134,7 +134,7 @@ public:
      * @return The hours as an 8-bit unsigned integer.
      */
     constexpr uint8_t getHours() const noexcept {
-        return timerObjectData.time.hours;
+        return _timerObjectData.time.hours;
     }
     /**
      * @brief Get the minutes component of the timer.
@@ -142,7 +142,7 @@ public:
      * @return The minutes as an 8-bit unsigned integer.
      */
     constexpr uint8_t getMinutes() const noexcept {
-        return timerObjectData.time.minutes;
+        return _timerObjectData.time.minutes;
     }
     /**
      * @brief Get the seconds component of the timer.
@@ -150,7 +150,7 @@ public:
      * @return The seconds as an 8-bit unsigned integer.
      */
     constexpr uint8_t getSeconds() const noexcept {
-        return timerObjectData.time.seconds;
+        return _timerObjectData.time.seconds;
     }
     /**
      * @brief Get the milliseconds component of the timer.
@@ -158,7 +158,7 @@ public:
      * @return The milliseconds as a 16-bit unsigned integer.
      */
     constexpr uint16_t getMilliseconds() const noexcept {
-        return timerObjectData.time.milliseconds;
+        return _timerObjectData.time.milliseconds;
     }
     /**
      * @brief Checks if the timer is currently increasing.
@@ -166,7 +166,7 @@ public:
      * @return true if the timer is increasing, false if it is decreasing.
      */
     constexpr bool isIncreasing() const noexcept {
-        return timerObjectData.increasing;
+        return _timerObjectData.increasing;
     }
     /**
      * @brief Check if the timer is sensitive to the game's pause state.
@@ -177,7 +177,7 @@ public:
      * @return true if pause sensitive, false if not.
      */
     constexpr bool isPauseSensitive() const noexcept {
-        return timerObjectData.pauseSensitive;
+        return _timerObjectData.pauseSensitive;
     }
 
     /**
@@ -189,7 +189,7 @@ public:
      * @return A map of surface names to their respective surface pointers.
      */
     inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const noexcept {
-        return surfaces; 
+        return _surfaces; 
     }
     /**
      * @brief Get a surface by name and cast it to a specific type.
@@ -203,7 +203,7 @@ public:
      */
     template<typename H2DE_Surface_T>
     inline H2DE_Surface_T* getSurface(const std::string& name) const {
-        return H2DE_Object::getSurface<H2DE_Surface_T>(surfaces, name);
+        return H2DE_Object::_getSurface<H2DE_Surface_T>(_surfaces, name);
     }
     /**
      * @brief Get the text object associated with the timer.
@@ -214,7 +214,7 @@ public:
      * @return Pointer to the timer's text object, or nullptr if none.
      */
     inline H2DE_TextObject* getTextObject() const noexcept {
-        return textObject; 
+        return _textObject; 
     }
     
     /**
@@ -343,25 +343,25 @@ public:
     friend class H2DE_Engine;
 
 private:
-    H2DE_TimerObjectData timerObjectData;
+    H2DE_TimerObjectData _timerObjectData;
 
-    H2DE_TextObject* textObject = nullptr;
-    std::unordered_map<std::string, H2DE_Surface*> surfaces = {};
+    H2DE_TextObject* _textObject = nullptr;
+    std::unordered_map<std::string, H2DE_Surface*> _surfaces = {};
 
-    H2DE_Chrono* chrono = nullptr;
+    H2DE_Chrono* _chrono = nullptr;
 
     H2DE_TimerObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TimerObjectData& timerObjectData);
     ~H2DE_TimerObject() override;
 
-    void update() override;
+    void _update() override;
 
-    void initChrono();
-    void destroyChrono();
+    void _initChrono();
+    void _destroyChrono();
 
-    void refreshTextObject();
-    void refreshSurfaceBuffers() override;
-    void refreshMaxRadius() override;
+    void _refreshTextObject();
+    void _refreshSurfaceBuffers() override;
+    void _refreshMaxRadius() override;
 
-    static std::string intToStr(int value, int nbDigits);
-    const std::string getStringifiedTime() const;
+    static std::string _intToStr(int value, int nbDigits);
+    const std::string _getStringifiedTime() const;
 };
