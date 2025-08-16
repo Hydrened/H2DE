@@ -164,17 +164,16 @@ public:
     }
 
     /**
-     * @brief Enables or disables debug visualization for objects.
+     * @brief Enables or disables the rendering of debug hitboxes.
      * 
-     * @param state True to enable object debug mode, false to disable.
+     * @param state True to enable hitbox rendering, false to disable. Defaults to true.
+     * @param collisionIndexes Optional list of specific collision indexes to render.
      */
-    inline void debugObjects(bool state) noexcept {
-        _debugObjectEnabled = state;
-    }
+    void debugHitboxes(bool state = true, const std::vector<int>& collisionIndexes = {});
     /**
-     * @brief Toggles the debug visualization state for objects.
+     * @brief Toggles the current state of debug hitbox rendering.
      */
-    inline void toggleDebugObject() noexcept {
+    inline void toggleDebugHitboxes() {
         _debugObjectEnabled = !_debugObjectEnabled;
     }
 
@@ -445,6 +444,7 @@ private:
 
     bool _debugModeEnabled = false;
     bool _debugObjectEnabled = false;
+    std::vector<int> _debugHitboxCollisionIndexes = {};
 
     std::function<void(SDL_Event)> _handleEventsCall = nullptr;
     std::function<void()> _updateCall = nullptr;

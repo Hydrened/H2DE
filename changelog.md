@@ -1,3 +1,7 @@
+## H2DE-4.2.8
+#### ADDED
+- debug hitboxes with collision indexes as parameter
+
 ## H2DE-4.2.7
 #### ADDED
 - version macros

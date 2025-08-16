@@ -269,6 +269,11 @@ void H2DE_Engine::_refreshObjectManager() {
     _objectManager->refreshButtonBuffer(_objects);
 }
 
+void H2DE_Engine::debugHitboxes(bool state, const std::vector<int>& collisionIndexes) {
+    _debugObjectEnabled = state;
+    _debugHitboxCollisionIndexes = collisionIndexes;
+}
+
 bool H2DE_Engine::destroyObject(H2DE_Object* object) {
     auto it = std::find(_objects.begin(), _objects.end(), object);
 
