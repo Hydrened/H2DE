@@ -1,3 +1,8 @@
+## H2DE-4.2.9
+#### ADDED
+- button text getter and setter
+- timer text getter
+
 ## H2DE-4.2.8
 #### ADDED
 - debug hitboxes with collision indexes as parameter

@@ -4,6 +4,7 @@
 #include <H2DE/utils/H2DE_utils.h>
 class H2DE_Object;
 class H2DE_ButtonObject;
+class H2DE_InputObject;
 class H2DE_Timeline;
 
 /**
@@ -122,4 +123,24 @@ struct H2DE_TimerObjectData {
     bool displayMilliseconds = false;       /**< Whether to display milliseconds. */
     bool increasing = true;                 /**< Whether the timer is increasing (false for decreasing). */
     bool pauseSensitive = true;             /**< Whether the timer is sensitive to pause state. */
+};
+
+
+
+
+
+
+struct H2DE_InputEventData {
+    H2DE_InputObject* input;
+    H2DE_Timeline* timeline;
+    std::string text;
+    std::optional<char> character;
+};
+
+struct H2DE_InputObjectData {
+    H2DE_Text text = H2DE_Text();
+    std::function<void(H2DE_InputEventData&)> onInput = nullptr;
+    std::function<void(H2DE_InputEventData&)> onFocus = nullptr;
+    std::function<void(H2DE_InputEventData&)> onBlur = nullptr;
+    bool pauseSensitive = true;
 };

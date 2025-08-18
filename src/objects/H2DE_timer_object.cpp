@@ -37,20 +37,8 @@ void H2DE_TimerObject::_update() {
 
 // ACTIONS
 void H2DE_TimerObject::_refreshTextObject() {
-    if (_textObject != nullptr) {
-        if (_engine->destroyObject(_textObject)) {
-            _textObject = nullptr;
-        }
-    }
-
-    H2DE_ObjectData od = _objectData;
-    od.index++;
-
-    H2DE_TextObjectData tod = H2DE_TextObjectData();
     _timerObjectData.text.text = _getStringifiedTime();
-    tod.text = _timerObjectData.text;
-
-    _textObject = _engine->createObject<H2DE_TextObject>(od, tod);
+    _textObject = H2DE_Object::_refreshTextObject(_textObject, _timerObjectData.text);
 }
 
 void H2DE_TimerObject::_refreshSurfaceBuffers() {

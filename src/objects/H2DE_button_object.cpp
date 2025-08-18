@@ -23,23 +23,7 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
 
 // ACTIONS
 void H2DE_ButtonObject::_refreshTextObject() {
-    if (_textObject != nullptr) {
-        if (_engine->destroyObject(_textObject)) {
-            _textObject = nullptr;
-        }
-    }
-
-    if (_buttonObjectData.text.text == "") {
-        return;
-    }
-
-    H2DE_ObjectData od = _objectData;
-    od.index++;
-
-    H2DE_TextObjectData tod = H2DE_TextObjectData();
-    tod.text = _buttonObjectData.text;
-
-    _textObject = _engine->createObject<H2DE_TextObject>(od, tod);
+    _textObject = H2DE_Object::_refreshTextObject(_textObject, _buttonObjectData.text);
 }
 
 void H2DE_ButtonObject::_refreshSurfaceBuffers() {
@@ -82,4 +66,10 @@ void H2DE_ButtonObject::mouseBlur() {
     if (_buttonObjectData.onBlur && !_disabled) {
         _buttonObjectData.onBlur(_eventData);
     }
+}
+
+// SETTER
+void H2DE_ButtonObject::setText(const std::string& text) {
+    _buttonObjectData.text.text = text;
+    _refreshTextObject();
 }

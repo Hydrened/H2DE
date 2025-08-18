@@ -18,6 +18,7 @@
 
 #include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
+class H2DE_TextObject;
 class H2DE_Texture;
 class H2DE_Sprite;
 class H2DE_Color;
@@ -453,6 +454,7 @@ protected:
 
     virtual void _refreshSurfaceBuffers() = 0;
     virtual void _refreshMaxRadius() = 0;
+    H2DE_TextObject* _refreshTextObject(H2DE_TextObject* textObject, const H2DE_Text& text);
 
     inline void _addTimelineToTimelines(H2DE_Timeline* timeline) {
         _timelinesBuffer.push_back(timeline);
@@ -493,5 +495,6 @@ private:
 #include <H2DE/objects/H2DE_bar_object.h>
 #include <H2DE/objects/H2DE_basic_object.h>
 #include <H2DE/objects/H2DE_button_object.h>
+#include <H2DE/objects/H2DE_input_object.h>
 #include <H2DE/objects/H2DE_text_object.h>
 #include <H2DE/objects/H2DE_timer_object.h>

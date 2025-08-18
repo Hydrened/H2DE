@@ -260,9 +260,9 @@ SDL_SystemCursor H2DE_Window::_getSDLCursor(H2DE_Cursor cursor) {
     }
 }
 
-//SETTER
+// SETTER
 void H2DE_Window::_setHoverCursor(H2DE_Cursor cursor) {
-    H2DE_Cursor oldCursorSave = _oldCursor;
+    H2DE_Cursor oldCursorCopy = _oldCursor;
     setCursor(cursor);
-    _engine->_objectManager->oldCursor = oldCursorSave;
+    _engine->_objectManager->oldCursor = oldCursorCopy;
 }

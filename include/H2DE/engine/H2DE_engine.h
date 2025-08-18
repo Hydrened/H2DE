@@ -461,7 +461,8 @@ private:
     void _update();
     void _updateObjects();
 
-    void _refreshObjectManager();
+    void _refreshObjectManagerButtons();
+    void _refreshObjectManagerInputs();
 
     void _destroy();
     void _destroyObjects();

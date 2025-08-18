@@ -243,6 +243,20 @@ public:
     friend class H2DE_ButtonObject;
 
 private:
+    struct _H2DE_CharacterSurfaceData {
+        char c;
+        float& offsetX;
+        float& offsetY;
+        float fixedFontSize;
+        float spacingX;
+        bool isFirstWordFirstChar;
+        const std::string& fontTextureName;
+        const H2DE_ColorRGB& color;
+        const H2DE_PixelRect& src;
+        H2DE_ScaleMode scaleMode;
+        H2DE_BlendMode blendMode;
+    };
+
     H2DE_TextObjectData _textObjectData;
 
     H2DE_TextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);

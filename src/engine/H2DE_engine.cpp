@@ -122,6 +122,8 @@ void H2DE_Engine::run() {
 
         SDL_Event event;
 
+        SDL_StartTextInput();
+
         while (_isRunning) {
             Uint64 now = SDL_GetPerformanceCounter();
             _deltaTime = (now - lastTime) / static_cast<float>(perfFreq);
@@ -149,6 +151,8 @@ void H2DE_Engine::run() {
 
             lastTime = now;
         }
+
+        SDL_StopTextInput();
 
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
@@ -265,8 +269,12 @@ H2DE_Chrono* H2DE_Engine::createChrono(const H2DE_Time& start, bool increasing, 
 }
 
 // -- objects
-void H2DE_Engine::_refreshObjectManager() {
+void H2DE_Engine::_refreshObjectManagerButtons() {
     _objectManager->refreshButtonBuffer(_objects);
+}
+
+void H2DE_Engine::_refreshObjectManagerInputs() {
+    _objectManager->refreshInputBuffer(_objects);
 }
 
 void H2DE_Engine::debugHitboxes(bool state, const std::vector<int>& collisionIndexes) {

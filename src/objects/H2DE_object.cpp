@@ -182,6 +182,24 @@ void H2DE_Object::_rescaleTransform(H2DE_Transform& transform, const H2DE_Scale&
     transform.pivot.y = transform._defaultPivot.y * scale.y;
 }
 
+// -- text object
+H2DE_TextObject* H2DE_Object::_refreshTextObject(H2DE_TextObject* textObject, const H2DE_Text& text) {
+    if (textObject != nullptr) {
+        if (_engine->destroyObject(textObject)) {
+            textObject = nullptr;
+        }
+    }
+
+    if (text.text == "") {
+        return textObject;
+    }
+
+    H2DE_TextObjectData tod = H2DE_TextObjectData();
+    tod.text = text;
+
+    return _engine->createObject<H2DE_TextObject>(_objectData, tod);
+}
+
 // GETTER
 const std::vector<H2DE_Surface*> H2DE_Object::_getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
     std::vector<H2DE_Surface*> res;

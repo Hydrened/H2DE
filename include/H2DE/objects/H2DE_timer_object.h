@@ -119,6 +119,14 @@ public:
         return _timerObjectData;
     }
     /**
+     * @brief Get the text of the timer.
+     * 
+     * @return The current text of the timer.
+     */
+    inline std::string getText() const noexcept {
+        return _timerObjectData.text.text;
+    }
+    /**
      * @brief Get the current time of the timer.
      * 
      * Returns the `H2DE_Time` struct holding hours, minutes, seconds, and milliseconds.

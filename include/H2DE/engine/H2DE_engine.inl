@@ -28,7 +28,12 @@ H2DE_Object_T* H2DE_Engine::createObject(const H2DE_ObjectData& objectData, H2DE
 
     constexpr bool isButtonObject = (std::is_same_v<H2DE_Object_T, H2DE_ButtonObject>);
     if constexpr (isButtonObject) {
-        _refreshObjectManager();
+        _refreshObjectManagerButtons();
+    }
+
+    constexpr bool isInputObject = (std::is_same_v<H2DE_Object_T, H2DE_InputObject>);
+    if constexpr (isInputObject) {
+        _refreshObjectManagerInputs();
     }
 
     return object;

@@ -42,7 +42,31 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
     const std::vector<std::vector<std::string>> lines = _getLines();
     float offsetY = _getStartingOffsetY(lines) + fontSize * 0.5f;
 
-    const float spaceWidth = _getCharWidth(' ');
+    auto createCharSurface = [this](const H2DE_TextObject::_H2DE_CharacterSurfaceData& data) {
+        const float charWidth = _getCharWidth(data.c);
+        data.offsetX += charWidth * 0.5f;
+
+        if (!data.isFirstWordFirstChar) {
+            data.offsetX += data.spacingX;
+        }
+
+        H2DE_SurfaceData sd = H2DE_SurfaceData();
+        sd.transform.translate = { data.offsetX, data.offsetY };
+        sd.transform.scale = { charWidth, data.fixedFontSize };
+        sd.scaleMode = data.scaleMode;
+        sd.blendMode = data.blendMode;
+
+        H2DE_TextureData td = H2DE_TextureData();
+        td.textureName = data.fontTextureName;
+        td.color = data.color;
+        td.srcRect = data.src;
+
+        H2DE_Texture* texture = new H2DE_Texture(_engine, this, sd, td);
+        texture->_fromText = true;
+        _surfaceBuffers.push_back(texture);
+
+        data.offsetX += charWidth * 0.5f;
+    };
 
     for (int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
         const std::vector<std::string>& line = lines.at(lineIndex);
@@ -63,33 +87,16 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
                     continue;
                 }
 
-                const float charWidth = _getCharWidth(c);
-                offsetX += charWidth * 0.5f;
-
-                if (!isFirstWordFirstChar) {
-                    offsetX += spacing.x;
-                }
-
-                H2DE_SurfaceData sd = H2DE_SurfaceData();
-                sd.transform.translate = { offsetX, offsetY };
-                sd.transform.scale = { charWidth, fixedFontSize };
-                sd.scaleMode = scaleMode;
-                sd.blendMode = blendMode;
-
-                H2DE_TextureData td = H2DE_TextureData();
-                td.textureName = fontTextureName;
-                td.color = color;
-                td.srcRect = it->second;
-
-                H2DE_Texture* texture = new H2DE_Texture(_engine, this, sd, td);
-                texture->_fromText = true;
-                _surfaceBuffers.push_back(texture);
-
-                offsetX += charWidth * 0.5f;
+                createCharSurface({ c, offsetX, offsetY, fixedFontSize, spacing.x, isFirstWordFirstChar, fontTextureName, color, it->second, scaleMode, blendMode });
             }
 
             if (!isLastLineWord) {
-                offsetX += spaceWidth;
+                auto it = fontCharacters.find(std::string(1, ' '));
+                if (it == fontCharacters.end()) {
+                    continue;
+                }
+
+                createCharSurface({ ' ', offsetX, offsetY, fixedFontSize, spacing.x, false, fontTextureName, color, it->second, scaleMode, blendMode });
             }
         }
 

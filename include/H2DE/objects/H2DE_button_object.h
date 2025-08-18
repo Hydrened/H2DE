@@ -107,8 +107,16 @@ public:
      * 
      * @return A copy of the button's data.
      */
-    inline H2DE_ButtonObjectData getButtonData() const {
+    inline H2DE_ButtonObjectData getButtonData() const noexcept {
         return _buttonObjectData;
+    }
+    /**
+     * @brief Get the text content of the button.
+     * 
+     * @return The current text of the button.
+     */
+    inline std::string getText() const noexcept {
+        return _buttonObjectData.text.text;
     }
     /**
      * @brief Get the mouse button(s) configured to trigger this button.
@@ -118,7 +126,7 @@ public:
      * 
      * @return The configured mouse button(s) for this button.
      */
-    constexpr H2DE_MouseButton getMouseButton() const {
+    constexpr H2DE_MouseButton getMouseButton() const noexcept {
         return _buttonObjectData.mouseButton;
     }
     /**
@@ -130,7 +138,7 @@ public:
      * 
      * @return The configured cursor for this button.
      */
-    constexpr H2DE_Cursor getCursor() const {
+    constexpr H2DE_Cursor getCursor() const noexcept {
         return _buttonObjectData.cursor;
     }
     /**
@@ -197,6 +205,14 @@ public:
         return _textObject; 
     }
 
+    /**
+     * @brief Set the text content of the button.
+     * 
+     * Updates the internal text object with the provided string.
+     * 
+     * @param text The new text to display on the button.
+     */
+    void setText(const std::string& text);
     /**
      * @brief Set the mouse button(s) that can trigger this button.
      * 
