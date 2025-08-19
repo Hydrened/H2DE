@@ -219,7 +219,7 @@ struct H2DE_Font {
      * @brief Represents a single character in the font.
      */
     struct H2DE_Char {
-        char character = 'a';       /**< The character itself */
+        char32_t character = 'a';   /**< The character itself */
         int width = 0;              /**< Width of the character in pixels */
     };
 

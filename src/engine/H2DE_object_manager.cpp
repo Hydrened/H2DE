@@ -182,7 +182,7 @@ void H2DE_ObjectManager::handleEvents_inputs_mouseDown(SDL_Event event) {
     }
 
     int letterIndex = handleEvents_inputs_mouseDown_getFocusedInputLetterIndex();
-    focusedInput->_cursorPosition = letterIndex;
+    focusedInput->_setCursorPosition(letterIndex);
 }
 
 bool H2DE_ObjectManager::handleEvents_inputs_mouseDown_isMouseCollidingInput() {
@@ -202,6 +202,8 @@ void H2DE_ObjectManager::handleEvents_inputs_mouseDown_blurFocusedInput() {
         if (focusedInput->_inputObjectData.onBlur) {
             focusedInput->_inputObjectData.onBlur(focusedInput->_eventData);
         }
+
+        focusedInput->_setCursorPosition(-1);
     }
 
     focusedInput = nullptr;
@@ -224,23 +226,43 @@ void H2DE_ObjectManager::handleEvents_inputs_mouseDown_focusNewInput(H2DE_InputO
 }
 
 int H2DE_ObjectManager::handleEvents_inputs_mouseDown_getFocusedInputLetterIndex() {
-    const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
-    const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
-
-    const float relativeMouseTranslateX = ((focusedInput->_objectData.absolute) ? mouseInterfacePos.x : mouseGamePos.x) - focusedInput->_objectData.transform.translate.x;
-    const std::vector<H2DE_Surface*>& letterSurfaces = focusedInput->_textObject->_surfaceBuffers;
-
-    for (int i = 0; i < letterSurfaces.size(); i++) {
-        H2DE_Surface* letterSurface = letterSurfaces.at(i);
-
-        const float letterSurfaceX = letterSurface->getTranslate().x;
-
-        if (letterSurfaceX > relativeMouseTranslateX) {
-            return i;
-        }
+    if (focusedInput->_textObject == nullptr) {
+        return 0;
     }
     
-    return letterSurfaces.size();
+    const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
+    const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
+    const H2DE_Translate relativeMouseTranslate = ((focusedInput->_objectData.absolute) ? mouseInterfacePos : mouseGamePos) - focusedInput->_objectData.transform.translate;
+    
+    const std::vector<H2DE_Surface*>& letterSurfaces = focusedInput->_textObject->_surfaceBuffers;
+
+    float minDistance = std::numeric_limits<float>::max();
+    int index = -1;
+
+    for (int i = 0; i < letterSurfaces.size(); i++) {
+        const H2DE_Surface* surface = letterSurfaces.at(i);
+
+        const H2DE_LevelRect surfaceRect = surface->getRect();
+        const H2DE_Translate surfaceTranslate = surfaceRect.getTranslate();
+
+        const H2DE_Translate surfaceTranslateMinX = { surfaceRect.getMinX(), surfaceTranslate.y };
+        const H2DE_Translate surfaceTranslateMaxX = { surfaceRect.getMaxX(), surfaceTranslate.y };
+
+        const float mouseDistanceMinX = surfaceTranslateMinX.getDistanceSquared(relativeMouseTranslate);
+        const float mouseDistanceMaxX = surfaceTranslateMaxX.getDistanceSquared(relativeMouseTranslate);
+
+        if (mouseDistanceMinX < minDistance) {
+            minDistance = mouseDistanceMinX;
+            index = i;
+        }
+
+        if (mouseDistanceMaxX < minDistance) {
+            minDistance = mouseDistanceMaxX;
+            index = i + 1;
+        }
+    }
+
+    return index;
 }
 
 // -- -- mouse motion
@@ -281,13 +303,15 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown(SDL_Event event) {
 
     switch (event.key.keysym.sym) {
         case SDLK_BACKSPACE:
-            handleEvents_inputs_keydown_deleteCharacter();
+            handleEvents_inputs_keydown_deleteCharacter(event);
             break;
 
         case SDLK_DELETE:
+            handleEvents_inputs_keydown_supprCharacter(event);
             break;
 
         case SDLK_ESCAPE:
+            handleEvents_inputs_mouseDown_blurFocusedInput();
             break;
 
         case SDLK_RETURN:
@@ -295,16 +319,22 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown(SDL_Event event) {
             break;
 
         case SDLK_LEFT:
+            handleEvents_inputs_keydown_incrCursorPosition(-1);
             break;
 
         case SDLK_RIGHT:
+            handleEvents_inputs_keydown_incrCursorPosition(1);
             break;
 
         default: break;
     }
 }
 
-void H2DE_ObjectManager::handleEvents_inputs_keydown_normalCharacter(SDL_Event event) {
+void H2DE_ObjectManager::handleEvents_inputs_keydown_modifyText(SDL_Event event, const std::function<void(std::string, int, char)>& tasks) {
+    if (tasks == nullptr) {
+        return;
+    }
+
     int cursorPosition = focusedInput->_cursorPosition;
     if (cursorPosition == -1) {
         return;
@@ -313,33 +343,55 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown_normalCharacter(SDL_Event e
     char c = event.text.text[0];
     std::string inputText = focusedInput->getText();
 
-    if (cursorPosition <= inputText.size()) {
-        inputText.insert(inputText.begin() + cursorPosition, c);
-    }
-
-    focusedInput->setText(inputText);
-    focusedInput->_cursorPosition++;
+    tasks(inputText, cursorPosition, c);
 }
 
-void H2DE_ObjectManager::handleEvents_inputs_keydown_deleteCharacter() {
+void H2DE_ObjectManager::handleEvents_inputs_keydown_normalCharacter(SDL_Event event) {
+    if (focusedInput == nullptr) {
+        return;
+    }
+
+    handleEvents_inputs_keydown_modifyText(event, [this](std::string text, int cursorPosition, char c) {
+        if (cursorPosition <= text.length()) {
+            text.insert(cursorPosition, 1, c);
+            focusedInput->setText(text);
+            focusedInput->_setCursorPosition(cursorPosition + 1);
+        }
+    });
+}
+
+void H2DE_ObjectManager::handleEvents_inputs_keydown_deleteCharacter(SDL_Event event) {
+    handleEvents_inputs_keydown_modifyText(event, [this](std::string text, int cursorPosition, char c) {
+        int characterIndex = cursorPosition - 1;
+        if (characterIndex < 0) {
+            return;
+        }
+
+        if (cursorPosition <= text.length()) {
+            text.erase(characterIndex, 1);
+            focusedInput->setText(text);
+            focusedInput->_setCursorPosition(cursorPosition - 1);
+        }
+    });
+}
+
+void H2DE_ObjectManager::handleEvents_inputs_keydown_supprCharacter(SDL_Event event) {
+    handleEvents_inputs_keydown_modifyText(event, [this](std::string text, int cursorPosition, char c) {
+        if (cursorPosition <= text.length()) {
+            text.erase(cursorPosition, 1);
+            focusedInput->setText(text);
+        }
+    });
+}
+
+void H2DE_ObjectManager::handleEvents_inputs_keydown_incrCursorPosition(int incr) {
+    if (focusedInput->_textObject == nullptr) {
+        return;
+    }
+
     int cursorPosition = focusedInput->_cursorPosition;
-    if (cursorPosition == -1) {
-        return;
-    }
-
-    int characterIndex = cursorPosition - 1;
-    if (characterIndex < 0) {
-        return;
-    }
-
-    std::string inputText = focusedInput->getText();
-
-    if (cursorPosition <= inputText.size()) {
-        inputText.erase(characterIndex, 1);
-    }
-
-    focusedInput->setText(inputText);
-    focusedInput->_cursorPosition--;
+    cursorPosition = H2DE::clamp<int>(cursorPosition + incr, 0, focusedInput->_textObject->getText().length());
+    focusedInput->_setCursorPosition(cursorPosition);
 }
 
 // ACTIONS

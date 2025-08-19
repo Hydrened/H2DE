@@ -86,6 +86,14 @@ public:
         return _surfaceData.transform.scale;
     }
     /**
+     * @brief Get the rectangle of the surface.
+     * 
+     * @return The H2DE_LevelRect struct (rectangle defined by translation and scale).
+     */
+    constexpr H2DE_LevelRect getRect() const noexcept {
+        return _surfaceData.transform.translate.makeRect(_surfaceData.transform.scale);
+    }
+    /**
      * @brief Get the rotation angle in degrees or radians.
      * 
      * @return The rotation value as a float.

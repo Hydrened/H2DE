@@ -67,9 +67,10 @@ public:
 
 private:
     H2DE_InputObjectData _inputObjectData;
-    int _cursorPosition = -1;
 
     H2DE_TextObject* _textObject = nullptr;
+    int _cursorPosition = -1;
+    const std::string _cursorSurfaceName = "cursor";
     std::unordered_map<std::string, H2DE_Surface*> _surfaces = {};
     H2DE_InputEventData _eventData;
 
@@ -78,7 +79,12 @@ private:
     H2DE_InputObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_InputObjectData& inputObjectData);
     ~H2DE_InputObject() override;
 
+    void _initCursor();
+
     void _refreshTextObject();
+    void _refreshCursor();
     void _refreshSurfaceBuffers() override;
     void _refreshMaxRadius() override;
+
+    void _setCursorPosition(int position);
 };

@@ -47,8 +47,11 @@ private:
     H2DE_InputObject* handleEvents_inputs_mouseMotion_getHoveredInput();
 
     void handleEvents_inputs_keydown(SDL_Event event);
+    void handleEvents_inputs_keydown_modifyText(SDL_Event event, const std::function<void(std::string, int, char)>& tasks);
     void handleEvents_inputs_keydown_normalCharacter(SDL_Event event);
-    void handleEvents_inputs_keydown_deleteCharacter();
+    void handleEvents_inputs_keydown_deleteCharacter(SDL_Event event);
+    void handleEvents_inputs_keydown_supprCharacter(SDL_Event event);
+    void handleEvents_inputs_keydown_incrCursorPosition(int incr);
 
     template<typename H2DE_ObjectType>
     void refreshBuffer(std::vector<H2DE_ObjectType*>& buffer, const std::vector<H2DE_Object*>& objects);

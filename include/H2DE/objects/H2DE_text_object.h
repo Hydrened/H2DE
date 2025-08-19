@@ -241,6 +241,7 @@ public:
 
     friend class H2DE_Engine;
     friend class H2DE_ButtonObject;
+    friend class H2DE_InputObject;
 
 private:
     struct _H2DE_CharacterSurfaceData {
@@ -271,7 +272,7 @@ private:
     const std::vector<std::string> _getWords() const;
     const std::vector<std::vector<std::string>> _getLines() const;
 
-    float _getCharWidth(const char& c) const;
+    float _getCharacterWidth(const char& c) const;
     float _getWordWidth(const std::string& word) const;
     float _getLineWidth(const std::vector<std::string>& line) const;
     float _getTextHeight() const;
