@@ -416,6 +416,7 @@ public:
     friend class H2DE_ObjectManager;
     friend class H2DE_Object;
     friend class H2DE_TextObject;
+    friend class H2DE_InputObject;
     
 private:
     template<typename, typename = void>

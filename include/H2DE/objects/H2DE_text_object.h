@@ -245,7 +245,7 @@ public:
 
 private:
     struct _H2DE_CharacterSurfaceData {
-        char c;
+        unsigned char c;
         float& offsetX;
         float& offsetY;
         float fixedFontSize;

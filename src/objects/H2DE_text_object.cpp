@@ -87,7 +87,7 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
                     continue;
                 }
 
-                createCharSurface({ c, offsetX, offsetY, fixedFontSize, spacing.x, isFirstWordFirstChar, fontTextureName, color, it->second, scaleMode, blendMode });
+                createCharSurface({ static_cast<unsigned char>(c), offsetX, offsetY, fixedFontSize, spacing.x, isFirstWordFirstChar, fontTextureName, color, it->second, scaleMode, blendMode });
             }
 
             if (!isLastLineWord) {

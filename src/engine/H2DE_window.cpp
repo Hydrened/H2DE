@@ -62,7 +62,7 @@ void H2DE_Window::_create() {
         h = dm.h;
     }
 
-    _window = SDL_CreateWindow(_data.title, x, y, w, h, SDL_WINDOW_SHOWN | flag);
+    _window = SDL_CreateWindow(_data.title.c_str(), x, y, w, h, SDL_WINDOW_SHOWN | flag);
     if (!_window) {
         SDL_Quit();
         H2DE_Error::throwError("Error creating window => SDL_CreateWindow failed: " + std::string(SDL_GetError()));

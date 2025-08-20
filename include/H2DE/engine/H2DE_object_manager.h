@@ -47,10 +47,11 @@ private:
     H2DE_InputObject* handleEvents_inputs_mouseMotion_getHoveredInput();
 
     void handleEvents_inputs_keydown(SDL_Event event);
-    void handleEvents_inputs_keydown_modifyText(SDL_Event event, const std::function<void(std::string, int, char)>& tasks);
-    void handleEvents_inputs_keydown_normalCharacter(SDL_Event event);
-    void handleEvents_inputs_keydown_deleteCharacter(SDL_Event event);
-    void handleEvents_inputs_keydown_supprCharacter(SDL_Event event);
+    void handleEvents_inputs_keydown_modifyText(SDL_Event event, const std::function<void(std::string, int, unsigned char)>& tasks);
+    void handleEvents_inputs_keydown_default(SDL_Event event);
+    void handleEvents_inputs_keydown_delete(SDL_Event event);
+    void handleEvents_inputs_keydown_suppr(SDL_Event event);
+    void handleEvents_inputs_keydown_enter(SDL_Event event);
     void handleEvents_inputs_keydown_incrCursorPosition(int incr);
 
     template<typename H2DE_ObjectType>
@@ -58,13 +59,31 @@ private:
     void refreshButtonBuffer(const std::vector<H2DE_Object*>& objects);
     void refreshInputBuffer(const std::vector<H2DE_Object*>& objects);
 
+    void focusInput(H2DE_InputObject* input);
+    void blurInput(H2DE_InputObject* input);
+    void submitInput(H2DE_InputObject* input);
+
     const std::vector<H2DE_ButtonObject*> getValidButtons() const;
     const std::vector<H2DE_InputObject*> getValidInputs() const;
 
-    static H2DE_MouseButton getH2DEButton(Uint8 sdlButton);
-
     bool isMouseCollidingObject(H2DE_Object* object) const;
+    bool isCursorPositionValid() const;
+
+    static H2DE_MouseButton getH2DEButton(Uint8 sdlButton);
+    static size_t getFirstSpaceIndex(const std::string& text);
+    static size_t getLastSpaceIndex(const std::string& text);
+
+    static inline bool isCtrlDown(SDL_Event event) {
+        return (event.key.keysym.mod & KMOD_CTRL);
+    }
+    static inline bool isAltDown(SDL_Event event) {
+        return (event.key.keysym.mod & KMOD_ALT);
+    }
+    static inline bool isASCII(char c) {
+        return (static_cast<unsigned char>(c) < 127);
+    }
 
     friend class H2DE_Engine;
     friend class H2DE_Window;
+    friend class H2DE_InputObject;
 };

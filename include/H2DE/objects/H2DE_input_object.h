@@ -21,9 +21,10 @@ public:
         _disabled = true;
     }
 
-    void input(char c);
+    void input(unsigned char c);
     void focus();
     void blur();
+    void submit();
 
     inline H2DE_InputObjectData getInputData() const noexcept {
         return _inputObjectData;
@@ -55,6 +56,15 @@ public:
     void setText(const std::string& text);
     inline void setOnInput(const std::function<void(H2DE_InputEventData)>& onInput) noexcept {
         _inputObjectData.onInput = onInput;
+    }
+    inline void setOnFocus(const std::function<void(H2DE_InputEventData)>& onFocus) noexcept {
+        _inputObjectData.onFocus = onFocus;
+    }
+    inline void setOnBlur(const std::function<void(H2DE_InputEventData)>& onBlur) noexcept {
+        _inputObjectData.onBlur = onBlur;
+    }
+    inline void setOnSubmit(const std::function<void(H2DE_InputEventData)>& onSubmit) noexcept {
+        _inputObjectData.onSubmit = onSubmit;
     }
     inline void setPauseSensitive(bool pauseSensitive) noexcept { 
         _inputObjectData.pauseSensitive = pauseSensitive; 

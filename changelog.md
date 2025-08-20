@@ -2,6 +2,7 @@
 #### ADDED
 - button text getter and setter
 - timer text getter
+- input object
 
 ## H2DE-4.2.8
 #### ADDED

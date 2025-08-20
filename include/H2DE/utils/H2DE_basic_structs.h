@@ -198,19 +198,6 @@ struct H2DE_Time {
 
 /**
  * @struct H2DE_Font
- * @brief Represents font data including texture, character sizing, spacing, and rendering modes.
- */
-struct OLD_H2DE_Font {
-    std::string textureName = "";                           /**< Name of the texture used for the font */ 
-    H2DE_PixelSize charSize = { 0, 0 };                     /**< Size of each character in pixels */
-    int spacing = 0;                                        /**< Spacing between characters */
-    std::string charOrder = "";                             /**< Order of characters in the texture */
-    H2DE_ScaleMode scaleMode = H2DE_SCALE_MODE_LINEAR;      /**< Scaling mode for rendering */
-    H2DE_BlendMode blendMode = H2DE_BLEND_MODE_BLEND;       /**< Blending mode for rendering */
-};
-
-/**
- * @struct H2DE_Font
  * @brief Represents font data including character definitions, texture, spacing, and rendering modes.
  */
 struct H2DE_Font {
@@ -219,8 +206,8 @@ struct H2DE_Font {
      * @brief Represents a single character in the font.
      */
     struct H2DE_Char {
-        char32_t character = 'a';   /**< The character itself */
-        int width = 0;              /**< Width of the character in pixels */
+        unsigned char character = 'a';      /**< The character itself */
+        int width = 0;                      /**< Width of the character in pixels */
     };
 
     std::string textureName = "";                           /**< Name of the texture used for the font */
@@ -238,6 +225,7 @@ private:
 
     friend class H2DE_AssetLoaderManager;
     friend class H2DE_TextObject;
+    friend class H2DE_ObjectManager;
 };
 
 /**
@@ -249,7 +237,7 @@ private:
  */
 struct H2DE_WindowData {
     uint16_t fps = 60;                                                              /** Target frames per second of the window. */
-    const char* title = "H2DE Window";                                              /** Title text shown in the window's title bar. */
+    std::string title = "H2DE Window";                                              /** Title text shown in the window's title bar. */
     H2DE_PixelPos pos = { H2DE_WINDOW_POS_CENTERED, H2DE_WINDOW_POS_CENTERED };     /** Initial position of the window on the screen. */
     H2DE_PixelSize size = { 1280, 720 };                                            /** Initial dimensions of the window in pixels. */
     bool fullscreen = false;                                                        /** Whether the window should launch in fullscreen mode. */

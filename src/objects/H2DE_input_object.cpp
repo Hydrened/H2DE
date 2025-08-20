@@ -10,10 +10,10 @@ H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, co
 }
 
 void H2DE_InputObject::_initCursor() {
-    H2DE_SurfaceData sd = H2DE_SurfaceData();
-    sd.transform.scale = { 0.1f, _textObject->_getFixedFontSize() };
+    // H2DE_SurfaceData sd = H2DE_SurfaceData();
+    // sd.transform.scale = { 0.1f, _textObject->_getFixedFontSize() };
     
-    addSurface<H2DE_Color>(_cursorSurfaceName, sd, H2DE_ColorData());
+    // addSurface<H2DE_Color>(_cursorSurfaceName, sd, H2DE_ColorData());
 }
 
 // CLEANUP
@@ -80,8 +80,8 @@ void H2DE_InputObject::_refreshMaxRadius() {
     _maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
 }
 
-void H2DE_InputObject::input(char c) {
-    _inputObjectData.text.text = _inputObjectData.text.text + c;
+void H2DE_InputObject::input(unsigned char c) {
+    _inputObjectData.text.text = _inputObjectData.text.text + static_cast<char>(c);
     _refreshTextObject();
 
     if (_inputObjectData.onInput && !_disabled) {
@@ -93,17 +93,15 @@ void H2DE_InputObject::input(char c) {
 }
 
 void H2DE_InputObject::focus() {
-    if (_inputObjectData.onFocus && !_disabled) {
-        _eventData.text = _inputObjectData.text.text;
-        _inputObjectData.onFocus(_eventData);
-    }
+    _engine->_objectManager->focusInput(this);
 }
 
 void H2DE_InputObject::blur() {
-    if (_inputObjectData.onBlur && !_disabled) {
-        _eventData.text = _inputObjectData.text.text;
-        _inputObjectData.onBlur(_eventData);
-    }
+    _engine->_objectManager->blurInput(this);
+}
+
+void H2DE_InputObject::submit() {
+    _engine->_objectManager->submitInput(this);
 }
 
 // SETTER

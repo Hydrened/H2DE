@@ -4,3 +4,5 @@ src/test.cpp
 todo.md
 examples/
 Makefile
+
+FEATURES.md

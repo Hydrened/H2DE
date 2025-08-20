@@ -116,7 +116,7 @@ struct H2DE_TextObjectData {
 struct H2DE_TimerObjectData {
     H2DE_Time time = H2DE_Time();           /**< Current timer time values. */
     H2DE_Text text = H2DE_Text();           /**< Text styling and content for the timer display. */
-    char separator = ':';                   /**< Character used as separator between time units. */
+    unsigned char separator = ':';          /**< Character used as separator between time units. */
     bool displayHours = false;              /**< Whether to display hours. */
     bool displayMinutes = false;            /**< Whether to display minutes. */
     bool displaySeconds = true;             /**< Whether to display seconds. */
@@ -142,5 +142,6 @@ struct H2DE_InputObjectData {
     std::function<void(H2DE_InputEventData&)> onInput = nullptr;
     std::function<void(H2DE_InputEventData&)> onFocus = nullptr;
     std::function<void(H2DE_InputEventData&)> onBlur = nullptr;
+    std::function<void(H2DE_InputEventData&)> onSubmit = nullptr;
     bool pauseSensitive = true;
 };

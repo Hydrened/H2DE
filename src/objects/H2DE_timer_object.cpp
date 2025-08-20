@@ -86,19 +86,19 @@ const std::string H2DE_TimerObject::_getStringifiedTime() const {
     std::string res = "";
 
     if (_timerObjectData.displayHours) {
-        res += std::to_string(_timerObjectData.time.hours) + _timerObjectData.separator;
+        res += std::to_string(_timerObjectData.time.hours) + static_cast<char>(_timerObjectData.separator);
     }
 
     if (_timerObjectData.displayMinutes) {
-        res += H2DE_TimerObject::_intToStr(_timerObjectData.time.minutes, 2) + _timerObjectData.separator;
+        res += H2DE_TimerObject::_intToStr(_timerObjectData.time.minutes, 2) + static_cast<char>(_timerObjectData.separator);
     }
 
     if (_timerObjectData.displaySeconds) {
-        res += H2DE_TimerObject::_intToStr(_timerObjectData.time.seconds, 2) + _timerObjectData.separator;
+        res += H2DE_TimerObject::_intToStr(_timerObjectData.time.seconds, 2) + static_cast<char>(_timerObjectData.separator);
     }
 
     if (_timerObjectData.displayMilliseconds) {
-        res += H2DE_TimerObject::_intToStr(_timerObjectData.time.milliseconds, 3) + _timerObjectData.separator;
+        res += H2DE_TimerObject::_intToStr(_timerObjectData.time.milliseconds, 3) + static_cast<char>(_timerObjectData.separator);
     }
 
     res.pop_back();
