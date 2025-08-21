@@ -41,6 +41,15 @@ struct H2DE_Padding {
     constexpr H2DE_Padding(float top, float right, float bottom, float left) noexcept : top(top), right(right), bottom(bottom), left(left) {}
 
     /**
+     * @brief Equality operator.
+     * @param other The other padding to compare.
+     * @return True if top, right, bottom and left components are equal.
+     */
+    constexpr bool operator==(const H2DE_Padding& other) const noexcept {
+        return (top == other.top && right == other.right && bottom == other.bottom && left == other.left);
+    }
+
+    /**
      * @brief Outputs the H2DE_Padding to an output stream in a readable format.
      * 
      * This operator allows H2DE_Padding instances to be streamed (e.g., to std::cout)
@@ -160,6 +169,15 @@ struct H2DE_Time {
      */
     constexpr float toElapsed() const noexcept {
         return (hours * 3600.0f) + (minutes * 60.0f) + (seconds) + (milliseconds * 0.001f);
+    }
+
+    /**
+     * @brief Equality operator.
+     * @param other The other time to compare.
+     * @return True if hours, minutes, seconds and milliseconds components are equal.
+     */
+    constexpr bool operator==(const H2DE_Time& other) const noexcept {
+        return (hours == other.hours && minutes == other.minutes && seconds == other.seconds && milliseconds == other.milliseconds);
     }
 
     /**

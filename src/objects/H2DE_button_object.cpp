@@ -12,9 +12,9 @@ H2DE_ButtonObject::~H2DE_ButtonObject() {
         _eventData.timeline->stop(false);
     }
 
-    if (_textObject != nullptr) {
+    if (_textObject != H2DE_NULL_OBJECT) {
         if (_engine->destroyObject(_textObject)) {
-            _textObject = nullptr;
+            _textObject = H2DE_NULL_OBJECT;
         }
     }
 
@@ -70,6 +70,10 @@ void H2DE_ButtonObject::mouseBlur() {
 
 // SETTER
 void H2DE_ButtonObject::setText(const std::string& text) {
+    if (text == _buttonObjectData.text.text) {
+        return;
+    }
+
     _buttonObjectData.text.text = text;
     _refreshTextObject();
 }

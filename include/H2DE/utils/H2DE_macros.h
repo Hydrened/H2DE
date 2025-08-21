@@ -4,9 +4,9 @@
 #include <H2DE/utils/H2DE_utils.h>
 
 #define H2DE_VERSION_MAJOR 4
-#define H2DE_VERSION_MINOR 2
-#define H2DE_VERSION_PATCH 9
-#define H2DE_VERSION_BETA 3
+#define H2DE_VERSION_MINOR 3
+#define H2DE_VERSION_PATCH 0
+#define H2DE_VERSION_BETA 4
 
 #define H2DE_STR_HELPER(x) #x
 #define H2DE_STR(x) H2DE_STR_HELPER(x)
@@ -54,8 +54,15 @@
 /** @brief Maximum volume value. */
 #define H2DE_VOLUME_MAX 100
 
+/** @brief Null pointer used to represent a non-existent object. */
+#define H2DE_NULL_OBJECT nullptr
+/** @brief Null pointer used to represent a non-existent surface. */
+#define H2DE_NULL_SURFACE nullptr
+
 /** @brief Constant used to represent an infinite loop in timelines or animations. */
 #define H2DE_INFINITE_LOOP 4294967295u
 
 /** @brief Constant used to center a window on the screen when creating it. */
 #define H2DE_WINDOW_POS_CENTERED SDL_WINDOWPOS_CENTERED
+
+#define H2DE_INPUT_MAX_LENGTH 65535

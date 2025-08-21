@@ -2,7 +2,7 @@
 
 template<typename H2DE_Object_T, typename... H2DE_SpecificObjectData_T>
 H2DE_Object_T* H2DE_Engine::createObject(const H2DE_ObjectData& objectData, H2DE_SpecificObjectData_T&&... specificObjectData) {
-    H2DE_Object_T* object = nullptr;
+    H2DE_Object_T* object = H2DE_NULL_OBJECT;
 
     constexpr int nbArgs = sizeof...(H2DE_SpecificObjectData_T);
     constexpr bool hasDataType = _hasH2DE_DataType<H2DE_Object_T>::value;
@@ -21,7 +21,7 @@ H2DE_Object_T* H2DE_Engine::createObject(const H2DE_ObjectData& objectData, H2DE
         object = new H2DE_Object_T(this, objectData, std::forward<H2DE_SpecificObjectData_T>(specificObjectData)...);
     
     } else {
-        return nullptr;
+        return H2DE_NULL_OBJECT;
     }
 
     _objects.push_back(object);

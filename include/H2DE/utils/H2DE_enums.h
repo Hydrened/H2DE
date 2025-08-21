@@ -197,3 +197,17 @@ enum H2DE_Cursor {
     H2DE_CURSOR_NO,             /**< Not allowed / unavailable */
     H2DE_CURSOR_HAND,           /**< Clickable element pointer */
 };
+
+/**
+ * @enum H2DE_InputType
+ * @brief Defines the types of input allowed for input fields.
+ * 
+ * - TEXT: Standard text input, allowing letters, numbers, and symbols.
+ * - NUMBER: Numeric input only, restricting the user to digits.
+ * - ALL: Accepts any character type without restriction.
+ */
+enum H2DE_InputType {
+    H2DE_INPUT_TYPE_TEXT        = 0b01,     /**< Standard text input (letters, symbols) */
+    H2DE_INPUT_TYPE_NUMBER      = 0b10,     /**< Numeric input only (digits) */
+    H2DE_INPUT_TYPE_ALL         = 0b11,     /**< Accepts any character type without restriction */
+};

@@ -138,7 +138,9 @@ struct H2DE_InputEventData {
 };
 
 struct H2DE_InputObjectData {
+    H2DE_InputType type = H2DE_INPUT_TYPE_ALL;
     H2DE_Text text = H2DE_Text();
+    uint16_t maxLength = H2DE_INPUT_MAX_LENGTH;
     std::function<void(H2DE_InputEventData&)> onInput = nullptr;
     std::function<void(H2DE_InputEventData&)> onFocus = nullptr;
     std::function<void(H2DE_InputEventData&)> onBlur = nullptr;

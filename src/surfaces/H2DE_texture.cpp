@@ -6,11 +6,19 @@
 
 // -- no lerp
 void H2DE_Texture::setColor(const H2DE_ColorRGB& color) {
+    if (color == _textureData.color) {
+        return;
+    }
+
     _textureData.color = color;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Texture::setSrcRect(const std::optional<H2DE_PixelRect>& srcRect) {
+    if (srcRect == _textureData.srcRect) {
+        return;
+    }
+
     _textureData.srcRect = srcRect;
     _object->_refreshSurfaceBuffers();
 }

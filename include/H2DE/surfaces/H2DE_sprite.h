@@ -193,6 +193,6 @@ private:
 
     std::optional<H2DE_PixelRect> getSrcRect() const noexcept override;
     inline bool _isVisible() const noexcept override {
-        return (!isHidden() && _spriteData.color.isVisible()); 
+        return (isVisible() && _spriteData.color.isVisible()); 
     }
 };

@@ -43,41 +43,73 @@ std::optional<H2DE_PixelRect> H2DE_Sprite::getSrcRect() const noexcept {
 
 // -- no lerp
 void H2DE_Sprite::setTextureName(const std::string& textureName) {
+    if (textureName == _spriteData.textureName) {
+        return;
+    }
+
     _spriteData.textureName = textureName;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Sprite::setColor(const H2DE_ColorRGB& color) {
+    if (color == _spriteData.color) {
+        return;
+    }
+
     _spriteData.color = color;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Sprite::setStartingPos(const H2DE_PixelPos& startingPos) {
+    if (startingPos == _spriteData.startingPos) {
+        return;
+    }
+
     _spriteData.startingPos = startingPos;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Sprite::setSize(const H2DE_PixelSize& size) {
+    if (size == _spriteData.size) {
+        return;
+    }
+
     _spriteData.size = size;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Sprite::setSpacing(int spacing) {
+    if (spacing == _spriteData.spacing) {
+        return;
+    }
+
     _spriteData.spacing = spacing;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Sprite::setNbFrame(uint16_t nbFrame) {
+    if (nbFrame == _spriteData.nbFrame) {
+        return;
+    }
+
     _spriteData.nbFrame = nbFrame;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Sprite::setDelay(uint32_t delay) {
+    if (delay == _spriteData.delay) {
+        return;
+    }
+
     _spriteData.delay = delay;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Sprite::setPauseSensitive(bool pauseSensitive) {
+    if (pauseSensitive == _spriteData.pauseSensitive) {
+        return;
+    }
+
     _spriteData.pauseSensitive = pauseSensitive;
     _object->_refreshSurfaceBuffers();
 }

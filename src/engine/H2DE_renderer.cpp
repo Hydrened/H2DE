@@ -155,8 +155,8 @@ void H2DE_Renderer::renderSurfaces(const H2DE_Object* object) {
 void H2DE_Renderer::renderSurface(const H2DE_Object* object, H2DE_Surface* surface) {
     surfacesRendered++;
 
-    bool isColor = (dynamic_cast<H2DE_Color*>(surface) != nullptr);
-    bool isBorder = (dynamic_cast<H2DE_Border*>(surface) != nullptr);
+    bool isColor = (dynamic_cast<H2DE_Color*>(surface) != H2DE_NULL_SURFACE);
+    bool isBorder = (dynamic_cast<H2DE_Border*>(surface) != H2DE_NULL_SURFACE);
 
     if (isColor) {
         renderColor(object, surface);
@@ -239,7 +239,7 @@ void H2DE_Renderer::renderColor(const H2DE_Object* object, H2DE_Surface* surface
 void H2DE_Renderer::renderBorder(const H2DE_Object* object, H2DE_Surface* surface) const {
     H2DE_Border* border = dynamic_cast<H2DE_Border*>(surface);
 
-    if (border == nullptr) {
+    if (border == H2DE_NULL_SURFACE) {
         return;
     }
 
@@ -320,7 +320,7 @@ SDL_Rect H2DE_Renderer::renderSurfaceGetWorldDestRect(const H2DE_Object* object,
     H2DE_LevelRect surfaceRect = G::getSurfaceRect(object, surface, xIsInverted, yIsInverted);
     const H2DE_BarObject* bar = dynamic_cast<const H2DE_BarObject*>(object);
 
-    if (bar != nullptr) {
+    if (bar != H2DE_NULL_OBJECT) {
         if (bar->_isSurfaceFill(surface)) {
             float fillBarBlend = bar->_getFillBlend();
             surfaceRect.x = (surfaceRect.w - surfaceRect.multiplyW(fillBarBlend).w) * -0.5f;
@@ -358,12 +358,12 @@ std::optional<SDL_Rect> H2DE_Renderer::renderSurfaceGetPossibleSrcRect(const H2D
     const H2DE_BarObject* bar = dynamic_cast<const H2DE_BarObject*>(object);
     std::optional<H2DE_PixelRect> possibleSrcRect = surface->getSrcRect();
 
-    if (bar == nullptr && !possibleSrcRect) {
+    if (bar == H2DE_NULL_OBJECT && !possibleSrcRect) {
         return std::nullopt;
     }
 
     float blend = 1.0f;
-    if (bar != nullptr) {
+    if (bar != H2DE_NULL_OBJECT) {
         if (bar->_isSurfaceFill(surface)) {
             blend = bar->_getFillBlend();
         }

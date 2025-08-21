@@ -39,7 +39,7 @@ struct H2DE_ColorRGB {
      * @brief Converts this RGB color to HSV color space.
      * @return Equivalent color in HSV.
      */
-    explicit operator H2DE_ColorHSV() const;
+    operator H2DE_ColorHSV() const;
     /**
      * @brief Converts the color to a 32-bit integer in ARGB format.
      * @return 32-bit unsigned int representation of color.
@@ -154,3 +154,30 @@ struct H2DE_ColorRGB {
         return (a != 0);
     }
 };
+
+#define H2DE_WHITE H2DE_ColorRGB{ 255, 255, 255, 255 }
+#define H2DE_BLACK H2DE_ColorRGB{ 0, 0, 0, 255 }
+
+#define H2DE_GRAY H2DE_ColorRGB{ 128, 128, 128, 255 }
+#define H2DE_DARKGRAY H2DE_ColorRGB{ 64, 64, 64, 255 }
+#define H2DE_LIGHTGRAY H2DE_ColorRGB{ 192, 192, 192, 255 }
+
+#define H2DE_RED H2DE_ColorRGB{ 255, 0, 0, 255 }
+#define H2DE_GREEN H2DE_ColorRGB{ 0, 255, 0, 255 }
+#define H2DE_BLUE H2DE_ColorRGB{ 0, 0, 255, 255 }
+
+#define H2DE_YELLOW H2DE_ColorRGB{ 255, 255, 0, 255 }
+#define H2DE_CYAN H2DE_ColorRGB{ 0, 255, 255, 255 }
+#define H2DE_MAGENTA H2DE_ColorRGB{ 255, 0, 255, 255 }
+
+#define H2DE_ORANGE H2DE_ColorRGB{ 255, 165, 0, 255 }
+#define H2DE_PINK H2DE_ColorRGB{ 255, 192, 203, 255 }
+#define H2DE_PURPLE H2DE_ColorRGB{ 128, 0, 128, 255 }
+#define H2DE_BROWN H2DE_ColorRGB{ 165, 42, 42, 255 }
+
+#define H2DE_LIME H2DE_ColorRGB{ 0, 255, 0, 255 }
+#define H2DE_NAVY H2DE_ColorRGB{ 0, 0, 128, 255 }
+#define H2DE_TEAL H2DE_ColorRGB{ 0, 128, 128, 255 }
+#define H2DE_OLIVE H2DE_ColorRGB{ 128, 128, 0, 255 }
+#define H2DE_MAROON H2DE_ColorRGB{ 128, 0, 0, 255 }
+#define H2DE_AQUA H2DE_ColorRGB{ 0, 255, 255, 255 }

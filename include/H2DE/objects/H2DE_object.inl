@@ -13,7 +13,7 @@ template<typename H2DE_Surface_T>
 H2DE_Surface_T* H2DE_Object::_getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
     auto it = surfaces.find(name);
     if (it == surfaces.end()) {
-        return nullptr;
+        return H2DE_NULL_SURFACE;
     }
 
     return dynamic_cast<H2DE_Surface_T*>(it->second);

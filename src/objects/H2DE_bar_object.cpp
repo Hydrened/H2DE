@@ -50,16 +50,28 @@ bool H2DE_BarObject::_isSurfaceFill(H2DE_Surface* surface) const {
 
 // -- no lerp
 void H2DE_BarObject::setMin(float min) {
+    if (min == _barObjectData.min) {
+        return;
+    }
+
     _barObjectData.min = min;
     _refreshSurfaceBuffers();
 }
 
 void H2DE_BarObject::setMax(float max) {
+    if (max == _barObjectData.max) {
+        return;
+    }
+
     _barObjectData.max = max;
     _refreshSurfaceBuffers();
 }
 
 void H2DE_BarObject::setValue(float value) {
+    if (value == _barObjectData.value) {
+        return;
+    }
+    
     _barObjectData.value = value;
     _refreshSurfaceBuffers();
 }

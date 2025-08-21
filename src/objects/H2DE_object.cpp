@@ -184,9 +184,9 @@ void H2DE_Object::_rescaleTransform(H2DE_Transform& transform, const H2DE_Scale&
 
 // -- text object
 H2DE_TextObject* H2DE_Object::_refreshTextObject(H2DE_TextObject* textObject, const H2DE_Text& text) {
-    if (textObject != nullptr) {
+    if (textObject != H2DE_NULL_OBJECT) {
         if (_engine->destroyObject(textObject)) {
-            textObject = nullptr;
+            textObject = H2DE_NULL_OBJECT;
         }
     }
 
@@ -301,37 +301,65 @@ float H2DE_Object::_getMaxSurfaceRadius(const std::unordered_map<std::string, H2
 
 // -- non lerp
 void H2DE_Object::setTranslate(const H2DE_Translate& translate) {
+    if (translate == _objectData.transform.translate) {
+        return;
+    }
+
     _objectData.transform.translate = translate;
     _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setScale(const H2DE_Scale& scale) {
+    if (scale == _objectData.transform.scale) {
+        return;
+    }
+
     _objectData.transform.scale = scale;
     _refreshSurfaceBuffers();
     _rescaleHitboxes();
 }
 
 void H2DE_Object::setRotation(float rotation) {
+    if (rotation == _objectData.transform.rotation) {
+        return;
+    }
+    
     _objectData.transform.rotation = rotation;
     _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setPivot(const H2DE_Pivot& pivot) {
+    if (pivot == _objectData.transform.pivot) {
+        return;
+    }
+
     _objectData.transform.pivot = pivot;
     _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setOpacity(uint8_t opacity) {
+    if (opacity == _objectData.opacity) {
+        return;
+    }
+
     _objectData.opacity = opacity;
     _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setAbsolute(bool absolute) {
+    if (absolute == _objectData.absolute) {
+        return;
+    }
+
     _objectData.absolute = absolute;
     _refreshSurfaceBuffers();
 }
 
 void H2DE_Object::setIndex(int index) {
+    if (index == _objectData.index) {
+        return;
+    }
+
     _objectData.index = index;
     _refreshSurfaceBuffers();
 }

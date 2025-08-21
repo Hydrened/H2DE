@@ -78,7 +78,7 @@ public:
 private:
     H2DE_InputObjectData _inputObjectData;
 
-    H2DE_TextObject* _textObject = nullptr;
+    H2DE_TextObject* _textObject = H2DE_NULL_OBJECT;
     int _cursorPosition = -1;
     const std::string _cursorSurfaceName = "cursor";
     std::unordered_map<std::string, H2DE_Surface*> _surfaces = {};
@@ -95,6 +95,16 @@ private:
     void _refreshCursor();
     void _refreshSurfaceBuffers() override;
     void _refreshMaxRadius() override;
+
+    inline bool _isInputValid(unsigned char c) const {
+        return (std::isdigit(c))
+            ? ((_inputObjectData.type & H2DE_INPUT_TYPE_NUMBER) != 0)
+            : ((_inputObjectData.type & H2DE_INPUT_TYPE_TEXT) != 0);
+    }
+
+    constexpr bool _isFull() const {
+        return (_inputObjectData.text.text.length() >= _inputObjectData.maxLength);
+    }
 
     void _setCursorPosition(int position);
 };

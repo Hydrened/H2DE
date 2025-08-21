@@ -108,6 +108,6 @@ private:
     ~H2DE_Texture() override = default;
 
     inline bool _isVisible() const noexcept override {
-        return (!isHidden() && _textureData.color.isVisible());
+        return (isVisible() && _textureData.color.isVisible());
     }
 };

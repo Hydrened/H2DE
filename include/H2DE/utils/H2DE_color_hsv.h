@@ -42,7 +42,7 @@ struct H2DE_ColorHSV {
      * @brief Converts this HSV color to its RGB equivalent.
      * @return RGB representation of this HSV color.
      */
-    explicit operator H2DE_ColorRGB() const;
+    operator H2DE_ColorRGB() const;
 
     /**
      * @brief Compares if two HSV colors are equal.

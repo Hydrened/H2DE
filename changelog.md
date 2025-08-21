@@ -1,8 +1,13 @@
-## H2DE-4.2.9
+## H2DE-4.3.0
 #### ADDED
+- input object
 - button text getter and setter
 - timer text getter
-- input object
+- isVisible getters for objects and surfaces
+- color macros
+- null object and surface macros
+- padding == operator
+- time == operator
 
 ## H2DE-4.2.8
 #### ADDED

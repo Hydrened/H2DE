@@ -13,7 +13,11 @@ SDL_FLAGS = -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_gfx
 LD_FLAGS = -L$(LIB_DIR) -lmingw32 $(SDL_FLAGS) -lbase64
 DLL_FLAG = -Wl,--out-implib,$(LIB_DIR)/$(APP_NAME).lib
 
-SRC = $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/*.cpp)
+SRC = \
+    $(wildcard $(SRC_DIR)/*.cpp) \
+    $(wildcard $(SRC_DIR)/**/*.cpp) \
+    $(wildcard $(SRC_DIR)/**/**/*.cpp)
+
 SRC := $(filter-out $(SRC_DIR)/test.cpp, $(SRC))
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJECT_DIR)/%.o, $(SRC))
 
@@ -30,6 +34,7 @@ engine: $(OBJ)
 	$(CXX) $(CXX_FLAGS) -shared -o $(BIN_DIR)/$(APP_NAME).dll $^ $(LD_FLAGS) $(SDL_FLAGS) $(DLL_FLAG)
 
 $(OBJECT_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@if not exist "$(dir $@)" mkdir "$(dir $@)"
 	$(CXX) $(CXX_FLAGS) -c $< -o $@
 
 tr:

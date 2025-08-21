@@ -168,6 +168,14 @@ public:
     constexpr bool isHidden() const noexcept {
         return _hidden;
     }
+    /**
+     * @brief Check if the object is visible.
+     * 
+     * @return true if visible, false if visible.
+     */
+    constexpr bool isVisible() const noexcept {
+        return !isHidden();
+    }
     
     /**
      * @brief Get all hitboxes attached to the object.

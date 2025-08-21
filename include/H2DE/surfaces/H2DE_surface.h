@@ -143,6 +143,14 @@ public:
     constexpr bool isHidden() const noexcept {
         return _hidden;
     }
+    /**
+     * @brief Check if the surface is currently visible.
+     * 
+     * @return true if visible, false otherwise.
+     */
+    constexpr bool isVisible() const noexcept {
+        return !isHidden();
+    }
 
     /** 
      * @brief Set the translation vector instantly.

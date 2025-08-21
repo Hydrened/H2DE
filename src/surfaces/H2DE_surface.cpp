@@ -12,6 +12,10 @@ H2DE_Surface::H2DE_Surface(H2DE_Engine* e, H2DE_Object* o, const H2DE_SurfaceDat
 
 // -- no lerp
 void H2DE_Surface::setTranslate(const H2DE_Translate& translate) {
+    if (translate == _surfaceData.transform.translate) {
+        return;
+    }
+
     _surfaceData.transform.translate = translate;
     _surfaceData.transform._defaultTranslate = translate;
     _object->_refreshSurfaceBuffers();
@@ -19,6 +23,10 @@ void H2DE_Surface::setTranslate(const H2DE_Translate& translate) {
 }
 
 void H2DE_Surface::setScale(const H2DE_Scale& scale) {
+    if (scale == _surfaceData.transform.scale) {
+        return;
+    }
+
     _surfaceData.transform.scale = scale;
     _surfaceData.transform._defaultScale = scale;
     _object->_refreshSurfaceBuffers();
@@ -26,12 +34,20 @@ void H2DE_Surface::setScale(const H2DE_Scale& scale) {
 }
 
 void H2DE_Surface::setRotation(float rotation) {
+    if (rotation == _surfaceData.transform.rotation) {
+        return;
+    }
+
     _surfaceData.transform.rotation = rotation;
     _object->_refreshSurfaceBuffers();
     _object->_refreshMaxRadius();
 }
 
 void H2DE_Surface::setPivot(const H2DE_Pivot& pivot) {
+    if (pivot == _surfaceData.transform.pivot) {
+        return;
+    }
+
     _surfaceData.transform.pivot = pivot;
     _surfaceData.transform._defaultPivot = pivot;
     _object->_refreshSurfaceBuffers();
@@ -39,16 +55,28 @@ void H2DE_Surface::setPivot(const H2DE_Pivot& pivot) {
 }
 
 void H2DE_Surface::setScaleMode(H2DE_ScaleMode scaleMode) {
+    if (scaleMode == _surfaceData.scaleMode) {
+        return;
+    }
+
     _surfaceData.scaleMode = scaleMode;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Surface::setBlendMode(H2DE_BlendMode blendMode) {
+    if (blendMode == _surfaceData.blendMode) {
+        return;
+    }
+
     _surfaceData.blendMode = blendMode;
     _object->_refreshSurfaceBuffers();
 }
 
 void H2DE_Surface::setIndex(int index) {
+    if (index == _surfaceData.index) {
+        return;
+    }
+
     _surfaceData.index = index;
     _object->_refreshSurfaceBuffers();
 }

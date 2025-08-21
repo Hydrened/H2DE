@@ -266,7 +266,7 @@ private:
     void _refreshSurfaceBuffers() override;
     void _refreshMaxRadius() override;
 
-    const std::string _getFormatedText() const;
+    static const std::string _getFormatedText(const std::string& text);
     const std::string _getFormatedWord(const std::string& word) const;
 
     const std::vector<std::string> _getWords() const;

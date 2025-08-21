@@ -144,6 +144,6 @@ private:
         return std::nullopt;
     }
     inline bool _isVisible() const noexcept override {
-        return (!isHidden() && _borderData.color.isVisible() && _borderData.thickness != 0);
+        return (isVisible() && _borderData.color.isVisible() && _borderData.thickness != 0);
     }
 };

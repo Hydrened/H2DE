@@ -2,6 +2,8 @@
 
 // INIT
 H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_Object(e, od), _inputObjectData(iod), _eventData({ this, nullptr, "", std::nullopt }) {
+    _inputObjectData.text.text = H2DE_TextObject::_getFormatedText(_inputObjectData.text.text);
+    
     _refreshSurfaceBuffers();
     _refreshMaxRadius();
 
@@ -22,9 +24,9 @@ H2DE_InputObject::~H2DE_InputObject() {
         _eventData.timeline->stop(false);
     }
 
-    if (_textObject != nullptr) {
+    if (_textObject != H2DE_NULL_OBJECT) {
         if (_engine->destroyObject(_textObject)) {
-            _textObject = nullptr;
+            _textObject = H2DE_NULL_OBJECT;
         }
     }
 
@@ -46,7 +48,7 @@ void H2DE_InputObject::_refreshCursor() {
 
     // cursorSurface->show();
 
-    // if (_textObject == nullptr) {
+    // if (_textObject == H2DE_NULL_OBJECT) {
     //     return;
     // }
 
@@ -81,6 +83,10 @@ void H2DE_InputObject::_refreshMaxRadius() {
 }
 
 void H2DE_InputObject::input(unsigned char c) {
+    if (!_isInputValid(c)) {
+        return;
+    }
+
     _inputObjectData.text.text = _inputObjectData.text.text + static_cast<char>(c);
     _refreshTextObject();
 
@@ -106,11 +112,19 @@ void H2DE_InputObject::submit() {
 
 // SETTER
 void H2DE_InputObject::setText(const std::string& text) {
-    _inputObjectData.text.text = text;
+    if (H2DE_TextObject::_getFormatedText(text) == _inputObjectData.text.text) {
+        return;
+    }
+
+    _inputObjectData.text.text = H2DE_TextObject::_getFormatedText(text);
     _refreshTextObject();
 }
 
 void H2DE_InputObject::_setCursorPosition(int position) {
+    if (position == _cursorPosition) {
+        return;
+    }
+
     _cursorPosition = position;
     _refreshCursor();
 }

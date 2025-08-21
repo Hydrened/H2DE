@@ -353,7 +353,7 @@ public:
 private:
     H2DE_TimerObjectData _timerObjectData;
 
-    H2DE_TextObject* _textObject = nullptr;
+    H2DE_TextObject* _textObject = H2DE_NULL_OBJECT;
     std::unordered_map<std::string, H2DE_Surface*> _surfaces = {};
 
     H2DE_Chrono* _chrono = nullptr;

@@ -143,11 +143,19 @@ H2DE_Scale H2DE_Camera::_getScale(float width) const {
 
 // -- no lerp
 void H2DE_Camera::setTranslate(const H2DE_Translate& translate) {
+    if (translate == _data.translate) {
+        return;
+    }
+
     _data.translate = translate;
     _updateGrid();
 }
 
 void H2DE_Camera::setGameWidth(float width) {
+    if (width == _data.gameWidth) {
+        return;
+    }
+
     _data.gameWidth = width;
     _updateGrid();
 }

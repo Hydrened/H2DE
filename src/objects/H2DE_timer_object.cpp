@@ -16,9 +16,9 @@ void H2DE_TimerObject::_initChrono() {
 H2DE_TimerObject::~H2DE_TimerObject() {
     _destroyChrono();
 
-    if (_textObject != nullptr) {
+    if (_textObject != H2DE_NULL_OBJECT) {
         if (_engine->destroyObject(_textObject)) {
-            _textObject = nullptr;
+            _textObject = H2DE_NULL_OBJECT;
         }
     }
 
@@ -113,30 +113,50 @@ bool H2DE_TimerObject::isPaused() const {
 
 // -- non lerp
 void H2DE_TimerObject::setTime(const H2DE_Time& time) {
+    if (time == _timerObjectData.time) {
+        return;
+    }
+
     _timerObjectData.time = time;
     _chrono->setTime(time);
     _refreshSurfaceBuffers();
 }
 
 void H2DE_TimerObject::setHours(uint8_t hours) {
+    if (hours == _timerObjectData.time.hours) {
+        return;
+    }
+    
     _timerObjectData.time.hours = hours;
     _chrono->setHours(hours);
     _refreshSurfaceBuffers();
 }
 
 void H2DE_TimerObject::setMinutes(uint8_t minutes) {
+    if (minutes == _timerObjectData.time.minutes) {
+        return;
+    }
+    
     _timerObjectData.time.minutes = minutes;
     _chrono->setMinutes(minutes);
     _refreshSurfaceBuffers();
 }
 
 void H2DE_TimerObject::setSeconds(uint8_t seconds) {
+    if (seconds == _timerObjectData.time.seconds) {
+        return;
+    }
+    
     _timerObjectData.time.seconds = seconds;
     _chrono->setSeconds(seconds);
     _refreshSurfaceBuffers();
 }
 
 void H2DE_TimerObject::setMilliseconds(uint16_t milliseconds) {
+    if (milliseconds == _timerObjectData.time.milliseconds) {
+        return;
+    }
+    
     _timerObjectData.time.milliseconds = milliseconds;
     _chrono->setMilliseconds(milliseconds);
     _refreshSurfaceBuffers();

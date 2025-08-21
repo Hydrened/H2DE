@@ -289,7 +289,7 @@ bool H2DE_Engine::destroyObject(H2DE_Object* object) {
         return false;
     }
 
-    bool isButton = (dynamic_cast<H2DE_ButtonObject*>(object) != nullptr);
+    bool isButton = (dynamic_cast<H2DE_ButtonObject*>(object) != H2DE_NULL_OBJECT);
 
     _objects.erase(it);
     

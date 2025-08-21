@@ -11,11 +11,11 @@ private:
     std::vector<H2DE_ButtonObject*> buttons;
     std::vector<H2DE_InputObject*> inputs;
 
-    H2DE_ButtonObject* mouseDownButton = nullptr;
-    H2DE_ButtonObject* hoveredButton = nullptr;
+    H2DE_ButtonObject* mouseDownButton = H2DE_NULL_OBJECT;
+    H2DE_ButtonObject* hoveredButton = H2DE_NULL_OBJECT;
 
-    H2DE_InputObject* focusedInput = nullptr;
-    H2DE_InputObject* hoveredInput = nullptr;
+    H2DE_InputObject* focusedInput = H2DE_NULL_OBJECT;
+    H2DE_InputObject* hoveredInput = H2DE_NULL_OBJECT;
 
     H2DE_Cursor oldCursor = H2DE_CURSOR_ARROW;
 
@@ -52,7 +52,7 @@ private:
     void handleEvents_inputs_keydown_delete(SDL_Event event);
     void handleEvents_inputs_keydown_suppr(SDL_Event event);
     void handleEvents_inputs_keydown_enter(SDL_Event event);
-    void handleEvents_inputs_keydown_incrCursorPosition(int incr);
+    void handleEvents_inputs_keydown_arrow(SDL_Event event);
 
     template<typename H2DE_ObjectType>
     void refreshBuffer(std::vector<H2DE_ObjectType*>& buffer, const std::vector<H2DE_Object*>& objects);

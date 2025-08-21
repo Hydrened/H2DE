@@ -83,6 +83,6 @@ private:
         return std::nullopt;
     }
     inline bool _isVisible() const noexcept override {
-        return (!isHidden() && _colorData.color.isVisible());
+        return (isVisible() && _colorData.color.isVisible());
     }
 };
