@@ -32,9 +32,6 @@ public:
     inline std::string getText() const noexcept {
         return _inputObjectData.text.text;
     }
-    constexpr bool isPauseSensitive() const noexcept {
-        return _inputObjectData.pauseSensitive; 
-    }
     constexpr bool isDisabled() const noexcept {
         return _disabled; 
     }
@@ -66,9 +63,6 @@ public:
     inline void setOnSubmit(const std::function<void(H2DE_InputEventData)>& onSubmit) noexcept {
         _inputObjectData.onSubmit = onSubmit;
     }
-    inline void setPauseSensitive(bool pauseSensitive) noexcept { 
-        _inputObjectData.pauseSensitive = pauseSensitive; 
-    }
 
     using H2DE_DataType = H2DE_InputObjectData;
 
@@ -80,7 +74,7 @@ private:
 
     H2DE_TextObject* _textObject = H2DE_NULL_OBJECT;
     int _cursorPosition = -1;
-    const std::string _cursorSurfaceName = "cursor";
+    H2DE_Color* _cursor = H2DE_NULL_SURFACE;
     std::unordered_map<std::string, H2DE_Surface*> _surfaces = {};
     H2DE_InputEventData _eventData;
 

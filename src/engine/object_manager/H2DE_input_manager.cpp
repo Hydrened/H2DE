@@ -73,10 +73,8 @@ int H2DE_ObjectManager::handleEvents_inputs_mouseDown_getFocusedInputLetterIndex
     if (focusedInput->_textObject == H2DE_NULL_OBJECT) {
         return 0;
     }
-    
-    const H2DE_Translate mouseTranslate = (focusedInput->_textObject->_objectData.absolute)
-        ? engine->getMouseGamePos()
-        : engine->getMouseInterfacePos();
+
+    const H2DE_Translate mouseTranslate = handle_inputs_mouseDown_getFixedMouseTranslate();
 
     const std::vector<H2DE_Surface*>& letterSurfaces = focusedInput->_textObject->_surfaceBuffers;
 
@@ -109,6 +107,31 @@ int H2DE_ObjectManager::handleEvents_inputs_mouseDown_getFocusedInputLetterIndex
     }
 
     return index;
+}
+
+H2DE_Translate H2DE_ObjectManager::handle_inputs_mouseDown_getFixedMouseTranslate() {
+    static H2DE_Camera* camera = engine->getCamera();
+
+    bool isXOriginInverted = camera->isXOriginInverted();
+    bool isYOriginInverted = camera->isYOriginInverted();
+
+    const H2DE_Translate& focusedInputTranslate = focusedInput->_objectData.transform.translate;
+
+    const H2DE_Translate mouseTranslate = (!focusedInput->_objectData.absolute)
+        ? engine->getMouseGameTranslate()
+        : engine->getMouseInterfaceTranslate();
+
+    H2DE_Translate local_mouseTranslate = mouseTranslate - focusedInputTranslate;
+
+    if (isXOriginInverted) {
+        local_mouseTranslate.x *= -1;
+    }
+
+    if (isYOriginInverted) {
+        local_mouseTranslate.y *= -1;
+    }
+
+    return focusedInputTranslate + local_mouseTranslate;
 }
 
 // -- -- mouse motion
@@ -319,6 +342,8 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown_arrow(SDL_Event event) {
         return;
     }
 
+    int nbLetters = focusedInput->_textObject->_surfaceBuffers.size();
+
     const std::string text = focusedInput->_textObject->getText();
     int cursorPosition = focusedInput->_cursorPosition;
 
@@ -337,14 +362,14 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown_arrow(SDL_Event event) {
         } else {
             const std::string slicedText = text.substr(cursorPosition + 1);
             size_t firstSpaceIndex = H2DE_ObjectManager::getFirstSpaceIndex(slicedText);
-            firstSpaceIndex = ((firstSpaceIndex == -1) ? text.length() : cursorPosition + 1 + firstSpaceIndex);
+            firstSpaceIndex = ((firstSpaceIndex == -1) ? nbLetters : cursorPosition + 1 + firstSpaceIndex);
 
             focusedInput->_setCursorPosition(firstSpaceIndex);
         }
             
     } else {
         int incr = ((left) ? -1 : 1);
-        cursorPosition = H2DE::clamp<int>(cursorPosition + incr, 0, text.length());
+        cursorPosition = H2DE::clamp<int>(cursorPosition + incr, 0, nbLetters);
         focusedInput->_setCursorPosition(cursorPosition);
     }
 }
@@ -372,8 +397,14 @@ void H2DE_ObjectManager::focusInput(H2DE_InputObject* input) {
         input->_inputObjectData.onFocus(input->_eventData);
     }
 
-    input->_cursorPosition = input->_inputObjectData.text.text.length();
     focusedInput = input;
+
+    if (focusedInput->_textObject != H2DE_NULL_OBJECT) {
+        focusedInput->_setCursorPosition(focusedInput->_textObject->_surfaceBuffers.size());
+
+    } else {
+        focusedInput->_setCursorPosition(-1);
+    }
 }
 
 void H2DE_ObjectManager::blurInput(H2DE_InputObject* input) {
@@ -413,10 +444,6 @@ const std::vector<H2DE_InputObject*> H2DE_ObjectManager::getValidInputs() const 
         }
 
         if (input->_disabled) {
-            continue;
-        }
-
-        if (engine->_paused && input->_inputObjectData.pauseSensitive) {
             continue;
         }
 

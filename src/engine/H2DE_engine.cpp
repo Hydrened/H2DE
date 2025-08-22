@@ -303,12 +303,12 @@ bool H2DE_Engine::destroyObject(H2DE_Object* object) {
 }
 
 // -- mouse
-const H2DE_Translate H2DE_Engine::_getMousePos(bool absolute) const {
+const H2DE_Translate H2DE_Engine::_getMouseTranslate(bool absolute) const {
     return _renderer->pixelToLevel(_mousePos, absolute);
 }
 
 // GETTER
-bool H2DE_Engine::_isPositionGreater(H2DE_Object* a, H2DE_Object* b) {
+bool H2DE_Engine::_isTranslateGreater(H2DE_Object* a, H2DE_Object* b) {
     const H2DE_Translate aTranslate = a->getTranslate();
     const H2DE_Translate bTranslate = b->getTranslate();
 

@@ -40,6 +40,14 @@ struct H2DE_ButtonEventData {
     constexpr H2DE_ButtonEventData(H2DE_ButtonObject* button, H2DE_Timeline* timeline) noexcept : button(button), timeline(timeline) {}
 };
 
+// temp
+struct H2DE_InputEventData {
+    H2DE_InputObject* input;
+    H2DE_Timeline* timeline;
+    std::string text;
+    std::optional<char> character;
+};
+
 /**
  * @struct H2DE_ObjectData
  * @brief Contains basic data for an object, including its transform, opacity, position mode, and index.
@@ -98,7 +106,20 @@ struct H2DE_ButtonObjectData {
     std::function<void(H2DE_ButtonEventData&)> onHover = nullptr;       /**< Callback triggered when the mouse hovers over the button. */
     std::function<void(H2DE_ButtonEventData&)> onBlur = nullptr;        /**< Callback triggered when the mouse stops hovering the button. */
     H2DE_Cursor cursor = H2DE_CURSOR_ARROW;                             /**< Cursor to display when the mouse hovers over the button. */
-    bool pauseSensitive = true;                                         /**< Whether the button events are sensitive to game pause state. */
+};
+
+/**
+ * @struct H2DE_InputObjectData
+ * @brief Stores configuration and behavior callbacks for an input object.
+ */
+struct H2DE_InputObjectData {
+    H2DE_InputType type = H2DE_INPUT_TYPE_ALL;                          /**< Type of input accepted (e.g., text, numbers, all). */
+    H2DE_Text text = H2DE_Text();                                       /**< Text styling and content of the input field. */
+    uint16_t maxLength = H2DE_INPUT_MAX_LENGTH;                         /**< Maximum number of characters allowed. */
+    std::function<void(H2DE_InputEventData&)> onInput = nullptr;        /**< Callback triggered when input is received. */
+    std::function<void(H2DE_InputEventData&)> onFocus = nullptr;        /**< Callback triggered when the input field gains focus. */
+    std::function<void(H2DE_InputEventData&)> onBlur = nullptr;         /**< Callback triggered when the input field loses focus. */
+    std::function<void(H2DE_InputEventData&)> onSubmit = nullptr;       /**< Callback triggered when the input is submitted (e.g., Enter key). */
 };
 
 /**
@@ -123,27 +144,4 @@ struct H2DE_TimerObjectData {
     bool displayMilliseconds = false;       /**< Whether to display milliseconds. */
     bool increasing = true;                 /**< Whether the timer is increasing (false for decreasing). */
     bool pauseSensitive = true;             /**< Whether the timer is sensitive to pause state. */
-};
-
-
-
-
-
-
-struct H2DE_InputEventData {
-    H2DE_InputObject* input;
-    H2DE_Timeline* timeline;
-    std::string text;
-    std::optional<char> character;
-};
-
-struct H2DE_InputObjectData {
-    H2DE_InputType type = H2DE_INPUT_TYPE_ALL;
-    H2DE_Text text = H2DE_Text();
-    uint16_t maxLength = H2DE_INPUT_MAX_LENGTH;
-    std::function<void(H2DE_InputEventData&)> onInput = nullptr;
-    std::function<void(H2DE_InputEventData&)> onFocus = nullptr;
-    std::function<void(H2DE_InputEventData&)> onBlur = nullptr;
-    std::function<void(H2DE_InputEventData&)> onSubmit = nullptr;
-    bool pauseSensitive = true;
 };

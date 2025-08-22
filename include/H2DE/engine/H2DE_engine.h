@@ -355,24 +355,24 @@ public:
     uint32_t getHitboxesRenderedNumber() const noexcept;
 
     /**
-     * @brief Gets the mouse position in the game world coordinates.
+     * @brief Gets the mouse translate in the game world coordinates.
      * 
-     * This represents the mouse position relative to the game world (taking camera, zoom, etc. into account).
+     * This represents the mouse translate relative to the game world (taking camera, zoom, etc. into account).
      * 
-     * @return Mouse position as H2DE_Translate in game world space.
+     * @return Mouse translate as H2DE_Translate in game world space.
      */
-    inline const H2DE_Translate getMouseGamePos() const {
-        return _getMousePos(false);
+    inline const H2DE_Translate getMouseGameTranslate() const {
+        return _getMouseTranslate(false);
     }
     /**
-     * @brief Gets the mouse position in the user interface coordinates.
+     * @brief Gets the mouse translate in the user interface coordinates.
      * 
-     * This represents the absolute mouse position on the UI layer (screen coordinates).
+     * This represents the absolute mouse translate on the UI layer (screen coordinates).
      * 
-     * @return Mouse position as H2DE_Translate in UI space.
+     * @return Mouse translate as H2DE_Translate in UI space.
      */
-    inline const H2DE_Translate getMouseInterfacePos() const {
-        return _getMousePos(true);
+    inline const H2DE_Translate getMouseInterfaceTranslate() const {
+        return _getMouseTranslate(true);
     }
 
     /**
@@ -468,9 +468,9 @@ private:
     void _destroy();
     void _destroyObjects();
 
-    const H2DE_Translate _getMousePos(bool absolute) const;
+    const H2DE_Translate _getMouseTranslate(bool absolute) const;
 
-    static bool _isPositionGreater(H2DE_Object* a, H2DE_Object* b);
+    static bool _isTranslateGreater(H2DE_Object* a, H2DE_Object* b);
 };
 
 #include <H2DE/engine/H2DE_engine.inl>

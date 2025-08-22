@@ -9,8 +9,7 @@
  * and user interaction events such as mouse down, up, hover, and blur.
  * 
  * Buttons can have callbacks assigned for these events, allowing for animations and
- * logic triggered on user input. They can be enabled or disabled, and optionally respond
- * to the engine's pause state.
+ * logic triggered on user input. They can be enabled or disabled.
  */
 
 #include <H2DE/objects/H2DE_object.h>
@@ -26,8 +25,7 @@ class H2DE_TextObject;
  * 
  * Interaction events such as mouseDown, mouseUp, mouseHover, and mouseBlur can be assigned
  * user callbacks that receive the button instance and a timeline ID for animation control.
- * The button can be enabled or disabled, and configured to be sensitive or insensitive to
- * the engine's pause state.
+ * The button can be enabled or disabled.
  * 
  * Typical use includes UI buttons for menus, HUD, or gameplay controls with visual feedback.
  */
@@ -140,17 +138,6 @@ public:
      */
     constexpr H2DE_Cursor getCursor() const noexcept {
         return _buttonObjectData.cursor;
-    }
-    /**
-     * @brief Check if the button is sensitive to the game's pause state.
-     * 
-     * Returns true if the button reacts differently (or is disabled) when the game is paused,
-     * false otherwise.
-     * 
-     * @return true if pause sensitive, false if not.
-     */
-    constexpr bool isPauseSensitive() const noexcept {
-        return _buttonObjectData.pauseSensitive; 
     }
     /**
      * @brief Check if the button is disabled.
@@ -274,16 +261,6 @@ public:
      */
     inline void setCursor(H2DE_Cursor cursor) noexcept {
         _buttonObjectData.cursor = cursor;
-    }
-    /**
-     * @brief Set whether the button's events are sensitive to the engine's pause state.
-     * 
-     * When set to true, the button callbacks will not trigger if the engine is paused.
-     * 
-     * @param pauseSensitive True to make the button sensitive to pause, false otherwise.
-     */
-    inline void setPauseSensitive(bool pauseSensitive) noexcept { 
-        _buttonObjectData.pauseSensitive = pauseSensitive; 
     }
 
     using H2DE_DataType = H2DE_ButtonObjectData;

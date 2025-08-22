@@ -57,7 +57,7 @@ void H2DE_ObjectManager::refreshBuffer(std::vector<H2DE_ObjectType*>& buffer, co
         int indexB = b->getIndex();
 
         if (indexA == indexB) {
-            return H2DE_Engine::_isPositionGreater(a, b);
+            return H2DE_Engine::_isTranslateGreater(a, b);
         }
 
         return (indexA > indexB);
@@ -68,8 +68,8 @@ void H2DE_ObjectManager::refreshBuffer(std::vector<H2DE_ObjectType*>& buffer, co
 
 // -- default
 bool H2DE_ObjectManager::isMouseCollidingObject(H2DE_Object* object) const {
-    const H2DE_Translate mouseGamePos = engine->getMouseGamePos();
-    const H2DE_Translate mouseInterfacePos = engine->getMouseInterfacePos();
+    const H2DE_Translate mouseGamePos = engine->getMouseGameTranslate();
+    const H2DE_Translate mouseInterfacePos = engine->getMouseInterfaceTranslate();
 
     const H2DE_Translate mousePos = (object->_objectData.absolute) ? mouseInterfacePos : mouseGamePos;
 

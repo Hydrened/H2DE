@@ -54,7 +54,7 @@ void H2DE_Renderer::sortObjects() {
         int indexB = b->getIndex();
 
         if (indexA == indexB) {
-            return H2DE_Engine::_isPositionGreater(a, b);
+            return H2DE_Engine::_isTranslateGreater(a, b);
         }
 
         return (indexA < indexB);

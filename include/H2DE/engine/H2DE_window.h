@@ -136,9 +136,10 @@ private:
     SDL_Window* _window = nullptr;
     SDL_Renderer* _renderer = nullptr;
 
-    SDL_Cursor* _cursor = nullptr;
-    H2DE_PixelSize _oldSize = { 0, 0 };
     float _customRatio = 0.0f;
+    SDL_Cursor* _cursor = nullptr;
+
+    H2DE_PixelSize _oldSize = { 0, 0 };
     H2DE_Cursor _oldCursor = H2DE_CURSOR_ARROW;
 
     H2DE_Window(H2DE_Engine* engine, const H2DE_WindowData& data);

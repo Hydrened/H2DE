@@ -223,9 +223,9 @@ public:
     H2DE_Timeline* setRotation(float rotation, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
     friend class H2DE_Renderer;
+    friend class H2DE_Geometry;
     friend class H2DE_Object;
     friend class H2DE_TextObject;
-    friend class H2DE_Geometry;
 
 protected:
     H2DE_Engine* _engine;

@@ -8,6 +8,10 @@
 - null object and surface macros
 - padding == operator
 - time == operator
+#### MODIFIED
+- get game / interface mouse pos to get mouse game / interface translate
+#### REMOVED
+- button pause sensitive (always true now)
 
 ## H2DE-4.2.8
 #### ADDED

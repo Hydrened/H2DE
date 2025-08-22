@@ -143,10 +143,6 @@ const std::vector<H2DE_ButtonObject*> H2DE_ObjectManager::getValidButtons() cons
             continue;
         }
 
-        if (engine->_paused && button->_buttonObjectData.pauseSensitive) {
-            continue;
-        }
-
         res.push_back(button);
     } 
 

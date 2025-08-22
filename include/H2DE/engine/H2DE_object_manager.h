@@ -42,6 +42,7 @@ private:
     void handleEvents_inputs_mouseDown_blurFocusedInput();
     void handleEvents_inputs_mouseDown_focusNewInput(H2DE_InputObject* oldFocusedInput);
     int handleEvents_inputs_mouseDown_getFocusedInputLetterIndex();
+    H2DE_Translate handle_inputs_mouseDown_getFixedMouseTranslate();
 
     void handleEvents_inputs_mouseMotion();
     H2DE_InputObject* handleEvents_inputs_mouseMotion_getHoveredInput();

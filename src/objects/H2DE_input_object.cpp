@@ -1,4 +1,5 @@
 #include "H2DE/objects/H2DE_input_object.h"
+#include "H2DE/engine/H2DE_geometry.h"
 
 // INIT
 H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_Object(e, od), _inputObjectData(iod), _eventData({ this, nullptr, "", std::nullopt }) {
@@ -12,10 +13,10 @@ H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, co
 }
 
 void H2DE_InputObject::_initCursor() {
-    // H2DE_SurfaceData sd = H2DE_SurfaceData();
-    // sd.transform.scale = { 0.1f, _textObject->_getFixedFontSize() };
-    
-    // addSurface<H2DE_Color>(_cursorSurfaceName, sd, H2DE_ColorData());
+    H2DE_SurfaceData sd = H2DE_SurfaceData();
+    sd.transform.scale = { 0.1f, _textObject->_getFixedFontSize() };
+
+    _cursor = addSurface<H2DE_Color>("cursor", sd, H2DE_ColorData());
 }
 
 // CLEANUP
@@ -39,29 +40,26 @@ void H2DE_InputObject::_refreshTextObject() {
 }
 
 void H2DE_InputObject::_refreshCursor() {
-    // H2DE_Color* cursorSurface = getSurface<H2DE_Color>(_cursorSurfaceName);
+    bool isCursorPositionInvalid = (_cursorPosition == -1);
+    bool hasNoText = (_textObject == H2DE_NULL_OBJECT);
 
-    // if (_cursorPosition == -1) {
-    //     cursorSurface->hide();
-    //     return;
-    // }
+    if (isCursorPositionInvalid || hasNoText) {
+        _cursor->hide();
+        return;
+    }
 
-    // cursorSurface->show();
+    int nbLetters = _textObject->_surfaceBuffers.size();
 
-    // if (_textObject == H2DE_NULL_OBJECT) {
-    //     return;
-    // }
+    bool cursorIsAtLastPosition = (_cursorPosition >= nbLetters);
+    int surfaceIndex = ((cursorIsAtLastPosition) ? nbLetters - 1 : _cursorPosition);
 
-    // bool cursorIsAtLastPosition = (_cursorPosition == _inputObjectData.text.text.length());
-    // int surfaceIndex = ((cursorIsAtLastPosition) ? _cursorPosition - 1 : _cursorPosition);
+    H2DE_Surface* letter = _textObject->_surfaceBuffers.at(surfaceIndex);
+    const H2DE_LevelRect letterRect = G::getSurfaceRect(this, letter);
 
-    // const H2DE_LevelRect letterRect = _textObject->_surfaceBuffers.at(surfaceIndex)->getRect();
+    const float x = ((cursorIsAtLastPosition) ? letterRect.getMaxX() : letterRect.getMinX());
+    _cursor->setTranslate({ x, letterRect.y });
 
-    // const float x = ((cursorIsAtLastPosition) ? letterRect.getMaxX() :letterRect.getMinX());
-    // cursorSurface->setTranslate({ x, letterRect.y });
-
-    // set color
-
+    _cursor->show();
 }
 
 void H2DE_InputObject::_refreshSurfaceBuffers() {
