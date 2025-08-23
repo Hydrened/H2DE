@@ -258,27 +258,32 @@ private:
         H2DE_BlendMode blendMode;
     };
 
+    using _H2DE_Word = std::string;
+    using _H2DE_Line = std::vector<_H2DE_Word>;
+    using _H2DE_Lines = std::vector<_H2DE_Line>;
+
     H2DE_TextObjectData _textObjectData;
+
+    _H2DE_Lines _lines;
 
     H2DE_TextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     ~H2DE_TextObject() override;
 
     void _refreshSurfaceBuffers() override;
     void _refreshMaxRadius() override;
+    void _refreshLines();
 
     static const std::string _getFormatedText(const std::string& text);
-    const std::string _getFormatedWord(const std::string& word) const;
 
-    const std::vector<std::string> _getWords() const;
-    const std::vector<std::vector<std::string>> _getLines() const;
+    const std::vector<_H2DE_Word> _getWords() const;
 
     float _getCharacterWidth(const char& c) const;
-    float _getWordWidth(const std::string& word) const;
-    float _getLineWidth(const std::vector<std::string>& line) const;
+    float _getWordWidth(const _H2DE_Word& word) const;
+    float _getLineWidth(const _H2DE_Line& line) const;
     float _getTextHeight() const;
 
-    float _getStartingOffsetX(const std::vector<std::string>& line) const;
-    float _getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const;
+    float _getStartingOffsetX(const _H2DE_Line& line) const;
+    float _getStartingOffsetY(const _H2DE_Lines& lines) const;
 
     float _getFixedFontSize() const;
 

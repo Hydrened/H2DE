@@ -78,8 +78,8 @@ int H2DE_ObjectManager::handleEvents_inputs_mouseDown_getFocusedInputLetterIndex
 
     const std::vector<H2DE_Surface*>& letterSurfaces = focusedInput->_textObject->_surfaceBuffers;
 
-    float currentY = std::numeric_limits<float>::min();
-    int currentLine = -1;
+    // float currentY = std::numeric_limits<float>::min();
+    // int currentLine = -1;
 
     float minDistance = std::numeric_limits<float>::max();
     int index = 0;
@@ -92,10 +92,10 @@ int H2DE_ObjectManager::handleEvents_inputs_mouseDown_getFocusedInputLetterIndex
         const H2DE_LevelRect world_surfaceRect = G::getSurfaceRect(focusedInput, surface);
         const H2DE_Translate world_surfaceTranslate = world_surfaceRect.getTranslate();
 
-        if (currentY != local_surfaceRect.y) {
-            currentY = local_surfaceRect.y;
-            currentLine++;
-        }
+        // if (currentY != local_surfaceRect.y) {
+        //     currentY = local_surfaceRect.y;
+        //     currentLine++;
+        // }
 
         const float mouseDistance = mouseTranslate.getDistanceSquared(world_surfaceTranslate);
         if (mouseDistance >= minDistance) {
@@ -103,7 +103,7 @@ int H2DE_ObjectManager::handleEvents_inputs_mouseDown_getFocusedInputLetterIndex
         }
 
         minDistance = mouseDistance;
-        index = ((mouseTranslate.x > world_surfaceTranslate.x) ? i + 1 : i) + currentLine;
+        index = ((mouseTranslate.x > world_surfaceTranslate.x) ? i + 1 : i) /*+ currentLine*/;
     }
 
     return index;
@@ -205,7 +205,7 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown(SDL_Event event) {
 }
 
 void H2DE_ObjectManager::handleEvents_inputs_keydown_modifyText(SDL_Event event, const std::function<void(std::string, int, unsigned char)>& tasks) {
-    if (tasks == H2DE_NULL_OBJECT) {
+    if (tasks == nullptr) {
         return;
     }
 

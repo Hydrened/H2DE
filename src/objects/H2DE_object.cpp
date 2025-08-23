@@ -191,7 +191,7 @@ H2DE_TextObject* H2DE_Object::_refreshTextObject(H2DE_TextObject* textObject, co
     }
 
     if (text.text == "") {
-        return textObject;
+        return H2DE_NULL_OBJECT;
     }
 
     H2DE_TextObjectData tod = H2DE_TextObjectData();

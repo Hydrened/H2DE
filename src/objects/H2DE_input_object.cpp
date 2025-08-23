@@ -3,8 +3,6 @@
 
 // INIT
 H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_Object(e, od), _inputObjectData(iod), _eventData({ this, nullptr, "", std::nullopt }) {
-    _inputObjectData.text.text = H2DE_TextObject::_getFormatedText(_inputObjectData.text.text);
-    
     _refreshSurfaceBuffers();
     _refreshMaxRadius();
 
@@ -40,26 +38,26 @@ void H2DE_InputObject::_refreshTextObject() {
 }
 
 void H2DE_InputObject::_refreshCursor() {
-    bool isCursorPositionInvalid = (_cursorPosition == -1);
-    bool hasNoText = (_textObject == H2DE_NULL_OBJECT);
+//     bool isCursorPositionInvalid = (_cursorPosition == -1);
+//     bool hasNoText = (_textObject == H2DE_NULL_OBJECT);
 
-    if (isCursorPositionInvalid || hasNoText) {
-        _cursor->hide();
-        return;
-    }
+//     if (isCursorPositionInvalid || hasNoText) {
+//         _cursor->hide();
+//         return;
+//     }
 
-    int nbLetters = _textObject->_surfaceBuffers.size();
+//     int nbLetters = _textObject->_surfaceBuffers.size();
 
-    bool cursorIsAtLastPosition = (_cursorPosition >= nbLetters);
-    int surfaceIndex = ((cursorIsAtLastPosition) ? nbLetters - 1 : _cursorPosition);
+//     bool cursorIsAtLastPosition = (_cursorPosition >= nbLetters);
+//     int surfaceIndex = ((cursorIsAtLastPosition) ? nbLetters - 1 : _cursorPosition);
 
-    H2DE_Surface* letter = _textObject->_surfaceBuffers.at(surfaceIndex);
-    const H2DE_LevelRect letterRect = G::getSurfaceRect(this, letter);
+//     H2DE_Surface* letter = _textObject->_surfaceBuffers.at(surfaceIndex);
+//     const H2DE_LevelRect letterRect = G::getSurfaceRect(this, letter);
 
-    const float x = ((cursorIsAtLastPosition) ? letterRect.getMaxX() : letterRect.getMinX());
-    _cursor->setTranslate({ x, letterRect.y });
+//     const float x = ((cursorIsAtLastPosition) ? letterRect.getMaxX() : letterRect.getMinX());
+//     _cursor->setTranslate({ x, letterRect.y });
 
-    _cursor->show();
+//     _cursor->show();
 }
 
 void H2DE_InputObject::_refreshSurfaceBuffers() {
@@ -110,11 +108,11 @@ void H2DE_InputObject::submit() {
 
 // SETTER
 void H2DE_InputObject::setText(const std::string& text) {
-    if (H2DE_TextObject::_getFormatedText(text) == _inputObjectData.text.text) {
+    if (text == _inputObjectData.text.text) {
         return;
     }
 
-    _inputObjectData.text.text = H2DE_TextObject::_getFormatedText(text);
+    _inputObjectData.text.text = text;
     _refreshTextObject();
 }
 

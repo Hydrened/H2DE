@@ -3,7 +3,7 @@
 
 // INIT
 H2DE_TextObject::H2DE_TextObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TextObjectData& bod) : H2DE_Object(e, od), _textObjectData(bod) {
-    _textObjectData.text.text = _getFormatedText(_textObjectData.text.text);
+    _refreshLines();
     _refreshSurfaceBuffers();
     _refreshMaxRadius();
 }
@@ -18,30 +18,12 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
     H2DE_Object::_destroySurfaces(_surfaceBuffers);
     _surfaceBuffers.clear();
 
-    if (_isTextNull()) {
-        return;
-    }
+    _refreshLines();
 
     auto it = _engine->_fonts.find(_textObjectData.text.font);
     if (it == _engine->_fonts.end()) {
         return;
     }
-
-    const H2DE_Font font = it->second;
-    const std::string& fontTextureName = font.textureName;
-
-    const auto& fontCharacters = font._characters;
-    const H2DE_ScaleMode& scaleMode = font.scaleMode;
-    const H2DE_BlendMode& blendMode = font.blendMode;
-    
-    const float& fontSize = _textObjectData.text.fontSize;
-    const H2DE_ColorRGB& color = _textObjectData.text.color;
-    const H2DE_Scale& spacing = _textObjectData.text.spacing;
-
-    const float fixedFontSize = _getFixedFontSize();
-
-    const std::vector<std::vector<std::string>> lines = _getLines();
-    float offsetY = _getStartingOffsetY(lines) + fontSize * 0.5f;
 
     auto createCharSurface = [this](const H2DE_TextObject::_H2DE_CharacterSurfaceData& data) {
         const float charWidth = _getCharacterWidth(data.c);
@@ -69,13 +51,27 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
         data.offsetX += charWidth * 0.5f;
     };
 
-    for (int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
-        const std::vector<std::string>& line = lines.at(lineIndex);
+    const H2DE_Font font = it->second;
+    const std::string& fontTextureName = font.textureName;
+    const auto& fontCharacters = font._characters;
+    const H2DE_ScaleMode& scaleMode = font.scaleMode;
+    const H2DE_BlendMode& blendMode = font.blendMode;
+    
+    const float& fontSize = _textObjectData.text.fontSize;
+    const H2DE_ColorRGB& color = _textObjectData.text.color;
+    const H2DE_Scale& spacing = _textObjectData.text.spacing;
+
+    const float fixedFontSize = _getFixedFontSize();
+
+    float offsetY = _getStartingOffsetY(_lines) + fontSize * 0.5f;
+
+    for (int lineIndex = 0; lineIndex < _lines.size(); lineIndex++) {
+        const _H2DE_Line& line = _lines.at(lineIndex);
 
         float offsetX = _getStartingOffsetX(line);
 
         for (int wordIndex = 0; wordIndex < line.size(); wordIndex++) {
-            const std::string& word = line.at(wordIndex);
+            const _H2DE_Word& word = line.at(wordIndex);
             bool isFirstLineWord = (wordIndex == 0);
             bool isLastLineWord = (wordIndex == line.size() - 1);
 
@@ -90,15 +86,6 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
 
                 createCharSurface({ static_cast<unsigned char>(c), offsetX, offsetY, fixedFontSize, spacing.x, isFirstWordFirstChar, fontTextureName, color, it->second, scaleMode, blendMode });
             }
-
-            if (!isLastLineWord) {
-                auto it = fontCharacters.find(std::string(1, ' '));
-                if (it == fontCharacters.end()) {
-                    continue;
-                }
-
-                createCharSurface({ ' ', offsetX, offsetY, fixedFontSize, spacing.x, false, fontTextureName, color, it->second, scaleMode, blendMode });
-            }
         }
 
         offsetY += fontSize + spacing.y;
@@ -110,6 +97,62 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
 void H2DE_TextObject::_refreshMaxRadius() {
     float maxHitboxesRadius = _getMaxHitboxRadius();
     _maxRadius = maxHitboxesRadius;
+}
+
+void H2DE_TextObject::_refreshLines() {
+    _lines.clear();
+
+    _lines = _H2DE_Lines();
+    _lines.push_back(_H2DE_Line());
+
+    if (_isTextNull()) {
+        return;
+    }
+
+    const H2DE_Padding& padding = _textObjectData.text.padding;
+    const float& spacingX = _textObjectData.text.spacing.x;
+    const float maxLineWidth = _textObjectData.text.bounds.x - padding.left - padding.right;
+
+    float currentLineWidth = 0.0f;
+
+    auto createNewLine = [this, &currentLineWidth]() {
+        if (!_lines.empty()) {
+            _H2DE_Word& lastWord = _lines.back().back();
+
+            if (lastWord.find(' ') != std::string::npos) {
+                lastWord = lastWord.substr(0, lastWord.length() - 1);
+            }
+        }
+
+        _lines.push_back(_H2DE_Line());
+        currentLineWidth = 0.0f;
+    };
+
+    for (const _H2DE_Word& word : _getWords()) {
+
+        bool lineBreak = (word.find('\n') != std::string::npos);
+        bool isLineFirstWord = (currentLineWidth == 0.0f);
+
+        const float wordWidth = _getWordWidth(word);
+
+        const float futureLineWidth = (!isLineFirstWord)
+            ? currentLineWidth + spacingX + wordWidth
+            : wordWidth;
+
+        bool notEnoughSpaceForWord = (futureLineWidth > maxLineWidth);
+        if (notEnoughSpaceForWord && !isLineFirstWord) {
+            createNewLine();
+        }
+
+        _lines.back().push_back(word);
+        currentLineWidth += (currentLineWidth != 0.0f)
+            ? spacingX + wordWidth
+            : wordWidth;
+
+        if (lineBreak) {
+            createNewLine();
+        }
+    }
 }
 
 // GETTER
@@ -138,95 +181,28 @@ const std::string H2DE_TextObject::_getFormatedText(const std::string& text) {
     return text.substr(0, 1) + res + text.substr(text.length() - 1, 1);
 }
 
-const std::string H2DE_TextObject::_getFormatedWord(const std::string& word) const {
-    std::string res = "";
-
-    for (const char& c : word) {
-        if (c == '\n') {
-            continue;
-        }
-
-        if (_getCharacterWidth(c) == 0.0f) {
-            continue;
-        }
-
-        res += c;
-    }
-
-    return res;
-}
-
 // -- lines words
-const std::vector<std::string> H2DE_TextObject::_getWords() const {
+const std::vector<H2DE_TextObject::_H2DE_Word> H2DE_TextObject::_getWords() const {
     if (_isTextNull()) {
         return {};
     }
 
-    std::vector<std::string> res = {};
-    std::string currentWord = "";
+    const std::string formatedText = _getFormatedText(_textObjectData.text.text);
 
-    for (const char& c : _textObjectData.text.text) {
+    std::vector<_H2DE_Word> res = {};
+    _H2DE_Word currentWord = "";
+
+    for (const char& c : formatedText) {
+
+        currentWord += c;
+
         if (c == ' ' || c == '\n') {
-            if (c == '\n') {
-                currentWord += c;
-            }
-
             res.push_back(currentWord);
             currentWord = "";
-
-        } else {
-            currentWord += c;
-        }
+        } 
     }
 
     res.push_back(currentWord);
-    return res;
-}
-
-const std::vector<std::vector<std::string>> H2DE_TextObject::_getLines() const {
-    if (_isTextNull()) {
-        return {};
-    }
-
-    std::vector<std::vector<std::string>> res = {{}};
-
-    const H2DE_Padding& padding = _textObjectData.text.padding;
-    const float& spacingX = _textObjectData.text.spacing.x;
-    const float spaceWidth = _getCharacterWidth(' ');
-    const float maxLineWidth = _textObjectData.text.bounds.x - padding.left - padding.right;
-
-    float currentLineWidth = 0.0f;
-
-    for (const std::string& word : _getWords()) {
-
-        bool lineBreak = (word.find('\n') != std::string::npos);
-        bool isLineFirstWord = (currentLineWidth == 0.0f);
-
-        const std::string formatedWord = _getFormatedWord(word);
-        const float wordWidth = _getWordWidth(formatedWord);
-
-        const float futureLineWidth = (!isLineFirstWord)
-            ? currentLineWidth + spacingX + spaceWidth + wordWidth
-            : wordWidth;
-
-        bool notEnoughSpaceForWord = (futureLineWidth > maxLineWidth);
-
-        if (notEnoughSpaceForWord && !isLineFirstWord) {
-            res.push_back({});
-            currentLineWidth = 0.0f;
-        }
-
-        res.back().push_back(formatedWord);
-        currentLineWidth += (currentLineWidth != 0.0f)
-            ? spacingX + spaceWidth + wordWidth
-            : wordWidth;
-
-        if (lineBreak) {
-            res.push_back({});
-            currentLineWidth = 0.0f;
-        }
-    }
-
     return res;
 }
 
@@ -250,12 +226,12 @@ float H2DE_TextObject::_getCharacterWidth(const char& c) const {
     return static_cast<float>(characterWidth) / static_cast<float>(characterHeight) * _getFixedFontSize();
 }
 
-float H2DE_TextObject::_getWordWidth(const std::string& word) const {
-    if (word.length() == 0) {
-        return 0.0f;
-    }
-
+float H2DE_TextObject::_getWordWidth(const _H2DE_Word& word) const {
     float res = 0.0f;
+
+    if (word.length() == 0) {
+        return res;
+    }
 
     auto it = _engine->_fonts.find(_textObjectData.text.font);
     if (it == _engine->_fonts.end()) {
@@ -271,28 +247,27 @@ float H2DE_TextObject::_getWordWidth(const std::string& word) const {
     return res + (word.length() - 1) * spacingX;
 }
 
-float H2DE_TextObject::_getLineWidth(const std::vector<std::string>& line) const {
+float H2DE_TextObject::_getLineWidth(const _H2DE_Line& line) const {
     float wordsWidth = 0.0f;
 
-    for (const std::string& word : line) {
+    for (const _H2DE_Word& word : line) {
         wordsWidth += _getWordWidth(word);
     }
 
     int nbWords = H2DE::max<int>(line.size() - 1, 0);
 
     const float spacingWidthX = nbWords * _textObjectData.text.spacing.x;
-    const float spacesTotalWidth = nbWords * (_getCharacterWidth(' ') + _textObjectData.text.spacing.x);
 
-    return wordsWidth + spacingWidthX + spacesTotalWidth;
+    return wordsWidth + spacingWidthX;
 }
 
 float H2DE_TextObject::_getTextHeight() const {
-    int nbLines = _getLines().size();
+    int nbLines = _lines.size();
     return (_textObjectData.text.fontSize * nbLines) + (_textObjectData.text.spacing.y * (nbLines - 1)); 
 }
 
 // -- offset
-float H2DE_TextObject::_getStartingOffsetX(const std::vector<std::string>& line) const {
+float H2DE_TextObject::_getStartingOffsetX(const _H2DE_Line& line) const {
     constexpr uint8_t H2DE_TEXT_ALIGN_LEFT      = 0b00000001;
     constexpr uint8_t H2DE_TEXT_ALIGN_CENTER    = 0b00000010;
     constexpr uint8_t H2DE_TEXT_ALIGN_RIGHT     = 0b00000100;
@@ -321,7 +296,7 @@ float H2DE_TextObject::_getStartingOffsetX(const std::vector<std::string>& line)
     return 0.0f;
 }
 
-float H2DE_TextObject::_getStartingOffsetY(const std::vector<std::vector<std::string>>& lines) const {
+float H2DE_TextObject::_getStartingOffsetY(const _H2DE_Lines& lines) const {
     constexpr uint8_t H2DE_TEXT_ALIGN_TOP       = 0b00001000;
     constexpr uint8_t H2DE_TEXT_ALIGN_CENTER    = 0b00010000;
     constexpr uint8_t H2DE_TEXT_ALIGN_BOTTOM    = 0b00100000;
@@ -366,11 +341,11 @@ float H2DE_TextObject::_getFixedFontSize() const {
 
 // -- no lerp
 void H2DE_TextObject::setText(const std::string& text) {
-    if (_textObjectData.text.text == _getFormatedText(text)) {
+    if (text == _textObjectData.text.text) {
         return;
     }
 
-    _textObjectData.text.text = _getFormatedText(text);
+    _textObjectData.text.text = text;
     _refreshSurfaceBuffers();
 }
 
