@@ -269,9 +269,9 @@ private:
     H2DE_TextObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_TextObjectData& textObjectData);
     ~H2DE_TextObject() override;
 
+    void _refreshLines();
     void _refreshSurfaceBuffers() override;
     void _refreshMaxRadius() override;
-    void _refreshLines();
 
     static const std::string _getFormatedText(const std::string& text);
 

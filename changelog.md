@@ -12,6 +12,7 @@
 - get game / interface mouse pos to get mouse game / interface translate
 #### REMOVED
 - button pause sensitive (always true now)
+- button event timeline
 
 ## H2DE-4.2.8
 #### ADDED

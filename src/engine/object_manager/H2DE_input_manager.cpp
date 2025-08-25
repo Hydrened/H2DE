@@ -7,7 +7,7 @@
 void H2DE_ObjectManager::handleEvents_inputs_mouseDown(SDL_Event event) {
     H2DE_MouseButton mouseButton = H2DE_ObjectManager::getH2DEButton(event.button.button);
 
-    if ((mouseButton & H2DE_MOUSE_BUTTON_LEFT_AND_RIGHT) == 0) {
+    if ((mouseButton & H2DE_MOUSE_BUTTON_LEFT) == 0) {
         return;
     }
 
@@ -42,7 +42,7 @@ bool H2DE_ObjectManager::handleEvents_inputs_mouseDown_isMouseCollidingInput() {
 void H2DE_ObjectManager::handleEvents_inputs_mouseDown_blurFocusedInput() {
     if (focusedInput != H2DE_NULL_OBJECT) {
         if (focusedInput->_inputObjectData.onBlur) {
-            focusedInput->_inputObjectData.onBlur(focusedInput->_eventData);
+            focusedInput->_inputObjectData.onBlur({ focusedInput, focusedInput->getText() });
         }
 
         focusedInput->_setCursorPosition(-1);
@@ -56,14 +56,14 @@ void H2DE_ObjectManager::handleEvents_inputs_mouseDown_focusNewInput(H2DE_InputO
     
     if (oldFocusedInput != H2DE_NULL_OBJECT) {
         if (oldFocusedInput->_inputObjectData.onBlur) {
-            oldFocusedInput->_inputObjectData.onBlur(oldFocusedInput->_eventData);
+            oldFocusedInput->_inputObjectData.onBlur({ oldFocusedInput, oldFocusedInput->getText() });
         }
 
-        oldFocusedInput->_cursorPosition = -1;
+        oldFocusedInput->_setCursorPosition(-1);
     }
 
     if (focusedInput->_inputObjectData.onFocus) {
-        focusedInput->_inputObjectData.onFocus(focusedInput->_eventData);
+        focusedInput->_inputObjectData.onFocus({ focusedInput, focusedInput->getText() });
     }
 
     window->_setHoverCursor(H2DE_CURSOR_IBEAM);
@@ -75,11 +75,7 @@ int H2DE_ObjectManager::handleEvents_inputs_mouseDown_getFocusedInputLetterIndex
     }
 
     const H2DE_Translate mouseTranslate = handle_inputs_mouseDown_getFixedMouseTranslate();
-
     const std::vector<H2DE_Surface*>& letterSurfaces = focusedInput->_textObject->_surfaceBuffers;
-
-    // float currentY = std::numeric_limits<float>::min();
-    // int currentLine = -1;
 
     float minDistance = std::numeric_limits<float>::max();
     int index = 0;
@@ -92,18 +88,13 @@ int H2DE_ObjectManager::handleEvents_inputs_mouseDown_getFocusedInputLetterIndex
         const H2DE_LevelRect world_surfaceRect = G::getSurfaceRect(focusedInput, surface);
         const H2DE_Translate world_surfaceTranslate = world_surfaceRect.getTranslate();
 
-        // if (currentY != local_surfaceRect.y) {
-        //     currentY = local_surfaceRect.y;
-        //     currentLine++;
-        // }
-
         const float mouseDistance = mouseTranslate.getDistanceSquared(world_surfaceTranslate);
         if (mouseDistance >= minDistance) {
             continue;
         }
 
         minDistance = mouseDistance;
-        index = ((mouseTranslate.x > world_surfaceTranslate.x) ? i + 1 : i) /*+ currentLine*/;
+        index = ((mouseTranslate.x > world_surfaceTranslate.x) ? i + 1 : i);
     }
 
     return index;
@@ -209,17 +200,18 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown_modifyText(SDL_Event event,
         return;
     }
 
+    char character = event.text.text[0];
+
     int cursorPosition = focusedInput->_cursorPosition;
     if (cursorPosition == -1) {
         return;
     }
 
-    if (!H2DE_ObjectManager::isASCII(event.text.text[0])) {
+    if (!H2DE_ObjectManager::isASCII(character)) {
         return;
     }
 
-    unsigned char c = static_cast<unsigned char>(event.text.text[0]);
-    tasks(focusedInput->getText(), cursorPosition, c);
+    tasks(focusedInput->_inputObjectData.text.text, cursorPosition, static_cast<unsigned char>(character));
 }
 
 void H2DE_ObjectManager::handleEvents_inputs_keydown_default(SDL_Event event) {
@@ -231,11 +223,11 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown_default(SDL_Event event) {
         return;
     }
 
-    if (focusedInput->_isFull()) {
+    if (!H2DE_ObjectManager::isASCII(event.text.text[0])) {
         return;
     }
 
-    if (!H2DE_ObjectManager::isASCII(event.text.text[0])) {
+    if (focusedInput->_isFull()) {
         return;
     }
 
@@ -258,6 +250,10 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown_default(SDL_Event event) {
         text.insert(cursorPosition, 1, c);
         focusedInput->setText(text);
         focusedInput->_setCursorPosition(cursorPosition + 1);
+
+        if (focusedInput->_inputObjectData.onInput) {
+            focusedInput->_inputObjectData.onInput({ focusedInput, text, static_cast<char>(c) });
+        }
     });
 }
 
@@ -279,7 +275,7 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown_delete(SDL_Event event) {
             size_t lastSpaceIndex = H2DE_ObjectManager::getLastSpaceIndex(slicedText);
             lastSpaceIndex = ((lastSpaceIndex == -1) ? 0 : lastSpaceIndex + 1);
 
-            text.erase(lastSpaceIndex, cursorPosition);
+            text.erase(lastSpaceIndex, cursorPosition - lastSpaceIndex);
             focusedInput->setText(text);
             focusedInput->_setCursorPosition(lastSpaceIndex);
             
@@ -311,6 +307,7 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown_suppr(SDL_Event event) {
         }
 
         focusedInput->setText(text);
+        focusedInput->_refreshCursor();
     });
 }
 
@@ -334,6 +331,10 @@ void H2DE_ObjectManager::handleEvents_inputs_keydown_enter(SDL_Event event) {
         text.insert(cursorPosition, 1, '\n');
         focusedInput->setText(text);
         focusedInput->_setCursorPosition(cursorPosition + 1);
+
+        if (focusedInput->_inputObjectData.onInput) {
+            focusedInput->_inputObjectData.onInput({ focusedInput, text, '\n' });
+        }
     });
 }
 
@@ -389,12 +390,16 @@ void H2DE_ObjectManager::focusInput(H2DE_InputObject* input) {
         return;
     }
 
+    if (input->_disabled) {
+        return;
+    }
+
     if (focusedInput != H2DE_NULL_OBJECT) {
         blurInput(focusedInput);
     }
 
     if (input->_inputObjectData.onFocus) {
-        input->_inputObjectData.onFocus(input->_eventData);
+        input->_inputObjectData.onFocus({ input, input->getText() });
     }
 
     focusedInput = input;
@@ -412,12 +417,16 @@ void H2DE_ObjectManager::blurInput(H2DE_InputObject* input) {
         return;
     }
 
+    if (input->_disabled) {
+        return;
+    }
+
     if (input->_inputObjectData.onBlur) {
-        input->_inputObjectData.onBlur(input->_eventData);
+        input->_inputObjectData.onBlur({ input, input->getText() });
     }
 
     if (focusedInput == input) {
-        input->_cursorPosition = -1;
+        input->_setCursorPosition(-1);
         focusedInput = H2DE_NULL_OBJECT;
     }
 }
@@ -427,8 +436,12 @@ void H2DE_ObjectManager::submitInput(H2DE_InputObject* input) {
         return;
     }
 
+    if (input->_disabled) {
+        return;
+    }
+
     if (input->_inputObjectData.onSubmit) {
-        input->_inputObjectData.onSubmit(input->_eventData);
+        input->_inputObjectData.onSubmit({ input, input->getText() });
     }
 
     blurInput(input);

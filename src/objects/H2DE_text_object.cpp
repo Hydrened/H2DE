@@ -3,7 +3,8 @@
 
 // INIT
 H2DE_TextObject::H2DE_TextObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TextObjectData& bod) : H2DE_Object(e, od), _textObjectData(bod) {
-    _refreshLines();
+    _textObjectData.text.text = _getFormatedText(_textObjectData.text.text);
+
     _refreshSurfaceBuffers();
     _refreshMaxRadius();
 }
@@ -14,6 +15,63 @@ H2DE_TextObject::~H2DE_TextObject() {
 }
 
 // ACTIONS
+void H2DE_TextObject::_refreshLines() {
+    _lines.clear();
+
+    _lines = _H2DE_Lines();
+    _lines.push_back(_H2DE_Line());
+
+    if (_isTextNull()) {
+        return;
+    }
+
+    const H2DE_Padding& padding = _textObjectData.text.padding;
+    const float& spacingX = _textObjectData.text.spacing.x;
+    const float maxLineWidth = _textObjectData.text.bounds.x - padding.left - padding.right;
+
+    float currentLineWidth = 0.0f;
+
+    auto createNewLine = [this, &currentLineWidth]() {
+        if (!_lines.empty()) {
+            _H2DE_Word& lastWord = _lines.back().back();
+
+            if (lastWord.find(' ') != std::string::npos) {
+                lastWord = lastWord.substr(0, lastWord.length() - 1);
+                lastWord += '\n';
+            }
+        }
+
+        _lines.push_back(_H2DE_Line());
+        currentLineWidth = 0.0f;
+    };
+
+    for (const _H2DE_Word& word : _getWords()) {
+
+        bool lineBreak = (word.find('\n') != std::string::npos);
+        bool isLineFirstWord = (currentLineWidth == 0.0f);
+
+        const float wordWidth = _getWordWidth(word);
+
+        const float futureLineWidth = (!isLineFirstWord)
+            ? currentLineWidth + spacingX + wordWidth
+            : wordWidth;
+
+        bool notEnoughSpaceForWord = (futureLineWidth > maxLineWidth);
+        if (notEnoughSpaceForWord && !isLineFirstWord) {
+            createNewLine();
+        }
+
+        _lines.back().push_back(word);
+        currentLineWidth += (currentLineWidth != 0.0f)
+            ? spacingX + wordWidth
+            : wordWidth;
+
+        if (lineBreak) {
+            createNewLine();
+        }
+    }
+}
+
 void H2DE_TextObject::_refreshSurfaceBuffers() {
     H2DE_Object::_destroySurfaces(_surfaceBuffers);
     _surfaceBuffers.clear();
@@ -25,7 +83,7 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
         return;
     }
 
-    auto createCharSurface = [this](const H2DE_TextObject::_H2DE_CharacterSurfaceData& data) {
+    auto createCharSurface = [this](const _H2DE_CharacterSurfaceData& data) {
         const float charWidth = _getCharacterWidth(data.c);
         data.offsetX += charWidth * 0.5f;
 
@@ -73,18 +131,31 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
         for (int wordIndex = 0; wordIndex < line.size(); wordIndex++) {
             const _H2DE_Word& word = line.at(wordIndex);
             bool isFirstLineWord = (wordIndex == 0);
-            bool isLastLineWord = (wordIndex == line.size() - 1);
 
             for (int charIndex = 0; charIndex < word.length(); charIndex++) {
                 const char& c = word.at(charIndex);
                 bool isFirstWordFirstChar = (charIndex == 0 && isFirstLineWord);
 
+                H2DE_PixelRect src = { 0, 0, 0, 0 };
+                
                 auto it = fontCharacters.find(std::string(1, c));
-                if (it == fontCharacters.end()) {
-                    continue;
+                if (it != fontCharacters.end()) {
+                    src = it->second;
                 }
 
-                createCharSurface({ static_cast<unsigned char>(c), offsetX, offsetY, fixedFontSize, spacing.x, isFirstWordFirstChar, fontTextureName, color, it->second, scaleMode, blendMode });
+                createCharSurface({
+                    static_cast<unsigned char>(c),
+                    offsetX,
+                    offsetY,
+                    fixedFontSize,
+                    spacing.x,
+                    isFirstWordFirstChar,
+                    fontTextureName,
+                    color,
+                    src,
+                    scaleMode,
+                    blendMode
+                });
             }
         }
 
@@ -97,62 +168,6 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
 void H2DE_TextObject::_refreshMaxRadius() {
     float maxHitboxesRadius = _getMaxHitboxRadius();
     _maxRadius = maxHitboxesRadius;
-}
-
-void H2DE_TextObject::_refreshLines() {
-    _lines.clear();
-
-    _lines = _H2DE_Lines();
-    _lines.push_back(_H2DE_Line());
-
-    if (_isTextNull()) {
-        return;
-    }
-
-    const H2DE_Padding& padding = _textObjectData.text.padding;
-    const float& spacingX = _textObjectData.text.spacing.x;
-    const float maxLineWidth = _textObjectData.text.bounds.x - padding.left - padding.right;
-
-    float currentLineWidth = 0.0f;
-
-    auto createNewLine = [this, &currentLineWidth]() {
-        if (!_lines.empty()) {
-            _H2DE_Word& lastWord = _lines.back().back();
-
-            if (lastWord.find(' ') != std::string::npos) {
-                lastWord = lastWord.substr(0, lastWord.length() - 1);
-            }
-        }
-
-        _lines.push_back(_H2DE_Line());
-        currentLineWidth = 0.0f;
-    };
-
-    for (const _H2DE_Word& word : _getWords()) {
-
-        bool lineBreak = (word.find('\n') != std::string::npos);
-        bool isLineFirstWord = (currentLineWidth == 0.0f);
-
-        const float wordWidth = _getWordWidth(word);
-
-        const float futureLineWidth = (!isLineFirstWord)
-            ? currentLineWidth + spacingX + wordWidth
-            : wordWidth;
-
-        bool notEnoughSpaceForWord = (futureLineWidth > maxLineWidth);
-        if (notEnoughSpaceForWord && !isLineFirstWord) {
-            createNewLine();
-        }
-
-        _lines.back().push_back(word);
-        currentLineWidth += (currentLineWidth != 0.0f)
-            ? spacingX + wordWidth
-            : wordWidth;
-
-        if (lineBreak) {
-            createNewLine();
-        }
-    }
 }
 
 // GETTER
@@ -341,11 +356,11 @@ float H2DE_TextObject::_getFixedFontSize() const {
 
 // -- no lerp
 void H2DE_TextObject::setText(const std::string& text) {
-    if (text == _textObjectData.text.text) {
+    if (_getFormatedText(text) == _textObjectData.text.text) {
         return;
     }
 
-    _textObjectData.text.text = text;
+    _textObjectData.text.text = _getFormatedText(text);
     _refreshSurfaceBuffers();
 }
 

@@ -6,7 +6,7 @@
 #define H2DE_VERSION_MAJOR 4
 #define H2DE_VERSION_MINOR 3
 #define H2DE_VERSION_PATCH 0
-#define H2DE_VERSION_BETA 6
+#define H2DE_VERSION_BETA 7
 
 #define H2DE_STR_HELPER(x) #x
 #define H2DE_STR(x) H2DE_STR_HELPER(x)
@@ -26,6 +26,8 @@
 
 #define H2DE_VERSION_NUM (H2DE_VERSION_MAJOR * 10000 + H2DE_VERSION_MINOR * 100 + H2DE_VERSION_PATCH)
 
+
+
 /** @brief Minimum value for unsigned 8-bit integer. */
 #define H2DE_UINT8_MIN 0u
 /** @brief Maximum value for unsigned 8-bit integer. */
@@ -41,6 +43,16 @@
 /** @brief Maximum value for 32-bit signed index. */
 #define H2DE_INDEX_MAX 2147483647
 
+/** @brief Minimum volume value. */
+#define H2DE_VOLUME_MIN 0
+/** @brief Maximum volume value. */
+#define H2DE_VOLUME_MAX 100
+
+/** @brief Constant used to define the maximum length of an input. */
+#define H2DE_INPUT_MAX_LENGTH 65535
+
+
+
 /** @brief Special value representing an invalid delay ID. */
 #define H2DE_INVALID_DELAY_ID 4294967295u
 /** @brief Special value representing an invalid timeline ID. */
@@ -49,10 +61,7 @@
 /** @brief Special value representing an invalid channel ID. */
 #define H2DE_INVALID_CHANNEL_ID 255
 
-/** @brief Minimum volume value. */
-#define H2DE_VOLUME_MIN 0
-/** @brief Maximum volume value. */
-#define H2DE_VOLUME_MAX 100
+
 
 /** @brief Null pointer used to represent a non-existent object. */
 #define H2DE_NULL_OBJECT nullptr
@@ -64,5 +73,3 @@
 
 /** @brief Constant used to center a window on the screen when creating it. */
 #define H2DE_WINDOW_POS_CENTERED SDL_WINDOWPOS_CENTERED
-
-#define H2DE_INPUT_MAX_LENGTH 65535

@@ -1,8 +1,9 @@
 #include "H2DE/objects/H2DE_input_object.h"
-#include "H2DE/engine/H2DE_geometry.h"
 
 // INIT
-H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_Object(e, od), _inputObjectData(iod), _eventData({ this, nullptr, "", std::nullopt }) {
+H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_Object(e, od), _inputObjectData(iod) {
+    _inputObjectData.text.text = H2DE_TextObject::_getFormatedText(_inputObjectData.text.text);
+    
     _refreshSurfaceBuffers();
     _refreshMaxRadius();
 
@@ -12,17 +13,14 @@ H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, co
 
 void H2DE_InputObject::_initCursor() {
     H2DE_SurfaceData sd = H2DE_SurfaceData();
-    sd.transform.scale = { 0.1f, _textObject->_getFixedFontSize() };
+    sd.transform.scale = { _inputObjectData.text.spacing.x, _textObject->_getFixedFontSize() };
 
     _cursor = addSurface<H2DE_Color>("cursor", sd, H2DE_ColorData());
+    _cursor->_fromText = true;
 }
 
 // CLEANUP
 H2DE_InputObject::~H2DE_InputObject() {
-    if (_eventData.timeline != nullptr) {
-        _eventData.timeline->stop(false);
-    }
-
     if (_textObject != H2DE_NULL_OBJECT) {
         if (_engine->destroyObject(_textObject)) {
             _textObject = H2DE_NULL_OBJECT;
@@ -38,26 +36,29 @@ void H2DE_InputObject::_refreshTextObject() {
 }
 
 void H2DE_InputObject::_refreshCursor() {
-//     bool isCursorPositionInvalid = (_cursorPosition == -1);
-//     bool hasNoText = (_textObject == H2DE_NULL_OBJECT);
+    bool isCursorPositionInvalid = (_cursorPosition == -1);
+    bool hasNoText = (_textObject == H2DE_NULL_OBJECT);
 
-//     if (isCursorPositionInvalid || hasNoText) {
-//         _cursor->hide();
-//         return;
-//     }
+    if (isCursorPositionInvalid || hasNoText) {
+        _cursor->hide();
+        return;
+    }
 
-//     int nbLetters = _textObject->_surfaceBuffers.size();
+    int nbLetters = _textObject->_surfaceBuffers.size();
 
-//     bool cursorIsAtLastPosition = (_cursorPosition >= nbLetters);
-//     int surfaceIndex = ((cursorIsAtLastPosition) ? nbLetters - 1 : _cursorPosition);
+    bool cursorIsAtLastPosition = (_cursorPosition >= nbLetters);
+    int surfaceIndex = ((cursorIsAtLastPosition) ? nbLetters - 1 : _cursorPosition);
 
-//     H2DE_Surface* letter = _textObject->_surfaceBuffers.at(surfaceIndex);
-//     const H2DE_LevelRect letterRect = G::getSurfaceRect(this, letter);
+    H2DE_Surface* letter = _textObject->_surfaceBuffers.at(surfaceIndex);
 
-//     const float x = ((cursorIsAtLastPosition) ? letterRect.getMaxX() : letterRect.getMinX());
-//     _cursor->setTranslate({ x, letterRect.y });
+    H2DE_LevelRect letterRect = letter->getRect();
+    letterRect.x *= 1.0f / _objectData.transform.scale.x;
+    letterRect.y *= 1.0f / _objectData.transform.scale.y;
 
-//     _cursor->show();
+    const float x = ((cursorIsAtLastPosition) ? letterRect.getMaxX() : letterRect.getMinX() + _inputObjectData.text.spacing.x * 0.5f);
+    _cursor->setTranslate({ x, letterRect.y });
+
+    _cursor->show();
 }
 
 void H2DE_InputObject::_refreshSurfaceBuffers() {
@@ -79,18 +80,21 @@ void H2DE_InputObject::_refreshMaxRadius() {
 }
 
 void H2DE_InputObject::input(unsigned char c) {
+    if (_disabled) {
+        return;
+    }
+
     if (!_isInputValid(c)) {
         return;
     }
 
-    _inputObjectData.text.text = _inputObjectData.text.text + static_cast<char>(c);
+    char character = static_cast<char>(c);
+
+    _inputObjectData.text.text = _inputObjectData.text.text + character;
     _refreshTextObject();
 
     if (_inputObjectData.onInput && !_disabled) {
-        _eventData.text = _inputObjectData.text.text;
-        _eventData.character = c;
-
-        _inputObjectData.onInput(_eventData);
+        _inputObjectData.onInput({ this, _inputObjectData.text.text, character });
     }
 }
 
@@ -108,11 +112,11 @@ void H2DE_InputObject::submit() {
 
 // SETTER
 void H2DE_InputObject::setText(const std::string& text) {
-    if (text == _inputObjectData.text.text) {
+    if (H2DE_TextObject::_getFormatedText(text) == _inputObjectData.text.text) {
         return;
     }
 
-    _inputObjectData.text.text = text;
+    _inputObjectData.text.text = H2DE_TextObject::_getFormatedText(text);
     _refreshTextObject();
 }
 

@@ -30,7 +30,7 @@ H2DE_ButtonObject* H2DE_ObjectManager::handleEvents_buttons_mouseDown_getMouseDo
 
 void H2DE_ObjectManager::handleEvents_buttons_mouseDown_mouseDownButton() {
     if (mouseDownButton->_buttonObjectData.onMouseDown) {
-        mouseDownButton->_buttonObjectData.onMouseDown(mouseDownButton->_eventData);
+        mouseDownButton->_buttonObjectData.onMouseDown({ mouseDownButton });
     }
 }
 
@@ -60,7 +60,7 @@ bool H2DE_ObjectManager::handleEvents_buttons_mouseUp_isOnHoveredButton(SDL_Even
 
 void H2DE_ObjectManager::handleEvents_buttons_mouseDown_mouseUpButton() {
     if (mouseDownButton->_buttonObjectData.onMouseUp) {
-        mouseDownButton->_buttonObjectData.onMouseUp(mouseDownButton->_eventData);
+        mouseDownButton->_buttonObjectData.onMouseUp({ mouseDownButton });
     }
 
     mouseDownButton = H2DE_NULL_OBJECT;
@@ -101,7 +101,7 @@ void H2DE_ObjectManager::handleEvents_buttons_mouseMotion_blurButton(H2DE_Button
     }
 
     if (button->_buttonObjectData.onBlur) {
-        button->_buttonObjectData.onBlur(button->_eventData);
+        button->_buttonObjectData.onBlur({ button });
     }
 
     window->_setHoverCursor(oldCursor);
@@ -112,12 +112,12 @@ void H2DE_ObjectManager::handleEvents_buttons_mouseMotion_hoverNewButton(H2DE_Bu
 
     if (oldHoveredButton != H2DE_NULL_OBJECT) {
         if (oldHoveredButton->_buttonObjectData.onBlur) {
-            oldHoveredButton->_buttonObjectData.onBlur(oldHoveredButton->_eventData);
+            oldHoveredButton->_buttonObjectData.onBlur({ oldHoveredButton });
         }
     }
 
     if (hoveredButton->_buttonObjectData.onHover) {
-        hoveredButton->_buttonObjectData.onHover(hoveredButton->_eventData);
+        hoveredButton->_buttonObjectData.onHover({ hoveredButton });
     }
 
     window->_setHoverCursor(hoveredButton->_buttonObjectData.cursor);

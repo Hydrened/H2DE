@@ -1,6 +1,12 @@
-.vscode/
-bin/
+/*
+
+!src/
+!include/
+!lib/
+
+!.gitattributes
+!.gitignore
+!changelog.md
+!README.md
+
 src/test.cpp
-todo.md
-examples/
-Makefile

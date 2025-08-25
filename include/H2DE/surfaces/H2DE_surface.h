@@ -225,6 +225,7 @@ public:
     friend class H2DE_Renderer;
     friend class H2DE_Geometry;
     friend class H2DE_Object;
+    friend class H2DE_InputObject;
     friend class H2DE_TextObject;
 
 protected:

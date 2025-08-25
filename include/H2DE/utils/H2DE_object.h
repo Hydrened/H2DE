@@ -25,27 +25,40 @@ struct H2DE_Hitbox {
  * @struct H2DE_ButtonEventData
  * @brief Stores event context for button callbacks.
  * 
- * This struct is passed to button event functions to provide access to the button that triggered the event
- * and the timeline in which it exists.
+ * This struct is passed to button event functions to provide access
+ * to the button that triggered the event.
  */
 struct H2DE_ButtonEventData {
-    H2DE_ButtonObject* button;          /**< Pointer to the button that triggered the event. */
-    H2DE_Timeline* timeline;            /**< Reference to the timeline the button is part of. */
+public:
+    H2DE_ButtonObject* button = nullptr;        /**< Pointer to the button that triggered the event. */
 
-    /**
-     * @brief Constructs an event data object for button events.
-     * @param button Pointer to the button triggering the event.
-     * @param id Reference to the timeline where the event occurred.
-     */
-    constexpr H2DE_ButtonEventData(H2DE_ButtonObject* button, H2DE_Timeline* timeline) noexcept : button(button), timeline(timeline) {}
+private:
+    constexpr H2DE_ButtonEventData(H2DE_ButtonObject* button) noexcept : button(button) {}
+
+    friend class H2DE_ButtonObject;
+    friend class H2DE_ObjectManager;
 };
 
-// temp
+/**
+ * @struct H2DE_InputEventData
+ * @brief Stores event context for input callbacks.
+ * 
+ * This struct is passed to input event functions to provide information
+ * about the input field and the current input state.
+ */
 struct H2DE_InputEventData {
-    H2DE_InputObject* input;
-    H2DE_Timeline* timeline;
-    std::string text;
-    std::optional<char> character;
+public:
+    H2DE_InputObject* input = nullptr;                  /**< Pointer to the input object that triggered the event. */
+    std::string text = "";                              /**< Current text content of the input field. */
+    std::optional<char> character = std::nullopt;       /**< Character that was just input (if applicable). */
+
+private:
+    H2DE_InputEventData() noexcept = default;
+    H2DE_InputEventData(H2DE_InputObject* input, const std::string& text) noexcept : input(input), text(text), character(std::nullopt) {}
+    H2DE_InputEventData(H2DE_InputObject* input, const std::string& text, char character) noexcept : input(input), text(text), character(character) {}
+
+    friend class H2DE_InputObject;
+    friend class H2DE_ObjectManager;
 };
 
 /**
@@ -101,10 +114,10 @@ struct H2DE_BarObjectData {
 struct H2DE_ButtonObjectData {
     H2DE_Text text = H2DE_Text();                                       /**< Text displayed on the button. */
     H2DE_MouseButton mouseButton = H2DE_MOUSE_BUTTON_LEFT;              /**< Mouse button(s) that trigger interactions on the button. */
-    std::function<void(H2DE_ButtonEventData&)> onMouseDown = nullptr;   /**< Callback triggered when the button is pressed down. */
-    std::function<void(H2DE_ButtonEventData&)> onMouseUp = nullptr;     /**< Callback triggered when the button is released. */
-    std::function<void(H2DE_ButtonEventData&)> onHover = nullptr;       /**< Callback triggered when the mouse hovers over the button. */
-    std::function<void(H2DE_ButtonEventData&)> onBlur = nullptr;        /**< Callback triggered when the mouse stops hovering the button. */
+    std::function<void(H2DE_ButtonEventData)> onMouseDown = nullptr;    /**< Callback triggered when the button is pressed down. */
+    std::function<void(H2DE_ButtonEventData)> onMouseUp = nullptr;      /**< Callback triggered when the button is released. */
+    std::function<void(H2DE_ButtonEventData)> onHover = nullptr;        /**< Callback triggered when the mouse hovers over the button. */
+    std::function<void(H2DE_ButtonEventData)> onBlur = nullptr;         /**< Callback triggered when the mouse stops hovering the button. */
     H2DE_Cursor cursor = H2DE_CURSOR_ARROW;                             /**< Cursor to display when the mouse hovers over the button. */
 };
 
@@ -116,10 +129,10 @@ struct H2DE_InputObjectData {
     H2DE_InputType type = H2DE_INPUT_TYPE_ALL;                          /**< Type of input accepted (e.g., text, numbers, all). */
     H2DE_Text text = H2DE_Text();                                       /**< Text styling and content of the input field. */
     uint16_t maxLength = H2DE_INPUT_MAX_LENGTH;                         /**< Maximum number of characters allowed. */
-    std::function<void(H2DE_InputEventData&)> onInput = nullptr;        /**< Callback triggered when input is received. */
-    std::function<void(H2DE_InputEventData&)> onFocus = nullptr;        /**< Callback triggered when the input field gains focus. */
-    std::function<void(H2DE_InputEventData&)> onBlur = nullptr;         /**< Callback triggered when the input field loses focus. */
-    std::function<void(H2DE_InputEventData&)> onSubmit = nullptr;       /**< Callback triggered when the input is submitted (e.g., Enter key). */
+    std::function<void(H2DE_InputEventData)> onInput = nullptr;         /**< Callback triggered when input is received. */
+    std::function<void(H2DE_InputEventData)> onFocus = nullptr;         /**< Callback triggered when the input field gains focus. */
+    std::function<void(H2DE_InputEventData)> onBlur = nullptr;          /**< Callback triggered when the input field loses focus. */
+    std::function<void(H2DE_InputEventData)> onSubmit = nullptr;        /**< Callback triggered when the input is submitted (e.g., Enter key). */
 };
 
 /**
