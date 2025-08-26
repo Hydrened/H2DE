@@ -138,9 +138,8 @@ private:
 
     float _customRatio = 0.0f;
     SDL_Cursor* _cursor = nullptr;
-
+    H2DE_Cursor _currentCursor = H2DE_CURSOR_ARROW;
     H2DE_PixelSize _oldSize = { 0, 0 };
-    H2DE_Cursor _oldCursor = H2DE_CURSOR_ARROW;
 
     H2DE_Window(H2DE_Engine* engine, const H2DE_WindowData& data);
     ~H2DE_Window();
@@ -160,8 +159,6 @@ private:
         return (fullscreen) ? SDL_WINDOW_FULLSCREEN_DESKTOP : (resizable) ? SDL_WINDOW_RESIZABLE : SDL_WINDOW_SHOWN;
     }
     static SDL_SystemCursor _getSDLCursor(H2DE_Cursor cursor);
-
-    void _setHoverCursor(H2DE_Cursor cursor);
 
     friend class H2DE_ObjectManager;
 };

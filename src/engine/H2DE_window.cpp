@@ -230,15 +230,17 @@ void H2DE_Window::setRatio(const H2DE_Engine* engine, H2DE_WindowRatio ratio) {
 }
 
 void H2DE_Window::setCursor(H2DE_Cursor c) {
+    if (c == _currentCursor) {
+        return;
+    }
+
     if (_cursor != nullptr) {
         SDL_FreeCursor(_cursor);
     }
 
     _cursor = SDL_CreateSystemCursor(H2DE_Window::_getSDLCursor(c));
     SDL_SetCursor(_cursor);
-
-    _engine->_objectManager->oldCursor = c;
-    _oldCursor = c;
+    _currentCursor = c;
 }
 
 // GETTER
@@ -258,11 +260,4 @@ SDL_SystemCursor H2DE_Window::_getSDLCursor(H2DE_Cursor cursor) {
         case H2DE_CURSOR_HAND: return SDL_SYSTEM_CURSOR_HAND;
         default: return SDL_SYSTEM_CURSOR_ARROW;
     }
-}
-
-// SETTER
-void H2DE_Window::_setHoverCursor(H2DE_Cursor cursor) {
-    H2DE_Cursor oldCursorCopy = _oldCursor;
-    setCursor(cursor);
-    _engine->_objectManager->oldCursor = oldCursorCopy;
 }

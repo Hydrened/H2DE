@@ -2,20 +2,18 @@
 
 #include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
-class H2DE_ButtonObject;
-class H2DE_InputObject;
 
 class H2DE_ObjectManager {
 private:
     H2DE_Engine* engine;
+
+    std::vector<H2DE_Object*> hoverObjects;
     std::vector<H2DE_ButtonObject*> buttons;
     std::vector<H2DE_InputObject*> inputs;
 
+    H2DE_Object* hoveredObject = H2DE_NULL_OBJECT;
     H2DE_ButtonObject* mouseDownButton = H2DE_NULL_OBJECT;
-    H2DE_ButtonObject* hoveredButton = H2DE_NULL_OBJECT;
-
     H2DE_InputObject* focusedInput = H2DE_NULL_OBJECT;
-    H2DE_InputObject* hoveredInput = H2DE_NULL_OBJECT;
 
     H2DE_Cursor oldCursor = H2DE_CURSOR_ARROW;
 
@@ -24,48 +22,47 @@ private:
 
     void handleEvents(SDL_Event event);
 
-    void handleEvents_buttons_mouseDown(SDL_Event event);
-    H2DE_ButtonObject* handleEvents_buttons_mouseDown_getMouseDownButton(SDL_Event event);
-    void handleEvents_buttons_mouseDown_mouseDownButton();
+    void handleEvents_mouseDown(SDL_Event event);
+    H2DE_Object* handleEvents_mouseDown_getClickedObject(SDL_Event event);
+    void handleEvents_mouseDown_button(H2DE_ButtonObject* button);
+    void handleEvents_mouseDown_button_mouseDown(H2DE_ButtonObject* button);
+    void handleEvents_mouseDown_input(H2DE_InputObject* input);
+    void handleEvents_mouseDown_input_focus(H2DE_InputObject* input);
+    void handleEvents_mouseDown_input_blur(H2DE_InputObject* input);
+    int handleEvents_mouseDown_input_getFocusedInputLetterIndex();
+    H2DE_Translate handleEvents_mouseDown_input_getFixedMouseTranslate();
 
-    void handleEvents_buttons_mouseUp(SDL_Event event);
-    bool handleEvents_buttons_mouseUp_isOnHoveredButton(SDL_Event event);
-    void handleEvents_buttons_mouseDown_mouseUpButton();
+    void handleEvents_mouseUp(SDL_Event event);
+    void handleEvents_mouseUp_button(SDL_Event event);
+    void handleEvents_mouseUp_button_mouseUp(H2DE_ButtonObject* button);
 
-    void handleEvents_buttons_mouseMotion();
-    H2DE_ButtonObject* handleEvents_buttons_mouseMotion_getHoveredButton();
-    void handleEvents_buttons_mouseMotion_blurButton(H2DE_ButtonObject* button);
-    void handleEvents_buttons_mouseMotion_hoverNewButton(H2DE_ButtonObject* oldHoveredButton);
+    void handleEvents_mouseMotion();
+    void handleEvents_mouseMotion_hoveringObject(H2DE_Object* object);
+    void handleEvents_mouseMotion_notHoveringObject();
+    H2DE_Object* handleEvents_mouseMotion_getHoveredObject();
+    void handleEvents_mouseMotion_buttons(H2DE_Object* oldHoveredObject);
+    void handleEvents_mouseMotion_buttons_blur(H2DE_ButtonObject* button);
+    void handleEvents_mouseMotion_buttons_hover(H2DE_ButtonObject* button);
 
-    void handleEvents_inputs_mouseDown(SDL_Event event);
-    bool handleEvents_inputs_mouseDown_isMouseCollidingInput();
-    void handleEvents_inputs_mouseDown_blurFocusedInput();
-    void handleEvents_inputs_mouseDown_focusNewInput(H2DE_InputObject* oldFocusedInput);
-    int handleEvents_inputs_mouseDown_getFocusedInputLetterIndex();
-    H2DE_Translate handle_inputs_mouseDown_getFixedMouseTranslate();
+    void handleEvents_keydown_input(SDL_Event event);
+    void handleEvents_keydown_input_modifyText(SDL_Event event, const std::function<void(std::string, int, unsigned char)>& tasks);
+    void handleEvents_keydown_input_default(SDL_Event event);
+    void handleEvents_keydown_input_delete(SDL_Event event);
+    void handleEvents_keydown_input_suppr(SDL_Event event);
+    void handleEvents_keydown_input_enter(SDL_Event event);
+    void handleEvents_keydown_input_inlineArrow(SDL_Event event);
 
-    void handleEvents_inputs_mouseMotion();
-    H2DE_InputObject* handleEvents_inputs_mouseMotion_getHoveredInput();
-
-    void handleEvents_inputs_keydown(SDL_Event event);
-    void handleEvents_inputs_keydown_modifyText(SDL_Event event, const std::function<void(std::string, int, unsigned char)>& tasks);
-    void handleEvents_inputs_keydown_default(SDL_Event event);
-    void handleEvents_inputs_keydown_delete(SDL_Event event);
-    void handleEvents_inputs_keydown_suppr(SDL_Event event);
-    void handleEvents_inputs_keydown_enter(SDL_Event event);
-    void handleEvents_inputs_keydown_arrow(SDL_Event event);
-
+    void refreshHoverObjectBuffer();
     template<typename H2DE_ObjectType>
     void refreshBuffer(std::vector<H2DE_ObjectType*>& buffer, const std::vector<H2DE_Object*>& objects);
     void refreshButtonBuffer(const std::vector<H2DE_Object*>& objects);
     void refreshInputBuffer(const std::vector<H2DE_Object*>& objects);
+    template<typename H2DE_ObjectType>
+    void sortBuffer(std::vector<H2DE_ObjectType*>& buffer);
 
     void focusInput(H2DE_InputObject* input);
     void blurInput(H2DE_InputObject* input);
     void submitInput(H2DE_InputObject* input);
-
-    const std::vector<H2DE_ButtonObject*> getValidButtons() const;
-    const std::vector<H2DE_InputObject*> getValidInputs() const;
 
     bool isMouseCollidingObject(H2DE_Object* object) const;
     bool isCursorPositionValid() const;

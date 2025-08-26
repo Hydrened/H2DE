@@ -2,100 +2,86 @@
 
 // EVENTS
 
-// -- -- mouse  down
-void H2DE_ObjectManager::handleEvents_buttons_mouseDown(SDL_Event event) {
-    mouseDownButton = handleEvents_buttons_mouseDown_getMouseDownButton(event);
-
-    if (mouseDownButton != H2DE_NULL_OBJECT) {
-        handleEvents_buttons_mouseDown_mouseDownButton();
+// -- -- mouse down
+void H2DE_ObjectManager::handleEvents_mouseDown_button(H2DE_ButtonObject* button) {
+    bool buttonHasBeenClicked = (button != H2DE_NULL_OBJECT);
+    if (buttonHasBeenClicked) {
+        handleEvents_mouseDown_button_mouseDown(button);
     }
 }
 
-H2DE_ButtonObject* H2DE_ObjectManager::handleEvents_buttons_mouseDown_getMouseDownButton(SDL_Event event) {
-    H2DE_MouseButton mouseButton = H2DE_ObjectManager::getH2DEButton(event.button.button);
-
-    for (H2DE_ButtonObject* button : getValidButtons()) {
-
-        if (!(mouseButton & button->getMouseButton())) {
-            continue;
-        }
-
-        if (isMouseCollidingObject(button)) {
-            return button;
-        }
+void H2DE_ObjectManager::handleEvents_mouseDown_button_mouseDown(H2DE_ButtonObject* button) {
+    if (button == H2DE_NULL_OBJECT) {
+        return;
     }
 
-    return H2DE_NULL_OBJECT;
-}
-
-void H2DE_ObjectManager::handleEvents_buttons_mouseDown_mouseDownButton() {
-    if (mouseDownButton->_buttonObjectData.onMouseDown) {
-        mouseDownButton->_buttonObjectData.onMouseDown({ mouseDownButton });
+    if (button->_buttonObjectData.onMouseDown) {
+        button->_buttonObjectData.onMouseDown({ button });
     }
+
+    mouseDownButton = button;
 }
 
 // -- -- mouse up
-void H2DE_ObjectManager::handleEvents_buttons_mouseUp(SDL_Event event) {
-    if (handleEvents_buttons_mouseUp_isOnHoveredButton(event)) {
-        handleEvents_buttons_mouseDown_mouseUpButton();
+void H2DE_ObjectManager::handleEvents_mouseUp_button(SDL_Event event) {
+    H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(hoveredObject);
+    
+    bool buttonIsHovered = (button != H2DE_NULL_OBJECT);
+    if (!buttonIsHovered) {
+        return;
     }
+
+    bool isCorrectButton = (button == mouseDownButton);
+    if (!isCorrectButton) {
+        return;
+    }
+
+    bool notDisabled = (!button->_disabled);
+    bool hasMouseUp = (button->_buttonObjectData.onMouseUp != nullptr);
+    bool isValid = (notDisabled && hasMouseUp);
+    if (!isValid) {
+        return;
+    }
+
+    bool isCorrectClick = ((button->_buttonObjectData.mouseButton & H2DE_ObjectManager::getH2DEButton(event.button.button)) != 0);
+    if (!isCorrectClick) {
+        return;
+    }
+
+    handleEvents_mouseUp_button_mouseUp(button);
 }
 
-bool H2DE_ObjectManager::handleEvents_buttons_mouseUp_isOnHoveredButton(SDL_Event event) {
-    if (mouseDownButton == H2DE_NULL_OBJECT) {
-        return false;
+void H2DE_ObjectManager::handleEvents_mouseUp_button_mouseUp(H2DE_ButtonObject* button) {
+    if (button == H2DE_NULL_OBJECT) {
+        return;
     }
 
-    if (mouseDownButton->_disabled || !mouseDownButton->_buttonObjectData.onMouseUp) {
-        return false;
-    }
-
-    H2DE_MouseButton mouseButton = H2DE_ObjectManager::getH2DEButton(event.button.button);
-    if (!(mouseButton & mouseDownButton->getMouseButton())) {
-        return false;
-    }
-
-    return isMouseCollidingObject(mouseDownButton);
-}
-
-void H2DE_ObjectManager::handleEvents_buttons_mouseDown_mouseUpButton() {
-    if (mouseDownButton->_buttonObjectData.onMouseUp) {
-        mouseDownButton->_buttonObjectData.onMouseUp({ mouseDownButton });
+    if (button->_buttonObjectData.onMouseUp) {
+        button->_buttonObjectData.onMouseUp({ button });
     }
 
     mouseDownButton = H2DE_NULL_OBJECT;
 }
 
-// -- -- mouse motion
-void H2DE_ObjectManager::handleEvents_buttons_mouseMotion() {
-    H2DE_ButtonObject* oldHoveredButton = hoveredButton;
+// -- mouse motion
+void H2DE_ObjectManager::handleEvents_mouseMotion_buttons(H2DE_Object* oldHoveredObject) {
+    H2DE_ButtonObject* oldHoveredButton = dynamic_cast<H2DE_ButtonObject*>(oldHoveredObject);
+    H2DE_ButtonObject* hoveredButton = dynamic_cast<H2DE_ButtonObject*>(hoveredObject);
 
-    hoveredButton = handleEvents_buttons_mouseMotion_getHoveredButton();
-
-    if (hoveredButton == H2DE_NULL_OBJECT) {
-        handleEvents_buttons_mouseMotion_blurButton(oldHoveredButton);
+    bool hoveringNoButton = (hoveredButton == H2DE_NULL_OBJECT);
+    if (hoveringNoButton) {
+        handleEvents_mouseMotion_buttons_blur(oldHoveredButton);
         return;
     }
 
-    bool isButtonHoveredNew = (hoveredButton != oldHoveredButton);
-    if (isButtonHoveredNew) {
-        handleEvents_buttons_mouseMotion_hoverNewButton(oldHoveredButton);
+    bool hoveringDifferentButton = (hoveredButton != oldHoveredButton);
+    if (hoveringDifferentButton) {
+        handleEvents_mouseMotion_buttons_blur(oldHoveredButton);
+        handleEvents_mouseMotion_buttons_hover(hoveredButton);
     }
 }
 
-H2DE_ButtonObject* H2DE_ObjectManager::handleEvents_buttons_mouseMotion_getHoveredButton() {
-    for (H2DE_ButtonObject* button : getValidButtons()) {
-        if (isMouseCollidingObject(button)) {
-            return button;
-        }
-    }
-
-    return H2DE_NULL_OBJECT;
-}
-
-void H2DE_ObjectManager::handleEvents_buttons_mouseMotion_blurButton(H2DE_ButtonObject* button) {
-    static H2DE_Window* window = engine->_window;
-
+void H2DE_ObjectManager::handleEvents_mouseMotion_buttons_blur(H2DE_ButtonObject* button) {
     if (button == H2DE_NULL_OBJECT) {
         return;
     }
@@ -103,48 +89,21 @@ void H2DE_ObjectManager::handleEvents_buttons_mouseMotion_blurButton(H2DE_Button
     if (button->_buttonObjectData.onBlur) {
         button->_buttonObjectData.onBlur({ button });
     }
-
-    window->_setHoverCursor(oldCursor);
 }
 
-void H2DE_ObjectManager::handleEvents_buttons_mouseMotion_hoverNewButton(H2DE_ButtonObject* oldHoveredButton) {
-    static H2DE_Window* window = engine->_window;
-
-    if (oldHoveredButton != H2DE_NULL_OBJECT) {
-        if (oldHoveredButton->_buttonObjectData.onBlur) {
-            oldHoveredButton->_buttonObjectData.onBlur({ oldHoveredButton });
-        }
+void H2DE_ObjectManager::handleEvents_mouseMotion_buttons_hover(H2DE_ButtonObject* button) {
+    if (button == H2DE_NULL_OBJECT) {
+        return;
     }
 
-    if (hoveredButton->_buttonObjectData.onHover) {
-        hoveredButton->_buttonObjectData.onHover({ hoveredButton });
+    if (button->_buttonObjectData.onHover) {
+        button->_buttonObjectData.onHover({ button });
     }
-
-    window->_setHoverCursor(hoveredButton->_buttonObjectData.cursor);
 }
 
 // ACTIONS
 void H2DE_ObjectManager::refreshButtonBuffer(const std::vector<H2DE_Object*>& objects) {
     mouseDownButton = H2DE_NULL_OBJECT;
-    hoveredButton = H2DE_NULL_OBJECT;
     refreshBuffer(buttons, objects);
-}
-
-// GETTER
-const std::vector<H2DE_ButtonObject*> H2DE_ObjectManager::getValidButtons() const {
-    std::vector<H2DE_ButtonObject*> res;
-
-    for (H2DE_ButtonObject* button : buttons) {
-        if (button->_hidden) {
-            continue;
-        }
-
-        if (button->_disabled) {
-            continue;
-        }
-
-        res.push_back(button);
-    } 
-
-    return res;
+    refreshHoverObjectBuffer();
 }

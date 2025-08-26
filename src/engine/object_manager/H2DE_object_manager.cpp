@@ -11,32 +11,129 @@ H2DE_ObjectManager::H2DE_ObjectManager(H2DE_Engine* e) : engine(e) {
 void H2DE_ObjectManager::handleEvents(SDL_Event event) {
     switch (event.type) {
         case SDL_MOUSEBUTTONDOWN:
-            handleEvents_buttons_mouseDown(event);
-            handleEvents_inputs_mouseDown(event);
+            handleEvents_mouseDown(event);
             break;
 
         case SDL_MOUSEBUTTONUP:
-            handleEvents_buttons_mouseUp(event);
+            handleEvents_mouseUp(event);
             break;
 
         case SDL_MOUSEMOTION:
-            handleEvents_buttons_mouseMotion();
-            handleEvents_inputs_mouseMotion();
+            handleEvents_mouseMotion();
             break;
 
         case SDL_KEYDOWN:
-            handleEvents_inputs_keydown(event);
+            handleEvents_keydown_input(event);
             break;
 
         case SDL_TEXTINPUT:
-            handleEvents_inputs_keydown_default(event);
+            handleEvents_keydown_input_default(event);
             break;
 
         default: return;
     }
 }
 
+// -- mouse down
+void H2DE_ObjectManager::handleEvents_mouseDown(SDL_Event event) {
+    H2DE_Object* clickedObject = handleEvents_mouseDown_getClickedObject(event);
+
+    H2DE_ButtonObject* clickedButton = dynamic_cast<H2DE_ButtonObject*>(clickedObject);
+    H2DE_InputObject* clickedInput = dynamic_cast<H2DE_InputObject*>(clickedObject);
+
+    handleEvents_mouseDown_button(clickedButton);
+    handleEvents_mouseDown_input(clickedInput);
+}
+
+H2DE_Object* H2DE_ObjectManager::handleEvents_mouseDown_getClickedObject(SDL_Event event) {
+    for (H2DE_Object* object : hoverObjects) {
+        if (!isMouseCollidingObject(object)) {
+            continue;
+        }
+
+        H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
+
+        H2DE_MouseButton mouseButton = (button != H2DE_NULL_OBJECT)
+            ? button->_buttonObjectData.mouseButton
+            : H2DE_MOUSE_BUTTON_LEFT;
+
+        bool isCorrectClick = ((mouseButton & H2DE_ObjectManager::getH2DEButton(event.button.button)) != 0);
+        if (isCorrectClick) {
+            return object;
+        }
+    }
+
+    return H2DE_NULL_OBJECT;
+}
+
+// -- mouse up
+void H2DE_ObjectManager::handleEvents_mouseUp(SDL_Event event) {
+    handleEvents_mouseUp_button(event);
+}
+
+// -- mouse motion
+void H2DE_ObjectManager::handleEvents_mouseMotion() {
+    H2DE_Object* oldHoveredObject = hoveredObject;
+    H2DE_Object* newHoveredObject = handleEvents_mouseMotion_getHoveredObject();
+
+    bool hovering = (newHoveredObject != H2DE_NULL_OBJECT);
+
+    if (hovering) {
+        handleEvents_mouseMotion_hoveringObject(newHoveredObject);
+    } else {
+        handleEvents_mouseMotion_notHoveringObject();
+    }
+
+    handleEvents_mouseMotion_buttons(oldHoveredObject);
+}
+
+void H2DE_ObjectManager::handleEvents_mouseMotion_hoveringObject(H2DE_Object* object) {
+    static H2DE_Window* window = engine->_window;
+
+    bool isAnObjectAlreadyHovered = (hoveredObject != H2DE_NULL_OBJECT);
+    if (!isAnObjectAlreadyHovered) {
+        oldCursor = window->_currentCursor;
+    }
+
+    H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
+    H2DE_Cursor cursor = (button != H2DE_NULL_OBJECT)
+        ? button->_buttonObjectData.cursor
+        : H2DE_CURSOR_IBEAM;
+
+    window->setCursor(cursor);
+    hoveredObject = object;
+}
+
+H2DE_Object* H2DE_ObjectManager::handleEvents_mouseMotion_getHoveredObject() {
+    for (H2DE_Object* object : hoverObjects) {
+        if (isMouseCollidingObject(object)) {
+            return object;
+        }
+    }
+
+    return H2DE_NULL_OBJECT;
+}
+
+void H2DE_ObjectManager::handleEvents_mouseMotion_notHoveringObject() {
+    static H2DE_Window* window = engine->_window;
+
+    window->setCursor(oldCursor);
+    hoveredObject = H2DE_NULL_OBJECT;
+}
+
 // ACTIONS
+void H2DE_ObjectManager::refreshHoverObjectBuffer() {
+    hoveredObject = H2DE_NULL_OBJECT;
+
+    hoverObjects.clear();
+    hoverObjects.reserve(buttons.size() + inputs.size());
+
+    std::ranges::copy(buttons, std::back_inserter(hoverObjects));
+    std::ranges::copy(inputs, std::back_inserter(hoverObjects));
+
+    sortBuffer(hoverObjects);
+}
+
 template void H2DE_ObjectManager::refreshBuffer<H2DE_ButtonObject>(std::vector<H2DE_ButtonObject*>& buffer, const std::vector<H2DE_Object*>& objects);
 template void H2DE_ObjectManager::refreshBuffer<H2DE_InputObject>(std::vector<H2DE_InputObject*>& buffer, const std::vector<H2DE_Object*>& objects);
 
@@ -52,6 +149,15 @@ void H2DE_ObjectManager::refreshBuffer(std::vector<H2DE_ObjectType*>& buffer, co
         }
     }
 
+    sortBuffer(buffer);
+}
+
+template void H2DE_ObjectManager::sortBuffer<H2DE_Object>(std::vector<H2DE_Object*>& buffer);
+template void H2DE_ObjectManager::sortBuffer<H2DE_ButtonObject>(std::vector<H2DE_ButtonObject*>& buffer);
+template void H2DE_ObjectManager::sortBuffer<H2DE_InputObject>(std::vector<H2DE_InputObject*>& buffer);
+
+template<typename H2DE_ObjectType>
+void H2DE_ObjectManager::sortBuffer(std::vector<H2DE_ObjectType*>& buffer) {
     std::sort(buffer.begin(), buffer.end(), [](H2DE_ObjectType* a, H2DE_ObjectType* b) {
         int indexA = a->getIndex();
         int indexB = b->getIndex();
@@ -68,10 +174,9 @@ void H2DE_ObjectManager::refreshBuffer(std::vector<H2DE_ObjectType*>& buffer, co
 
 // -- default
 bool H2DE_ObjectManager::isMouseCollidingObject(H2DE_Object* object) const {
-    const H2DE_Translate mouseGamePos = engine->getMouseGameTranslate();
-    const H2DE_Translate mouseInterfacePos = engine->getMouseInterfaceTranslate();
-
-    const H2DE_Translate mousePos = (object->_objectData.absolute) ? mouseInterfacePos : mouseGamePos;
+    const H2DE_Translate mousePos = (object->_objectData.absolute)
+        ? engine->getMouseGameTranslate()
+        : engine->getMouseInterfaceTranslate();
 
     for (const auto& [name, hitbox] : object->_hitboxes) {
         const H2DE_LevelRect inputRect = G::getHitboxRect(object, hitbox);
