@@ -39,10 +39,13 @@ void H2DE_ObjectManager::handleEvents_mouseDown(SDL_Event event) {
     H2DE_Object* clickedObject = handleEvents_mouseDown_getClickedObject(event);
 
     H2DE_ButtonObject* clickedButton = dynamic_cast<H2DE_ButtonObject*>(clickedObject);
-    H2DE_InputObject* clickedInput = dynamic_cast<H2DE_InputObject*>(clickedObject);
-
     handleEvents_mouseDown_button(clickedButton);
-    handleEvents_mouseDown_input(clickedInput);
+
+    bool leftClick = ((H2DE_ObjectManager::getH2DEButton(event.button.button) & H2DE_MOUSE_BUTTON_LEFT) != 0);
+    if (leftClick) {
+        H2DE_InputObject* clickedInput = dynamic_cast<H2DE_InputObject*>(clickedObject);
+        handleEvents_mouseDown_input(clickedInput);
+    }
 }
 
 H2DE_Object* H2DE_ObjectManager::handleEvents_mouseDown_getClickedObject(SDL_Event event) {

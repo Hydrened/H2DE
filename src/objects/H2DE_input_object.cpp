@@ -47,7 +47,7 @@ void H2DE_InputObject::_refreshCursor() {
     int nbLetters = _textObject->_surfaceBuffers.size();
 
     bool cursorIsAtLastPosition = (_cursorPosition >= nbLetters);
-    int surfaceIndex = ((cursorIsAtLastPosition) ? nbLetters - 1 : _cursorPosition);
+    int surfaceIndex = ((cursorIsAtLastPosition) ? nbLetters - 1 : H2DE::clamp(_cursorPosition, 0, nbLetters + 1));
 
     H2DE_Surface* letter = _textObject->_surfaceBuffers.at(surfaceIndex);
 

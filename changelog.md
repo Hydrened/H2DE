@@ -1,3 +1,10 @@
+## H2DE-4.3.1
+#### ADDED
+- up / down arrow controls for input object
+#### FIXED
+- input blur with any mouse button
+- possible crash when updating cursor on input object
+
 ## H2DE-4.3.0
 #### ADDED
 - input object

@@ -50,6 +50,8 @@ void H2DE_ObjectManager::handleEvents_mouseDown_input_blur(H2DE_InputObject* inp
 }
 
 int H2DE_ObjectManager::handleEvents_mouseDown_input_getFocusedInputLetterIndex() {
+    constexpr float MAX_FLOAT = std::numeric_limits<float>::max();
+
     if (focusedInput->_textObject == H2DE_NULL_OBJECT) {
         return 0;
     }
@@ -57,7 +59,7 @@ int H2DE_ObjectManager::handleEvents_mouseDown_input_getFocusedInputLetterIndex(
     const H2DE_Translate mouseTranslate = handleEvents_mouseDown_input_getFixedMouseTranslate();
     const std::vector<H2DE_Surface*>& letterSurfaces = focusedInput->_textObject->_surfaceBuffers;
 
-    float minDistance = std::numeric_limits<float>::max();
+    float minDistance = MAX_FLOAT;
     int index = 0;
 
     for (int i = 0; i < letterSurfaces.size(); i++) {
@@ -135,10 +137,12 @@ void H2DE_ObjectManager::handleEvents_keydown_input(SDL_Event event) {
             handleEvents_keydown_input_enter(event);
             break;
 
-        case SDLK_LEFT:
-            handleEvents_keydown_input_inlineArrow(event);
+        case SDLK_UP:
+        case SDLK_DOWN:
+            handleEvents_keydown_input_blockArrow(event);
             break;
 
+        case SDLK_LEFT:
         case SDLK_RIGHT:
             handleEvents_keydown_input_inlineArrow(event);
             break;
@@ -303,12 +307,12 @@ void H2DE_ObjectManager::handleEvents_keydown_input_inlineArrow(SDL_Event event)
     const std::string text = focusedInput->_textObject->getText();
     int cursorPosition = focusedInput->_cursorPosition;
 
-    bool left = (event.key.keysym.sym == SDLK_LEFT);
+    bool leftArrow = (event.key.keysym.sym == SDLK_LEFT);
     bool ctrlDown = (H2DE_ObjectManager::isCtrlDown(event));
 
     if (ctrlDown) {
 
-        if (left) {
+        if (leftArrow) {
             const std::string slicedText = text.substr(0, H2DE::max(cursorPosition - 1, 1));
             size_t lastSpaceIndex = H2DE_ObjectManager::getLastSpaceIndex(slicedText);
             lastSpaceIndex = ((lastSpaceIndex == -1) ? 0 : lastSpaceIndex + 1);
@@ -324,10 +328,63 @@ void H2DE_ObjectManager::handleEvents_keydown_input_inlineArrow(SDL_Event event)
         }
             
     } else {
-        int incr = ((left) ? -1 : 1);
+        int incr = ((leftArrow) ? -1 : 1);
         cursorPosition = H2DE::clamp<int>(cursorPosition + incr, 0, nbLetters);
         focusedInput->_setCursorPosition(cursorPosition);
     }
+}
+
+void H2DE_ObjectManager::handleEvents_keydown_input_blockArrow(SDL_Event event) {
+    constexpr float EPSILON = 0.00001f;
+    constexpr float MIN_FLOAT = std::numeric_limits<float>::lowest();
+    constexpr float MAX_FLOAT = std::numeric_limits<float>::max();
+    
+    bool hasNoText = (focusedInput->_textObject == H2DE_NULL_OBJECT);
+    if (hasNoText) {
+        return;
+    }
+
+    const H2DE_Translate cursorSurfaceTranslate = focusedInput->_cursor->getTranslate();
+    const std::vector<H2DE_Surface*>& letterSurfaces = focusedInput->_textObject->_surfaceBuffers;
+
+    bool upArrow = (event.key.keysym.sym == SDLK_UP);
+    float minY = (upArrow) ? MIN_FLOAT : cursorSurfaceTranslate.y + EPSILON;
+    float maxY = (upArrow) ? cursorSurfaceTranslate.y - EPSILON : MAX_FLOAT;
+
+    float minDistanceX = MAX_FLOAT;
+    int closestLetterIndex = -1;
+
+    for (int i = 0; i < letterSurfaces.size(); i++) {
+        const H2DE_Surface* letterSurface = letterSurfaces.at(i);
+        const H2DE_Translate letterSurfaceTranslate = letterSurface->getTranslate();
+
+        bool tooLow = (letterSurfaceTranslate.y < minY);
+        if (tooLow) {
+            continue;
+        }
+
+        bool tooHigh = (letterSurfaceTranslate.y > maxY);
+        if (tooHigh) {
+            break;
+        }
+    
+        float distanceX = cursorSurfaceTranslate.getDistanceSquared(letterSurfaceTranslate);
+
+        if (distanceX < minDistanceX) {
+            minDistanceX = distanceX;
+            closestLetterIndex = i;
+        }
+    }
+
+    if (closestLetterIndex == -1) {
+        return;
+    }
+
+    if (letterSurfaces.at(closestLetterIndex)->getTranslate().x < cursorSurfaceTranslate.x) {
+        closestLetterIndex++;
+    }
+
+    focusedInput->_setCursorPosition(closestLetterIndex);
 }
 
 // ACTIONS

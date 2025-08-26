@@ -5,7 +5,7 @@
 
 #define H2DE_VERSION_MAJOR 4
 #define H2DE_VERSION_MINOR 3
-#define H2DE_VERSION_PATCH 0
+#define H2DE_VERSION_PATCH 1
 #define H2DE_VERSION_BETA 0
 
 #define H2DE_STR_HELPER(x) #x
@@ -49,7 +49,7 @@
 #define H2DE_VOLUME_MAX 100
 
 /** @brief Constant used to define the maximum length of an input. */
-#define H2DE_INPUT_MAX_LENGTH 65535
+#define H2DE_INPUT_MAX_LENGTH 65535u
 
 
 
@@ -59,7 +59,7 @@
 #define H2DE_INVALID_TIMELINE_ID 4294967295u
 
 /** @brief Special value representing an invalid channel ID. */
-#define H2DE_INVALID_CHANNEL_ID 255
+#define H2DE_INVALID_CHANNEL_ID 255u
 
 
 

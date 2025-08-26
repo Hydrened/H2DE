@@ -51,6 +51,7 @@ private:
     void handleEvents_keydown_input_suppr(SDL_Event event);
     void handleEvents_keydown_input_enter(SDL_Event event);
     void handleEvents_keydown_input_inlineArrow(SDL_Event event);
+    void handleEvents_keydown_input_blockArrow(SDL_Event event);
 
     void refreshHoverObjectBuffer();
     template<typename H2DE_ObjectType>
