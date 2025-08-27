@@ -15,6 +15,8 @@
 #include <H2DE/utils/H2DE_color_rgb.h>
 #include <H2DE/utils/H2DE_color_hsv.h>
 
+#include <H2DE/utils/H2DE_event.h>
+
 #include <H2DE/utils/H2DE_basic_structs.h>
 
 #include <H2DE/utils/H2DE_object.h>

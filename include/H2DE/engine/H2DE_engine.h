@@ -7,7 +7,7 @@
  * This file includes all necessary headers and declares the H2DE_Engine class,
  * which manages the game loop, assets, rendering, timelines, objects, and overall engine state.
  * 
- * The engine relies on SDL2 and integrates multiple subsystems such as windowing, audio,
+ * The engine relies on SDL2 and integrates multiple subsystems such as windowing, event handling, audio,
  * camera, timeline animations, and object management to provide a flexible 2D game framework.
  */
 
@@ -23,6 +23,7 @@
 #include <H2DE/engine/H2DE_settings.h>
 #include <H2DE/engine/H2DE_window.h>
 #include <H2DE/engine/H2DE_asset_loader_manager.h>
+#include <H2DE/engine/H2DE_event_manager.h>
 #include <H2DE/engine/H2DE_renderer.h>
 #include <H2DE/engine/H2DE_audio.h>
 #include <H2DE/engine/H2DE_timeline_manager.h>
@@ -36,6 +37,7 @@
 class H2DE_Settings;
 class H2DE_Window;
 class H2DE_AssetLoaderManager;
+class H2DE_EventManager;
 class H2DE_Renderer;
 class H2DE_Audio;
 class H2DE_TimelineManager;
@@ -394,10 +396,10 @@ public:
         _fps = FPS;
     }
     /**
-     * @brief Sets a custom callback function to handle SDL events.
-     * @param call A std::function taking SDL_Event as parameter.
+     * @brief Sets a custom callback function to handle H2DE events.
+     * @param call A std::function taking H2DE_Event as parameter.
      */
-    inline void setHandleEventCall(const std::function<void(SDL_Event)>& call) noexcept{
+    inline void setHandleEventCall(const std::function<void(H2DE_Event)>& call) noexcept{
         _handleEventsCall = call;
     }
     /**
@@ -410,6 +412,7 @@ public:
 
     friend class H2DE_Window;
     friend class H2DE_AssetLoaderManager;
+    friend class H2DE_EventManager;
     friend class H2DE_Renderer;
     friend class H2DE_Audio;
     friend class H2DE_Camera;
@@ -430,6 +433,7 @@ private:
     H2DE_Settings* _settings = nullptr;
     H2DE_Window* _window = nullptr;
     H2DE_AssetLoaderManager* _assetLoaderManager = nullptr;
+    H2DE_EventManager* _eventManager = nullptr;
     H2DE_Renderer* _renderer = nullptr;
     H2DE_Audio* _audio = nullptr;
     H2DE_TimelineManager* _timelineManager = nullptr;
@@ -447,7 +451,7 @@ private:
     bool _debugObjectEnabled = false;
     std::vector<int> _debugHitboxCollisionIndexes = {};
 
-    std::function<void(SDL_Event)> _handleEventsCall = nullptr;
+    std::function<void(H2DE_Event)> _handleEventsCall = nullptr;
     std::function<void()> _updateCall = nullptr;
 
     std::unordered_map<std::string, H2DE_Font> _fonts = {};
@@ -458,7 +462,6 @@ private:
     H2DE_Engine(const H2DE_EngineData& data);
     ~H2DE_Engine();
 
-    void _handleEvents(SDL_Event event);
     void _update();
     void _updateObjects();
 
@@ -467,6 +470,8 @@ private:
 
     void _destroy();
     void _destroyObjects();
+    template<typename H2DE_Module>
+    void destroyModule(H2DE_Module* module);
 
     const H2DE_Translate _getMouseTranslate(bool absolute) const;
 

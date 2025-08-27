@@ -84,5 +84,6 @@ private:
 
     friend class H2DE_Engine;
     friend class H2DE_Window;
+    friend class H2DE_EventManager;
     friend class H2DE_InputObject;
 };

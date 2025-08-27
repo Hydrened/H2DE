@@ -16,6 +16,7 @@ H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : _data(d), _fps(_data.window
         _settings = new H2DE_Settings(this);
         _window = new H2DE_Window(this, _data.window);
         _assetLoaderManager = new H2DE_AssetLoaderManager(this, _window->_renderer);
+        _eventManager = new H2DE_EventManager(this);
         _renderer = new H2DE_Renderer(this, _window->_renderer, _objects);
         _audio = new H2DE_Audio(this);
         _timelineManager = new H2DE_TimelineManager(this);
@@ -38,52 +39,18 @@ H2DE_Engine::~H2DE_Engine() {
 }
 
 void H2DE_Engine::_destroy() {
-    if (_window != nullptr) {
-        delete _window;
-        _window = nullptr;
-    }
-
-    if (_assetLoaderManager != nullptr) {
-        delete _assetLoaderManager;
-        _assetLoaderManager = nullptr;
-    }
-
-    if (_renderer != nullptr) {
-        delete _renderer;
-        _renderer = nullptr;
-    }
-
-    if (_audio != nullptr) {
-        delete _audio;
-        _audio = nullptr;
-    }
-
-    if (_camera != nullptr) {
-        delete _camera;
-        _camera = nullptr;
-    }
-
-    if (_objectManager != nullptr) {
-        delete _objectManager;
-        _objectManager = nullptr;
-    }
-
+    destroyModule(_window);
+    destroyModule(_assetLoaderManager);
+    destroyModule(_eventManager);
+    destroyModule(_renderer);
+    destroyModule(_audio);
+    destroyModule(_objectManager);
+    
     _destroyObjects();
 
-    if (_timelineManager != nullptr) {
-        delete _timelineManager;
-        _timelineManager = nullptr;
-    }
-
-    if (_chronoManager != nullptr) {
-        delete _chronoManager;
-        _chronoManager = nullptr;
-    }
-
-    if (_settings != nullptr) {
-        delete _settings;
-        _settings = nullptr;
-    }
+    destroyModule(_timelineManager);
+    destroyModule(_chronoManager);
+    destroyModule(_settings);
 }
 
 void H2DE_Engine::_destroyObjects() {
@@ -120,8 +87,6 @@ void H2DE_Engine::run() {
         Uint64 lastTime = SDL_GetPerformanceCounter();
         Uint64 lastSec = lastTime;
 
-        SDL_Event event;
-
         SDL_StartTextInput();
 
         while (_isRunning) {
@@ -129,7 +94,7 @@ void H2DE_Engine::run() {
             _deltaTime = (now - lastTime) / static_cast<float>(perfFreq);
             _currentFPS = (_deltaTime > 0.0f) ? 1.0f / _deltaTime : 0.0f;
 
-            _handleEvents(event);
+            _eventManager->handle();
 
             if (!_debugModeEnabled) {
                 _update();
@@ -156,37 +121,6 @@ void H2DE_Engine::run() {
 
     } catch (const std::exception& e) {
         MessageBoxA(NULL, e.what(), "Error", MB_OK | MB_ICONERROR);
-    }
-}
-
-// EVENTS
-void H2DE_Engine::_handleEvents(SDL_Event event) {
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            
-            case SDL_QUIT:
-                _isRunning = false;
-                break;
-
-            case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                    _window->setSize(H2DE_PixelSize{ event.window.data1, event.window.data2 });
-                    _camera->_updateGrid();
-                }
-                break;
-
-            case SDL_MOUSEMOTION:
-                _mousePos = { event.button.x, event.button.y };
-                break;
-
-            default: break;
-        }
-
-        if (_handleEventsCall) {
-            _handleEventsCall(event);
-        }
-
-        _objectManager->handleEvents(event);
     }
 }
 

@@ -3,6 +3,32 @@
 #include <H2DE/utils/H2DE_utils.h>
 
 /**
+ * @enum H2DE_BorderType
+ * @brief Represents the type of border shape.
+ * 
+ * - H2DE_BORDER_TYPE_RECTANGLE: A standard rectangular border.
+ * - H2DE_BORDER_TYPE_CIRCLE: A circular border.
+ */
+enum H2DE_BorderType {
+    H2DE_BORDER_TYPE_RECTANGLE, /**< A standard rectangular border */
+    H2DE_BORDER_TYPE_CIRCLE     /**< A circular border */
+};
+
+/**
+ * @enum H2DE_BorderPlacement
+ * @brief Represents the placement of the border relative to the shape's outline.
+ * 
+ * - H2DE_BORDER_PLACEMENT_CENTER: Border is centered on the shape's edge (half inside, half outside).
+ * - H2DE_BORDER_PLACEMENT_INNER: Border is fully inside the shape's boundary.
+ * - H2DE_BORDER_PLACEMENT_OUTER: Border is fully outside the shape's boundary.
+ */
+enum H2DE_BorderPlacement {
+    H2DE_BORDER_PLACEMENT_CENTER,   /**< Border centered on the edge */
+    H2DE_BORDER_PLACEMENT_INNER,    /**< Border fully inside the shape */
+    H2DE_BORDER_PLACEMENT_OUTER,    /**< Border fully outside the shape */
+};
+
+/**
  * @struct H2DE_SurfaceData
  * @brief Contains transformation and rendering parameters for a surface.
  */

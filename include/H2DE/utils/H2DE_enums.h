@@ -85,54 +85,6 @@ enum H2DE_TextAlign {
 };
 
 /**
- * @enum H2DE_BorderType
- * @brief Represents the type of border shape.
- * 
- * - H2DE_BORDER_TYPE_RECTANGLE: A standard rectangular border.
- * - H2DE_BORDER_TYPE_CIRCLE: A circular border.
- */
-enum H2DE_BorderType {
-    H2DE_BORDER_TYPE_RECTANGLE, /**< A standard rectangular border */
-    H2DE_BORDER_TYPE_CIRCLE     /**< A circular border */
-};
-
-/**
- * @enum H2DE_BorderPlacement
- * @brief Represents the placement of the border relative to the shape's outline.
- * 
- * - H2DE_BORDER_PLACEMENT_CENTER: Border is centered on the shape's edge (half inside, half outside).
- * - H2DE_BORDER_PLACEMENT_INNER: Border is fully inside the shape's boundary.
- * - H2DE_BORDER_PLACEMENT_OUTER: Border is fully outside the shape's boundary.
- */
-enum H2DE_BorderPlacement {
-    H2DE_BORDER_PLACEMENT_CENTER,   /**< Border centered on the edge */
-    H2DE_BORDER_PLACEMENT_INNER,    /**< Border fully inside the shape */
-    H2DE_BORDER_PLACEMENT_OUTER,    /**< Border fully outside the shape */
-};
-
-/**
- * @enum H2DE_MouseButton
- * @brief Represents mouse buttons that can be used to trigger interactions.
- * 
- * This enum allows you to specify which mouse button(s) should be detected
- * for an interaction.
- * You can combine multiple values using bitwise OR to allow several buttons.
- * 
- * - H2DE_MOUSE_BUTTON_LEFT: Left mouse button.
- * - H2DE_MOUSE_BUTTON_RIGHT: Right mouse button.
- * - H2DE_MOUSE_BUTTON_MIDDLE: Middle mouse button (usually the scroll wheel).
- * - H2DE_MOUSE_BUTTON_LEFT_AND_RIGHT: Both left and right buttons.
- * - H2DE_MOUSE_BUTTON_ALL: All mouse buttons (left, right, and middle).
- */
-enum H2DE_MouseButton {
-    H2DE_MOUSE_BUTTON_LEFT              = 0b0001,   /**< Left mouse button */
-    H2DE_MOUSE_BUTTON_RIGHT             = 0b0010,   /**< Right mouse button */
-    H2DE_MOUSE_BUTTON_MIDDLE            = 0b0100,   /**< Middle mouse button (scroll wheel) */
-    H2DE_MOUSE_BUTTON_LEFT_AND_RIGHT    = 0b0011,   /**< Both left and right buttons */
-    H2DE_MOUSE_BUTTON_ALL               = 0b0111,   /**< All mouse buttons */
-};
-
-/**
  * @enum H2DE_ScaleMode
  * @brief Defines how textures or sprites are scaled.
  * 
@@ -196,18 +148,4 @@ enum H2DE_Cursor {
     H2DE_CURSOR_SIZEALL,        /**< Move in all directions */
     H2DE_CURSOR_NO,             /**< Not allowed / unavailable */
     H2DE_CURSOR_HAND,           /**< Clickable element pointer */
-};
-
-/**
- * @enum H2DE_InputType
- * @brief Defines the types of input allowed for input fields.
- * 
- * - TEXT: Standard text input, allowing letters, numbers, and symbols.
- * - NUMBER: Numeric input only, restricting the user to digits.
- * - ALL: Accepts any character type without restriction.
- */
-enum H2DE_InputType {
-    H2DE_INPUT_TYPE_TEXT        = 0b01,     /**< Standard text input (letters, symbols) */
-    H2DE_INPUT_TYPE_NUMBER      = 0b10,     /**< Numeric input only (digits) */
-    H2DE_INPUT_TYPE_ALL         = 0b11,     /**< Accepts any character type without restriction */
 };

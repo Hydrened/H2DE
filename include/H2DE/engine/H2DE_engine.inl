@@ -38,3 +38,11 @@ H2DE_Object_T* H2DE_Engine::createObject(const H2DE_ObjectData& objectData, H2DE
 
     return object;
 }
+
+template<typename H2DE_Module>
+void H2DE_Engine::destroyModule(H2DE_Module* module) {
+    if (module != nullptr) {
+        delete module;
+        module = nullptr;
+    }
+}

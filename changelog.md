@@ -1,3 +1,7 @@
+## H2DE-4.3.2
+#### ADDED
+- frame-synced events
+
 ## H2DE-4.3.1
 #### ADDED
 - up / down arrow controls for input object

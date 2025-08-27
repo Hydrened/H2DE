@@ -284,6 +284,7 @@ public:
     H2DE_Timeline* setInterfaceWidth(float width, uint32_t duration, H2DE_Easing easing = H2DE_EASING_LINEAR, const std::function<void()>& completed = nullptr, bool pauseSensitive = true);
 
     friend class H2DE_Engine;
+    friend class H2DE_EventManager;
     friend class H2DE_Renderer;
 
 private:
