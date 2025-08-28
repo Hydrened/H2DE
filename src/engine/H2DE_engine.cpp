@@ -96,7 +96,7 @@ void H2DE_Engine::run() {
 
             _eventManager->handle();
 
-            if (!_debugModeEnabled) {
+            if (!_debugModeEnabled) [[likely]] {
                 _update();
                 _renderer->render();
             }
@@ -110,7 +110,7 @@ void H2DE_Engine::run() {
                 lastSec = now;
             }
 
-            if (_debugModeEnabled) {
+            if (_debugModeEnabled) [[unlikely]] {
                 _audio->_pause();
             }
 
@@ -134,7 +134,7 @@ void H2DE_Engine::_update() {
     _chronoManager->update();
     _audio->_update();
 
-    if (!_paused) {
+    if (!_paused) [[likely]] {
         if (_updateCall) {
             _updateCall();
         }

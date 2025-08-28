@@ -56,10 +56,10 @@ enum H2DE_Easing {
  * Useful for indicating the facing direction of an object, sprite, or tile.
  */
 enum H2DE_Face {
-    H2DE_FACE_TOP       = 0b00,     /**< Facing upwards (top) */
-    H2DE_FACE_RIGHT     = 0b01,     /**< Facing right */
-    H2DE_FACE_BOTTOM    = 0b10,     /**< Facing downwards (bottom) */
-    H2DE_FACE_LEFT      = 0b11,     /**< Facing left */
+    H2DE_FACE_TOP       = 0x00,     /**< Facing upwards (top) */
+    H2DE_FACE_RIGHT     = 0x01,     /**< Facing right */
+    H2DE_FACE_BOTTOM    = 0x02,     /**< Facing downwards (bottom) */
+    H2DE_FACE_LEFT      = 0x03,     /**< Facing left */
 };
 
 /**
@@ -67,21 +67,21 @@ enum H2DE_Face {
  * @brief Defines text alignment options combining vertical and horizontal positions.
  * 
  * Bits encode vertical and horizontal alignment to position text within a rectangle:
- * - Vertical: Top (0b00001000), Center (0b00010000), Bottom (0b00100000)
- * - Horizontal: Left (0b00000001), Center (0b00000010), Right (0b00000100)
+ * - Vertical: Top, Center, Bottom
+ * - Horizontal: Left, Center, Right
  * 
  * Allows specifying precise alignment like top-left, center-center, bottom-right, etc.
  */
 enum H2DE_TextAlign {
-    H2DE_TEXT_ALIGN_TOP_LEFT        = 0b00001001,   /**< Align top vertically and left horizontally */
-    H2DE_TEXT_ALIGN_TOP_CENTER      = 0b00001010,   /**< Align top vertically and center horizontally */
-    H2DE_TEXT_ALIGN_TOP_RIGHT       = 0b00001100,   /**< Align top vertically and right horizontally */
-    H2DE_TEXT_ALIGN_CENTER_LEFT     = 0b00010001,   /**< Align center vertically and left horizontally */
-    H2DE_TEXT_ALIGN_CENTER_CENTER   = 0b00010010,   /**< Align center vertically and center horizontally */
-    H2DE_TEXT_ALIGN_CENTER_RIGHT    = 0b00010100,   /**< Align center vertically and right horizontally */
-    H2DE_TEXT_ALIGN_BOTTOM_LEFT     = 0b00100001,   /**< Align bottom vertically and left horizontally */
-    H2DE_TEXT_ALIGN_BOTTOM_CENTER   = 0b00100010,   /**< Align bottom vertically and center horizontally */
-    H2DE_TEXT_ALIGN_BOTTOM_RIGHT    = 0b00100100,   /**< Align bottom vertically and right horizontally */
+    H2DE_TEXT_ALIGN_TOP_LEFT        = 0x09,     /**< Align top vertically and left horizontally */
+    H2DE_TEXT_ALIGN_TOP_CENTER      = 0x0A,     /**< Align top vertically and center horizontally */
+    H2DE_TEXT_ALIGN_TOP_RIGHT       = 0x0C,     /**< Align top vertically and right horizontally */
+    H2DE_TEXT_ALIGN_CENTER_LEFT     = 0x11,     /**< Align center vertically and left horizontally */
+    H2DE_TEXT_ALIGN_CENTER_CENTER   = 0x12,     /**< Align center vertically and center horizontally */
+    H2DE_TEXT_ALIGN_CENTER_RIGHT    = 0x14,     /**< Align center vertically and right horizontally */
+    H2DE_TEXT_ALIGN_BOTTOM_LEFT     = 0x21,     /**< Align bottom vertically and left horizontally */
+    H2DE_TEXT_ALIGN_BOTTOM_CENTER   = 0x22,     /**< Align bottom vertically and center horizontally */
+    H2DE_TEXT_ALIGN_BOTTOM_RIGHT    = 0x24,     /**< Align bottom vertically and right horizontally */
 };
 
 /**

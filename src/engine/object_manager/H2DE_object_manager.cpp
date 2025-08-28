@@ -56,11 +56,13 @@ H2DE_Object* H2DE_ObjectManager::handleEvents_mouseDown_getClickedObject(SDL_Eve
 
         H2DE_ButtonObject* button = dynamic_cast<H2DE_ButtonObject*>(object);
 
-        H2DE_MouseButton mouseButton = (button != H2DE_NULL_OBJECT)
+        H2DE_MouseButton requiredMouseButton = (button != H2DE_NULL_OBJECT)
             ? button->_buttonObjectData.mouseButton
             : H2DE_MOUSE_BUTTON_LEFT;
 
-        bool isCorrectClick = ((mouseButton & H2DE_ObjectManager::getH2DEButton(event.button.button)) != 0);
+        H2DE_MouseButton mouseButton = H2DE_ObjectManager::getH2DEButton(event.button.button);
+
+        bool isCorrectClick = ((requiredMouseButton & mouseButton) == mouseButton);
         if (isCorrectClick) {
             return object;
         }
@@ -198,7 +200,9 @@ H2DE_MouseButton H2DE_ObjectManager::getH2DEButton(Uint8 sdlButton) {
         case SDL_BUTTON_LEFT: return H2DE_MOUSE_BUTTON_LEFT;
         case SDL_BUTTON_RIGHT: return H2DE_MOUSE_BUTTON_RIGHT;
         case SDL_BUTTON_MIDDLE: return H2DE_MOUSE_BUTTON_MIDDLE;
-        default: return H2DE_MOUSE_BUTTON_LEFT;
+        case SDL_BUTTON_X1: return H2DE_MOUSE_BUTTON_X1;
+        case SDL_BUTTON_X2: return H2DE_MOUSE_BUTTON_X2;
+        default: return H2DE_MOUSE_BUTTON_NONE;
     }
 }
 

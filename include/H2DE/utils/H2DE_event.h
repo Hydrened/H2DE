@@ -148,8 +148,11 @@ enum H2DE_MouseButton {
     H2DE_MOUSE_BUTTON_LEFT              = 0x01,     /**< Left mouse button */
     H2DE_MOUSE_BUTTON_RIGHT             = 0x02,     /**< Right mouse button */
     H2DE_MOUSE_BUTTON_MIDDLE            = 0x04,     /**< Middle mouse button (wheel click) */
-    H2DE_MOUSE_BUTTON_LEFT_AND_RIGHT    = 0x03,     /**< Combination of left + right buttons */
-    H2DE_MOUSE_BUTTON_ALL               = 0x07,     /**< All mouse buttons pressed */
+    H2DE_MOUSE_BUTTON_X1                = 0x08,     /**< First extra mouse button */
+    H2DE_MOUSE_BUTTON_X2                = 0x10,     /**< Second extra mouse button */
+    H2DE_MOUSE_BUTTON_LEFT_OR_RIGHT     = 0x03,     /**< Left or right button pressed */
+    H2DE_MOUSE_BUTTON_X1_OR_X2          = 0x18,     /**< Either extra button (X1 or X2) pressed */
+    H2DE_MOUSE_BUTTON_ALL               = 0x1F,     /**< Any mouse button pressed */
 };
 
 /**

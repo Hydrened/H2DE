@@ -52,7 +52,6 @@ void H2DE_EventManager::handleSDL() {
                 break;
 
             case SDL_MOUSEWHEEL:
-                H2DE::printl(eventSDL.wheel.y);
                 handleH2DE_createEventsFromMouseWheel(eventSDL.wheel.y);
                 break;
             
@@ -88,8 +87,8 @@ void H2DE_EventManager::handleH2DE_createEventsFromVk() {
         bool downEvent = (!wasDown && isDown);
         bool upEvent = (wasDown && !isDown);
 
-        H2DE_MouseButton button = static_cast<H2DE_MouseButton>(vk);
         H2DE_Key key = static_cast<H2DE_Key>(vk);
+        H2DE_MouseButton button = H2DE_EventManager::getH2DEMouseButton(vk);
 
         bool isEventValid = (downEvent || upEvent);
         if (!isEventValid) {
@@ -159,4 +158,30 @@ H2DE_PixelPos H2DE_EventManager::getCursorPos() {
     GetCursorPos(&p);
 
     return { p.x, p.y };
+}
+
+H2DE_MouseButton H2DE_EventManager::getH2DEMouseButton(VK vk) {
+    VK res;
+
+    switch (vk) {
+        case VK_LBUTTON:
+        case VK_RBUTTON:
+        case VK_MBUTTON:
+            res = vk;
+            break;
+
+        case VK_XBUTTON1:
+            res = H2DE_MOUSE_BUTTON_X1;
+            break;
+
+        case VK_XBUTTON2:
+            res = H2DE_MOUSE_BUTTON_X2;
+            break;
+
+        default:
+            res = H2DE_MOUSE_BUTTON_NONE;
+            break;
+    }
+
+    return static_cast<H2DE_MouseButton>(res);
 }

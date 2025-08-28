@@ -1,3 +1,7 @@
+## H2DE-4.3.3
+#### ADDED
+- x1 and x2 mouse buttons
+
 ## H2DE-4.3.2
 #### ADDED
 - frame-synced events

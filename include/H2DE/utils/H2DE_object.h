@@ -16,9 +16,9 @@ class H2DE_Timeline;
  * - ALL: Accepts any character type without restriction.
  */
 enum H2DE_InputType {
-    H2DE_INPUT_TYPE_TEXT        = 0b01,     /**< Standard text input (letters, symbols) */
-    H2DE_INPUT_TYPE_NUMBER      = 0b10,     /**< Numeric input only (digits) */
-    H2DE_INPUT_TYPE_ALL         = 0b11,     /**< Accepts any character type without restriction */
+    H2DE_INPUT_TYPE_TEXT        = 0x01,     /**< Standard text input (letters, symbols) */
+    H2DE_INPUT_TYPE_NUMBER      = 0x02,     /**< Numeric input only (digits) */
+    H2DE_INPUT_TYPE_ALL         = 0x03,     /**< Accepts any character type without restriction */
 };
 
 /**

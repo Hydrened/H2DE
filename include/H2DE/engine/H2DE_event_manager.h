@@ -37,6 +37,7 @@ private:
         return (vk > 0x00 && vk != 0x03 && vk < 0x07);
     }
     static H2DE_PixelPos getCursorPos();
+    static H2DE_MouseButton getH2DEMouseButton(VK vk);
 
     friend class H2DE_Engine;
 };
