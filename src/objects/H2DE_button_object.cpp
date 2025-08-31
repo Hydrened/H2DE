@@ -1,22 +1,8 @@
 #include "H2DE/objects/H2DE_button_object.h"
 
 // INIT
-H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod) : H2DE_Object(e, od), _buttonObjectData(bod) {
+H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod) : H2DE_TextSurfaceObject(e, od, &bod.text), _buttonObjectData(bod) {
     _buttonObjectData.text.text = H2DE_TextObject::_getFormatedText(_buttonObjectData.text.text);
-
-    _refreshSurfaceBuffers();
-    _refreshMaxRadius();
-}
-
-// CLEANUP
-H2DE_ButtonObject::~H2DE_ButtonObject() {
-    if (_textObject != H2DE_NULL_OBJECT) {
-        if (_engine->destroyObject(_textObject)) {
-            _textObject = H2DE_NULL_OBJECT;
-        }
-    }
-
-    H2DE_Object::_destroySurfaces(_surfaces);
 }
 
 // ACTIONS
@@ -33,13 +19,6 @@ void H2DE_ButtonObject::_refreshSurfaceBuffers() {
     _surfaceBuffers.reserve(sortedSurfaces.size());
     _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
     _rescaleSurfaceBuffers();
-}
-
-void H2DE_ButtonObject::_refreshMaxRadius() {
-    float maxHitboxesRadius = _getMaxHitboxRadius();
-    float maxSurfaceRadius = _getMaxSurfaceRadius(_surfaces);
-    
-    _maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
 }
 
 void H2DE_ButtonObject::mouseDown() {

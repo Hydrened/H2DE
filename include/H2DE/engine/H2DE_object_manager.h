@@ -9,6 +9,7 @@ private:
 
     std::vector<H2DE_Object*> hoverObjects;
     std::vector<H2DE_ButtonObject*> buttons;
+    std::vector<H2DE_CheckboxObject*> checkboxes;
     std::vector<H2DE_InputObject*> inputs;
 
     H2DE_Object* hoveredObject = H2DE_NULL_OBJECT;
@@ -26,6 +27,7 @@ private:
     H2DE_Object* handleEvents_mouseDown_getClickedObject(SDL_Event event);
     void handleEvents_mouseDown_button(H2DE_ButtonObject* button);
     void handleEvents_mouseDown_button_mouseDown(H2DE_ButtonObject* button);
+    void handleEvents_mouseDown_checkbox(H2DE_CheckboxObject* checkbox);
     void handleEvents_mouseDown_input(H2DE_InputObject* input);
     void handleEvents_mouseDown_input_focus(H2DE_InputObject* input);
     void handleEvents_mouseDown_input_blur(H2DE_InputObject* input);
@@ -57,6 +59,7 @@ private:
     template<typename H2DE_ObjectType>
     void refreshBuffer(std::vector<H2DE_ObjectType*>& buffer, const std::vector<H2DE_Object*>& objects);
     void refreshButtonBuffer(const std::vector<H2DE_Object*>& objects);
+    void refreshCheckboxBuffer(const std::vector<H2DE_Object*>& objects);
     void refreshInputBuffer(const std::vector<H2DE_Object*>& objects);
     template<typename H2DE_ObjectType>
     void sortBuffer(std::vector<H2DE_ObjectType*>& buffer);

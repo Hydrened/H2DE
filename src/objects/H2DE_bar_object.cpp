@@ -1,40 +1,6 @@
 #include "H2DE/objects/H2DE_bar_object.h"
 #include "H2DE/engine/H2DE_lerp_manager.h"
 
-// INIT
-H2DE_BarObject::H2DE_BarObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_BarObjectData& bod) : H2DE_Object(e, od), _barObjectData(bod) {
-    _refreshSurfaceBuffers();
-    _refreshMaxRadius();
-}
-
-// CLEANUP
-H2DE_BarObject::~H2DE_BarObject() {
-    H2DE_Object::_destroySurfaces(_fillSurfaces);
-    H2DE_Object::_destroySurfaces(_backgroundSurfaces);
-}
-
-// ACTIONS
-void H2DE_BarObject::_refreshSurfaceBuffers() {
-    const std::vector<H2DE_Surface*> sortedBackgroundSurfaces = H2DE_Object::_getSortedSurfaces(_backgroundSurfaces);
-    std::vector<H2DE_Surface*> sortedFillSurfaces = H2DE_Object::_getSortedSurfaces(_fillSurfaces);
-
-    _surfaceBuffers.clear();
-    _surfaceBuffers.reserve(sortedBackgroundSurfaces.size() + sortedFillSurfaces.size());
-    _surfaceBuffers.insert(_surfaceBuffers.end(), sortedBackgroundSurfaces.begin(), sortedBackgroundSurfaces.end());
-    _surfaceBuffers.insert(_surfaceBuffers.end(), sortedFillSurfaces.begin(), sortedFillSurfaces.end());
-    _surfaceBuffers = H2DE_Object::_getSortedSurfaces(_surfaceBuffers);
-
-    _rescaleSurfaceBuffers();
-}
-
-void H2DE_BarObject::_refreshMaxRadius() {
-    float maxHitboxesRadius = _getMaxHitboxRadius();
-    float maxFillSurfaceRadius = _getMaxSurfaceRadius(_fillSurfaces);
-    float maxBackgroundSurfaceRadius = _getMaxSurfaceRadius(_backgroundSurfaces);
-
-    _maxRadius = H2DE::max(maxHitboxesRadius, maxFillSurfaceRadius, maxBackgroundSurfaceRadius);
-}
-
 // GETTER
 bool H2DE_BarObject::_isSurfaceFill(H2DE_Surface* surface) const {
     for (const auto& [name, fillSurface] : _fillSurfaces) {

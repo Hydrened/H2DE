@@ -448,11 +448,12 @@ protected:
     std::vector<H2DE_Timeline*> _timelinesBuffer = {};
     std::unordered_map<std::string, H2DE_Hitbox> _hitboxes = {};
     float _maxRadius;
+    bool _disabled = false;
 
     H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData) noexcept : _engine(engine), _objectData(objectData) {};
     virtual ~H2DE_Object();
 
-    static void _destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
+    static void _destroySurfaces(H2DE_SurfaceMap& surfaces);
     static void _destroySurfaces(std::vector<H2DE_Surface*>& surfaces);
     void _removeTimeline(H2DE_Timeline* timeline);
 
@@ -469,18 +470,18 @@ protected:
     }
 
     template<typename H2DE_Surface_T>
-    H2DE_Surface_T* _addSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData);
+    H2DE_Surface_T* _addSurface(H2DE_SurfaceMap& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData);
 
-    bool _removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
+    bool _removeSurface(H2DE_SurfaceMap& surfaces, const std::string& name);
 
     template<typename H2DE_Surface_T>
-    static H2DE_Surface_T* _getSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name);
+    static H2DE_Surface_T* _getSurface(const H2DE_SurfaceMap& surfaces, const std::string& name);
 
-    static const std::vector<H2DE_Surface*> _getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces);
+    static const std::vector<H2DE_Surface*> _getSortedSurfaces(H2DE_SurfaceMap& surfaces);
     static const std::vector<H2DE_Surface*> _getSortedSurfaces(std::vector<H2DE_Surface*>& surfaces);
     static const std::array<H2DE_Translate, 4> _getCorners(const H2DE_Transform& transform);
 
-    static inline bool _hasSurface(const std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+    static inline bool _hasSurface(const H2DE_SurfaceMap& surfaces, const std::string& name) {
         return (surfaces.find(name) != surfaces.end()); 
     }
 
@@ -489,7 +490,7 @@ protected:
     static void _rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) noexcept;
 
     float _getMaxHitboxRadius() const;
-    float _getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const;
+    float _getMaxSurfaceRadius(const H2DE_SurfaceMap& surfaces) const;
 
 private:
     bool _hidden = false;
@@ -500,9 +501,14 @@ private:
 
 #include <H2DE/objects/H2DE_object.inl>
 
+#include <H2DE/objects/H2DE_single_surface_object.h>
+#include <H2DE/objects/H2DE_dual_surface_object.h>
+#include <H2DE/objects/H2DE_text_surface_object.h>
+
 #include <H2DE/objects/H2DE_bar_object.h>
 #include <H2DE/objects/H2DE_basic_object.h>
 #include <H2DE/objects/H2DE_button_object.h>
+#include <H2DE/objects/H2DE_checkbox_object.h>
 #include <H2DE/objects/H2DE_input_object.h>
 #include <H2DE/objects/H2DE_text_object.h>
 #include <H2DE/objects/H2DE_timer_object.h>

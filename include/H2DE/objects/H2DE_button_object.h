@@ -1,64 +1,9 @@
 #pragma once
 
-/**
- * @file H2DE_button_object.h
- * @brief Defines the H2DE_ButtonObject class used for interactive button elements.
- * 
- * This header declares the H2DE_ButtonObject class, which inherits from H2DE_Object and
- * provides a customizable 2D button with support for multiple surfaces, text labels,
- * and user interaction events such as mouse down, up, hover, and blur.
- * 
- * Buttons can have callbacks assigned for these events, allowing for animations and
- * logic triggered on user input. They can be enabled or disabled.
- */
-
 #include <H2DE/objects/H2DE_object.h>
-class H2DE_TextObject;
 
-/**
- * @class H2DE_ButtonObject
- * @brief A flexible 2D button object supporting surfaces, text, and interaction callbacks.
- * 
- * H2DE_ButtonObject extends H2DE_Object to implement clickable and interactive buttons.
- * It manages a collection of surfaces (textures, sprites, colors) identified by unique names,
- * and supports text rendering inside the button via an optional H2DE_TextObject.
- * 
- * Interaction events such as mouseDown, mouseUp, mouseHover, and mouseBlur can be assigned
- * user callbacks that receive the button instance and a timeline ID for animation control.
- * The button can be enabled or disabled.
- * 
- * Typical use includes UI buttons for menus, HUD, or gameplay controls with visual feedback.
- */
-class H2DE_ButtonObject : public H2DE_Object {
+class H2DE_ButtonObject : public H2DE_TextSurfaceObject {
 public:
-    /**
-     * @brief Add a surface to the object.
-     * 
-     * Adds a new surface (texture, sprite, or color) to the object.
-     * The surface is stored and identified by a unique name.
-     * 
-     * @tparam H2DE_Surface_T The type of surface to add (e.g. Texture, Sprite, Color).
-     * @param name The unique name to associate with the surface.
-     * @param surfaceData Common parameters such as position, size, etc.
-     * @param specificData Specific data for the surface type.
-     * @return A pointer to the created surface, or nullptr if it failed.
-     */
-    template<typename H2DE_Surface_T>
-    inline H2DE_Surface_T* addSurface(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
-        return H2DE_Object::_addSurface<H2DE_Surface_T>(_surfaces, name, surfaceData, specificData);
-    }
-    /**
-     * @brief Remove a surface from the object.
-     * 
-     * Removes a surface previously added by its unique name.
-     * 
-     * @param name The name of the surface to remove.
-     * @return true if the surface was found and removed, false otherwise.
-     */
-    inline bool removeSurface(const std::string& name) {
-        return H2DE_Object::_removeSurface(_surfaces, name);
-    }
-
     /**
      * @brief Enable the button (makes it active).
      */
@@ -148,51 +93,6 @@ public:
     }
 
     /**
-     * @brief Get all surfaces of the object.
-     * 
-     * Returns a map of all currently attached surfaces. Each entry maps the surface name
-     * to its base `H2DE_Surface` pointer.
-     * 
-     * @return A map of surface names to their respective surface pointers.
-     */
-    inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const noexcept {
-        return _surfaces; 
-    }
-    /**
-     * @brief Get a surface by name and cast it to a specific type.
-     * 
-     * Retrieves a surface of a specific type from the object. If the name is not found or
-     * the type is incorrect, returns nullptr.
-     * 
-     * @tparam H2DE_Surface_T The expected surface type (Texture, Sprite, Color, etc.).
-     * @param name The name of the surface to retrieve.
-     * @return A pointer to the surface cast to the specified type, or nullptr.
-     */
-    template<typename H2DE_Surface_T>
-    inline H2DE_Surface_T* getSurface(const std::string& name) const {
-        return H2DE_Object::_getSurface<H2DE_Surface_T>(_surfaces, name); 
-    }
-    /**
-     * @brief Checks whether a surface with the given name exists.
-     * @param name Name of the surface to check.
-     * @return true if the surface exists, false otherwise.
-     */
-    inline bool hasSurface(const std::string& name) const {
-        return H2DE_Object::_hasSurface(_surfaces, name);
-    }
-    /**
-     * @brief Get the text object associated with the button.
-     * 
-     * Returns a pointer to the `H2DE_TextObject` used for rendering
-     * any text label or content inside the button.
-     * 
-     * @return Pointer to the button's text object, or nullptr if none.
-     */
-    inline H2DE_TextObject* getTextObject() const noexcept {
-        return _textObject; 
-    }
-
-    /**
      * @brief Set the text content of the button.
      * 
      * Updates the internal text object with the provided string.
@@ -271,15 +171,9 @@ public:
 private:
     H2DE_ButtonObjectData _buttonObjectData;
 
-    H2DE_TextObject* _textObject = H2DE_NULL_OBJECT;
-    std::unordered_map<std::string, H2DE_Surface*> _surfaces = {};
-
-    bool _disabled = false;
-
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
-    ~H2DE_ButtonObject() override;
+    ~H2DE_ButtonObject() override = default;
 
     void _refreshTextObject();
     void _refreshSurfaceBuffers() override;
-    void _refreshMaxRadius() override;
 };

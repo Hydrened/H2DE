@@ -8,7 +8,7 @@ H2DE_Object::~H2DE_Object() {
     _stopTimelines();
 }
 
-void H2DE_Object::_destroySurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
+void H2DE_Object::_destroySurfaces(H2DE_SurfaceMap& surfaces) {
     for (const auto& [name, surface] : surfaces) {
         delete surface;
     }
@@ -107,7 +107,7 @@ void H2DE_Object::_updateTimelineBuffer() {
 // ACTIONS
 
 // -- surfaces
-bool H2DE_Object::_removeSurface(std::unordered_map<std::string, H2DE_Surface*>& surfaces, const std::string& name) {
+bool H2DE_Object::_removeSurface(H2DE_SurfaceMap& surfaces, const std::string& name) {
     auto it = surfaces.find(name);
 
     bool removed = (it != surfaces.end());
@@ -201,7 +201,7 @@ H2DE_TextObject* H2DE_Object::_refreshTextObject(H2DE_TextObject* textObject, co
 }
 
 // GETTER
-const std::vector<H2DE_Surface*> H2DE_Object::_getSortedSurfaces(std::unordered_map<std::string, H2DE_Surface*>& surfaces) {
+const std::vector<H2DE_Surface*> H2DE_Object::_getSortedSurfaces(H2DE_SurfaceMap& surfaces) {
     std::vector<H2DE_Surface*> res;
     res.reserve(surfaces.size());
 
@@ -278,7 +278,7 @@ float H2DE_Object::_getMaxHitboxRadius() const {
     return std::sqrt(res);
 }
 
-float H2DE_Object::_getMaxSurfaceRadius(const std::unordered_map<std::string, H2DE_Surface*>& surfaces) const {
+float H2DE_Object::_getMaxSurfaceRadius(const H2DE_SurfaceMap& surfaces) const {
     float res = 0.0f;
     const H2DE_Translate world_objectTranslate = _objectData.transform.translate;
 

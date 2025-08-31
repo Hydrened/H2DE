@@ -1,67 +1,10 @@
 #pragma once
 
-/**
- * @file H2DE_input_object.h
- * @brief Defines the H2DE_InputObject class used for interactive text input fields.
- * 
- * This header declares the H2DE_InputObject class, which inherits from H2DE_Object and
- * provides a customizable 2D input field with support for text content, styling via H2DE_Text,
- * and input constraints such as maximum length and allowed input types.
- * 
- * Input fields can have callbacks assigned for events such as onInput, onFocus, onBlur,
- * and onSubmit, allowing for animations and logic triggered on user interaction.
- * After submission, the input automatically loses focus, triggering the onBlur callback if set.
- */
-
 #include <H2DE/objects/H2DE_object.h>
 class H2DE_TextObject;
 
-/**
- * @class H2DE_InputObject
- * @brief A flexible 2D input field supporting text input, styling, and interaction callbacks.
- * 
- * H2DE_InputObject extends H2DE_Object to implement interactive text input fields.
- * It manages text content, styling via H2DE_Text, and input constraints such as max length and allowed types.
- * 
- * Interaction events such as onInput, onFocus, onBlur, and onSubmit can be assigned
- * user callbacks that receive an H2DE_InputEventData struct with information about
- * the input state and typed characters. After submission, the input automatically
- * loses focus, triggering the onBlur callback if set.
- * 
- * Typical use includes UI text fields for menus, forms, chat boxes, or other
- * text input scenarios within a 2D game or application interface.
- */
-class H2DE_InputObject : public H2DE_Object {
+class H2DE_InputObject : public H2DE_SingleSurfaceObject {
 public:
-    /**
-     * @brief Add a surface to the object.
-     * 
-     * Adds a new surface (texture, sprite, or color) to the object.
-     * The surface is stored and identified by a unique name.
-     * 
-     * @tparam H2DE_Surface_T The type of surface to add (e.g. Texture, Sprite, Color).
-     * @param name The unique name to associate with the surface.
-     * @param surfaceData Common parameters such as position, size, etc.
-     * @param specificData Specific data for the surface type.
-     * @return A pointer to the created surface, or nullptr if it failed.
-     */
-    template<typename H2DE_Surface_T>
-    inline H2DE_Surface_T* addSurface(const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
-        return H2DE_Object::_addSurface<H2DE_Surface_T>(_surfaces, name, surfaceData, specificData);
-    }
-
-    /**
-     * @brief Remove a surface from the object.
-     * 
-     * Removes a surface previously added by its unique name.
-     * 
-     * @param name The name of the surface to remove.
-     * @return true if the surface was found and removed, false otherwise.
-     */
-    inline bool removeSurface(const std::string& name) {
-        return H2DE_Object::_removeSurface(_surfaces, name);
-    }
-
     /**
      * @brief Enable the input (makes it active).
      */
@@ -157,40 +100,6 @@ public:
     constexpr bool isDisabled() const noexcept {
         return _disabled; 
     }
-
-    /**
-     * @brief Get all surfaces of the object.
-     * 
-     * Returns a map of all currently attached surfaces. Each entry maps the surface name
-     * to its base `H2DE_Surface` pointer.
-     * 
-     * @return A map of surface names to their respective surface pointers.
-     */
-    inline std::unordered_map<std::string, H2DE_Surface*> getSurfaces() const noexcept {
-        return _surfaces; 
-    }
-    /**
-     * @brief Get a surface by name and cast it to a specific type.
-     * 
-     * Retrieves a surface of a specific type from the object. If the name is not found or
-     * the type is incorrect, returns nullptr.
-     * 
-     * @tparam H2DE_Surface_T The expected surface type (Texture, Sprite, Color, etc.).
-     * @param name The name of the surface to retrieve.
-     * @return A pointer to the surface cast to the specified type, or nullptr.
-     */
-    template<typename H2DE_Surface_T>
-    inline H2DE_Surface_T* getSurface(const std::string& name) const {
-        return H2DE_Object::_getSurface<H2DE_Surface_T>(_surfaces, name); 
-    }
-    /**
-     * @brief Checks whether a surface with the given name exists.
-     * @param name Name of the surface to check.
-     * @return true if the surface exists, false otherwise.
-     */
-    inline bool hasSurface(const std::string& name) const {
-        return H2DE_Object::_hasSurface(_surfaces, name);
-    }
     /**
      * @brief Get the text object associated with the input.
      * 
@@ -272,9 +181,6 @@ private:
     H2DE_TextObject* _textObject = H2DE_NULL_OBJECT;
     int _cursorPosition = -1;
     H2DE_Color* _cursor = H2DE_NULL_SURFACE;
-    std::unordered_map<std::string, H2DE_Surface*> _surfaces = {};
-
-    bool _disabled = false;
 
     H2DE_InputObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_InputObjectData& inputObjectData);
     ~H2DE_InputObject() override;

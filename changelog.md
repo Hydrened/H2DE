@@ -1,3 +1,7 @@
+## H2DE-4.3.4
+#### ADDED
+- checkbox object
+
 ## H2DE-4.3.3
 #### ADDED
 - x1 and x2 mouse buttons

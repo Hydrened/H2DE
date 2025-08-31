@@ -466,6 +466,7 @@ private:
     void _updateObjects();
 
     void _refreshObjectManagerButtons();
+    void _refreshObjectManagerCheckboxes();
     void _refreshObjectManagerInputs();
 
     void _destroy();

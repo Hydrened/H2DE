@@ -4,6 +4,7 @@
 #include <H2DE/utils/H2DE_utils.h>
 class H2DE_Object;
 class H2DE_ButtonObject;
+class H2DE_CheckboxObject;
 class H2DE_InputObject;
 class H2DE_Timeline;
 
@@ -47,9 +48,23 @@ public:
     H2DE_ButtonObject* button = nullptr;        /**< Pointer to the button that triggered the event. */
 
 private:
+    constexpr H2DE_ButtonEventData() noexcept = default;
     constexpr H2DE_ButtonEventData(H2DE_ButtonObject* button) noexcept : button(button) {}
 
     friend class H2DE_ButtonObject;
+    friend class H2DE_ObjectManager;
+};
+
+struct H2DE_CheckboxEventData {
+public:
+    H2DE_CheckboxObject* checkbox = nullptr;
+    bool checked = false;
+
+private:
+    constexpr H2DE_CheckboxEventData() noexcept = default;
+    constexpr H2DE_CheckboxEventData(H2DE_CheckboxObject* checkbox, bool checked) noexcept : checkbox(checkbox), checked(checked) {}
+
+    friend class H2DE_CheckboxObject;
     friend class H2DE_ObjectManager;
 };
 
@@ -133,6 +148,11 @@ struct H2DE_ButtonObjectData {
     std::function<void(H2DE_ButtonEventData)> onHover = nullptr;        /**< Callback triggered when the mouse hovers over the button. */
     std::function<void(H2DE_ButtonEventData)> onBlur = nullptr;         /**< Callback triggered when the mouse stops hovering the button. */
     H2DE_Cursor cursor = H2DE_CURSOR_ARROW;                             /**< Cursor to display when the mouse hovers over the button. */
+};
+
+struct H2DE_CheckboxObjectData {
+    bool checked = false;
+    std::function<void(H2DE_CheckboxEventData)> onChange = nullptr;
 };
 
 /**

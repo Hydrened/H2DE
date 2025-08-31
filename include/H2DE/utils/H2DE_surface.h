@@ -1,6 +1,10 @@
 #pragma once
 
 #include <H2DE/utils/H2DE_utils.h>
+class H2DE_Surface;
+
+/** @brief Map of surfaces (texture, sprite, color, border) identified by string key. */
+using H2DE_SurfaceMap = std::unordered_map<std::string, H2DE_Surface*>;
 
 /**
  * @enum H2DE_BorderType

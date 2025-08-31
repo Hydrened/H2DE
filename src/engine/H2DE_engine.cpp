@@ -207,6 +207,10 @@ void H2DE_Engine::_refreshObjectManagerButtons() {
     _objectManager->refreshButtonBuffer(_objects);
 }
 
+void H2DE_Engine::_refreshObjectManagerCheckboxes() {
+    _objectManager->refreshCheckboxBuffer(_objects);
+}
+
 void H2DE_Engine::_refreshObjectManagerInputs() {
     _objectManager->refreshInputBuffer(_objects);
 }

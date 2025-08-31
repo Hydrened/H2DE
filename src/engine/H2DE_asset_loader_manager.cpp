@@ -9,7 +9,7 @@ void H2DE_AssetLoaderManager::update() {
 }
 
 void H2DE_AssetLoaderManager::loadTexturesFromBuffer() {
-    static std::unordered_map<std::string, SDL_Texture*>& textures = engine->_renderer->textures;
+    std::unordered_map<std::string, SDL_Texture*>& textures = engine->_renderer->textures;
 
     if (surfaceBuffer.empty()) {
         return;
@@ -31,7 +31,7 @@ void H2DE_AssetLoaderManager::loadTexturesFromBuffer() {
 }
 
 void H2DE_AssetLoaderManager::loadSoundsFromBuffer() {
-    static std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->_audio->_sounds;
+    std::unordered_map<std::string, Mix_Chunk*>& sounds = engine->_audio->_sounds;
 
     if (soundBuffer.empty()) {
         return;
