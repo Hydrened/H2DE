@@ -273,8 +273,6 @@ private:
     void _refreshSurfaceBuffers() override;
     void _refreshMaxRadius() override;
 
-    static const std::string _getFormatedText(const std::string& text);
-
     const std::vector<_H2DE_Word> _getWords() const;
 
     float _getCharacterWidth(const char& c) const;

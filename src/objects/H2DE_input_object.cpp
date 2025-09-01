@@ -1,8 +1,8 @@
 #include "H2DE/objects/H2DE_input_object.h"
 
 // INIT
-H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_Object(e, od), _inputObjectData(iod) {
-    _inputObjectData.text.text = H2DE_TextObject::_getFormatedText(_inputObjectData.text.text);
+H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_TextSurfaceObject(e, od, iod.text), _inputObjectData(iod) {
+    _inputObjectData.text.text = H2DE_TextSurfaceObject::_getFormatedText(_inputObjectData.text.text);
     
     _initCursor();
     _refreshCursor();
@@ -26,10 +26,6 @@ H2DE_InputObject::~H2DE_InputObject() {
 }
 
 // ACTIONS
-void H2DE_InputObject::_refreshTextObject() {
-    _textObject = H2DE_Object::_refreshTextObject(_textObject, _inputObjectData.text);
-}
-
 void H2DE_InputObject::_refreshCursor() {
     bool isCursorPositionInvalid = (_cursorPosition == -1);
     bool hasNoText = (_textObject == H2DE_NULL_OBJECT);
@@ -56,24 +52,6 @@ void H2DE_InputObject::_refreshCursor() {
     _cursor->show();
 }
 
-void H2DE_InputObject::_refreshSurfaceBuffers() {
-    _refreshTextObject();
-
-    const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
-
-    _surfaceBuffers.clear();
-    _surfaceBuffers.reserve(sortedSurfaces.size());
-    _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
-    _rescaleSurfaceBuffers();
-}
-
-void H2DE_InputObject::_refreshMaxRadius() {
-    float maxHitboxesRadius = _getMaxHitboxRadius();
-    float maxSurfaceRadius = _getMaxSurfaceRadius(_surfaces);
-    
-    _maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
-}
-
 void H2DE_InputObject::input(unsigned char c) {
     if (_disabled) {
         return;
@@ -86,7 +64,7 @@ void H2DE_InputObject::input(unsigned char c) {
     char character = static_cast<char>(c);
 
     _inputObjectData.text.text = _inputObjectData.text.text + character;
-    _refreshTextObject();
+    _setText(_inputObjectData.text);
 
     if (_inputObjectData.onInput && !_disabled) {
         _inputObjectData.onInput({ this, _inputObjectData.text.text, character });
@@ -107,12 +85,14 @@ void H2DE_InputObject::submit() {
 
 // SETTER
 void H2DE_InputObject::setText(const std::string& text) {
-    if (H2DE_TextObject::_getFormatedText(text) == _inputObjectData.text.text) {
+    const std::string formatedText = H2DE_TextSurfaceObject::_getFormatedText(text);
+
+    if (formatedText == _inputObjectData.text.text) {
         return;
     }
 
-    _inputObjectData.text.text = H2DE_TextObject::_getFormatedText(text);
-    _refreshTextObject();
+    _inputObjectData.text.text = formatedText;
+    _setText(_inputObjectData.text);
 }
 
 void H2DE_InputObject::_setCursorPosition(int position) {

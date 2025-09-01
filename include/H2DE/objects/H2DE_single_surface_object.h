@@ -66,13 +66,14 @@ public:
         return H2DE_Object::_hasSurface(_surfaces, name);
     }
 
+    friend class H2DE_Engine;
+
 protected:
     H2DE_SurfaceMap _surfaces = {};
 
     H2DE_SingleSurfaceObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
     ~H2DE_SingleSurfaceObject() override;
 
-private:
     void _refreshSurfaceBuffers() override;
     void _refreshMaxRadius() override;
 };

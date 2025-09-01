@@ -3,7 +3,7 @@
 
 // INIT
 H2DE_TextObject::H2DE_TextObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TextObjectData& bod) : H2DE_Object(e, od), _textObjectData(bod) {
-    _textObjectData.text.text = _getFormatedText(_textObjectData.text.text);
+    _textObjectData.text.text = H2DE_TextSurfaceObject::_getFormatedText(_textObjectData.text.text);
 
     _refreshSurfaceBuffers();
     _refreshMaxRadius();
@@ -172,37 +172,13 @@ void H2DE_TextObject::_refreshMaxRadius() {
 
 // GETTER
 
-// -- format
-const std::string H2DE_TextObject::_getFormatedText(const std::string& text) {
-    if (text.length() < 2) {
-        return text;
-    }
-
-    std::string res = "";
-
-    for (int i = 1; i < text.length() - 1; i++) {
-        const char& pc = text.at(i - 1);
-        const char& cc = text.at(i);
-        const char& nc = text.at(i + 1);
-
-        bool isFriendReturn = (pc == '\n' || nc == '\n');
-        if (cc == ' ' && isFriendReturn) {
-            continue;
-        }
-
-        res += cc;
-    }
-
-    return text.substr(0, 1) + res + text.substr(text.length() - 1, 1);
-}
-
 // -- lines words
 const std::vector<H2DE_TextObject::_H2DE_Word> H2DE_TextObject::_getWords() const {
     if (_isTextNull()) {
         return {};
     }
 
-    const std::string formatedText = _getFormatedText(_textObjectData.text.text);
+    const std::string formatedText = H2DE_TextSurfaceObject::_getFormatedText(_textObjectData.text.text);
 
     std::vector<_H2DE_Word> res = {};
     _H2DE_Word currentWord = "";
@@ -356,11 +332,11 @@ float H2DE_TextObject::_getFixedFontSize() const {
 
 // -- no lerp
 void H2DE_TextObject::setText(const std::string& text) {
-    if (_getFormatedText(text) == _textObjectData.text.text) {
+    if (H2DE_TextSurfaceObject::_getFormatedText(text) == _textObjectData.text.text) {
         return;
     }
 
-    _textObjectData.text.text = _getFormatedText(text);
+    _textObjectData.text.text = H2DE_TextSurfaceObject::_getFormatedText(text);
     _refreshSurfaceBuffers();
 }
 

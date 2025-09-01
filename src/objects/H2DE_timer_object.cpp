@@ -2,7 +2,7 @@
 #include "H2DE/engine/H2DE_lerp_manager.h"
 
 // INIT
-H2DE_TimerObject::H2DE_TimerObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TimerObjectData& tod) : H2DE_Object(e, od), _timerObjectData(tod) {
+H2DE_TimerObject::H2DE_TimerObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TimerObjectData& tod) : H2DE_TextSurfaceObject(e, od, tod.text), _timerObjectData(tod) {
     _refreshSurfaceBuffers();
     _refreshMaxRadius();
     _initChrono();

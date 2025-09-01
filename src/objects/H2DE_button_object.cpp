@@ -1,26 +1,16 @@
 #include "H2DE/objects/H2DE_button_object.h"
 
 // INIT
-H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod) : H2DE_TextSurfaceObject(e, od, &bod.text), _buttonObjectData(bod) {
-    _buttonObjectData.text.text = H2DE_TextObject::_getFormatedText(_buttonObjectData.text.text);
+H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_ButtonObjectData& bod) : H2DE_TextSurfaceObject(e, od, bod.text), _buttonObjectData(bod) {
+    _buttonObjectData.text.text = H2DE_TextSurfaceObject::_getFormatedText(_buttonObjectData.text.text);
+}
+
+// CLEANUP
+H2DE_ButtonObject::~H2DE_ButtonObject() {
+    
 }
 
 // ACTIONS
-void H2DE_ButtonObject::_refreshTextObject() {
-    _textObject = H2DE_Object::_refreshTextObject(_textObject, _buttonObjectData.text);
-}
-
-void H2DE_ButtonObject::_refreshSurfaceBuffers() {
-    _refreshTextObject();
-
-    const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
-
-    _surfaceBuffers.clear();
-    _surfaceBuffers.reserve(sortedSurfaces.size());
-    _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
-    _rescaleSurfaceBuffers();
-}
-
 void H2DE_ButtonObject::mouseDown() {
     if (_buttonObjectData.onMouseDown && !_disabled) {
         _buttonObjectData.onMouseDown({ this });
@@ -47,10 +37,12 @@ void H2DE_ButtonObject::mouseBlur() {
 
 // SETTER
 void H2DE_ButtonObject::setText(const std::string& text) {
-    if (H2DE_TextObject::_getFormatedText(text) == _buttonObjectData.text.text) {
+    const std::string formatedText = H2DE_TextSurfaceObject::_getFormatedText(text);
+
+    if (formatedText == _buttonObjectData.text.text) {
         return;
     }
 
-    _buttonObjectData.text.text = H2DE_TextObject::_getFormatedText(text);
-    _refreshTextObject();
+    _buttonObjectData.text.text = formatedText;
+    _setText(_buttonObjectData.text);
 }

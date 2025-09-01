@@ -172,8 +172,5 @@ private:
     H2DE_ButtonObjectData _buttonObjectData;
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
-    ~H2DE_ButtonObject() override = default;
-
-    void _refreshTextObject();
-    void _refreshSurfaceBuffers() override;
+    ~H2DE_ButtonObject() override;
 };

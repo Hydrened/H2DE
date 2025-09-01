@@ -120,8 +120,8 @@ public:
 private:
     H2DE_BarObjectData _barObjectData;
 
-    H2DE_BarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData) : H2DE_DualSurfaceObject(engine, objectData), _barObjectData(barObjectData) {}
-    ~H2DE_BarObject() override = default;
+    H2DE_BarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
+    ~H2DE_BarObject() override;
 
     constexpr float _getFillBlend() const {
         return H2DE::clamp((getValue() - getMin()) / (getMax() - getMin()), 0.0f, 1.0f);

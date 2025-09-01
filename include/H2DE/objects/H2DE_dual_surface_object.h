@@ -127,6 +127,8 @@ public:
         return H2DE_Object::_hasSurface(_backgroundSurfaces, name);
     }
 
+    friend class H2DE_Engine;
+
 protected:
     H2DE_SurfaceMap _backgroundSurfaces = {};
     H2DE_SurfaceMap _fillSurfaces = {};
@@ -134,7 +136,6 @@ protected:
     H2DE_DualSurfaceObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
     ~H2DE_DualSurfaceObject() override;
 
-private:
     void _refreshSurfaceBuffers() override;
     void _refreshMaxRadius() override;
 };

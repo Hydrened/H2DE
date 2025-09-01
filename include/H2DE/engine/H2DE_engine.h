@@ -418,6 +418,9 @@ public:
     friend class H2DE_Camera;
     friend class H2DE_ObjectManager;
     friend class H2DE_Object;
+    friend class H2DE_SingleSurfaceObject;
+    friend class H2DE_DualSurfaceObject;
+    friend class H2DE_TextSurfaceObject;
     friend class H2DE_TextObject;
     friend class H2DE_InputObject;
     

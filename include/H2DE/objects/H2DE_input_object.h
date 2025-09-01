@@ -3,7 +3,7 @@
 #include <H2DE/objects/H2DE_object.h>
 class H2DE_TextObject;
 
-class H2DE_InputObject : public H2DE_SingleSurfaceObject {
+class H2DE_InputObject : public H2DE_TextSurfaceObject {
 public:
     /**
      * @brief Enable the input (makes it active).
@@ -187,10 +187,7 @@ private:
 
     void _initCursor();
 
-    void _refreshTextObject();
     void _refreshCursor();
-    void _refreshSurfaceBuffers() override;
-    void _refreshMaxRadius() override;
 
     inline bool _isInputValid(unsigned char c) const {
         return (std::isdigit(c))

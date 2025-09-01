@@ -1,12 +1,9 @@
 #include "H2DE/objects/H2DE_text_surface_object.h"
 
 // INIT
-H2DE_TextSurfaceObject::H2DE_TextSurfaceObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, std::string& text) : H2DE_Object(engine, objectData), _text(text) {
-    const std::string textCopy = text;
-    text = H2DE_TextObject::_getFormatedText(textCopy);
-    
+H2DE_TextSurfaceObject::H2DE_TextSurfaceObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_Text& text) : H2DE_SingleSurfaceObject(engine, objectData) {
+    _setText(text);
     _refreshSurfaceBuffers();
-    _refreshMaxRadius();
 }
 
 // CLEANUP
@@ -20,7 +17,7 @@ H2DE_TextSurfaceObject::~H2DE_TextSurfaceObject() {
 
 // ACTIONS
 void H2DE_TextSurfaceObject::_refreshSurfaceBuffers() {
-    _textObject = H2DE_Object::_refreshTextObject(_textObject, *_text);
+    _refreshTextObject();
 
     const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
 
@@ -30,9 +27,38 @@ void H2DE_TextSurfaceObject::_refreshSurfaceBuffers() {
     _rescaleSurfaceBuffers();
 }
 
-void H2DE_TextSurfaceObject::_refreshMaxRadius() {
-    float maxHitboxesRadius = _getMaxHitboxRadius();
-    float maxSurfaceRadius = _getMaxSurfaceRadius(_surfaces);
+void H2DE_TextSurfaceObject::_refreshTextObject() {
+    _textObject = H2DE_Object::_refreshTextObject(_textObject, _text);
+}
+
+// GETTER
+const std::string H2DE_TextSurfaceObject::_getFormatedText(const std::string& text) {
+    if (text.length() < 2) {
+        return text;
+    }
+
+    std::string res = "";
+
+    for (int i = 1; i < text.length() - 1; i++) {
+        const char& pc = text.at(i - 1);
+        const char& cc = text.at(i);
+        const char& nc = text.at(i + 1);
+
+        bool isFriendReturn = (pc == '\n' || nc == '\n');
+        if (cc == ' ' && isFriendReturn) {
+            continue;
+        }
+
+        res += cc;
+    }
+
+    return text.substr(0, 1) + res + text.substr(text.length() - 1, 1);
+}
+
+// SETTER
+void H2DE_TextSurfaceObject::_setText(const H2DE_Text& text) {
+    _text = text;
+    _text.text = H2DE_TextSurfaceObject::_getFormatedText(text.text);
     
-    _maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
+    _refreshTextObject();
 }
