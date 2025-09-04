@@ -1,8 +1,39 @@
 #pragma once
 
-#include <H2DE/objects/H2DE_object.h>
-class H2DE_TextObject;
+/**
+ * @file H2DE_input_object.h
+ * @brief Defines H2DE_InputObject, a text-surface object representing an interactive text input field.
+ * 
+ * This file contains the H2DE_InputObject class, which inherits from H2DE_TextSurfaceObject and
+ * provides functionalities for user text input within the UI.
+ * 
+ * The input field supports:
+ * - Enable/disable state
+ * - Character input handling with validation
+ * - Focus management (focus, blur)
+ * - Submission handling (e.g., Enter key)
+ * - Customizable callbacks for input, focus, blur, and submit events
+ * - Configurable input type (text, number, or combined) and maximum length
+ */
 
+#include <H2DE/objects/parents/H2DE_text_surface_object.h>
+
+/**
+ * @class H2DE_InputObject
+ * @brief A text-surface object representing an interactive UI text input field.
+ * 
+ * H2DE_InputObject extends H2DE_TextSurfaceObject by adding:
+ * - User input handling with character validation
+ * - Focus and blur state management
+ * - Submission handling with callback support
+ * - Cursor visualization and position management
+ * - Enable/disable functionality
+ * 
+ * This class is ideal for text fields, numeric inputs, or any interactive input component
+ * in menus or UI panels.
+ * 
+ * @note Inherits single-surface and text management functions from H2DE_TextSurfaceObject.
+ */
 class H2DE_InputObject : public H2DE_TextSurfaceObject {
 public:
     /**
@@ -178,12 +209,11 @@ public:
 private:
     H2DE_InputObjectData _inputObjectData;
 
-    H2DE_TextObject* _textObject = H2DE_NULL_OBJECT;
     int _cursorPosition = -1;
     H2DE_Color* _cursor = H2DE_NULL_SURFACE;
 
     H2DE_InputObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_InputObjectData& inputObjectData);
-    ~H2DE_InputObject() override;
+    ~H2DE_InputObject() override = default;
 
     void _initCursor();
 

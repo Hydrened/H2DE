@@ -57,13 +57,13 @@ void H2DE_Engine::_destroyObjects() {
     for (auto it = _objects.begin(); it != _objects.end(); ) {
         H2DE_Object* object = *it;
 
-        if (object == nullptr) {
+        if (object == H2DE_NULL_OBJECT) {
             ++it;
             continue;
         }
         
         delete object;
-        object = nullptr;
+        object = H2DE_NULL_OBJECT;
         it = _objects.erase(it);
     }
 }
@@ -228,6 +228,8 @@ bool H2DE_Engine::destroyObject(H2DE_Object* object) {
     }
 
     bool isButton = (dynamic_cast<H2DE_ButtonObject*>(object) != H2DE_NULL_OBJECT);
+    bool isCheckbox = (dynamic_cast<H2DE_CheckboxObject*>(object) != H2DE_NULL_OBJECT);
+    bool isInput = (dynamic_cast<H2DE_InputObject*>(object) != H2DE_NULL_OBJECT);
 
     _objects.erase(it);
     
@@ -235,9 +237,20 @@ bool H2DE_Engine::destroyObject(H2DE_Object* object) {
     
     if (isButton) {
         _objectManager->refreshButtonBuffer(_objects);
+    } else if (isCheckbox) {
+        _objectManager->refreshCheckboxBuffer(_objects);
+    } else if (isInput) {
+        _objectManager->refreshInputBuffer(_objects);
     }
 
+    object = H2DE_NULL_OBJECT;
     return true;
+}
+
+void H2DE_Engine::destroyObjects(std::vector<H2DE_Object*> objects) {
+    for (H2DE_Object* object : objects) {
+        destroyObject(object);
+    }
 }
 
 // -- mouse

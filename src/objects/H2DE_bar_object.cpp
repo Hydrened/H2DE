@@ -1,16 +1,6 @@
 #include "H2DE/objects/H2DE_bar_object.h"
 #include "H2DE/engine/H2DE_lerp_manager.h"
 
-// INIT
-H2DE_BarObject::H2DE_BarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData) : H2DE_DualSurfaceObject(engine, objectData), _barObjectData(barObjectData) {
-    
-}
-
-// CLEANUP
-H2DE_BarObject::~H2DE_BarObject() {
-    
-}
-
 // GETTER
 bool H2DE_BarObject::_isSurfaceFill(H2DE_Surface* surface) const {
     for (const auto& [name, fillSurface] : _fillSurfaces) {

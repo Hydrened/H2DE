@@ -3,8 +3,6 @@
 
 // INIT
 H2DE_TimerObject::H2DE_TimerObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TimerObjectData& tod) : H2DE_TextSurfaceObject(e, od, tod.text), _timerObjectData(tod) {
-    _refreshSurfaceBuffers();
-    _refreshMaxRadius();
     _initChrono();
 }
 
@@ -15,14 +13,6 @@ void H2DE_TimerObject::_initChrono() {
 // CLEANUP
 H2DE_TimerObject::~H2DE_TimerObject() {
     _destroyChrono();
-
-    if (_textObject != H2DE_NULL_OBJECT) {
-        if (_engine->destroyObject(_textObject)) {
-            _textObject = H2DE_NULL_OBJECT;
-        }
-    }
-
-    H2DE_Object::_destroySurfaces(_surfaces);
 }
 
 void H2DE_TimerObject::_destroyChrono() {

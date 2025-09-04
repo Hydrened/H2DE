@@ -1,7 +1,34 @@
 #pragma once
 
-#include <H2DE/objects/H2DE_object.h>
+/**
+ * @file H2DE_bar_object.h
+ * @brief Defines H2DE_BarObject, a dual-surface object representing a progress or value bar.
+ * 
+ * This file contains the H2DE_BarObject class, which inherits from H2DE_DualSurfaceObject and
+ * provides functionalities to manage a bar with a fill layer and a background layer.
+ * 
+ * The bar stores a minimum, maximum, and current value, and supports both direct value updates
+ * and animated changes over time using timelines and easing functions.
+ * 
+ * @note Surfaces are managed by the dual-surface system inherited from H2DE_DualSurfaceObject.
+ */
 
+#include <H2DE/objects/parents/H2DE_dual_surface_object.h>
+
+/**
+ * @class H2DE_BarObject
+ * @brief A dual-surface object representing a bar with fill and background surfaces.
+ * 
+ * H2DE_BarObject manages:
+ * - Minimum, maximum, and current values of the bar
+ * - Direct and animated updates of bar values using easing functions
+ * - Internal computation of fill percentage for rendering
+ * - Two layers of surfaces: fill and background
+ * 
+ * This class is ideal for progress bars, health bars, or any visual element that represents a numeric value.
+ * 
+ * @note Inherits surface management functions from H2DE_DualSurfaceObject.
+ */
 class H2DE_BarObject : public H2DE_DualSurfaceObject {
 public:
     /**
@@ -120,8 +147,8 @@ public:
 private:
     H2DE_BarObjectData _barObjectData;
 
-    H2DE_BarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData);
-    ~H2DE_BarObject() override;
+    H2DE_BarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData) : H2DE_DualSurfaceObject(engine, objectData), _barObjectData(barObjectData) {}
+    ~H2DE_BarObject() override = default;
 
     constexpr float _getFillBlend() const {
         return H2DE::clamp((getValue() - getMin()) / (getMax() - getMin()), 0.0f, 1.0f);

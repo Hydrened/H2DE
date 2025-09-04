@@ -1,9 +1,42 @@
 #pragma once
 
-#include <H2DE/objects/H2DE_object.h>
-class H2DE_TextObject;
+/**
+ * @file H2DE_timer_object.h
+ * @brief Defines H2DE_TimerObject, a text-surface object representing a customizable timer.
+ * 
+ * This file contains the H2DE_TimerObject class, which inherits from H2DE_TextSurfaceObject
+ * and provides a timer with full control over hours, minutes, seconds, and milliseconds.
+ * 
+ * Features include:
+ * - Start, pause, resume, and toggle timer state
+ * - Time setting and animation with easing functions
+ * - Callback registration for reaching specific times
+ * - Pause sensitivity to the engine's pause state
+ * - Automatic text updates via an internal H2DE_TextObject
+ * 
+ * @note The timer supports smooth timeline animations for all time components.
+ */
+
+#include <H2DE/objects/parents/H2DE_text_surface_object.h>
 class H2DE_Chrono;
 
+/**
+ * @class H2DE_TimerObject
+ * @brief A text-surface object representing a fully customizable and interactive timer.
+ * 
+ * H2DE_TimerObject extends H2DE_TextSurfaceObject by adding:
+ * - Pausing, resuming, and toggling timer operations
+ * - Callback triggers when a specific time is reached
+ * - Control over increasing or decreasing time
+ * - Pause-sensitive behavior
+ * - Individual access and animation for hours, minutes, seconds, and milliseconds
+ * - Automatic text updates using an internal H2DE_TextObject
+ * 
+ * This class is ideal for game timers, countdowns, or any UI element requiring
+ * time tracking and visual display.
+ * 
+ * @note Inherits text rendering and surface management from H2DE_TextSurfaceObject.
+ */
 class H2DE_TimerObject : public H2DE_TextSurfaceObject {
 public:
     /**

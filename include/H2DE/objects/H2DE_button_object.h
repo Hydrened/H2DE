@@ -1,7 +1,35 @@
 #pragma once
 
-#include <H2DE/objects/H2DE_object.h>
+/**
+ * @file H2DE_button_object.h
+ * @brief Defines H2DE_ButtonObject, a text-surface object representing an interactive button.
+ * 
+ * This file contains the H2DE_ButtonObject class, which inherits from H2DE_TextSurfaceObject and
+ * provides functionalities for interactive buttons in the UI.
+ * 
+ * The button supports:
+ * - Mouse interactions (down, up, hover, blur) with configurable callbacks
+ * - Enable/disable state
+ * - Customizable text content
+ * - Configurable mouse button triggers and cursor display
+ */
 
+#include <H2DE/objects/parents/H2DE_text_surface_object.h>
+
+/**
+ * @class H2DE_ButtonObject
+ * @brief A text-surface object representing an interactive UI button.
+ * 
+ * H2DE_ButtonObject extends H2DE_TextSurfaceObject by adding:
+ * - Mouse interaction events with user-defined callbacks
+ * - Enable/disable functionality for active/inactive states
+ * - Customizable text and cursor appearance
+ * - Mouse button configuration for interaction
+ * 
+ * This class is ideal for UI buttons, menu items, or any clickable element in the game.
+ * 
+ * @note Inherits all single-surface and text management functions from H2DE_TextSurfaceObject.
+ */
 class H2DE_ButtonObject : public H2DE_TextSurfaceObject {
 public:
     /**
@@ -172,5 +200,5 @@ private:
     H2DE_ButtonObjectData _buttonObjectData;
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
-    ~H2DE_ButtonObject() override;
+    ~H2DE_ButtonObject() override = default;
 };

@@ -190,8 +190,8 @@ void H2DE_ObjectManager::sortBuffer(std::vector<H2DE_ObjectType*>& buffer) {
 // -- default
 bool H2DE_ObjectManager::isMouseCollidingObject(H2DE_Object* object) const {
     const H2DE_Translate mousePos = (object->_objectData.absolute)
-        ? engine->getMouseGameTranslate()
-        : engine->getMouseInterfaceTranslate();
+        ? engine->getMouseInterfaceTranslate()
+        : engine->getMouseGameTranslate();
 
     for (const auto& [name, hitbox] : object->_hitboxes) {
         const H2DE_LevelRect inputRect = G::getHitboxRect(object, hitbox);

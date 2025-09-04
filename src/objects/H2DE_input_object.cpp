@@ -1,4 +1,6 @@
 #include "H2DE/objects/H2DE_input_object.h"
+#include "H2DE/objects/H2DE_text_object.h"
+#include "H2DE/engine/H2DE_engine.h"
 
 // INIT
 H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_TextSurfaceObject(e, od, iod.text), _inputObjectData(iod) {
@@ -16,19 +18,10 @@ void H2DE_InputObject::_initCursor() {
     _cursor->_fromText = true;
 }
 
-// CLEANUP
-H2DE_InputObject::~H2DE_InputObject() {
-    if (_textObject != H2DE_NULL_OBJECT) {
-        if (_engine->destroyObject(_textObject)) {
-            _textObject = H2DE_NULL_OBJECT;
-        }
-    }
-}
-
 // ACTIONS
 void H2DE_InputObject::_refreshCursor() {
     bool isCursorPositionInvalid = (_cursorPosition == -1);
-    bool hasNoText = (_textObject == H2DE_NULL_OBJECT);
+    bool hasNoText = (_textObject->_textObjectData.text.text == "");
 
     if (isCursorPositionInvalid || hasNoText) {
         _cursor->hide();

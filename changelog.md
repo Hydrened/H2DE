@@ -1,6 +1,9 @@
 ## H2DE-4.3.4
 #### ADDED
 - checkbox object
+- destroy multiple objects at a time
+#### FIXED
+- mouse pos not accurate with object interactions
 
 ## H2DE-4.3.3
 #### ADDED

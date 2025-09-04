@@ -52,7 +52,7 @@ void H2DE_ObjectManager::handleEvents_mouseDown_input_blur(H2DE_InputObject* inp
 int H2DE_ObjectManager::handleEvents_mouseDown_input_getFocusedInputLetterIndex() {
     constexpr float MAX_FLOAT = std::numeric_limits<float>::max();
 
-    if (focusedInput->_textObject == H2DE_NULL_OBJECT) {
+    if (focusedInput->_textObject->getText() == "") {
         return 0;
     }
 
@@ -297,7 +297,7 @@ void H2DE_ObjectManager::handleEvents_keydown_input_enter(SDL_Event event) {
 }
 
 void H2DE_ObjectManager::handleEvents_keydown_input_inlineArrow(SDL_Event event) {
-    bool hasNoText = (focusedInput->_textObject == H2DE_NULL_OBJECT);
+    bool hasNoText = (focusedInput->_textObject->getText() == "");
     if (hasNoText) {
         return;
     }
@@ -339,7 +339,7 @@ void H2DE_ObjectManager::handleEvents_keydown_input_blockArrow(SDL_Event event) 
     constexpr float MIN_FLOAT = std::numeric_limits<float>::lowest();
     constexpr float MAX_FLOAT = std::numeric_limits<float>::max();
     
-    bool hasNoText = (focusedInput->_textObject == H2DE_NULL_OBJECT);
+    bool hasNoText = (focusedInput->_textObject->getText() == "");
     if (hasNoText) {
         return;
     }
@@ -417,7 +417,7 @@ void H2DE_ObjectManager::focusInput(H2DE_InputObject* input) {
 
     focusedInput = input;
 
-    if (focusedInput->_textObject != H2DE_NULL_OBJECT) {
+    if (focusedInput->_textObject->getText() != "") {
         focusedInput->_setCursorPosition(focusedInput->_textObject->_surfaceBuffers.size());
 
     } else {

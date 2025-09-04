@@ -5,11 +5,6 @@ H2DE_ButtonObject::H2DE_ButtonObject(H2DE_Engine* e, const H2DE_ObjectData& od, 
     _buttonObjectData.text.text = H2DE_TextSurfaceObject::_getFormatedText(_buttonObjectData.text.text);
 }
 
-// CLEANUP
-H2DE_ButtonObject::~H2DE_ButtonObject() {
-    
-}
-
 // ACTIONS
 void H2DE_ButtonObject::mouseDown() {
     if (_buttonObjectData.onMouseDown && !_disabled) {

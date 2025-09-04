@@ -11,6 +11,9 @@
  * camera, timeline animations, and object management to provide a flexible 2D game framework.
  */
 
+
+#include <H2DE/engine/H2DE_timeline_manager.h>
+
 #include <map>
 #include <filesystem>
 
@@ -32,7 +35,7 @@
 #include <H2DE/engine/H2DE_object_manager.h>
 #include <H2DE/engine/H2DE_json.h>
 #include <H2DE/surfaces/H2DE_surface.h>
-#include <H2DE/objects/H2DE_object.h>
+#include <H2DE/objects/parents/H2DE_objects.h>
 
 class H2DE_Settings;
 class H2DE_Window;
@@ -267,6 +270,15 @@ public:
      * @return True if the object was found and destroyed, false otherwise.
      */
     bool destroyObject(H2DE_Object* object);
+    /**
+     * @brief Destroys and removes multiple objects from the engine.
+     * 
+     * Iterates over the provided list of object pointers and removes each one
+     * from the engine, properly cleaning up their resources.
+     * 
+     * @param objects A vector of pointers to the objects to destroy.
+     */
+    void destroyObjects(std::vector<H2DE_Object*> objects);
 
     /**
      * @brief Retrieves the engine initialization data.

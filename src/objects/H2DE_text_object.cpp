@@ -21,10 +21,6 @@ void H2DE_TextObject::_refreshLines() {
     _lines = _H2DE_Lines();
     _lines.push_back(_H2DE_Line());
 
-    if (_isTextNull()) {
-        return;
-    }
-
     const H2DE_Padding& padding = _textObjectData.text.padding;
     const float& spacingX = _textObjectData.text.spacing.x;
     const float maxLineWidth = _textObjectData.text.bounds.x - padding.left - padding.right;
@@ -174,7 +170,7 @@ void H2DE_TextObject::_refreshMaxRadius() {
 
 // -- lines words
 const std::vector<H2DE_TextObject::_H2DE_Word> H2DE_TextObject::_getWords() const {
-    if (_isTextNull()) {
+    if (_textObjectData.text.text == "") {
         return {};
     }
 

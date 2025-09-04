@@ -2,27 +2,33 @@
 
 /**
  * @file H2DE_text_object.h
- * @brief Definition of the H2DE_TextObject class for 2D text rendering.
+ * @brief Defines H2DE_TextObject, a 2D text rendering object for the H2DE engine.
  * 
- * This file declares the H2DE_TextObject class, a specialized H2DE_Object
- * responsible for rendering and managing text within the H2DE 2D engine.
- * It supports text properties such as font, size, spacing, alignment, and color,
- * with immediate or animated transitions using the engine's timeline system.
+ * This file contains the H2DE_TextObject class, which inherits from H2DE_Object
+ * and provides advanced text rendering capabilities.
+ * 
+ * Features include:
+ * - Customizable text content, font, size, spacing, alignment, color, and padding
+ * - Immediate or animated transitions for font size, spacing, bounds, and color
+ * - Automatic line and word management for multi-line text
+ * - Internal management of character surfaces for optimized rendering
+ * - Support for timeline animations and easing functions
  */
 
-#include <H2DE/objects/H2DE_object.h>
+#include <H2DE/objects/parents/H2DE_object.h>
 
 /**
  * @class H2DE_TextObject
  * @brief A 2D object for rendering and animating text in the H2DE engine.
  * 
  * H2DE_TextObject extends H2DE_Object to provide rich text display capabilities.
- * You can set text content, font, size, spacing, alignment, and color.
- * It also supports smooth animated transitions of font size, spacing, and color
- * through the built-in timeline animation system, enabling slick visual effects.
+ * It supports single-line and multi-line text, character spacing, bounds scaling,
+ * font selection, alignment, color, and padding. All properties can be modified
+ * instantly or animated over time using the engine's timeline system.
  * 
- * This class handles all the internal data for text rendering and exposes
- * getters and setters for easy manipulation.
+ * The class handles internal management of lines, words, and character surfaces,
+ * ensuring efficient rendering and accurate layout of text. It is used by other
+ * H2DE objects, such as buttons and inputs, to display text.
  */
 class H2DE_TextObject : public H2DE_Object {
 public:
@@ -284,8 +290,4 @@ private:
     float _getStartingOffsetY(const _H2DE_Lines& lines) const;
 
     float _getFixedFontSize() const;
-
-    inline bool _isTextNull() const {
-        return (_textObjectData.text.text == ""); 
-    }
 };
