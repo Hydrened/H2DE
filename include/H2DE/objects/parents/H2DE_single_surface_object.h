@@ -28,7 +28,7 @@
  * It acts as the base class for any object that only requires a single type of surface.
  * Objects containing text should inherit from H2DE_TextSurfaceObject, which itself inherits from this class.
  */
-class H2DE_SingleSurfaceObject : public H2DE_Object {
+class H2DE_SingleSurfaceObject : virtual public H2DE_Object {
 public:
     /**
      * @brief Add a surface to the object.

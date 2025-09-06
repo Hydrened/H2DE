@@ -12,6 +12,12 @@ bool H2DE_BarObject::_isSurfaceFill(H2DE_Surface* surface) const {
     return false;
 }
 
+// ACTIONS
+void H2DE_BarObject::_refreshSurfaceBuffers() {
+    H2DE_Object::_refreshSurfaceBuffers();
+    H2DE_DualSurfaceObject::_refreshSurfaceBuffers();
+}
+
 // SETTER
 
 // -- no lerp

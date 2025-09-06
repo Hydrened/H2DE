@@ -27,7 +27,7 @@
  * It acts as the base class for any object that requires a dual-layered surface system.
  * This is useful for elements like checkboxes, progress bars, or layered decorations.
  */
-class H2DE_DualSurfaceObject : public H2DE_Object {
+class H2DE_DualSurfaceObject : virtual public H2DE_Object {
 public:
     /**
      * @brief Add a surface to the fill of the checkbox.

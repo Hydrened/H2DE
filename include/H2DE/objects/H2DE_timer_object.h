@@ -17,6 +17,7 @@
  * @note The timer supports smooth timeline animations for all time components.
  */
 
+#include <H2DE/objects/parents/H2DE_single_surface_object.h>
 #include <H2DE/objects/parents/H2DE_text_surface_object.h>
 class H2DE_Chrono;
 
@@ -37,7 +38,7 @@ class H2DE_Chrono;
  * 
  * @note Inherits text rendering and surface management from H2DE_TextSurfaceObject.
  */
-class H2DE_TimerObject : public H2DE_TextSurfaceObject {
+class H2DE_TimerObject : public H2DE_SingleSurfaceObject, public H2DE_TextSurfaceObject {
 public:
     /**
      * @brief Registers a callback to be triggered when the internal timer reaches a specific time.

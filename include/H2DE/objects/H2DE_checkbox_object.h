@@ -16,6 +16,7 @@
  */
 
 #include <H2DE/objects/parents/H2DE_dual_surface_object.h>
+#include <H2DE/objects/parents/H2DE_toggleable_object.h>
 
 /**
  * @class H2DE_CheckboxObject
@@ -31,7 +32,7 @@
  * 
  * @note Inherits dual-surface management functions from H2DE_DualSurfaceObject.
  */
-class H2DE_CheckboxObject : public H2DE_DualSurfaceObject {
+class H2DE_CheckboxObject : public H2DE_DualSurfaceObject, public H2DE_ToggleableObject {
 public:
     /**
      * @brief Enable the checkbox (makes it active).
@@ -113,7 +114,7 @@ public:
 private:
     H2DE_CheckboxObjectData _checkboxObjectData;
 
-    H2DE_CheckboxObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_CheckboxObjectData& checkboxObjectData) : H2DE_DualSurfaceObject(engine, objectData), _checkboxObjectData(checkboxObjectData) {}
+    H2DE_CheckboxObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_CheckboxObjectData& checkboxObjectData) : H2DE_Object(engine, objectData), H2DE_DualSurfaceObject(engine, objectData), H2DE_ToggleableObject(engine, objectData), _checkboxObjectData(checkboxObjectData) {}
     ~H2DE_CheckboxObject() override = default;
 
     void _refreshSurfaceBuffers() override;

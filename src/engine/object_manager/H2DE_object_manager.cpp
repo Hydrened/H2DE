@@ -189,6 +189,11 @@ void H2DE_ObjectManager::sortBuffer(std::vector<H2DE_ObjectType*>& buffer) {
 
 // -- default
 bool H2DE_ObjectManager::isMouseCollidingObject(H2DE_Object* object) const {
+    bool disabled = (object->_disabled);
+    if (disabled) {
+        return false;
+    }
+
     const H2DE_Translate mousePos = (object->_objectData.absolute)
         ? engine->getMouseInterfaceTranslate()
         : engine->getMouseGameTranslate();

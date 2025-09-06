@@ -107,6 +107,10 @@ void H2DE_Object::_updateTimelineBuffer() {
 // ACTIONS
 
 // -- surfaces
+void H2DE_Object::_refreshSurfaceBuffers() {
+    
+}
+
 bool H2DE_Object::_removeSurface(H2DE_SurfaceMap& surfaces, const std::string& name) {
     auto it = surfaces.find(name);
 

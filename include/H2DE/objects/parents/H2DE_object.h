@@ -476,7 +476,7 @@ protected:
     void _updateCollisions();
     void _updateTimelineBuffer();
 
-    virtual void _refreshSurfaceBuffers() = 0;
+    virtual void _refreshSurfaceBuffers();
     virtual void _refreshMaxRadius() = 0;
     H2DE_TextObject* _refreshTextObject(H2DE_TextObject* textObject, const H2DE_Text& text);
 

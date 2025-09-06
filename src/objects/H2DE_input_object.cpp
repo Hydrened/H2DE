@@ -3,7 +3,7 @@
 #include "H2DE/engine/H2DE_engine.h"
 
 // INIT
-H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_TextSurfaceObject(e, od, iod.text), _inputObjectData(iod) {
+H2DE_InputObject::H2DE_InputObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_InputObjectData& iod) : H2DE_Object(e, od), H2DE_SingleSurfaceObject(e, od), H2DE_TextSurfaceObject(e, od, iod.text), H2DE_ToggleableObject(e, od), _inputObjectData(iod) {
     _inputObjectData.text.text = H2DE_TextSurfaceObject::_getFormatedText(_inputObjectData.text.text);
     
     _initCursor();
@@ -19,6 +19,12 @@ void H2DE_InputObject::_initCursor() {
 }
 
 // ACTIONS
+void H2DE_InputObject::_refreshSurfaceBuffers() {
+    H2DE_Object::_refreshSurfaceBuffers();
+    H2DE_SingleSurfaceObject::_refreshSurfaceBuffers();
+    H2DE_TextSurfaceObject::_refreshSurfaceBuffers();
+}
+
 void H2DE_InputObject::_refreshCursor() {
     bool isCursorPositionInvalid = (_cursorPosition == -1);
     bool hasNoText = (_textObject->_textObjectData.text.text == "");

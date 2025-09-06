@@ -2,7 +2,7 @@
 #include "H2DE/engine/H2DE_engine.h"
 
 // INIT
-H2DE_TextSurfaceObject::H2DE_TextSurfaceObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_Text& text) : H2DE_SingleSurfaceObject(engine, objectData) {
+H2DE_TextSurfaceObject::H2DE_TextSurfaceObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_Text& text) : H2DE_Object(engine, objectData) {
     _setText(text);
     _refreshSurfaceBuffers();
 }
@@ -20,12 +20,12 @@ H2DE_TextSurfaceObject::~H2DE_TextSurfaceObject() {
 void H2DE_TextSurfaceObject::_refreshSurfaceBuffers() {
     _refreshTextObject();
 
-    const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
+    // const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
 
-    _surfaceBuffers.clear();
-    _surfaceBuffers.reserve(sortedSurfaces.size());
-    _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
-    _rescaleSurfaceBuffers();
+    // _surfaceBuffers.clear();
+    // _surfaceBuffers.reserve(sortedSurfaces.size());
+    // _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
+    // _rescaleSurfaceBuffers();
 }
 
 void H2DE_TextSurfaceObject::_refreshTextObject() {

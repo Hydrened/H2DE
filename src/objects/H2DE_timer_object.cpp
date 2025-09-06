@@ -2,7 +2,7 @@
 #include "H2DE/engine/H2DE_lerp_manager.h"
 
 // INIT
-H2DE_TimerObject::H2DE_TimerObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TimerObjectData& tod) : H2DE_TextSurfaceObject(e, od, tod.text), _timerObjectData(tod) {
+H2DE_TimerObject::H2DE_TimerObject(H2DE_Engine* e, const H2DE_ObjectData& od, const H2DE_TimerObjectData& tod) : H2DE_Object(e, od), H2DE_SingleSurfaceObject(e, od), H2DE_TextSurfaceObject(e, od, tod.text), _timerObjectData(tod) {
     _initChrono();
 }
 
@@ -32,14 +32,18 @@ void H2DE_TimerObject::_refreshTextObject() {
 }
 
 void H2DE_TimerObject::_refreshSurfaceBuffers() {
-    _refreshTextObject();
+    H2DE_Object::_refreshSurfaceBuffers();
+    H2DE_SingleSurfaceObject::_refreshSurfaceBuffers();
+    H2DE_TextSurfaceObject::_refreshSurfaceBuffers();
 
-    const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
+    // _refreshTextObject();
 
-    _surfaceBuffers.clear();
-    _surfaceBuffers.reserve(sortedSurfaces.size());
-    _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
-    _rescaleSurfaceBuffers();
+    // const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
+
+    // _surfaceBuffers.clear();
+    // _surfaceBuffers.reserve(sortedSurfaces.size());
+    // _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
+    // _rescaleSurfaceBuffers();
 }
 
 void H2DE_TimerObject::_refreshMaxRadius() {

@@ -14,7 +14,9 @@
  * - Configurable mouse button triggers and cursor display
  */
 
+#include <H2DE/objects/parents/H2DE_single_surface_object.h>
 #include <H2DE/objects/parents/H2DE_text_surface_object.h>
+#include <H2DE/objects/parents/H2DE_toggleable_object.h>
 
 /**
  * @class H2DE_ButtonObject
@@ -30,21 +32,8 @@
  * 
  * @note Inherits all single-surface and text management functions from H2DE_TextSurfaceObject.
  */
-class H2DE_ButtonObject : public H2DE_TextSurfaceObject {
+class H2DE_ButtonObject : public H2DE_SingleSurfaceObject, public H2DE_TextSurfaceObject, public H2DE_ToggleableObject {
 public:
-    /**
-     * @brief Enable the button (makes it active).
-     */
-    inline void enable() { 
-        _disabled = false;
-    }
-    /**
-     * @brief Disable the button (makes it inactive).
-     */
-    inline void disable() {
-        _disabled = true;
-    }
-
     /**
      * @brief Calls the mouse down event handler assigned to the button.
      * 
@@ -111,13 +100,6 @@ public:
      */
     constexpr H2DE_Cursor getCursor() const noexcept {
         return _buttonObjectData.cursor;
-    }
-    /**
-     * @brief Check if the button is disabled.
-     * @return true if disabled, false otherwise.
-     */
-    constexpr bool isDisabled() const noexcept {
-        return _disabled; 
     }
 
     /**
@@ -201,4 +183,6 @@ private:
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);
     ~H2DE_ButtonObject() override = default;
+
+    void _refreshSurfaceBuffers() override;
 };

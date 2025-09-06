@@ -5,6 +5,12 @@
 // -- -- mouse down
 void H2DE_ObjectManager::handleEvents_mouseDown_button(H2DE_ButtonObject* button) {
     bool buttonHasBeenClicked = (button != H2DE_NULL_OBJECT);
+
+    bool disabled = (button->_disabled);
+    if (disabled) {
+        return;
+    }
+    
     if (buttonHasBeenClicked) {
         handleEvents_mouseDown_button_mouseDown(button);
     }
@@ -85,6 +91,11 @@ void H2DE_ObjectManager::handleEvents_mouseMotion_buttons_blur(H2DE_ButtonObject
     if (button == H2DE_NULL_OBJECT) {
         return;
     }
+    
+    bool disabled = (button->_disabled);
+    if (disabled) {
+        return;
+    }
 
     if (button->_buttonObjectData.onBlur) {
         button->_buttonObjectData.onBlur({ button });
@@ -93,6 +104,11 @@ void H2DE_ObjectManager::handleEvents_mouseMotion_buttons_blur(H2DE_ButtonObject
 
 void H2DE_ObjectManager::handleEvents_mouseMotion_buttons_hover(H2DE_ButtonObject* button) {
     if (button == H2DE_NULL_OBJECT) {
+        return;
+    }
+
+    bool disabled = (button->_disabled);
+    if (disabled) {
         return;
     }
 

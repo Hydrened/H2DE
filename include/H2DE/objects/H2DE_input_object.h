@@ -16,7 +16,9 @@
  * - Configurable input type (text, number, or combined) and maximum length
  */
 
+#include <H2DE/objects/parents/H2DE_single_surface_object.h>
 #include <H2DE/objects/parents/H2DE_text_surface_object.h>
+#include <H2DE/objects/parents/H2DE_toggleable_object.h>
 
 /**
  * @class H2DE_InputObject
@@ -34,7 +36,7 @@
  * 
  * @note Inherits single-surface and text management functions from H2DE_TextSurfaceObject.
  */
-class H2DE_InputObject : public H2DE_TextSurfaceObject {
+class H2DE_InputObject : public H2DE_SingleSurfaceObject, public H2DE_TextSurfaceObject, public H2DE_ToggleableObject {
 public:
     /**
      * @brief Enable the input (makes it active).
@@ -217,6 +219,7 @@ private:
 
     void _initCursor();
 
+    void _refreshSurfaceBuffers() override;
     void _refreshCursor();
 
     inline bool _isInputValid(unsigned char c) const {
