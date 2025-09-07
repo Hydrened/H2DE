@@ -3,7 +3,9 @@
 
 // INIT
 H2DE_ObjectManager::H2DE_ObjectManager(H2DE_Engine* e) : engine(e) {
+    hoverObjects.reserve(100);
     buttons.reserve(100);
+    checkboxes.reserve(100);
     inputs.reserve(100);
 }
 

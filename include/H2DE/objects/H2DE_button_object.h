@@ -2,16 +2,18 @@
 
 /**
  * @file H2DE_button_object.h
- * @brief Defines H2DE_ButtonObject, a text-surface object representing an interactive button.
+ * @brief UI object representing a clickable button with text and state.
  * 
- * This file contains the H2DE_ButtonObject class, which inherits from H2DE_TextSurfaceObject and
- * provides functionalities for interactive buttons in the UI.
+ * This file defines the H2DE_ButtonObject class, which combines
+ * multiple intermediate object types to provide a functional UI button.
  * 
- * The button supports:
- * - Mouse interactions (down, up, hover, blur) with configurable callbacks
- * - Enable/disable state
- * - Customizable text content
- * - Configurable mouse button triggers and cursor display
+ * A button is composed of:
+ * - A single surface for its visual background
+ * - An optional text label rendered on top
+ * - A toggleable state (enabled/disabled) for interaction control
+ * 
+ * H2DE_ButtonObject is a fundamental interactive component in UI systems,
+ * designed for menus, dialogs, and in-game HUDs.
  */
 
 #include <H2DE/objects/parents/H2DE_single_surface_object.h>
@@ -20,17 +22,25 @@
 
 /**
  * @class H2DE_ButtonObject
- * @brief A text-surface object representing an interactive UI button.
+ * @brief Interactive UI button with text and enable/disable state.
  * 
- * H2DE_ButtonObject extends H2DE_TextSurfaceObject by adding:
- * - Mouse interaction events with user-defined callbacks
- * - Enable/disable functionality for active/inactive states
- * - Customizable text and cursor appearance
- * - Mouse button configuration for interaction
+ * H2DE_ButtonObject inherits from:
+ * - H2DE_SingleSurfaceObject for rendering the button surface
+ * - H2DE_TextSurfaceObject for managing an optional text label
+ * - H2DE_ToggleableObject for enabling/disabling interaction
  * 
- * This class is ideal for UI buttons, menu items, or any clickable element in the game.
+ * Responsibilities:
+ * - Display a visual surface for the button background
+ * - Optionally render a text label centered or aligned on the button
+ * - Provide enable/disable state control for interaction availability
  * 
- * @note Inherits all single-surface and text management functions from H2DE_TextSurfaceObject.
+ * Typical use cases:
+ * - Menu buttons
+ * - Confirm/Cancel UI elements
+ * - Custom interactive controls
+ * 
+ * This class is a final object and is meant to be directly instantiated
+ * for building user interfaces.
  */
 class H2DE_ButtonObject : public H2DE_SingleSurfaceObject, public H2DE_TextSurfaceObject, public H2DE_ToggleableObject {
 public:

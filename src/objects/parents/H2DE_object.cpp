@@ -106,11 +106,18 @@ void H2DE_Object::_updateTimelineBuffer() {
 
 // ACTIONS
 
-// -- surfaces
+// -- refresh
 void H2DE_Object::_refreshSurfaceBuffers() {
-    
+    _surfaceBuffers.clear();
 }
 
+void H2DE_Object::_refreshMaxRadius() {
+    float maxHitboxesRadius = _getMaxHitboxRadius();
+    float maxSurfaceRadius = _getMaxSurfaceRadius();
+    _maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
+}
+
+// -- surfaces
 bool H2DE_Object::_removeSurface(H2DE_SurfaceMap& surfaces, const std::string& name) {
     auto it = surfaces.find(name);
 
@@ -134,7 +141,6 @@ void H2DE_Object::addHitbox(const std::string& name, const H2DE_Hitbox& hitbox) 
     _hitboxes[name].transform._defaultPivot = hitbox.transform.pivot;
     
     _refreshMaxRadius();
-    _rescaleHitboxes();
 }
 
 bool H2DE_Object::removeHitbox(const std::string& name) {
@@ -151,7 +157,7 @@ bool H2DE_Object::removeHitbox(const std::string& name) {
 }
 
 // -- rescale
-void H2DE_Object::_rescaleSurfaceBuffers() noexcept {
+void H2DE_Object::_rescaleSurfaceBuffers() {
     const float absoluteObjectScaleX = H2DE::abs(_objectData.transform.scale.x);
     const float absoluteObjectScaleY = H2DE::abs(_objectData.transform.scale.y);
     const H2DE_Scale absoluteObjectScale = { absoluteObjectScaleX, absoluteObjectScaleY };
@@ -161,7 +167,7 @@ void H2DE_Object::_rescaleSurfaceBuffers() noexcept {
     }
 }
 
-void H2DE_Object::_rescaleHitboxes() noexcept {
+void H2DE_Object::_rescaleHitboxes() {
     if (_isGrid) {
         return;
     }
@@ -175,7 +181,7 @@ void H2DE_Object::_rescaleHitboxes() noexcept {
     }
 }
 
-void H2DE_Object::_rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) noexcept {
+void H2DE_Object::_rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) {
     transform.translate.x = transform._defaultTranslate.x * scale.x;
     transform.translate.y = transform._defaultTranslate.y * scale.y;
 
@@ -261,7 +267,7 @@ const H2DE_LevelRect H2DE_Object::getHitboxWorldRect(const std::string& name) co
 
 float H2DE_Object::_getMaxHitboxRadius() const {
     float res = 0.0f;
-    const H2DE_Translate world_objectTranslate = _objectData.transform.translate;
+    const H2DE_Translate& world_objectTranslate = _objectData.transform.translate;
 
     for (const auto& [name, hitbox] : _hitboxes) {
         for (const H2DE_Translate& corner : H2DE_Object::_getCorners(hitbox.transform)) {
@@ -278,15 +284,15 @@ float H2DE_Object::_getMaxHitboxRadius() const {
     return std::sqrt(res);
 }
 
-float H2DE_Object::_getMaxSurfaceRadius(const H2DE_SurfaceMap& surfaces) const {
+float H2DE_Object::_getMaxSurfaceRadius() const {
     float res = 0.0f;
-    const H2DE_Translate world_objectTranslate = _objectData.transform.translate;
+    const H2DE_Translate& world_objectTranslate = _objectData.transform.translate;
 
-    for (const auto& [name, surface] : surfaces) {
+    for (const H2DE_Surface* surface : _surfaceBuffers) {
         for (const H2DE_Translate& corner : H2DE_Object::_getCorners(surface->getTransform())) {
 
-            const H2DE_Translate world_hitboxCorner = corner + world_objectTranslate;
-            float distance = H2DE::abs(world_objectTranslate.getDistanceSquared(world_hitboxCorner));
+            const H2DE_Translate world_surfaceCorner = corner + world_objectTranslate;
+            float distance = H2DE::abs(world_objectTranslate.getDistanceSquared(world_surfaceCorner));
 
             if (distance > res) {
                 res = distance;

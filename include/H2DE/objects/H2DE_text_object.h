@@ -2,33 +2,41 @@
 
 /**
  * @file H2DE_text_object.h
- * @brief Defines H2DE_TextObject, a 2D text rendering object for the H2DE engine.
+ * @brief Object dedicated to rendering text in the engine.
  * 
- * This file contains the H2DE_TextObject class, which inherits from H2DE_Object
- * and provides advanced text rendering capabilities.
+ * This file defines the H2DE_TextObject class, which extends
+ * H2DE_Object to provide text-only rendering capabilities.
  * 
- * Features include:
- * - Customizable text content, font, size, spacing, alignment, color, and padding
- * - Immediate or animated transitions for font size, spacing, bounds, and color
- * - Automatic line and word management for multi-line text
- * - Internal management of character surfaces for optimized rendering
- * - Support for timeline animations and easing functions
+ * Unlike other UI elements, H2DE_TextObject does not rely on
+ * a surface background. It is focused solely on drawing text
+ * with customizable font, size, color, and formatting.
+ * 
+ * It is typically used for labels, titles, HUD information,
+ * or any text content displayed in the game world or UI.
  */
 
 #include <H2DE/objects/parents/H2DE_object.h>
 
 /**
  * @class H2DE_TextObject
- * @brief A 2D object for rendering and animating text in the H2DE engine.
+ * @brief Drawable object specialized in text rendering.
  * 
- * H2DE_TextObject extends H2DE_Object to provide rich text display capabilities.
- * It supports single-line and multi-line text, character spacing, bounds scaling,
- * font selection, alignment, color, and padding. All properties can be modified
- * instantly or animated over time using the engine's timeline system.
+ * H2DE_TextObject inherits directly from H2DE_Object and
+ * provides support for displaying text as a standalone
+ * element in the engine.
  * 
- * The class handles internal management of lines, words, and character surfaces,
- * ensuring efficient rendering and accurate layout of text. It is used by other
- * H2DE objects, such as buttons and inputs, to display text.
+ * Responsibilities:
+ * - Render text strings with given style and formatting
+ * - Update its visual representation when the text changes
+ * - Integrate seamlessly into the engine’s rendering pipeline
+ * 
+ * Typical use cases:
+ * - UI labels and titles
+ * - HUD elements (e.g., score, timer, status messages)
+ * - Dialog or narrative text
+ * 
+ * This class is a final object and is intended to be used
+ * whenever standalone text rendering is required.
  */
 class H2DE_TextObject : public H2DE_Object {
 public:
@@ -277,7 +285,6 @@ private:
 
     void _refreshLines();
     void _refreshSurfaceBuffers() override;
-    void _refreshMaxRadius() override;
 
     const std::vector<_H2DE_Word> _getWords() const;
 

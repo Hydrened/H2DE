@@ -35,22 +35,6 @@ void H2DE_TimerObject::_refreshSurfaceBuffers() {
     H2DE_Object::_refreshSurfaceBuffers();
     H2DE_SingleSurfaceObject::_refreshSurfaceBuffers();
     H2DE_TextSurfaceObject::_refreshSurfaceBuffers();
-
-    // _refreshTextObject();
-
-    // const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
-
-    // _surfaceBuffers.clear();
-    // _surfaceBuffers.reserve(sortedSurfaces.size());
-    // _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
-    // _rescaleSurfaceBuffers();
-}
-
-void H2DE_TimerObject::_refreshMaxRadius() {
-    float maxHitboxesRadius = _getMaxHitboxRadius();
-    float maxSurfaceRadius = _getMaxSurfaceRadius(_surfaces);
-    
-    _maxRadius = H2DE::max(maxHitboxesRadius, maxSurfaceRadius);
 }
 
 void H2DE_TimerObject::onReach(const H2DE_Time& target, const std::function<void()>& callback, bool once) {

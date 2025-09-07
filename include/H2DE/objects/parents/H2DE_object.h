@@ -51,10 +51,6 @@ class H2DE_TimerObject;
  * 
  * It acts as the base class for any game entity requiring
  * collision detection, animation, and rendering control.
- * 
- * @note Use addHitbox() and removeHitbox() to manage collision zones.
- * @note Animation methods return a timeline ID for control and chaining.
- * @note Hidden objects are excluded from rendering and updating.
  */
 class H2DE_Object {
 public:
@@ -459,13 +455,13 @@ protected:
     H2DE_Engine* _engine;
     H2DE_ObjectData _objectData;
 
-    std::vector<H2DE_Surface*> _surfaceBuffers = {};
-    std::vector<H2DE_Timeline*> _timelinesBuffer = {};
-    std::unordered_map<std::string, H2DE_Hitbox> _hitboxes = {};
+    std::vector<H2DE_Surface*> _surfaceBuffers;
+    std::vector<H2DE_Timeline*> _timelinesBuffer;
+    std::unordered_map<std::string, H2DE_Hitbox> _hitboxes;
     float _maxRadius;
     bool _disabled = false;
 
-    H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData) noexcept : _engine(engine), _objectData(objectData) {};
+    H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData) : _engine(engine), _objectData(objectData) {};
     virtual ~H2DE_Object();
 
     static void _destroySurfaces(H2DE_SurfaceMap& surfaces);
@@ -477,7 +473,6 @@ protected:
     void _updateTimelineBuffer();
 
     virtual void _refreshSurfaceBuffers();
-    virtual void _refreshMaxRadius() = 0;
     H2DE_TextObject* _refreshTextObject(H2DE_TextObject* textObject, const H2DE_Text& text);
 
     inline void _addTimelineToTimelines(H2DE_Timeline* timeline) {
@@ -500,18 +495,20 @@ protected:
         return (surfaces.find(name) != surfaces.end()); 
     }
 
-    void _rescaleSurfaceBuffers() noexcept;
-    void _rescaleHitboxes() noexcept;
-    static void _rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale) noexcept;
+    void _rescaleSurfaceBuffers();
+    void _rescaleHitboxes();
+    static void _rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale);
 
     float _getMaxHitboxRadius() const;
-    float _getMaxSurfaceRadius(const H2DE_SurfaceMap& surfaces) const;
+    float _getMaxSurfaceRadius() const;
 
 private:
     bool _hidden = false;
     bool _isGrid = false;
 
     void _stopTimelines();
+    
+    void _refreshMaxRadius();
 };
 
 #include <H2DE/objects/parents/H2DE_object.inl>

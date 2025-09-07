@@ -9,8 +9,6 @@
  * 
  * Surfaces are stored in a map identified by unique names, and can be safely added, removed, or retrieved.
  * This class also handles internal buffer refreshes and maximum radius calculation for rendering and collisions.
- * 
- * @note Objects that need to display text should inherit from H2DE_TextSurfaceObject, which extends this class.
  */
 
 #include <H2DE/objects/parents/H2DE_object.h>
@@ -26,7 +24,6 @@
  * - Internal refresh of surface buffers and maximum radius for rendering/collision
  * 
  * It acts as the base class for any object that only requires a single type of surface.
- * Objects containing text should inherit from H2DE_TextSurfaceObject, which itself inherits from this class.
  */
 class H2DE_SingleSurfaceObject : virtual public H2DE_Object {
 public:
@@ -101,5 +98,4 @@ protected:
     ~H2DE_SingleSurfaceObject() override;
 
     void _refreshSurfaceBuffers() override;
-    void _refreshMaxRadius() override;
 };

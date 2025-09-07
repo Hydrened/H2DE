@@ -2,18 +2,19 @@
 
 /**
  * @file H2DE_input_object.h
- * @brief Defines H2DE_InputObject, a text-surface object representing an interactive text input field.
+ * @brief UI object representing a text input field.
  * 
- * This file contains the H2DE_InputObject class, which inherits from H2DE_TextSurfaceObject and
- * provides functionalities for user text input within the UI.
+ * This file defines the H2DE_InputObject class, which combines
+ * multiple intermediate classes to implement a functional input
+ * box for user interaction.
  * 
- * The input field supports:
- * - Enable/disable state
- * - Character input handling with validation
- * - Focus management (focus, blur)
- * - Submission handling (e.g., Enter key)
- * - Customizable callbacks for input, focus, blur, and submit events
- * - Configurable input type (text, number, or combined) and maximum length
+ * An input field is composed of:
+ * - A single surface for its visual background or frame
+ * - A text surface for user-entered text or placeholder
+ * - A toggleable state (enabled/disabled) to control availability
+ * 
+ * H2DE_InputObject is designed for menus, dialogs, or forms
+ * where players need to enter names, codes, or other text data.
  */
 
 #include <H2DE/objects/parents/H2DE_single_surface_object.h>
@@ -22,19 +23,26 @@
 
 /**
  * @class H2DE_InputObject
- * @brief A text-surface object representing an interactive UI text input field.
+ * @brief Interactive UI input field with text handling and toggle state.
  * 
- * H2DE_InputObject extends H2DE_TextSurfaceObject by adding:
- * - User input handling with character validation
- * - Focus and blur state management
- * - Submission handling with callback support
- * - Cursor visualization and position management
- * - Enable/disable functionality
+ * H2DE_InputObject inherits from:
+ * - H2DE_SingleSurfaceObject for rendering the input box surface
+ * - H2DE_TextSurfaceObject for displaying input text or placeholder
+ * - H2DE_ToggleableObject for enabling/disabling text entry
  * 
- * This class is ideal for text fields, numeric inputs, or any interactive input component
- * in menus or UI panels.
+ * Responsibilities:
+ * - Render an input box with background visuals
+ * - Display and update text as the user types
+ * - Support placeholder text when empty
+ * - Respect enabled/disabled state for interaction control
  * 
- * @note Inherits single-surface and text management functions from H2DE_TextSurfaceObject.
+ * Typical use cases:
+ * - Name or nickname entry fields
+ * - Password or code input
+ * - Custom in-game forms or settings menus
+ * 
+ * This class is a final object and is intended to be directly
+ * instantiated as part of UI systems requiring text entry.
  */
 class H2DE_InputObject : public H2DE_SingleSurfaceObject, public H2DE_TextSurfaceObject, public H2DE_ToggleableObject {
 public:

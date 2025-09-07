@@ -2,29 +2,41 @@
 
 /**
  * @file H2DE_basic_object.h
- * @brief Defines H2DE_BasicObject, a simple single-surface object.
+ * @brief Minimal object with a single surface and no special behavior.
  * 
- * This file contains the H2DE_BasicObject class, which inherits from H2DE_SingleSurfaceObject
- * and represents a minimal object with only one surface.
+ * This file defines the H2DE_BasicObject class, which extends
+ * H2DE_SingleSurfaceObject to provide a basic drawable entity.
  * 
- * It is suitable for static or simple game objects that do not require additional functionality
- * like text, dual surfaces, or animations.
+ * H2DE_BasicObject serves as the simplest object type in the
+ * engine, intended for cases where only a single surface needs
+ * to be displayed without additional logic or interactivity.
  * 
- * @note Surface management is handled by the inherited H2DE_SingleSurfaceObject functions.
- * @note This object is typically used for basic visual elements or placeholders.
+ * It is useful for static graphics, placeholders, or lightweight
+ * elements that don’t require text, toggling, or advanced behavior.
  */
 
 #include <H2DE/objects/parents/H2DE_single_surface_object.h>
 
 /**
  * @class H2DE_BasicObject
- * @brief A minimal object with a single drawable surface.
+ * @brief Simple drawable object with a single surface.
  * 
- * H2DE_BasicObject provides:
- * - A single surface for rendering (texture, sprite, or color)
- * - Basic object behavior inherited from H2DE_SingleSurfaceObject
+ * H2DE_BasicObject is the most lightweight implementation of
+ * an object in the engine. It inherits rendering capabilities
+ * from H2DE_SingleSurfaceObject but does not introduce any
+ * extra features.
  * 
- * This class is intended for simple, static, or placeholder objects in the game world.
+ * Responsibilities:
+ * - Store and render surfaces
+ * - Refresh its surface buffer when necessary
+ * 
+ * Typical use cases:
+ * - Static images or sprites
+ * - Background or decorative elements
+ * - Placeholder objects for testing
+ * 
+ * This class is a final layer object and can be instantiated
+ * directly when no advanced behavior is required.
  */
 class H2DE_BasicObject : public H2DE_SingleSurfaceObject {
 private:

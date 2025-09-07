@@ -2,32 +2,43 @@
 
 /**
  * @file H2DE_bar_object.h
- * @brief Defines H2DE_BarObject, a dual-surface object representing a progress or value bar.
+ * @brief UI object representing a progress or value bar.
  * 
- * This file contains the H2DE_BarObject class, which inherits from H2DE_DualSurfaceObject and
- * provides functionalities to manage a bar with a fill layer and a background layer.
+ * This file defines the H2DE_BarObject class, which extends
+ * H2DE_DualSurfaceObject to provide a bar composed of a
+ * background surface and a foreground (fill) surface.
  * 
- * The bar stores a minimum, maximum, and current value, and supports both direct value updates
- * and animated changes over time using timelines and easing functions.
- * 
- * @note Surfaces are managed by the dual-surface system inherited from H2DE_DualSurfaceObject.
+ * H2DE_BarObject is typically used to represent dynamic values
+ * such as health, mana, stamina, loading, or progression.
+ * It manages synchronization between its surfaces to reflect
+ * changes in value, scale, or style.
  */
 
 #include <H2DE/objects/parents/H2DE_dual_surface_object.h>
 
 /**
  * @class H2DE_BarObject
- * @brief A dual-surface object representing a bar with fill and background surfaces.
+ * @brief Concrete object representing a bar with a background and fill.
  * 
- * H2DE_BarObject manages:
- * - Minimum, maximum, and current values of the bar
- * - Direct and animated updates of bar values using easing functions
- * - Internal computation of fill percentage for rendering
- * - Two layers of surfaces: fill and background
+ * H2DE_BarObject builds upon H2DE_DualSurfaceObject by specializing
+ * its use for progress bars or value indicators. It maintains two
+ * surfaces:
+ * - A background surface (static visual base)
+ * - A foreground surface (dynamic fill that represents the value)
  * 
- * This class is ideal for progress bars, health bars, or any visual element that represents a numeric value.
+ * Typical use cases include:
+ * - Health or mana bars in games
+ * - Loading or progress indicators
+ * - Custom UI bars with textures or colors
  * 
- * @note Inherits surface management functions from H2DE_DualSurfaceObject.
+ * Responsibilities:
+ * - Inherit dual surface rendering behavior
+ * - Provide an intuitive abstraction for bar-like UI components
+ * - Ensure that updates to the bar’s value are reflected in its
+ *   rendering (via scaling, clipping, or texture adjustments)
+ * 
+ * This class is a final layer object intended to be directly
+ * instantiated and used in UI systems or HUDs.
  */
 class H2DE_BarObject : public H2DE_DualSurfaceObject {
 public:

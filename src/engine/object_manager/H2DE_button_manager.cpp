@@ -6,12 +6,13 @@
 void H2DE_ObjectManager::handleEvents_mouseDown_button(H2DE_ButtonObject* button) {
     bool buttonHasBeenClicked = (button != H2DE_NULL_OBJECT);
 
-    bool disabled = (button->_disabled);
-    if (disabled) {
-        return;
-    }
-    
     if (buttonHasBeenClicked) {
+
+        bool disabled = (button->_disabled);
+        if (disabled) {
+            return;
+        }
+
         handleEvents_mouseDown_button_mouseDown(button);
     }
 }

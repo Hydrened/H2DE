@@ -2,24 +2,21 @@
 
 // ACTIONS
 void H2DE_CheckboxObject::_refreshSurfaceBuffers() {
-    // _surfaceBuffers.clear();
-
-    // size_t surfaceBufferSize = _backgroundSurfaces.size() + ((_checkboxObjectData.checked) ? _fillSurfaces.size() : 0);
-    // _surfaceBuffers.reserve(surfaceBufferSize);
-
-    // const std::vector<H2DE_Surface*> sortedBackgroundSurfaces = H2DE_Object::_getSortedSurfaces(_backgroundSurfaces);
-    // _surfaceBuffers.insert(_surfaceBuffers.end(), sortedBackgroundSurfaces.begin(), sortedBackgroundSurfaces.end());
-
-    // if (_checkboxObjectData.checked) {
-    //     const std::vector<H2DE_Surface*> sortedFillSurfaces = H2DE_Object::_getSortedSurfaces(_fillSurfaces);
-    //     _surfaceBuffers.insert(_surfaceBuffers.end(), sortedFillSurfaces.begin(), sortedFillSurfaces.end());
-    // }
-
-    // _surfaceBuffers = H2DE_Object::_getSortedSurfaces(_surfaceBuffers);
-    // _rescaleSurfaceBuffers();
-
     H2DE_Object::_refreshSurfaceBuffers();
-    H2DE_DualSurfaceObject::_refreshSurfaceBuffers();
+
+    size_t surfaceBufferSize = _backgroundSurfaces.size() + ((_checkboxObjectData.checked) ? _fillSurfaces.size() : 0);
+    _surfaceBuffers.reserve(surfaceBufferSize);
+
+    const std::vector<H2DE_Surface*> sortedBackgroundSurfaces = H2DE_Object::_getSortedSurfaces(_backgroundSurfaces);
+    _surfaceBuffers.insert(_surfaceBuffers.end(), sortedBackgroundSurfaces.begin(), sortedBackgroundSurfaces.end());
+
+    if (_checkboxObjectData.checked) {
+        const std::vector<H2DE_Surface*> sortedFillSurfaces = H2DE_Object::_getSortedSurfaces(_fillSurfaces);
+        _surfaceBuffers.insert(_surfaceBuffers.end(), sortedFillSurfaces.begin(), sortedFillSurfaces.end());
+    }
+
+    _surfaceBuffers = H2DE_Object::_getSortedSurfaces(_surfaceBuffers);
+    _rescaleSurfaceBuffers();
 }
 
 void H2DE_CheckboxObject::check() {

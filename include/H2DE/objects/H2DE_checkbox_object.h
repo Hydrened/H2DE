@@ -2,17 +2,19 @@
 
 /**
  * @file H2DE_checkbox_object.h
- * @brief Defines H2DE_CheckboxObject, a dual-surface object representing an interactive checkbox.
+ * @brief UI object representing a checkbox with toggleable state.
  * 
- * This file contains the H2DE_CheckboxObject class, which inherits from H2DE_DualSurfaceObject and
- * provides functionalities for interactive checkboxes in the UI.
+ * This file defines the H2DE_CheckboxObject class, which extends
+ * H2DE_DualSurfaceObject and H2DE_ToggleableObject to implement
+ * a functional checkbox UI element.
  * 
- * The checkbox supports:
- * - Enable/disable state
- * - Checked/unchecked state with toggle functionality
- * - Callback handling for state changes
+ * The checkbox is composed of:
+ * - A background surface (the box outline or base)
+ * - A foreground surface (the checkmark or fill)
+ * - An enabled/disabled state for controlling interaction
  * 
- * @note Surface layers (fill and background) are managed by the dual-surface system.
+ * H2DE_CheckboxObject is commonly used in menus, settings, and
+ * UI forms where binary (on/off) options are needed.
  */
 
 #include <H2DE/objects/parents/H2DE_dual_surface_object.h>
@@ -20,33 +22,27 @@
 
 /**
  * @class H2DE_CheckboxObject
- * @brief A dual-surface object representing an interactive UI checkbox.
+ * @brief Interactive UI checkbox with dual surfaces and toggle state.
  * 
- * H2DE_CheckboxObject extends H2DE_DualSurfaceObject by adding:
- * - Checked/unchecked state management
- * - Enable/disable functionality
- * - On-change callback for state updates
- * - Dual-surface support for fill and background visuals
+ * H2DE_CheckboxObject inherits from:
+ * - H2DE_DualSurfaceObject for rendering both the box and the checkmark
+ * - H2DE_ToggleableObject for managing enabled/disabled interaction
  * 
- * This class is ideal for UI checkboxes, toggles, or any two-state interactive element.
+ * Responsibilities:
+ * - Render a checkbox with a background and a foreground (checkmark)
+ * - Allow toggling between checked and unchecked states
+ * - Respect enable/disable state for interaction availability
  * 
- * @note Inherits dual-surface management functions from H2DE_DualSurfaceObject.
+ * Typical use cases:
+ * - Settings menus with binary options
+ * - Form inputs within game UIs
+ * - Interactive toggles in HUDs
+ * 
+ * This class is a final object and can be directly instantiated
+ * to provide checkbox functionality in user interfaces.
  */
 class H2DE_CheckboxObject : public H2DE_DualSurfaceObject, public H2DE_ToggleableObject {
 public:
-    /**
-     * @brief Enable the checkbox (makes it active).
-     */
-    inline void enable() { 
-        _disabled = false;
-    }
-    /**
-     * @brief Disable the checkbox (makes it inactive).
-     */
-    inline void disable() {
-        _disabled = true;
-    }
-    
     /**
      * @brief Check the checkbox.
      * 
@@ -85,13 +81,6 @@ public:
      */
     constexpr bool isChecked() const noexcept {
         return _checkboxObjectData.checked;
-    }
-    /**
-     * @brief Check if the checkbox is disabled.
-     * @return true if disabled, false otherwise.
-     */
-    constexpr bool isDisabled() const noexcept {
-        return _disabled; 
     }
 
     /**

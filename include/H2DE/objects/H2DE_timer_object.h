@@ -2,19 +2,17 @@
 
 /**
  * @file H2DE_timer_object.h
- * @brief Defines H2DE_TimerObject, a text-surface object representing a customizable timer.
+ * @brief UI object representing a timer with text display.
  * 
- * This file contains the H2DE_TimerObject class, which inherits from H2DE_TextSurfaceObject
- * and provides a timer with full control over hours, minutes, seconds, and milliseconds.
+ * This file defines the H2DE_TimerObject class, which combines
+ * a visual surface with a text label to represent a timer. 
  * 
- * Features include:
- * - Start, pause, resume, and toggle timer state
- * - Time setting and animation with easing functions
- * - Callback registration for reaching specific times
- * - Pause sensitivity to the engine's pause state
- * - Automatic text updates via an internal H2DE_TextObject
+ * The timer uses a background surface for its frame or styling,
+ * while the text element displays the current time value, updated
+ * dynamically via an associated H2DE_Chrono instance.
  * 
- * @note The timer supports smooth timeline animations for all time components.
+ * H2DE_TimerObject is intended for HUDs, scoreboards, and any UI
+ * component where elapsed time or countdowns need to be shown.
  */
 
 #include <H2DE/objects/parents/H2DE_single_surface_object.h>
@@ -23,20 +21,24 @@ class H2DE_Chrono;
 
 /**
  * @class H2DE_TimerObject
- * @brief A text-surface object representing a fully customizable and interactive timer.
+ * @brief UI object for displaying timers with both surface and text.
  * 
- * H2DE_TimerObject extends H2DE_TextSurfaceObject by adding:
- * - Pausing, resuming, and toggling timer operations
- * - Callback triggers when a specific time is reached
- * - Control over increasing or decreasing time
- * - Pause-sensitive behavior
- * - Individual access and animation for hours, minutes, seconds, and milliseconds
- * - Automatic text updates using an internal H2DE_TextObject
+ * H2DE_TimerObject inherits from:
+ * - H2DE_SingleSurfaceObject for rendering a background or frame
+ * - H2DE_TextSurfaceObject for displaying the current timer value
  * 
- * This class is ideal for game timers, countdowns, or any UI element requiring
- * time tracking and visual display.
+ * Responsibilities:
+ * - Visually represent a timer within the UI
+ * - Display dynamically updated time using text rendering
+ * - Integrate with H2DE_Chrono for measuring elapsed or remaining time
  * 
- * @note Inherits text rendering and surface management from H2DE_TextSurfaceObject.
+ * Typical use cases:
+ * - HUD timers (countdown or stopwatch)
+ * - Match time in games
+ * - Scoreboards or challenge-based UI components
+ * 
+ * This class is a final object and is intended to be instantiated
+ * directly when a timer display is needed in the game or UI.
  */
 class H2DE_TimerObject : public H2DE_SingleSurfaceObject, public H2DE_TextSurfaceObject {
 public:
@@ -316,7 +318,6 @@ private:
 
     void _refreshTextObject();
     void _refreshSurfaceBuffers() override;
-    void _refreshMaxRadius() override;
 
     static std::string _intToStr(int value, int nbDigits);
     const std::string _getStringifiedTime() const;

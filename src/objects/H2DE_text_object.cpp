@@ -6,7 +6,6 @@ H2DE_TextObject::H2DE_TextObject(H2DE_Engine* e, const H2DE_ObjectData& od, cons
     _textObjectData.text.text = H2DE_TextSurfaceObject::_getFormatedText(_textObjectData.text.text);
 
     _refreshSurfaceBuffers();
-    _refreshMaxRadius();
 }
 
 // CLEANUP
@@ -159,11 +158,6 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
     }
 
     _rescaleSurfaceBuffers();
-}
-
-void H2DE_TextObject::_refreshMaxRadius() {
-    float maxHitboxesRadius = _getMaxHitboxRadius();
-    _maxRadius = maxHitboxesRadius;
 }
 
 // GETTER

@@ -19,13 +19,6 @@ H2DE_TextSurfaceObject::~H2DE_TextSurfaceObject() {
 // ACTIONS
 void H2DE_TextSurfaceObject::_refreshSurfaceBuffers() {
     _refreshTextObject();
-
-    // const std::vector<H2DE_Surface*> sortedSurfaces = H2DE_Object::_getSortedSurfaces(_surfaces);
-
-    // _surfaceBuffers.clear();
-    // _surfaceBuffers.reserve(sortedSurfaces.size());
-    // _surfaceBuffers.insert(_surfaceBuffers.end(), sortedSurfaces.begin(), sortedSurfaces.end());
-    // _rescaleSurfaceBuffers();
 }
 
 void H2DE_TextSurfaceObject::_refreshTextObject() {

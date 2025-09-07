@@ -3,7 +3,6 @@
 // INIT
 H2DE_DualSurfaceObject::H2DE_DualSurfaceObject(H2DE_Engine* e, const H2DE_ObjectData& od) : H2DE_Object(e, od) {
     _refreshSurfaceBuffers();
-    _refreshMaxRadius();
 }
 
 // CLEANUP
@@ -24,12 +23,4 @@ void H2DE_DualSurfaceObject::_refreshSurfaceBuffers() {
     _surfaceBuffers = H2DE_Object::_getSortedSurfaces(_surfaceBuffers);
 
     _rescaleSurfaceBuffers();
-}
-
-void H2DE_DualSurfaceObject::_refreshMaxRadius() {
-    float maxHitboxesRadius = _getMaxHitboxRadius();
-    float maxFillSurfaceRadius = _getMaxSurfaceRadius(_fillSurfaces);
-    float maxBackgroundSurfaceRadius = _getMaxSurfaceRadius(_backgroundSurfaces);
-
-    _maxRadius = H2DE::max(maxHitboxesRadius, maxFillSurfaceRadius, maxBackgroundSurfaceRadius);
 }

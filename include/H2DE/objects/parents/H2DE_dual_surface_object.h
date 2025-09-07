@@ -162,5 +162,4 @@ protected:
     ~H2DE_DualSurfaceObject() override;
 
     void _refreshSurfaceBuffers() override;
-    void _refreshMaxRadius() override;
 };
