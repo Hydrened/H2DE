@@ -473,6 +473,7 @@ protected:
     void _updateTimelineBuffer();
 
     virtual void _refreshSurfaceBuffers();
+    void _refreshMaxRadius();
     H2DE_TextObject* _refreshTextObject(H2DE_TextObject* textObject, const H2DE_Text& text);
 
     inline void _addTimelineToTimelines(H2DE_Timeline* timeline) {
@@ -507,8 +508,6 @@ private:
     bool _isGrid = false;
 
     void _stopTimelines();
-    
-    void _refreshMaxRadius();
 };
 
 #include <H2DE/objects/parents/H2DE_object.inl>

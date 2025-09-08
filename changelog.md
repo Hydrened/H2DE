@@ -1,3 +1,7 @@
+## H2DE-4.3.5
+#### MODIFIED
+- object class hierarchy
+
 ## H2DE-4.3.4
 #### ADDED
 - checkbox object

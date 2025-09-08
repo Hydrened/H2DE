@@ -16,6 +16,7 @@ bool H2DE_BarObject::_isSurfaceFill(H2DE_Surface* surface) const {
 void H2DE_BarObject::_refreshSurfaceBuffers() {
     H2DE_Object::_refreshSurfaceBuffers();
     H2DE_DualSurfaceObject::_refreshSurfaceBuffers();
+    _refreshMaxRadius();
 }
 
 // SETTER

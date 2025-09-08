@@ -158,6 +158,7 @@ void H2DE_TextObject::_refreshSurfaceBuffers() {
     }
 
     _rescaleSurfaceBuffers();
+    _refreshMaxRadius();
 }
 
 // GETTER

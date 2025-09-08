@@ -125,7 +125,6 @@ bool H2DE_Object::_removeSurface(H2DE_SurfaceMap& surfaces, const std::string& n
 
     if (removed) {
         surfaces.erase(it);
-        _refreshMaxRadius();
         _refreshSurfaceBuffers();
     }
 

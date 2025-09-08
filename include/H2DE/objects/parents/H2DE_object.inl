@@ -4,7 +4,6 @@ template<typename H2DE_Surface_T>
 H2DE_Surface_T* H2DE_Object::_addSurface(H2DE_SurfaceMap& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData) {
     H2DE_Surface_T* surface = new H2DE_Surface_T(_engine, this, surfaceData, specificData);
     surfaces[name] = surface;
-    _refreshMaxRadius();
     _refreshSurfaceBuffers();
     return surface;
 }

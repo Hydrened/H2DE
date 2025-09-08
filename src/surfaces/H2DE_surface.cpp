@@ -19,7 +19,6 @@ void H2DE_Surface::setTranslate(const H2DE_Translate& translate) {
     _surfaceData.transform.translate = translate;
     _surfaceData.transform._defaultTranslate = translate;
     _object->_refreshSurfaceBuffers();
-    _object->_refreshMaxRadius();
 }
 
 void H2DE_Surface::setScale(const H2DE_Scale& scale) {
@@ -30,7 +29,6 @@ void H2DE_Surface::setScale(const H2DE_Scale& scale) {
     _surfaceData.transform.scale = scale;
     _surfaceData.transform._defaultScale = scale;
     _object->_refreshSurfaceBuffers();
-    _object->_refreshMaxRadius();
 }
 
 void H2DE_Surface::setRotation(float rotation) {
@@ -40,7 +38,6 @@ void H2DE_Surface::setRotation(float rotation) {
 
     _surfaceData.transform.rotation = rotation;
     _object->_refreshSurfaceBuffers();
-    _object->_refreshMaxRadius();
 }
 
 void H2DE_Surface::setPivot(const H2DE_Pivot& pivot) {
@@ -51,7 +48,6 @@ void H2DE_Surface::setPivot(const H2DE_Pivot& pivot) {
     _surfaceData.transform.pivot = pivot;
     _surfaceData.transform._defaultPivot = pivot;
     _object->_refreshSurfaceBuffers();
-    _object->_refreshMaxRadius();
 }
 
 void H2DE_Surface::setScaleMode(H2DE_ScaleMode scaleMode) {

@@ -4,4 +4,5 @@
 void H2DE_BasicObject::_refreshSurfaceBuffers() {
     H2DE_Object::_refreshSurfaceBuffers();
     H2DE_SingleSurfaceObject::_refreshSurfaceBuffers();
+    _refreshMaxRadius();
 }

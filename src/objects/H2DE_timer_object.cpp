@@ -35,6 +35,7 @@ void H2DE_TimerObject::_refreshSurfaceBuffers() {
     H2DE_Object::_refreshSurfaceBuffers();
     H2DE_SingleSurfaceObject::_refreshSurfaceBuffers();
     H2DE_TextSurfaceObject::_refreshSurfaceBuffers();
+    _refreshMaxRadius();
 }
 
 void H2DE_TimerObject::onReach(const H2DE_Time& target, const std::function<void()>& callback, bool once) {

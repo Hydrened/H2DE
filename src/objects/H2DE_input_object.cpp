@@ -23,6 +23,7 @@ void H2DE_InputObject::_refreshSurfaceBuffers() {
     H2DE_Object::_refreshSurfaceBuffers();
     H2DE_SingleSurfaceObject::_refreshSurfaceBuffers();
     H2DE_TextSurfaceObject::_refreshSurfaceBuffers();
+    _refreshMaxRadius();
 }
 
 void H2DE_InputObject::_refreshCursor() {

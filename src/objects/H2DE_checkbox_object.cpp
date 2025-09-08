@@ -17,6 +17,7 @@ void H2DE_CheckboxObject::_refreshSurfaceBuffers() {
 
     _surfaceBuffers = H2DE_Object::_getSortedSurfaces(_surfaceBuffers);
     _rescaleSurfaceBuffers();
+    _refreshMaxRadius();
 }
 
 void H2DE_CheckboxObject::check() {
