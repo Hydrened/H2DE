@@ -1,3 +1,9 @@
+## H2DE-4.3.6
+#### ADDED
+- radio button object
+#### FIXED
+- auto hitbox rescaling
+
 ## H2DE-4.3.5
 #### MODIFIED
 - object class hierarchy

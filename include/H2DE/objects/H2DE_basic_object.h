@@ -40,6 +40,8 @@
  */
 class H2DE_BasicObject : public H2DE_SingleSurfaceObject {
 private:
+    static constexpr bool _isParentObject = false;
+    
     H2DE_BasicObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData) : H2DE_Object(engine, objectData), H2DE_SingleSurfaceObject(engine, objectData) {}
     ~H2DE_BasicObject() override = default;
 

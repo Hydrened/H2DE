@@ -139,6 +139,7 @@ void H2DE_Object::addHitbox(const std::string& name, const H2DE_Hitbox& hitbox) 
     _hitboxes[name].transform._defaultScale = hitbox.transform.scale;
     _hitboxes[name].transform._defaultPivot = hitbox.transform.pivot;
     
+    _rescaleHitboxes();
     _refreshMaxRadius();
 }
 

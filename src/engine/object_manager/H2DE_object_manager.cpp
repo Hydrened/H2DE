@@ -7,6 +7,7 @@ H2DE_ObjectManager::H2DE_ObjectManager(H2DE_Engine* e) : engine(e) {
     buttons.reserve(100);
     checkboxes.reserve(100);
     inputs.reserve(100);
+    radioButtons.reserve(100);
 }
 
 // EVENTS
@@ -50,6 +51,9 @@ void H2DE_ObjectManager::handleEvents_mouseDown(SDL_Event event) {
 
         H2DE_CheckboxObject* clickedCheckbox = dynamic_cast<H2DE_CheckboxObject*>(clickedObject);
         handleEvents_mouseDown_checkbox(clickedCheckbox);
+
+        H2DE_RadioButtonObject* clickedRadioButton = dynamic_cast<H2DE_RadioButtonObject*>(clickedObject);
+        handleEvents_mouseDown_radioButton(clickedRadioButton);
     }
 }
 
@@ -140,11 +144,12 @@ void H2DE_ObjectManager::refreshHoverObjectBuffer() {
     hoveredObject = H2DE_NULL_OBJECT;
 
     hoverObjects.clear();
-    hoverObjects.reserve(buttons.size() + checkboxes.size() + inputs.size());
+    hoverObjects.reserve(buttons.size() + checkboxes.size() + inputs.size() + radioButtons.size());
 
     std::ranges::copy(buttons, std::back_inserter(hoverObjects));
     std::ranges::copy(checkboxes, std::back_inserter(hoverObjects));
     std::ranges::copy(inputs, std::back_inserter(hoverObjects));
+    std::ranges::copy(radioButtons, std::back_inserter(hoverObjects));
 
     sortBuffer(hoverObjects);
 }
@@ -152,6 +157,7 @@ void H2DE_ObjectManager::refreshHoverObjectBuffer() {
 template void H2DE_ObjectManager::refreshBuffer<H2DE_ButtonObject>(std::vector<H2DE_ButtonObject*>& buffer, const std::vector<H2DE_Object*>& objects);
 template void H2DE_ObjectManager::refreshBuffer<H2DE_CheckboxObject>(std::vector<H2DE_CheckboxObject*>& buffer, const std::vector<H2DE_Object*>& objects);
 template void H2DE_ObjectManager::refreshBuffer<H2DE_InputObject>(std::vector<H2DE_InputObject*>& buffer, const std::vector<H2DE_Object*>& objects);
+template void H2DE_ObjectManager::refreshBuffer<H2DE_RadioButtonObject>(std::vector<H2DE_RadioButtonObject*>& buffer, const std::vector<H2DE_Object*>& objects);
 
 template<typename H2DE_ObjectType>
 void H2DE_ObjectManager::refreshBuffer(std::vector<H2DE_ObjectType*>& buffer, const std::vector<H2DE_Object*>& objects) {
@@ -172,6 +178,7 @@ template void H2DE_ObjectManager::sortBuffer<H2DE_Object>(std::vector<H2DE_Objec
 template void H2DE_ObjectManager::sortBuffer<H2DE_ButtonObject>(std::vector<H2DE_ButtonObject*>& buffer);
 template void H2DE_ObjectManager::sortBuffer<H2DE_CheckboxObject>(std::vector<H2DE_CheckboxObject*>& buffer);
 template void H2DE_ObjectManager::sortBuffer<H2DE_InputObject>(std::vector<H2DE_InputObject*>& buffer);
+template void H2DE_ObjectManager::sortBuffer<H2DE_RadioButtonObject>(std::vector<H2DE_RadioButtonObject*>& buffer);
 
 template<typename H2DE_ObjectType>
 void H2DE_ObjectManager::sortBuffer(std::vector<H2DE_ObjectType*>& buffer) {

@@ -92,10 +92,13 @@ public:
     friend class H2DE_Engine;
 
 protected:
-    H2DE_SurfaceMap _surfaces = {};
-
     H2DE_SingleSurfaceObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData);
     ~H2DE_SingleSurfaceObject() override;
 
     void _refreshSurfaceBuffers() override;
+
+private:
+    static constexpr bool _isParentObject = true;
+    
+    H2DE_SurfaceMap _surfaces = {};
 };

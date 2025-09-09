@@ -54,8 +54,6 @@ public:
 protected:
     H2DE_TextObject* _textObject = H2DE_NULL_OBJECT;
 
-    H2DE_Text _text = H2DE_Text();
-
     H2DE_TextSurfaceObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_Text& text);
     ~H2DE_TextSurfaceObject() override;
 
@@ -64,5 +62,11 @@ protected:
     void _setText(const H2DE_Text& text);
 
     void _refreshSurfaceBuffers() override;
+
+private:
+    static constexpr bool _isParentObject = true;
+    
+    H2DE_Text _text = H2DE_Text();
+
     void _refreshTextObject();
 };

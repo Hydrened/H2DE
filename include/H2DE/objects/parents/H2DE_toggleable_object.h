@@ -85,4 +85,7 @@ public:
 protected:
     H2DE_ToggleableObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData) : H2DE_Object(engine, objectData) {}
     ~H2DE_ToggleableObject() override = default;
+
+private:
+    static constexpr bool _isParentObject = true;
 };

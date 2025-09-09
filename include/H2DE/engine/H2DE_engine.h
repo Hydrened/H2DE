@@ -11,9 +11,6 @@
  * camera, timeline animations, and object management to provide a flexible 2D game framework.
  */
 
-
-#include <H2DE/engine/H2DE_timeline_manager.h>
-
 #include <map>
 #include <filesystem>
 
@@ -429,12 +426,15 @@ public:
     friend class H2DE_Audio;
     friend class H2DE_Camera;
     friend class H2DE_ObjectManager;
-    friend class H2DE_Object;
+    
     friend class H2DE_SingleSurfaceObject;
     friend class H2DE_DualSurfaceObject;
     friend class H2DE_TextSurfaceObject;
-    friend class H2DE_TextObject;
+
+    friend class H2DE_Object;
     friend class H2DE_InputObject;
+    friend class H2DE_RadioButtonObject;
+    friend class H2DE_TextObject;
     
 private:
     template<typename, typename = void>
@@ -443,11 +443,18 @@ private:
     template<typename T>
     struct _hasH2DE_DataType<T, std::void_t<typename T::H2DE_DataType>> : std::true_type {};
 
+    template<typename, typename = void>
+    struct _isObject : std::false_type {};
+
+    template <typename T>
+    struct _isObject<T, std::void_t<decltype(T::_isParentObject)>> : std::true_type {};
+
+private:
     H2DE_EngineData _data;
 
     H2DE_Settings* _settings = nullptr;
     H2DE_Window* _window = nullptr;
-    H2DE_AssetLoaderManager* _assetLoaderManager = nullptr;
+    H2DE_AssetLoaderManager* _assetLoaderManager = nullptr; 
     H2DE_EventManager* _eventManager = nullptr;
     H2DE_Renderer* _renderer = nullptr;
     H2DE_Audio* _audio = nullptr;
@@ -483,6 +490,7 @@ private:
     void _refreshObjectManagerButtons();
     void _refreshObjectManagerCheckboxes();
     void _refreshObjectManagerInputs();
+    void _refreshObjectManagerRadioButtons();
 
     void _destroy();
     void _destroyObjects();

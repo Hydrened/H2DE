@@ -101,10 +101,14 @@ public:
     friend class H2DE_ObjectManager;
 
 private:
+    static constexpr bool _isParentObject = false;
+    
     H2DE_CheckboxObjectData _checkboxObjectData;
 
     H2DE_CheckboxObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_CheckboxObjectData& checkboxObjectData) : H2DE_Object(engine, objectData), H2DE_DualSurfaceObject(engine, objectData), H2DE_ToggleableObject(engine, objectData), _checkboxObjectData(checkboxObjectData) {}
     ~H2DE_CheckboxObject() override = default;
 
     void _refreshSurfaceBuffers() override;
+
+    void _setCheck(bool checked);
 };

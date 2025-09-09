@@ -276,6 +276,8 @@ private:
     using _H2DE_Line = std::vector<_H2DE_Word>;
     using _H2DE_Lines = std::vector<_H2DE_Line>;
 
+    static constexpr bool _isParentObject = false;
+
     H2DE_TextObjectData _textObjectData;
 
     _H2DE_Lines _lines;

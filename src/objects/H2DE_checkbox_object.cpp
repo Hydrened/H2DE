@@ -21,31 +21,31 @@ void H2DE_CheckboxObject::_refreshSurfaceBuffers() {
 }
 
 void H2DE_CheckboxObject::check() {
-    if (_checkboxObjectData.checked) {
-        return;
-    }
-
-    if (_checkboxObjectData.onChange) {
-        _checkboxObjectData.onChange({ this, true });
-    }
-
-    _checkboxObjectData.checked = true;
-    _refreshSurfaceBuffers();
+    _setCheck(true);
 }
 
 void H2DE_CheckboxObject::uncheck() {
-    if (!_checkboxObjectData.checked) {
+    _setCheck(false);
+}
+
+void H2DE_CheckboxObject::toggleCheck() {
+    _setCheck(!_checkboxObjectData.checked);
+}
+
+// SETTER
+void H2DE_CheckboxObject::_setCheck(bool checked) {
+    if (_disabled) {
+        return;
+    }
+
+    if (_checkboxObjectData.checked == checked) {
         return;
     }
 
     if (_checkboxObjectData.onChange) {
-        _checkboxObjectData.onChange({ this, false });
+        _checkboxObjectData.onChange({ this, checked });
     }
 
-    _checkboxObjectData.checked = false;
+    _checkboxObjectData.checked = checked;
     _refreshSurfaceBuffers();
-}
-
-void H2DE_CheckboxObject::toggleCheck() {
-    (_checkboxObjectData.checked) ? uncheck() : check();
 }

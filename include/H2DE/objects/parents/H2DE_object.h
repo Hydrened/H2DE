@@ -35,6 +35,7 @@ class H2DE_BasicObject;
 class H2DE_ButtonObject;
 class H2DE_CheckboxObject;
 class H2DE_InputObject;
+class H2DE_RadioButtonObject;
 class H2DE_TextObject;
 class H2DE_TimerObject;
 
@@ -456,9 +457,7 @@ protected:
     H2DE_ObjectData _objectData;
 
     std::vector<H2DE_Surface*> _surfaceBuffers;
-    std::vector<H2DE_Timeline*> _timelinesBuffer;
-    std::unordered_map<std::string, H2DE_Hitbox> _hitboxes;
-    float _maxRadius;
+
     bool _disabled = false;
 
     H2DE_Object(H2DE_Engine* engine, const H2DE_ObjectData& objectData) : _engine(engine), _objectData(objectData) {};
@@ -466,48 +465,58 @@ protected:
 
     static void _destroySurfaces(H2DE_SurfaceMap& surfaces);
     static void _destroySurfaces(std::vector<H2DE_Surface*>& surfaces);
-    void _removeTimeline(H2DE_Timeline* timeline);
 
     virtual void _update();
-    void _updateCollisions();
-    void _updateTimelineBuffer();
 
     virtual void _refreshSurfaceBuffers();
     void _refreshMaxRadius();
     H2DE_TextObject* _refreshTextObject(H2DE_TextObject* textObject, const H2DE_Text& text);
 
+    void _rescaleSurfaceBuffers();
+
+    template<typename H2DE_Surface_T>
+    H2DE_Surface_T* _addSurface(H2DE_SurfaceMap& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData);
+    bool _removeSurface(H2DE_SurfaceMap& surfaces, const std::string& name);
+
     inline void _addTimelineToTimelines(H2DE_Timeline* timeline) {
         _timelinesBuffer.push_back(timeline);
     }
 
-    template<typename H2DE_Surface_T>
-    H2DE_Surface_T* _addSurface(H2DE_SurfaceMap& surfaces, const std::string& name, const H2DE_SurfaceData& surfaceData, const typename H2DE_Surface_T::H2DE_DataType& specificData);
-
-    bool _removeSurface(H2DE_SurfaceMap& surfaces, const std::string& name);
-
-    template<typename H2DE_Surface_T>
-    static H2DE_Surface_T* _getSurface(const H2DE_SurfaceMap& surfaces, const std::string& name);
-
     static const std::vector<H2DE_Surface*> _getSortedSurfaces(H2DE_SurfaceMap& surfaces);
     static const std::vector<H2DE_Surface*> _getSortedSurfaces(std::vector<H2DE_Surface*>& surfaces);
-    static const std::array<H2DE_Translate, 4> _getCorners(const H2DE_Transform& transform);
 
     static inline bool _hasSurface(const H2DE_SurfaceMap& surfaces, const std::string& name) {
         return (surfaces.find(name) != surfaces.end()); 
     }
 
-    void _rescaleSurfaceBuffers();
-    void _rescaleHitboxes();
-    static void _rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale);
-
-    float _getMaxHitboxRadius() const;
-    float _getMaxSurfaceRadius() const;
-
 private:
+    static constexpr bool _isParentObject = true;
+
+    std::vector<H2DE_Timeline*> _timelinesBuffer;
+    std::unordered_map<std::string, H2DE_Hitbox> _hitboxes;
+
     bool _hidden = false;
     bool _isGrid = false;
 
+    float _maxRadius;
+
     void _stopTimelines();
+
+    void _removeTimeline(H2DE_Timeline* timeline);
+
+    void _updateCollisions();
+    void _updateTimelineBuffer();
+
+    void _rescaleHitboxes();
+    static void _rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale);
+
+    template<typename H2DE_Surface_T>
+    static H2DE_Surface_T* _getSurface(const H2DE_SurfaceMap& surfaces, const std::string& name);
+
+    static const std::array<H2DE_Translate, 4> _getCorners(const H2DE_Transform& transform);
+
+    float _getMaxHitboxRadius() const;
+    float _getMaxSurfaceRadius() const;
 };
 
 #include <H2DE/objects/parents/H2DE_object.inl>

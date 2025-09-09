@@ -162,4 +162,7 @@ protected:
     ~H2DE_DualSurfaceObject() override;
 
     void _refreshSurfaceBuffers() override;
+
+private:
+    static constexpr bool _isParentObject = true;
 };

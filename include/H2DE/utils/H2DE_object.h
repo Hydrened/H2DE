@@ -6,7 +6,10 @@ class H2DE_Object;
 class H2DE_ButtonObject;
 class H2DE_CheckboxObject;
 class H2DE_InputObject;
+class H2DE_RadioButtonObject;
 class H2DE_Timeline;
+
+using H2DE_RadioButtonID = uint16_t;
 
 /**
  * @enum H2DE_InputType
@@ -90,6 +93,20 @@ private:
     friend class H2DE_ObjectManager;
 };
 
+struct H2DE_RadioButtonEventData {
+public:
+    H2DE_RadioButtonObject* radioButton = nullptr;
+    H2DE_RadioButtonID id = 0;
+    bool checked = false;
+
+private:
+    constexpr H2DE_RadioButtonEventData() noexcept = default;
+    constexpr H2DE_RadioButtonEventData(H2DE_RadioButtonObject* radioButton, H2DE_RadioButtonID id, bool checked) noexcept : radioButton(radioButton), id(id), checked(checked) {}
+
+    friend class H2DE_RadioButtonObject;
+    friend class H2DE_ObjectManager;
+};
+
 /**
  * @struct H2DE_ObjectData
  * @brief Contains basic data for an object, including its transform, opacity, position mode, and index.
@@ -167,6 +184,12 @@ struct H2DE_InputObjectData {
     std::function<void(H2DE_InputEventData)> onFocus = nullptr;         /**< Callback triggered when the input field gains focus. */
     std::function<void(H2DE_InputEventData)> onBlur = nullptr;          /**< Callback triggered when the input field loses focus. */
     std::function<void(H2DE_InputEventData)> onSubmit = nullptr;        /**< Callback triggered when the input is submitted (e.g., Enter key). */
+};
+
+struct H2DE_RadioButtonObjectData {
+    H2DE_RadioButtonID id = 0;
+    bool checked = false;
+    std::function<void(H2DE_RadioButtonEventData)> onChange = nullptr;
 };
 
 /**

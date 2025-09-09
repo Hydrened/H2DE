@@ -13,5 +13,6 @@
 #include <H2DE/objects/H2DE_button_object.h>
 #include <H2DE/objects/H2DE_checkbox_object.h>
 #include <H2DE/objects/H2DE_input_object.h>
+#include <H2DE/objects/H2DE_radio_button_object.h>
 #include <H2DE/objects/H2DE_text_object.h>
 #include <H2DE/objects/H2DE_timer_object.h>

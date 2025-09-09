@@ -156,6 +156,8 @@ public:
     friend class H2DE_Renderer;
 
 private:
+    static constexpr bool _isParentObject = false;
+    
     H2DE_BarObjectData _barObjectData;
 
     H2DE_BarObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_BarObjectData& barObjectData) : H2DE_Object(engine, objectData), H2DE_DualSurfaceObject(engine, objectData), _barObjectData(barObjectData) {}

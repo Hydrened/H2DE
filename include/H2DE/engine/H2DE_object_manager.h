@@ -11,6 +11,7 @@ private:
     std::vector<H2DE_ButtonObject*> buttons;
     std::vector<H2DE_CheckboxObject*> checkboxes;
     std::vector<H2DE_InputObject*> inputs;
+    std::vector<H2DE_RadioButtonObject*> radioButtons;
 
     H2DE_Object* hoveredObject = H2DE_NULL_OBJECT;
     H2DE_ButtonObject* mouseDownButton = H2DE_NULL_OBJECT;
@@ -19,7 +20,7 @@ private:
     H2DE_Cursor oldCursor = H2DE_CURSOR_ARROW;
 
     H2DE_ObjectManager(H2DE_Engine* engine);
-    ~H2DE_ObjectManager() noexcept = default;
+    ~H2DE_ObjectManager() = default;
 
     void handleEvents(SDL_Event event);
 
@@ -33,6 +34,7 @@ private:
     void handleEvents_mouseDown_input_blur(H2DE_InputObject* input);
     int handleEvents_mouseDown_input_getFocusedInputLetterIndex();
     H2DE_Translate handleEvents_mouseDown_input_getFixedMouseTranslate();
+    void handleEvents_mouseDown_radioButton(H2DE_RadioButtonObject* radioButton);
 
     void handleEvents_mouseUp(SDL_Event event);
     void handleEvents_mouseUp_button(SDL_Event event);
@@ -61,12 +63,14 @@ private:
     void refreshButtonBuffer(const std::vector<H2DE_Object*>& objects);
     void refreshCheckboxBuffer(const std::vector<H2DE_Object*>& objects);
     void refreshInputBuffer(const std::vector<H2DE_Object*>& objects);
+    void refreshRadioButtonBuffer(const std::vector<H2DE_Object*>& objects);
     template<typename H2DE_ObjectType>
     void sortBuffer(std::vector<H2DE_ObjectType*>& buffer);
 
     void focusInput(H2DE_InputObject* input);
     void blurInput(H2DE_InputObject* input);
     void submitInput(H2DE_InputObject* input);
+    void checkRadioButton(H2DE_RadioButtonObject* radioButton);
 
     bool isMouseCollidingObject(H2DE_Object* object) const;
     bool isCursorPositionValid() const;
@@ -88,5 +92,7 @@ private:
     friend class H2DE_Engine;
     friend class H2DE_Window;
     friend class H2DE_EventManager;
+    
     friend class H2DE_InputObject;
+    friend class H2DE_RadioButtonObject;
 };

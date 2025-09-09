@@ -217,6 +217,8 @@ public:
     friend class H2DE_ObjectManager;
 
 private:
+    static constexpr bool _isParentObject = false;
+    
     H2DE_InputObjectData _inputObjectData;
 
     int _cursorPosition = -1;

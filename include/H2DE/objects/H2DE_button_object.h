@@ -189,6 +189,8 @@ public:
     friend class H2DE_ObjectManager;
 
 private:
+    static constexpr bool _isParentObject = false;
+    
     H2DE_ButtonObjectData _buttonObjectData;
 
     H2DE_ButtonObject(H2DE_Engine* engine, const H2DE_ObjectData& objectData, const H2DE_ButtonObjectData& buttonObjectData);

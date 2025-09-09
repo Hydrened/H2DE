@@ -304,6 +304,8 @@ public:
     friend class H2DE_Engine;
 
 private:
+    static constexpr bool _isParentObject = false;
+    
     H2DE_TimerObjectData _timerObjectData;
 
     H2DE_Chrono* _chrono = nullptr;

@@ -20,6 +20,7 @@
 #include <H2DE/engine/H2DE_engine.h>
 class H2DE_Engine;
 class H2DE_BasicObject;
+class H2DE_Timeline;
 
 /**
  * @class H2DE_Camera

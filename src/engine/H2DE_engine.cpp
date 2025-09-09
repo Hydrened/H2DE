@@ -215,6 +215,10 @@ void H2DE_Engine::_refreshObjectManagerInputs() {
     _objectManager->refreshInputBuffer(_objects);
 }
 
+void H2DE_Engine::_refreshObjectManagerRadioButtons() {
+    _objectManager->refreshRadioButtonBuffer(_objects);
+}
+
 void H2DE_Engine::debugHitboxes(bool state, const std::vector<int>& collisionIndexes) {
     _debugObjectEnabled = state;
     _debugHitboxCollisionIndexes = collisionIndexes;
