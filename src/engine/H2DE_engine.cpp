@@ -13,7 +13,7 @@ H2DE_Engine::H2DE_Engine(const H2DE_EngineData& d) : _data(d), _fps(_data.window
 
         _objects.reserve(10000);
 
-        _settings = new H2DE_Settings(this);
+        _settings = new H2DE_Settings();
         _window = new H2DE_Window(this, _data.window);
         _assetLoaderManager = new H2DE_AssetLoaderManager(this, _window->_renderer);
         _eventManager = new H2DE_EventManager(this);

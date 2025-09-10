@@ -9,6 +9,7 @@ class H2DE_InputObject;
 class H2DE_RadioButtonObject;
 class H2DE_Timeline;
 
+/** @brief Unique identifier type used for radio buttons within a group. */
 using H2DE_RadioButtonID = uint16_t;
 
 /**
@@ -51,21 +52,28 @@ public:
     H2DE_ButtonObject* button = nullptr;        /**< Pointer to the button that triggered the event. */
 
 private:
-    constexpr H2DE_ButtonEventData() noexcept = default;
-    constexpr H2DE_ButtonEventData(H2DE_ButtonObject* button) noexcept : button(button) {}
+    constexpr H2DE_ButtonEventData() = default;
+    constexpr H2DE_ButtonEventData(H2DE_ButtonObject* button) : button(button) {}
 
     friend class H2DE_ButtonObject;
     friend class H2DE_ObjectManager;
 };
 
+/**
+ * @struct H2DE_CheckboxEventData
+ * @brief Stores event context for checkbox callbacks.
+ * 
+ * This struct is passed to checkbox event functions to provide access
+ * to the checkbox that triggered the event and its checked state.
+ */
 struct H2DE_CheckboxEventData {
 public:
-    H2DE_CheckboxObject* checkbox = nullptr;
-    bool checked = false;
+    H2DE_CheckboxObject* checkbox = nullptr;    /**< Pointer to the checkbox that triggered the event. */
+    bool checked = false;                       /**< Current checked state of the checkbox. */
 
 private:
-    constexpr H2DE_CheckboxEventData() noexcept = default;
-    constexpr H2DE_CheckboxEventData(H2DE_CheckboxObject* checkbox, bool checked) noexcept : checkbox(checkbox), checked(checked) {}
+    constexpr H2DE_CheckboxEventData() = default;
+    constexpr H2DE_CheckboxEventData(H2DE_CheckboxObject* checkbox, bool checked) : checkbox(checkbox), checked(checked) {}
 
     friend class H2DE_CheckboxObject;
     friend class H2DE_ObjectManager;
@@ -85,23 +93,31 @@ public:
     std::optional<char> character = std::nullopt;       /**< Character that was just input (if applicable). */
 
 private:
-    H2DE_InputEventData() noexcept = default;
-    H2DE_InputEventData(H2DE_InputObject* input, const std::string& text) noexcept : input(input), text(text), character(std::nullopt) {}
-    H2DE_InputEventData(H2DE_InputObject* input, const std::string& text, char character) noexcept : input(input), text(text), character(character) {}
+    H2DE_InputEventData() = default;
+    H2DE_InputEventData(H2DE_InputObject* input, const std::string& text) : input(input), text(text), character(std::nullopt) {}
+    H2DE_InputEventData(H2DE_InputObject* input, const std::string& text, char character) : input(input), text(text), character(character) {}
 
     friend class H2DE_InputObject;
     friend class H2DE_ObjectManager;
 };
 
+/**
+ * @struct H2DE_RadioButtonEventData
+ * @brief Stores event context for radio button callbacks.
+ * 
+ * This struct is passed to radio button event functions to provide access
+ * to the radio button that triggered the event, its identifier, and its
+ * current checked state.
+ */
 struct H2DE_RadioButtonEventData {
 public:
-    H2DE_RadioButtonObject* radioButton = nullptr;
-    H2DE_RadioButtonID id = 0;
-    bool checked = false;
+    H2DE_RadioButtonObject* radioButton = nullptr;      /**< Pointer to the radio button that triggered the event. */
+    H2DE_RadioButtonID id = 0;                          /**< Unique identifier of the radio button within its group. */
+    bool checked = false;                               /**< Current checked state of the radio button. */
 
 private:
-    constexpr H2DE_RadioButtonEventData() noexcept = default;
-    constexpr H2DE_RadioButtonEventData(H2DE_RadioButtonObject* radioButton, H2DE_RadioButtonID id, bool checked) noexcept : radioButton(radioButton), id(id), checked(checked) {}
+    constexpr H2DE_RadioButtonEventData() = default;
+    constexpr H2DE_RadioButtonEventData(H2DE_RadioButtonObject* radioButton, H2DE_RadioButtonID id, bool checked) : radioButton(radioButton), id(id), checked(checked) {}
 
     friend class H2DE_RadioButtonObject;
     friend class H2DE_ObjectManager;
@@ -167,9 +183,13 @@ struct H2DE_ButtonObjectData {
     H2DE_Cursor cursor = H2DE_CURSOR_ARROW;                             /**< Cursor to display when the mouse hovers over the button. */
 };
 
+/**
+ * @struct H2DE_CheckboxObjectData
+ * @brief Contains data and event callbacks for a checkbox object.
+ */
 struct H2DE_CheckboxObjectData {
-    bool checked = false;
-    std::function<void(H2DE_CheckboxEventData)> onChange = nullptr;
+    bool checked = false;                                               /**< Current checked state of the checkbox. */
+    std::function<void(H2DE_CheckboxEventData)> onChange = nullptr;     /**< Callback triggered when the checked state changes. */
 };
 
 /**
@@ -186,10 +206,14 @@ struct H2DE_InputObjectData {
     std::function<void(H2DE_InputEventData)> onSubmit = nullptr;        /**< Callback triggered when the input is submitted (e.g., Enter key). */
 };
 
+/**
+ * @struct H2DE_RadioButtonObjectData
+ * @brief Contains data and event callbacks for a radio button object.
+ */
 struct H2DE_RadioButtonObjectData {
-    H2DE_RadioButtonID id = 0;
-    bool checked = false;
-    std::function<void(H2DE_RadioButtonEventData)> onChange = nullptr;
+    H2DE_RadioButtonID id = 0;                                              /**< Unique identifier of the radio button within its group. */
+    bool checked = false;                                                   /**< Current checked state of the radio button. */
+    std::function<void(H2DE_RadioButtonEventData)> onChange = nullptr;      /**< Callback triggered when the checked state changes. */
 };
 
 /**

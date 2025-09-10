@@ -40,8 +40,8 @@ private:
 
     bool silentLoad = false;
 
-    H2DE_AssetLoaderManager(H2DE_Engine* engine, SDL_Renderer* renderer) noexcept : engine(engine), renderer(renderer) {};
-    ~H2DE_AssetLoaderManager() noexcept = default;
+    H2DE_AssetLoaderManager(H2DE_Engine* engine, SDL_Renderer* renderer) : engine(engine), renderer(renderer) {};
+    ~H2DE_AssetLoaderManager() = default;
 
     void update();
 

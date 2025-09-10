@@ -134,7 +134,7 @@ public:
 private:
     H2DE_BorderData _borderData;
 
-    H2DE_Border(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_BorderData& borderData) noexcept : H2DE_Surface(engine, object, surfaceData), _borderData(borderData) {};
+    H2DE_Border(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_BorderData& borderData) : H2DE_Surface(engine, object, surfaceData), _borderData(borderData) {};
     ~H2DE_Border() override = default;
 
     inline std::string getTextureName() const override {

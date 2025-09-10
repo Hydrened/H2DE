@@ -189,7 +189,7 @@ private:
     ~H2DE_Sprite() override;
 
     void _initDelay();
-    void _nextFrame() noexcept;
+    void _nextFrame();
 
     std::optional<H2DE_PixelRect> getSrcRect() const noexcept override;
     inline bool _isVisible() const noexcept override {

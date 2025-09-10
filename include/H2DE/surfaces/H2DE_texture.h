@@ -104,7 +104,7 @@ public:
 private:
     H2DE_TextureData _textureData;
 
-    H2DE_Texture(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) noexcept : H2DE_Surface(engine, object, surfaceData), _textureData(textureData) {};
+    H2DE_Texture(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_TextureData& textureData) : H2DE_Surface(engine, object, surfaceData), _textureData(textureData) {};
     ~H2DE_Texture() override = default;
 
     inline bool _isVisible() const noexcept override {

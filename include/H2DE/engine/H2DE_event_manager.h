@@ -15,8 +15,8 @@ private:
 
     std::vector<H2DE_Event> events;
 
-    H2DE_EventManager(H2DE_Engine* engine) noexcept;
-    ~H2DE_EventManager() noexcept = default;
+    H2DE_EventManager(H2DE_Engine* engine);
+    ~H2DE_EventManager() = default;
 
     void initVkStates();
     void initCursorPos();

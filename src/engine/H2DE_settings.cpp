@@ -2,7 +2,7 @@
 #include "H2DE/engine/H2DE_error.h"
 
 // INIT
-H2DE_Settings::H2DE_Settings(H2DE_Engine* e) : _engine(e) {
+H2DE_Settings::H2DE_Settings() {
     _initFile();
     _refreshValues();
 }
@@ -131,7 +131,7 @@ bool H2DE_Settings::_isSection(const std::string& line) const {
     return (isNameValid && isLineASection);
 }
 
-bool H2DE_Settings::_isKey(const std::string& line) const noexcept {
+bool H2DE_Settings::_isKey(const std::string& line) const {
     if (line.length() == 0) {
         return false;
     }

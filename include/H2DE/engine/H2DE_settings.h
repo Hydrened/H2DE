@@ -16,7 +16,6 @@
  */
 
 #include <H2DE/engine/H2DE_engine.h>
-class H2DE_Engine;
 
 /**
  * @class H2DE_Settings
@@ -108,13 +107,11 @@ public:
     friend class H2DE_Engine;
 
 private:
-    H2DE_Engine* _engine;
-
     const std::filesystem::path _path = "settings.ini";
     std::map<std::string, std::map<std::string, std::string>> _values = {};
 
-    H2DE_Settings(H2DE_Engine* engine);
-    ~H2DE_Settings() noexcept = default;
+    H2DE_Settings();
+    ~H2DE_Settings() = default;
 
     void _initFile();
     void _refreshValues();
@@ -123,6 +120,6 @@ private:
     bool _hasSection(const std::string& section) const;
     bool _hasKey(const std::string& section, const std::string& key) const;
     bool _isSection(const std::string& line) const;
-    bool _isKey(const std::string& line) const noexcept;
+    bool _isKey(const std::string& line) const;
     const std::pair<std::string, std::string> _getKeyAndValue(const std::string& line) const;
 };

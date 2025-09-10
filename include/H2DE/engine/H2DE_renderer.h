@@ -25,7 +25,7 @@ private:
     using H2DE_SubPixelSize = H2DE_Vector2D<float>;
     using H2DE_SubPixelRect = H2DE_Rect<float>;
 
-    H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer, std::vector<H2DE_Object*>& objects) noexcept;
+    H2DE_Renderer(H2DE_Engine* engine, SDL_Renderer* renderer, std::vector<H2DE_Object*>& objects);
     ~H2DE_Renderer();
 
     void destroyTextures();
@@ -33,7 +33,7 @@ private:
     void render();
 
     void clearRenderer() const;
-    void resetCounts() noexcept;
+    void resetCounts();
     void sortObjects();
 
     void renderGrid();
@@ -58,9 +58,9 @@ private:
     void renderCircle(const H2DE_Object* object, H2DE_Border* border) const;
 
     SDL_Rect renderSurfaceGetWorldDestRect(const H2DE_Object* object, H2DE_Surface* surface) const;
-    float renderSurfaceGetWorldRotation(const H2DE_Object* object, H2DE_Surface* surface) const noexcept;
+    float renderSurfaceGetWorldRotation(const H2DE_Object* object, H2DE_Surface* surface) const;
     SDL_Point renderSurfaceGetLocalPivot(const H2DE_Object* object, H2DE_Surface* surface) const;
-    static SDL_RendererFlip renderSurfaceGetWorldFlip(const H2DE_Object* object, H2DE_Surface* surface) noexcept;
+    static SDL_RendererFlip renderSurfaceGetWorldFlip(const H2DE_Object* object, H2DE_Surface* surface);
     std::optional<SDL_Rect> renderSurfaceGetPossibleSrcRect(const H2DE_Object* object, H2DE_Surface* surface) const;
 
     void renderObjectsHitboxes();
@@ -78,10 +78,10 @@ private:
 
     SDL_Texture* getTexture(const std::string& textureName) const;
     bool isSurfaceVisible(const H2DE_Surface* surface) const;
-    static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode) noexcept;
-    static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode) noexcept;
+    static SDL_ScaleMode getScaleMode(H2DE_ScaleMode scaleMode);
+    static SDL_BlendMode getBlendMode(H2DE_BlendMode blendMode);
 
-    static constexpr float getOpacityBlend(uint8_t opacity) noexcept {
+    static constexpr float getOpacityBlend(uint8_t opacity) {
         return (static_cast<float>(opacity) / static_cast<float>(H2DE_OPACITY_MAX));
     }
 

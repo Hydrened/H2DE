@@ -36,7 +36,7 @@ H2DE_Chrono* H2DE_ChronoManager::create(const H2DE_Time& start, bool increasing,
 }
 
 // GETTER
-H2DE_Time H2DE_ChronoManager::elapsedToTime(float elapsed) noexcept {
+H2DE_Time H2DE_ChronoManager::elapsedToTime(float elapsed) {
     H2DE_Time res = H2DE_Time();
 
     res.milliseconds = H2DE::clamp(H2DE::round((elapsed - H2DE::floor(elapsed)) * 1000.0f), 0, 999);

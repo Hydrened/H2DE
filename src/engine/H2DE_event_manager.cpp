@@ -2,7 +2,7 @@
 #include <windows.h>
 
 // INIT
-H2DE_EventManager::H2DE_EventManager(H2DE_Engine* engine) noexcept : engine(engine) {
+H2DE_EventManager::H2DE_EventManager(H2DE_Engine* engine) : engine(engine) {
     initVkStates();
     initCursorPos();
 }

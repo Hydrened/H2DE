@@ -232,7 +232,7 @@ protected:
     H2DE_Engine* _engine;
     H2DE_Object* _object;
 
-    H2DE_Surface(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData) noexcept;
+    H2DE_Surface(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData);
     virtual ~H2DE_Surface() = default;
 
 private:

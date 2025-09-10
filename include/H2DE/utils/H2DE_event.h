@@ -186,7 +186,7 @@ public:
     H2DE_Translate mouseInterfaceTranslate = H2DE_Translate();          /** Mouse position translated into interface (UI) coordinates. */
 
 private:
-    constexpr H2DE_Event() noexcept = default;
+    constexpr H2DE_Event() = default;
 
     friend class H2DE_EventManager;
 };

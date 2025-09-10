@@ -73,7 +73,7 @@ public:
 private:
     H2DE_ColorData _colorData;
 
-    H2DE_Color(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) noexcept : H2DE_Surface(engine, object, surfaceData), _colorData(colorData) {};
+    H2DE_Color(H2DE_Engine* engine, H2DE_Object* object, const H2DE_SurfaceData& surfaceData, const H2DE_ColorData& colorData) : H2DE_Surface(engine, object, surfaceData), _colorData(colorData) {};
     ~H2DE_Color() override = default;
 
     inline std::string getTextureName() const override {

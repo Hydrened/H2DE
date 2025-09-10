@@ -209,7 +209,7 @@ private:
     std::vector<_H2DE_OnReachEvent> _onReachEvents = {};
 
     H2DE_Chrono(H2DE_Engine* engine, H2DE_ChronoManager* manager, const H2DE_Time& start, bool increasing = true, bool pauseSensitive = true);
-    ~H2DE_Chrono() noexcept = default;
+    ~H2DE_Chrono() = default;
 
     void _update();
     void _updateCurrentTime();

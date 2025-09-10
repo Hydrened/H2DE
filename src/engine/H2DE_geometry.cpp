@@ -58,7 +58,7 @@ H2DE_LevelRect H2DE_Geometry::getRect(const H2DE_Object* object, const H2DE_Tran
     return world_childRotated_parentRotated_parentFliped_childRect;
 }
 
-float H2DE_Geometry::getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle) noexcept {
+float H2DE_Geometry::getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle) {
     const H2DE_Transform parentTransform = object->getTransform();
     const H2DE_Transform childTransform = transform;
     

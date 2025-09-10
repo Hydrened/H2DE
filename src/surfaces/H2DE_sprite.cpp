@@ -21,7 +21,7 @@ H2DE_Sprite::~H2DE_Sprite() {
 }
 
 // ACTIONS
-void H2DE_Sprite::_nextFrame() noexcept {
+void H2DE_Sprite::_nextFrame() {
     _currentFrame++;
 
     if (_currentFrame >= _spriteData.nbFrame) {

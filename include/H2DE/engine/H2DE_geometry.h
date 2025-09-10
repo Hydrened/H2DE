@@ -51,7 +51,7 @@ public:
 
 private:
     static H2DE_LevelRect getRect(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle, bool xIsInverted, bool yIsInverted, bool childCantBeInverted);
-    static float getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle) noexcept;
+    static float getRotation(const H2DE_Object* object, const H2DE_Transform& transform, float snapAngle);
 };
 
 using G = H2DE_Geometry;

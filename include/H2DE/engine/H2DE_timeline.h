@@ -97,7 +97,7 @@ private:
     bool _paused = false;
 
     H2DE_Timeline(H2DE_Engine* engine, H2DE_TimelineManager* manager, uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, uint32_t loops, bool pauseSensitive = true);
-    ~H2DE_Timeline() noexcept = default;
+    ~H2DE_Timeline() = default;
 
     bool _update();
 
