@@ -261,7 +261,7 @@ void H2DE_AssetLoaderManager::buildFontCache(const H2DE_Font& font) {
 
     int lastSrcX = 0;
 
-    for (const H2DE_Font::H2DE_Char& character : font.characters) {
+    for (const H2DE_Char& character : font.characters) {
         font._characters[std::string(1, character.character)] = { lastSrcX, 0, character.width, textureSize.y };
         lastSrcX += character.width + spacing;
     }

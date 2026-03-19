@@ -285,10 +285,25 @@ struct H2DE_Vector2D {
      * Uses sqrt on the squared distance.
      * 
      * @param other The other vector to compute the distance to.
-     * @return The Euclidean distance as a float.
+     * @return The Euclidean distance.
      */
     inline H2DE_Vector2D_T getDistance(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
         return std::sqrt(getDistanceSquared(other));
+    }
+
+    /**
+     * @brief Calculate the length (magnitude) of this vector.
+     * 
+     * Computes the Euclidean norm of the vector, which represents its
+     * magnitude in 2D space.
+     * 
+     * @return The length of the vector.
+     * 
+     * @note Equivalent to sqrt(x*x + y*y). Useful for normalization,
+     *       distance calculations, or physics computations.
+     */
+    inline H2DE_Vector2D_T getLength() const {
+        return std::sqrt(x * x + y * y);
     }
 };
 

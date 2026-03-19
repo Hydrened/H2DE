@@ -215,19 +215,19 @@ struct H2DE_Time {
 };
 
 /**
+ * @struct H2DE_Char
+ * @brief Represents a single character in the font.
+ */
+struct H2DE_Char {
+    unsigned char character = 'a';      /**< The character itself */
+    int width = 0;                      /**< Width of the character in pixels */
+};
+
+/**
  * @struct H2DE_Font
  * @brief Represents font data including character definitions, texture, spacing, and rendering modes.
  */
 struct H2DE_Font {
-    /**
-     * @struct H2DE_Char
-     * @brief Represents a single character in the font.
-     */
-    struct H2DE_Char {
-        unsigned char character = 'a';      /**< The character itself */
-        int width = 0;                      /**< Width of the character in pixels */
-    };
-
     std::string textureName = "";                           /**< Name of the texture used for the font */
     std::vector<H2DE_Char> characters = {};                 /**< List of characters defined in the font */
     int ascent = 0;                                         /**< Distance from the baseline to the top of the character area (pixels above the character if centered) */

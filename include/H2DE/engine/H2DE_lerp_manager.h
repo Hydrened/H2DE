@@ -11,6 +11,10 @@ public:
     static H2DE_Timeline* lerp(H2DE_Engine* engine, const H2DE_ColorRGB& origin, const H2DE_ColorRGB& destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_ColorRGB)>& update, const std::function<void()>& completed, bool pauseSensitive);
     static H2DE_Timeline* lerp(H2DE_Engine* engine, const H2DE_Time& origin, const H2DE_Time& destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_Time)>& update, const std::function<void()>& completed, bool pauseSensitive);
 
+    // template<typename H2DE_Lerp_T>
+    // requires (HasNormalLerp<H2DE_Lerp_T>)
+    // static H2DE_Timeline* lerp(H2DE_Engine* engine, H2DE_Lerp_T origin, H2DE_Lerp_T destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_Lerp_T)>& update, const std::function<void()>& completed, bool pauseSensitive);
+
     template<typename H2DE_Lerp_T>
     requires (HasNormalLerp<H2DE_Lerp_T>)
     static H2DE_Timeline* lerp(H2DE_Engine* engine, H2DE_Lerp_T origin, H2DE_Lerp_T destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_Lerp_T)>& update, const std::function<void()>& completed, bool pauseSensitive) {

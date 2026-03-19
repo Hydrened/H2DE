@@ -38,3 +38,24 @@ H2DE_Timeline* H2DE_LerpManager::lerp(H2DE_Engine* engine, const H2DE_Time& orig
 
     }, completed, 0, pauseSensitive);
 }
+
+// // OTHER
+// template H2DE_Timeline* H2DE_LerpManager::lerp<float>(H2DE_Engine* engine, float origin, float destination, uint32_t duration, H2DE_Easing easing, const std::function<void(float)>& update, const std::function<void()>& completed, bool pauseSensitive);
+// template H2DE_Timeline* H2DE_LerpManager::lerp<uint8_t>(H2DE_Engine* engine, uint8_t origin, uint8_t destination, uint32_t duration, H2DE_Easing easing, const std::function<void(uint8_t)>& update, const std::function<void()>& completed, bool pauseSensitive);
+
+// template H2DE_Timeline* H2DE_LerpManager::lerp<H2DE_Translate>(H2DE_Engine* engine, H2DE_Translate origin, H2DE_Translate destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_Translate)>& update, const std::function<void()>& completed, bool pauseSensitive);
+// template H2DE_Timeline* H2DE_LerpManager::lerp<H2DE_Scale>(H2DE_Engine* engine, H2DE_Scale origin, H2DE_Scale destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_Scale)>& update, const std::function<void()>& completed, bool pauseSensitive);
+// template H2DE_Timeline* H2DE_LerpManager::lerp<H2DE_Pivot>(H2DE_Engine* engine, H2DE_Pivot origin, H2DE_Pivot destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_Pivot)>& update, const std::function<void()>& completed, bool pauseSensitive);
+
+// template<typename H2DE_Lerp_T>
+// requires (HasNormalLerp<H2DE_Lerp_T>)
+// static H2DE_Timeline* H2DE_LerpManager::lerp(H2DE_Engine* engine, H2DE_Lerp_T origin, H2DE_Lerp_T destination, uint32_t duration, H2DE_Easing easing, const std::function<void(H2DE_Lerp_T)>& update, const std::function<void()>& completed, bool pauseSensitive) {
+//     const H2DE_Lerp_T valueToAdd = destination - origin;
+
+//     return engine->createTimeline(duration, easing, [update, origin, valueToAdd](float blend) {
+//         if (update) {
+//             H2DE_Lerp_T interpolatedValue = origin + (valueToAdd * blend);
+//             update(interpolatedValue);
+//         }
+//     }, completed, 0, pauseSensitive);
+// }

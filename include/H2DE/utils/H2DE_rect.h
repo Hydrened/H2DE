@@ -135,7 +135,7 @@ struct H2DE_Rect {
      * The rectangle is converted from center-position + size to SDL's top-left + size.
      */
     inline operator SDL_Rect() const noexcept {
-        return SDL_Rect{
+        return SDL_Rect {
             static_cast<int>(H2DE::round(x - w * 0.5f)),
             static_cast<int>(H2DE::round(y - h * 0.5f)),
             static_cast<int>(w),

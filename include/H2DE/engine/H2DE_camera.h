@@ -170,7 +170,7 @@ public:
      * 
      * @return true if origin is on the right, false otherwise.
      */
-    constexpr bool isXOriginInverted() const noexcept{
+    constexpr bool isXOriginInverted() const noexcept {
         return (_data.xOrigin == H2DE_FACE_RIGHT);
     }
     /**

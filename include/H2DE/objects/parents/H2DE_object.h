@@ -489,6 +489,16 @@ protected:
         return (surfaces.find(name) != surfaces.end()); 
     }
 
+    // template<typename H2DE_Property_T>
+    // bool _setProperty(H2DE_Property_T& property, const H2DE_Property_T& value);
+    // template<typename H2DE_HitboxProperty_T> // private
+    // bool _setHitboxProperty(H2DE_HitboxProperty_T H2DE_Transform::* property, H2DE_HitboxProperty_T H2DE_Transform::* defaultProperty, const std::string& name, const H2DE_HitboxProperty_T& value);
+    // template<typename H2DE_HitboxProperty_T>
+    // bool _setHitboxProperty(H2DE_HitboxProperty_T H2DE_Hitbox::* property, const std::string& name, const H2DE_HitboxProperty_T& value);
+
+    // template<typename H2DE_Property_T>
+    // H2DE_Timeline* _setProperty(H2DE_Property_T H2DE_Transform::* property, void (H2DE_Object::*setter)(const H2DE_Property_T& v), const H2DE_Property_T& value, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive);
+
 private:
     static constexpr bool _isParentObject = true;
 

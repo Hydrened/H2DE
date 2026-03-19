@@ -83,7 +83,7 @@ namespace H2DE {
      * @param rest Remaining values.
      * @return The smallest value.
      */
-    template <typename T, typename... Args>
+    template<typename T, typename... Args>
     constexpr T min(T first, Args... rest) noexcept {
         return H2DE::min(first, H2DE::min(rest...));
     }
@@ -109,7 +109,7 @@ namespace H2DE {
      * @param rest Remaining values.
      * @return The largest value.
      */
-    template <typename T, typename... Args>
+    template<typename T, typename... Args>
     constexpr T max(T first, Args... rest) noexcept {
         return H2DE::max(first, H2DE::max(rest...));
     }

@@ -3,24 +3,24 @@
 #include "H2DE/engine/H2DE_error.h"
 
 // CREATE
-bool H2DE::Json::create(const std::filesystem::path& path, bool override, bool encode) {
+bool H2DE_Json::create(const std::filesystem::path& path, bool override, bool encode) {
     if (!override && std::filesystem::exists(path)) {
         return false;
     }
 
-    return H2DE::Json::write(path, json{}, encode);
+    return H2DE_Json::write(path, json{}, encode);
 }
 
-bool H2DE::Json::create(const std::filesystem::path& path, const json& data, bool override, bool encode) {
+bool H2DE_Json::create(const std::filesystem::path& path, const json& data, bool override, bool encode) {
     if (!override && std::filesystem::exists(path)) {
         return false;
     }
 
-    return H2DE::Json::write(path, data, encode);
+    return H2DE_Json::write(path, data, encode);
 }
 
 // READ
-json H2DE::Json::read(const std::filesystem::path& path) {
+json H2DE_Json::read(const std::filesystem::path& path) {
     if (!std::filesystem::exists(path)) {
         H2DE_Error::logError("File not found:" + path.string());
         return json{};
@@ -59,7 +59,7 @@ json H2DE::Json::read(const std::filesystem::path& path) {
 }
 
 // WRITE
-bool H2DE::Json::write(const std::filesystem::path& path, const json& data, bool encode) {
+bool H2DE_Json::write(const std::filesystem::path& path, const json& data, bool encode) {
     std::ofstream file(path, std::ios::binary);
     if (!file) {
         H2DE_Error::logError("Failed to open file for writing: " + path.string());

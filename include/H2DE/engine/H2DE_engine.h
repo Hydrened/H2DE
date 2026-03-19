@@ -408,7 +408,7 @@ public:
      * @brief Sets a custom callback function to handle H2DE events.
      * @param call A std::function taking H2DE_Event as parameter.
      */
-    inline void setHandleEventCall(const std::function<void(H2DE_Event)>& call) noexcept{
+    inline void setHandleEventCall(const std::function<void(H2DE_Event)>& call) noexcept {
         _handleEventsCall = call;
     }
     /**
@@ -446,7 +446,7 @@ private:
     template<typename, typename = void>
     struct _isObject : std::false_type {};
 
-    template <typename T>
+    template<typename T>
     struct _isObject<T, std::void_t<decltype(T::_isParentObject)>> : std::true_type {};
 
 private:

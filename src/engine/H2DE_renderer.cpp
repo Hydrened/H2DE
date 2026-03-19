@@ -403,9 +403,9 @@ void H2DE_Renderer::renderHitboxes(const H2DE_Object* object) {
         }
 
         const H2DE_LevelRect world_hitboxRect = G::getHitboxRect(object, hitbox, xIsInverted, yIsInverted);
-        if (!engine->_camera->containsRect(world_hitboxRect) && !objectIsAbsolute) {
-            continue;
-        }
+        // if (!engine->_camera->containsRect(world_hitboxRect) && !objectIsAbsolute) {
+        //     continue;
+        // }
 
         bool debugHitbox = (std::ranges::find(collisionIndexesToDebug, hitbox.collisionIndex) != collisionIndexesToDebug.end() || collisionIndexesToDebug.empty());
         if (!debugHitbox) {

@@ -15,6 +15,7 @@ private:
 
     H2DE_Object* hoveredObject = H2DE_NULL_OBJECT;
     H2DE_ButtonObject* mouseDownButton = H2DE_NULL_OBJECT;
+    H2DE_RadioButtonObject* mouseDownRadioButton = H2DE_NULL_OBJECT;
     H2DE_InputObject* focusedInput = H2DE_NULL_OBJECT;
 
     H2DE_Cursor oldCursor = H2DE_CURSOR_ARROW;
@@ -92,7 +93,6 @@ private:
     friend class H2DE_Engine;
     friend class H2DE_Window;
     friend class H2DE_EventManager;
-    
     friend class H2DE_InputObject;
     friend class H2DE_RadioButtonObject;
 };

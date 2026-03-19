@@ -306,6 +306,76 @@ float H2DE_Object::_getMaxSurfaceRadius() const {
 // SETTER
 
 // -- non lerp
+// void H2DE_Object::setTranslate(const H2DE_Translate& translate) {
+//     _setProperty<H2DE_Translate>(_objectData.transform.translate, translate);
+// }
+
+// void H2DE_Object::setScale(const H2DE_Scale& scale) {
+//     if (_setProperty<H2DE_Scale>(_objectData.transform.scale, scale)) {
+//         _rescaleHitboxes();
+//     }
+// }
+
+// void H2DE_Object::setRotation(float rotation) {
+//     _setProperty<float>(_objectData.transform.rotation, rotation);
+// }
+
+// void H2DE_Object::setPivot(const H2DE_Pivot& pivot) {
+//     _setProperty<H2DE_Pivot>(_objectData.transform.pivot, pivot);
+// }
+
+// void H2DE_Object::setOpacity(uint8_t opacity) {
+//     _setProperty<uint8_t>(_objectData.opacity, opacity);
+// }
+
+// void H2DE_Object::setAbsolute(bool absolute) {
+//     _setProperty<bool>(_objectData.absolute, absolute);
+// }
+
+// void H2DE_Object::setIndex(int index) {
+//     _setProperty<int>(_objectData.index, index);
+// }
+
+// void H2DE_Object::setHitboxTranslate(const std::string& name, const H2DE_Translate& translate) {
+//     _setHitboxProperty<H2DE_Translate>(&H2DE_Transform::translate, &H2DE_Transform::_defaultTranslate, name, translate);
+// }
+
+// void H2DE_Object::setHitboxScale(const std::string& name, const H2DE_Scale& scale) {
+//     _setHitboxProperty<H2DE_Scale>(&H2DE_Transform::scale, &H2DE_Transform::_defaultScale, name, scale);
+// }
+
+// void H2DE_Object::setHitboxRotation(const std::string& name, float rotation) {
+//     _setHitboxProperty<float>(&H2DE_Transform::rotation, nullptr, name, rotation);
+// }
+
+// void H2DE_Object::setHitboxPivot(const std::string& name, const H2DE_Pivot& pivot) {
+//     _setHitboxProperty<H2DE_Pivot>(&H2DE_Transform::pivot, &H2DE_Transform::_defaultPivot, name, pivot);
+// }
+
+// void H2DE_Object::setHitboxColor(const std::string& name, const H2DE_ColorRGB& color) {
+//     _setHitboxProperty<H2DE_ColorRGB>(&H2DE_Hitbox::color, name, color);
+// }
+
+// void H2DE_Object::setHitboxCollisionIndex(const std::string& name, int collisionIndex) {
+//     _setHitboxProperty<int>(&H2DE_Hitbox::collisionIndex, name, collisionIndex);
+// }
+
+// void H2DE_Object::setHitboxOnCollide(const std::string& name, const std::function<void(H2DE_Object*, H2DE_Face)>& onCollide) {
+//     _setHitboxProperty<std::function<void(H2DE_Object*, H2DE_Face)>>(&H2DE_Hitbox::onCollide, name, onCollide);
+// }
+
+// // -- lerp
+// H2DE_Timeline* H2DE_Object::setTranslate(const H2DE_Translate& translate, uint32_t duration, H2DE_Easing easing, const std::function<void()>& completed, bool pauseSensitive) {
+//     return _setProperty<H2DE_Translate>(&H2DE_Transform::translate, &H2DE_Object::setTranslate, translate, duration, easing, completed, pauseSensitive);
+    
+//     // H2DE_Timeline* timeline = H2DE_LerpManager::lerp<H2DE_Translate>(_engine, _objectData.transform.translate, translate, duration, easing, [this](H2DE_Translate iv) {
+//     //     setTranslate(iv);
+//     // }, completed, pauseSensitive);
+
+//     // _addTimelineToTimelines(timeline);
+//     // return timeline;
+// }
+
 void H2DE_Object::setTranslate(const H2DE_Translate& translate) {
     if (translate == _objectData.transform.translate) {
         return;

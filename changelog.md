@@ -1,3 +1,9 @@
+## H2DE-4.3.7
+#### ADDED
+- get vector2D length method
+#### MODIFIED
+- renamed H2DE::Json namespace to H2DE_Json
+
 ## H2DE-4.3.6
 #### ADDED
 - radio button object
