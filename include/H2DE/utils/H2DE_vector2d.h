@@ -305,6 +305,20 @@ struct H2DE_Vector2D {
     inline H2DE_Vector2D_T getLength() const {
         return std::sqrt(x * x + y * y);
     }
+
+    /**
+     * @brief Calculate the angle from this vector to another in radians.
+     * 
+     * Computes the angle formed by the line connecting this vector to the
+     * `other` vector relative to the positive X-axis. Uses the `atan2` function,
+     * which correctly handles all quadrants.
+     * 
+     * @param other The target vector to compute the angle towards.
+     * @return The angle in radians between -π and π.
+     */
+    inline float getAngleRad(const H2DE_Vector2D<H2DE_Vector2D_T>& other) const {
+        return std::atan2(y - other.y, x - other.x);
+    }
 };
 
 /** @brief Position in pixels, represented as integer 2D vector. */

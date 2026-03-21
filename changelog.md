@@ -1,6 +1,9 @@
 ## H2DE-4.3.7
 #### ADDED
 - get vector2D length method
+- get vector2D angle in radian from another vector method
+#### FIXED
+- object's get surface method accessibility
 #### MODIFIED
 - renamed H2DE::Json namespace to H2DE_Json
 

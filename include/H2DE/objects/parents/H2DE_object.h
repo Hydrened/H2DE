@@ -485,6 +485,9 @@ protected:
     static const std::vector<H2DE_Surface*> _getSortedSurfaces(H2DE_SurfaceMap& surfaces);
     static const std::vector<H2DE_Surface*> _getSortedSurfaces(std::vector<H2DE_Surface*>& surfaces);
 
+    template<typename H2DE_Surface_T>
+    static H2DE_Surface_T* _getSurface(const H2DE_SurfaceMap& surfaces, const std::string& name);
+
     static inline bool _hasSurface(const H2DE_SurfaceMap& surfaces, const std::string& name) {
         return (surfaces.find(name) != surfaces.end()); 
     }
@@ -519,9 +522,6 @@ private:
 
     void _rescaleHitboxes();
     static void _rescaleTransform(H2DE_Transform& transform, const H2DE_Scale& scale);
-
-    template<typename H2DE_Surface_T>
-    static H2DE_Surface_T* _getSurface(const H2DE_SurfaceMap& surfaces, const std::string& name);
 
     static const std::array<H2DE_Translate, 4> _getCorners(const H2DE_Transform& transform);
 
